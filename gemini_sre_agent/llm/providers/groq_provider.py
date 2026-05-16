@@ -4,7 +4,7 @@
 Groq provider implementation.
 
 This module contains the concrete implementation of the LLMProvider interface
-for xAI's Grok models (via Groq API).
+for various open-source models (via Groq API).
 """
 
 import json
