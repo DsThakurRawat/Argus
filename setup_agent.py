@@ -11,6 +11,7 @@ from rich.prompt import Prompt
 
 console = Console()
 
+# Premium Red Logo
 LOGO = """
  ██████ ██       ██████  ██    ██ ██████      ███████ ██████  ███████ 
 ██      ██      ██    ██ ██    ██ ██   ██     ██      ██   ██ ██      
@@ -19,7 +20,7 @@ LOGO = """
  ██████ ███████  ██████   ██████  ██████      ███████ ██   ██ ███████ 
 """
 
-# Preset models for each provider
+# Optimized Model Mapping for Semantic Selection
 MODEL_MAP = {
     "gemini": ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"],
     "openai": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
@@ -32,6 +33,24 @@ MODEL_MAP = {
     "perplexity": ["llama-3-sonar-large-32k-online", "llama-3-sonar-small-32k-chat"],
     "openrouter": ["anthropic/claude-3.5-sonnet", "google/gemini-pro-1.5", "meta-llama/llama-3-70b-instruct"]
 }
+
+def safe_input(prompt_text, choices=None, default=None, password=False):
+    """Safely get input even in restricted terminal environments."""
+    try:
+        if choices:
+            return Prompt.ask(prompt_text, choices=choices, default=default, password=password)
+        else:
+            return Prompt.ask(prompt_text, default=default, password=password)
+    except (EOFError, KeyboardInterrupt):
+        console.print("\n[bold red]⚠ Input interrupted. Exiting setup...[/]")
+        sys.exit(0)
+    except Exception:
+        # Fallback to standard input if rich fails
+        try:
+            val = input(f"{prompt_text} ")
+            return val.strip() or default
+        except (EOFError, KeyboardInterrupt):
+            sys.exit(0)
 
 def setup_env(provider, api_key, base_url=None):
     env_path = Path(".env")
@@ -103,7 +122,6 @@ def display_dashboard():
     console.print("[dim white]autonomous multi-cloud SRE agent for incident remediation[/]\n")
 
     status_content = Text()
-    # Use getpass.getuser() for better robustness in different environments
     status_content.append(f"User: [bold white]{getpass.getuser()}[/]\n")
     status_content.append(f"Directory: [bold red]{Path.cwd().name}[/]\n")
     status_content.append(f"Available Providers: [bold green]12+ detected[/]")
@@ -129,7 +147,7 @@ def run_setup():
     for i, p in enumerate(provider_names, 1):
         console.print(f" [bold red]{i}.[/] [white]{p}[/]")
     
-    choice = Prompt.ask(
+    choice = safe_input(
         "\n[bold red]> [/][bold white]Enter choice number[/]",
         choices=[str(i) for i in range(1, len(provider_names) + 1)],
         default="1"
@@ -141,14 +159,14 @@ def run_setup():
     api_key = ""
     if provider != "ollama":
         while not api_key:
-            api_key = Prompt.ask(f"[bold red]> [/][bold white]Enter {provider.upper()} API Key[/]", password=True)
+            api_key = safe_input(f"[bold red]> [/][bold white]Enter {provider.upper()} API Key[/]", password=True)
             if not api_key:
                 console.print("[bold yellow]⚠ API Key cannot be empty. Please enter a valid key.[/]")
     
     base_url = None
     if provider in ["azure", "openrouter", "ollama"]:
         default_url = "http://localhost:11434" if provider == "ollama" else ""
-        base_url = Prompt.ask(f"[bold red]> [/][bold white]Enter {provider.upper()} Base URL[/]", default=default_url)
+        base_url = safe_input(f"[bold red]> [/][bold white]Enter {provider.upper()} Base URL[/]", default=default_url)
 
     # Numbered Model Selection
     models = MODEL_MAP.get(provider, ["gpt-4o"])
@@ -156,7 +174,7 @@ def run_setup():
     for i, m in enumerate(models, 1):
         console.print(f" [bold red]{i}.[/] [white]{m}[/]")
     
-    model_choice = Prompt.ask(
+    model_choice = safe_input(
         "\n[bold red]> [/][bold white]Enter model number[/]",
         choices=[str(i) for i in range(1, len(models) + 1)],
         default="1"
@@ -177,8 +195,4 @@ def run_setup():
     ))
 
 if __name__ == "__main__":
-    try:
-        run_setup()
-    except KeyboardInterrupt:
-        console.print("\n[bold red]Aborted by user.[/]")
-        sys.exit(0)
+    run_setup()
