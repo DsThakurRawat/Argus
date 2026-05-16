@@ -89,7 +89,7 @@ class LLMProviderConfig(BaseModel):
     """Configuration for an LLM provider."""
 
     provider: Literal[
-        "gemini", "ollama", "claude", "openai", "grok", "bedrock", "anthropic"
+        "gemini", "ollama", "claude", "openai", "grok", "bedrock", "anthropic", "groq", "azure", "mistral", "xai", "perplexity", "openrouter"
     ]
     api_key: str | None = Field(None, description="API key for the provider")
     base_url: HttpUrl | None = Field(

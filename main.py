@@ -383,9 +383,8 @@ async def main():
     logger.info("[STARTUP] Using ENHANCED multi-provider LLM system")
 
     # Initialize enhanced LLM configuration
-    llm_config_path = os.getenv(
-        "LLM_CONFIG_PATH", "examples/dogfooding/configs/llm_config.yaml"
-    )
+    default_llm_config = "config/llm_config.yaml" if os.path.exists("config/llm_config.yaml") else "examples/dogfooding/configs/llm_config.yaml"
+    llm_config_path = os.getenv("LLM_CONFIG_PATH", default_llm_config)
     config_manager_llm = ConfigManager(llm_config_path)
     llm_config = config_manager_llm.get_config()
 
@@ -498,6 +497,10 @@ async def main():
                 logger.error(f"[SHUTDOWN] Error stopping log manager: {e}")
 
         # Log final metrics
+        # Shutdown providers to close connections
+        from gemini_sre_agent.llm.factory import LLMProviderFactory
+        await LLMProviderFactory.shutdown()
+
         if agents.get("metrics_collector"):
             metrics_summary = agents["metrics_collector"].get_metrics_summary()
             logger.info(f"[SHUTDOWN] Final metrics summary: {metrics_summary}")
