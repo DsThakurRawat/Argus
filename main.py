@@ -369,9 +369,8 @@ async def main():
     logger.info("[STARTUP] Using ENHANCED multi-provider LLM system")
 
     # Initialize enhanced LLM configuration
-    llm_config_path = os.getenv(
-        "LLM_CONFIG_PATH", "examples/dogfooding/configs/llm_config.yaml"
-    )
+    default_llm_config = "config/llm_config.yaml" if os.path.exists("config/llm_config.yaml") else "examples/dogfooding/configs/llm_config.yaml"
+    llm_config_path = os.getenv("LLM_CONFIG_PATH", default_llm_config)
     config_manager_llm = ConfigManager(llm_config_path)
     llm_config = config_manager_llm.get_config()
 

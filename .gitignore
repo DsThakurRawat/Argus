@@ -240,3 +240,4 @@ config/config.yaml
 # SRE Comparison Task
 tmp_repos_files/
 sre_comparison_report.html
+config/llm_config.yaml
