@@ -12,10 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# gemini_sre_agent/llm/factory.py
+"""
+Provider factory for managing LLM provider lifecycle.
+
+This module provides the LLMProviderFactory, which handles the registration,
+instantiation, and cleanup of various LLM providers based on configuration.
+"""
 
 import logging
 from typing import Any
+
 from .base import LLMProvider
 from .config import LLMConfig, LLMProviderConfig
 from .providers import (
@@ -29,8 +35,14 @@ from .providers import (
 
 logger = logging.getLogger(__name__)
 
+
 class LLMProviderFactory:
-    """Factory for creating LLM provider instances."""
+    """
+    Registry and factory for LLM provider implementations.
+    
+    This class maintains a registry of supported providers and manages
+    cached instances to ensure efficient resource reuse.
+    """
 
     _providers = {
         "gemini": GeminiProvider,
@@ -51,6 +63,18 @@ class LLMProviderFactory:
 
     @classmethod
     def get_provider(cls, config: LLMProviderConfig) -> LLMProvider:
+        """
+        Get or create a provider instance from configuration.
+
+        Args:
+            config: The provider-specific configuration.
+
+        Returns:
+            An instantiated LLMProvider ready for requests.
+
+        Raises:
+            ValueError: If the provider type is not found in the registry.
+        """
         provider_type = config.provider
         if provider_type not in cls._providers:
             raise ValueError(f"Unsupported provider type: {provider_type}")
@@ -63,6 +87,15 @@ class LLMProviderFactory:
 
     @classmethod
     def create_providers_from_config(cls, config: LLMConfig) -> dict[str, LLMProvider]:
+        """
+        Instantiate all providers defined in the global configuration.
+
+        Args:
+            config: The root LLM configuration object.
+
+        Returns:
+            A dictionary mapping provider names to their instances.
+        """
         providers = {}
         for provider_name, provider_config in config.providers.items():
             try:
@@ -73,15 +106,24 @@ class LLMProviderFactory:
 
     @classmethod
     async def shutdown(cls) -> None:
-        """Shutdown all registered provider instances."""
+        """
+        Gracefully shut down all registered provider instances.
+        
+        This method ensures that any underlying HTTP clients or persistent
+        connections are closed correctly during application shutdown.
+        """
         for name, instance in list(cls._instances.items()):
             try:
                 if hasattr(instance, "client") and hasattr(instance.client, "aclose"):
                     await instance.client.aclose()
+                elif hasattr(instance, "__aexit__"):
+                    await instance.__aexit__(None, None, None)
                 logger.info(f"Successfully shut down provider: {name}")
             except Exception as e:
                 logger.error(f"Error shutting down provider {name}: {e}")
         cls._instances.clear()
 
+
 def get_provider_factory() -> type[LLMProviderFactory]:
+    """Get the LLM provider factory class."""
     return LLMProviderFactory
