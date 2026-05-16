@@ -1,6 +1,8 @@
 import os
 import sys
 import yaml
+import time
+import getpass
 from pathlib import Path
 from rich.console import Console
 from rich.panel import Panel
@@ -101,8 +103,9 @@ def display_dashboard():
     console.print("[dim white]autonomous multi-cloud SRE agent for incident remediation[/]\n")
 
     status_content = Text()
-    status_content.append(f"User: [bold white]{os.getlogin()}[/]\n")
-    status_content.append(f"Directory: [bold red]~/Cloud-SRE[/]\n")
+    # Use getpass.getuser() for better robustness in different environments
+    status_content.append(f"User: [bold white]{getpass.getuser()}[/]\n")
+    status_content.append(f"Directory: [bold red]{Path.cwd().name}[/]\n")
     status_content.append(f"Available Providers: [bold green]12+ detected[/]")
 
     console.print(Panel(
@@ -163,8 +166,6 @@ def run_setup():
     with console.status("[bold red]Applying configurations...", spinner="dots"):
         setup_env(provider, api_key, base_url)
         generate_llm_config(provider, model, base_url)
-        import time
-        time.sleep(1)
 
     console.print("\n[bold green]✅ CONFIGURATION SUCCESSFUL[/]")
     console.print(Panel(
