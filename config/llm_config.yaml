@@ -1,0 +1,20 @@
+agents:
+  analysis_agent:
+    primary_provider: gemini
+  remediation_agent:
+    primary_provider: gemini
+  triage_agent:
+    primary_provider: gemini
+default_model_type: smart
+default_provider: gemini
+enable_fallback: true
+providers:
+  gemini:
+    api_key: ${GEMINI_API_KEY}
+    base_url: null
+    models:
+      '1':
+        max_tokens: 4096
+        model_type: smart
+        name: '1'
+    provider: gemini
