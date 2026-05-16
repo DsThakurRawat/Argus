@@ -44,6 +44,7 @@ dependencies = [
   "instructor>=1.11.3",
   "litellm>=1.77.0",
   "structlog>=25.4.0",
+  "rich>=13.0.0",
 ]
 
 [tool.pytest.ini_options]
