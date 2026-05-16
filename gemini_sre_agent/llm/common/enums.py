@@ -26,6 +26,13 @@ class ProviderType(str, Enum):
     OPENAI = "openai"
     GROK = "grok"
     BEDROCK = "bedrock"
+    GROQ = "groq"
+    AZURE = "azure"
+    MISTRAL = "mistral"
+    XAI = "xai"
+    PERPLEXITY = "perplexity"
+    OPENROUTER = "openrouter"
+    ANTHROPIC = "anthropic"
 
 
 class ModelType(str, Enum):
