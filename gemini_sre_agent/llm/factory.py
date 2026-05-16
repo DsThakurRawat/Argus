@@ -1,19 +1,18 @@
 # gemini_sre_agent/llm/factory.py
 
 """
-Factory pattern implementation for LLM provider instantiation.
+Provider factory for creating LLM provider instances.
 
-This module provides the LLMProviderFactory class that handles the creation
-and management of LLM providers based on configuration.
+This module provides a registry and factory for instantiating different
+LLM provider implementations based on configuration.
 """
 
 import logging
 from typing import Any
 
-from .base import ErrorSeverity, LLMProvider, LLMProviderError
+from .base import LLMProvider
+from .config import LLMConfig, LLMProviderConfig
 from .providers import (
-    AnthropicProvider,
-    BedrockProvider,
     GeminiProvider,
     GrokProvider,
     GroqProvider,
@@ -26,16 +25,17 @@ logger = logging.getLogger(__name__)
 
 
 class LLMProviderFactory:
-    """Factory for creating and managing LLM providers."""
+    """Factory for creating LLM provider instances."""
 
-    _providers: dict[str, type[LLMProvider]] = {
+    _providers = {
         "gemini": GeminiProvider,
         "openai": OpenAIProvider,
-        "anthropic": AnthropicProvider,
         "ollama": OllamaProvider,
+        "anthropic": LiteLLMProvider,
+        "claude": LiteLLMProvider,
         "grok": GrokProvider,
         "groq": GroqProvider,
-        "bedrock": BedrockProvider,
+        "bedrock": LiteLLMProvider,
         "azure": LiteLLMProvider,
         "mistral": LiteLLMProvider,
         "perplexity": LiteLLMProvider,
@@ -45,178 +45,67 @@ class LLMProviderFactory:
     _instances: dict[str, LLMProvider] = {}
 
     @classmethod
-    def create_provider(cls, provider_name: str, config: Any) -> LLMProvider:
+    def get_provider(cls, config: LLMProviderConfig) -> LLMProvider:
         """
-        Create a new provider instance.
+        Get or create an LLM provider instance based on configuration.
 
         Args:
-            provider_name: Name of the provider configuration
-            config: Provider configuration
+            config: LLM provider configuration
 
         Returns:
             LLMProvider instance
 
         Raises:
-            LLMProviderError: If provider type is not supported
+            ValueError: If provider type is not supported
         """
         provider_type = config.provider
-
         if provider_type not in cls._providers:
-            raise LLMProviderError(
-                f"Unsupported provider type: {provider_type}",
-                severity=ErrorSeverity.CRITICAL,
-            )
+            raise ValueError(f"Unsupported provider type: {provider_type}")
 
-        try:
+        # Use provider + model as key for instance caching
+        instance_key = f"{provider_type}_{getattr(config, 'model', 'default')}"
+
+        if instance_key not in cls._instances:
             provider_class = cls._providers[provider_type]
-            provider_class.validate_config(config)
+            cls._instances[instance_key] = provider_class(config)
 
-            # Create instance key for caching
-            instance_key = f"{provider_name}:{provider_type}"
-
-            # Return cached instance if available
-            if instance_key in cls._instances:
-                logger.debug(f"Returning cached provider instance: {instance_key}")
-                return cls._instances[instance_key]
-
-            # Create new instance
-            provider = provider_class(config)
-            cls._instances[instance_key] = provider
-
-            logger.info(f"Created new provider instance: {instance_key}")
-            return provider
-
-        except Exception as e:
-            logger.error(f"Failed to create provider {provider_type}: {e}")
-            raise LLMProviderError(
-                f"Failed to create provider {provider_type}: {e}",
-                severity=ErrorSeverity.CRITICAL,
-            ) from e
+        return cls._instances[instance_key]
 
     @classmethod
-    def get_provider(cls, provider_name: str) -> LLMProvider | None:
+    def create_providers_from_config(cls, config: LLMConfig) -> dict[str, LLMProvider]:
         """
-        Get an existing provider instance by name.
+        Create all providers defined in the configuration.
 
         Args:
-            provider_name: Name of the provider
+            config: Multi-provider LLM configuration
 
         Returns:
-            LLMProvider instance or None if not found
-        """
-        return cls._instances.get(provider_name)
-
-    @classmethod
-    def list_providers(cls) -> list[str]:
-        """
-        List all registered provider types.
-
-        Returns:
-            List of provider type names
-        """
-        return list(cls._providers.keys())
-
-    @classmethod
-    def list_instances(cls) -> list[str]:
-        """
-        List all provider instances.
-
-        Returns:
-            List of provider instance names
-        """
-        return list(cls._instances.keys())
-
-    @classmethod
-    def register_provider(
-        cls: str, name: str, provider_class: type[LLMProvider]
-    ) -> None:
-        """
-        Register a new provider type.
-
-        Args:
-            name: Provider type name
-            provider_class: Provider class implementation
-        """
-        if not issubclass(provider_class, LLMProvider):
-            raise ValueError("Provider class must inherit from LLMProvider")
-
-        cls._providers[name] = provider_class
-        logger.info(f"Registered provider type: {name}")
-
-    @classmethod
-    def unregister_provider(cls: str, name: str) -> None:
-        """
-        Unregister a provider type.
-
-        Args:
-            name: Provider type name
-        """
-        if name in cls._providers:
-            del cls._providers[name]
-            logger.info(f"Unregistered provider type: {name}")
-
-    @classmethod
-    def clear_instances(cls: str) -> None:
-        """Clear all provider instances."""
-        cls._instances.clear()
-        logger.info("Cleared all provider instances")
-
-    @classmethod
-    def health_check_all(cls) -> dict[str, bool]:
-        """
-        Perform health check on all provider instances.
-
-        Returns:
-            Dictionary mapping provider names to health status
-        """
-        health_status = {}
-
-        for name, provider in cls._instances.items():
-            try:
-                # Note: This would need to be async in real implementation
-                # For now, we'll just check if the provider exists
-                health_status[name] = provider is not None
-            except Exception as e:
-                logger.warning(f"Health check failed for {name}: {e}")
-                health_status[name] = False
-
-        return health_status
-
-    @classmethod
-    async def get_all_providers(cls) -> dict[str, LLMProvider]:
-        """
-        Get all provider instances.
-
-        Returns:
-            Dictionary mapping provider names to provider instances
-        """
-        return cls._instances.copy()
-
-    @classmethod
-    def create_providers_from_config(cls, config: Any) -> dict[str, LLMProvider]:
-        """
-        Create providers from a configuration object.
-
-        Args:
-            config: Configuration object with providers
-
-        Returns:
-            Dictionary mapping provider names to provider instances
+            Dictionary of provider instances
         """
         providers = {}
-
         for provider_name, provider_config in config.providers.items():
             try:
-                provider = cls.create_provider(provider_name, provider_config)
-                providers[provider_name] = provider
+                providers[provider_name] = cls.get_provider(provider_config)
             except Exception as e:
-                logger.error(f"Failed to create provider {provider_name}: {e}")
-                # Continue with other providers
-                continue
+                logger.error(f"Failed to create provider '{provider_name}': {e}")
 
         return providers
 
+    @classmethod
+    async def shutdown(cls) -> None:
+        """Shutdown all registered provider instances."""
+        for name, instance in list(cls._instances.items()):
+            try:
+                if hasattr(instance, "client") and hasattr(instance.client, "aclose"):
+                    await instance.client.aclose()
+                elif hasattr(instance, "__aexit__"):
+                    await instance.__aexit__(None, None, None)
+                logger.info(f"Successfully shut down provider: {name}")
+            except Exception as e:
+                logger.error(f"Error shutting down provider {name}: {e}")
+        cls._instances.clear()
+
 
 def get_provider_factory() -> type[LLMProviderFactory]:
-    """Get the provider factory class."""
+    """Get the LLM provider factory class."""
     return LLMProviderFactory

@@ -50,8 +50,8 @@ class GroqProvider(LLMProvider):
             if request.prompt:
                 messages.append({"role": "user", "content": request.prompt})
 
-            # Respect request parameters with config fallbacks
-            temperature = request.temperature or self.config.provider_specific.get("temperature", 0.7)
+            # Respect request parameters with explicit None check for deterministic 0.0
+            temperature = request.temperature if request.temperature is not None else self.config.provider_specific.get("temperature", 0.7)
             max_tokens = request.max_tokens or self.config.provider_specific.get("max_tokens", 1024)
             top_p = self.config.provider_specific.get("top_p", 1.0)
 
@@ -63,18 +63,24 @@ class GroqProvider(LLMProvider):
                 "top_p": top_p,
                 "stream": False,
             }
+            
+            # Pass tools if available
+            if request.tools:
+                payload["tools"] = request.tools
 
             response = await self.client.post("/chat/completions", json=payload)
             response.raise_for_status()
 
             data = response.json()
+            message = data["choices"][0]["message"]
             usage = self._extract_usage(data.get("usage"))
 
             return LLMResponse(
-                content=data["choices"][0]["message"]["content"] or "",
+                content=message.get("content") or "",
                 model=self.model,
                 provider=self.provider_name,
                 usage=usage,
+                tool_calls=message.get("tool_calls"),
             )
 
         except Exception as e:
@@ -90,7 +96,7 @@ class GroqProvider(LLMProvider):
             if request.prompt:
                 messages.append({"role": "user", "content": request.prompt})
 
-            temperature = request.temperature or self.config.provider_specific.get("temperature", 0.7)
+            temperature = request.temperature if request.temperature is not None else self.config.provider_specific.get("temperature", 0.7)
             max_tokens = request.max_tokens or self.config.provider_specific.get("max_tokens", 1024)
 
             payload = {
@@ -148,14 +154,13 @@ class GroqProvider(LLMProvider):
         }
 
     async def embeddings(self, text: str) -> list[float]:
-        """Groq doesn't provide native embeddings yet, returning mock."""
-        return [0.0] * 1536
+        """Groq does not support native embeddings."""
+        raise NotImplementedError("Groq provider does not support native embeddings yet.")
 
     def token_count(self, text: str) -> int:
         return len(text.split()) * 1.3
 
     def cost_estimate(self, input_tokens: int, output_tokens: int) -> float:
-        # Very rough estimate for Groq Llama 3
         return (input_tokens * 0.0000005) + (output_tokens * 0.0000008)
 
     @classmethod
