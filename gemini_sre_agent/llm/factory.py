@@ -16,6 +16,8 @@ from .providers import (
     BedrockProvider,
     GeminiProvider,
     GrokProvider,
+    GroqProvider,
+    LiteLLMProvider,
     OllamaProvider,
     OpenAIProvider,
 )
@@ -32,7 +34,13 @@ class LLMProviderFactory:
         "anthropic": AnthropicProvider,
         "ollama": OllamaProvider,
         "grok": GrokProvider,
+        "groq": GroqProvider,
         "bedrock": BedrockProvider,
+        "azure": LiteLLMProvider,
+        "mistral": LiteLLMProvider,
+        "perplexity": LiteLLMProvider,
+        "openrouter": LiteLLMProvider,
+        "xai": GrokProvider,
     }
     _instances: dict[str, LLMProvider] = {}
 
