@@ -70,7 +70,7 @@ def generate_llm_config(provider, model, base_url=None):
         "providers": {
             provider: {
                 "provider": provider,
-                "api_key": f"${{{provider.upper()}_API_KEY}}",
+                "api_key": None,
                 "base_url": base_url,
                 "models": {
                     model: {
