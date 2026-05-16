@@ -36,8 +36,8 @@ class LiteLLMProvider(LLMProvider):
             if request.prompt:
                 messages.append({"role": "user", "content": request.prompt})
 
-            # Respect request parameters with config fallbacks
-            temperature = request.temperature or self.config.provider_specific.get("temperature", 0.7)
+            # Respect request parameters with explicit None check
+            temperature = request.temperature if request.temperature is not None else self.config.provider_specific.get("temperature", 0.7)
             max_tokens = request.max_tokens or self.config.provider_specific.get("max_tokens", 1024)
 
             response = await litellm.acompletion(
@@ -47,6 +47,7 @@ class LiteLLMProvider(LLMProvider):
                 api_base=self.base_url,
                 temperature=temperature,
                 max_tokens=max_tokens,
+                tools=request.tools,
             )
 
             usage = {
@@ -59,6 +60,7 @@ class LiteLLMProvider(LLMProvider):
                 model=self.model,
                 provider=self.config.provider,
                 usage=usage,
+                tool_calls=getattr(response.choices[0].message, "tool_calls", None),
             )
 
         except Exception as e:
@@ -68,11 +70,14 @@ class LiteLLMProvider(LLMProvider):
     async def generate_stream(self, request: LLMRequest) -> AsyncGenerator[LLMResponse, None]:
         """Generate streaming response using litellm."""
         model_full_name = f"{self.config.provider}/{self.model}"
+        if self.config.provider == "openai":
+            model_full_name = self.model
+            
         messages = [{"role": m.get("role", "user"), "content": m.get("content", "")} for m in (request.messages or [])]
         if request.prompt:
             messages.append({"role": "user", "content": request.prompt})
 
-        temperature = request.temperature or self.config.provider_specific.get("temperature", 0.7)
+        temperature = request.temperature if request.temperature is not None else self.config.provider_specific.get("temperature", 0.7)
         max_tokens = request.max_tokens or self.config.provider_specific.get("max_tokens", 1024)
 
         response = await litellm.acompletion(
@@ -104,6 +109,12 @@ class LiteLLMProvider(LLMProvider):
         return True
 
     def get_available_models(self) -> dict[ModelType, str]:
+        # Return intelligent defaults based on the provider
+        if self.config.provider == "azure":
+            return {ModelType.FAST: "gpt-35-turbo", ModelType.SMART: "gpt-4o"}
+        if self.config.provider == "mistral":
+            return {ModelType.FAST: "mistral-small-latest", ModelType.SMART: "mistral-large-latest"}
+        
         return {
             ModelType.FAST: self.model,
             ModelType.SMART: self.model,

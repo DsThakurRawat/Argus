@@ -485,7 +485,11 @@ async def main():
         # Log final metrics
         if agents.get("metrics_collector"):
             metrics_summary = agents["metrics_collector"].get_metrics_summary()
-            logger.info(f"[SHUTDOWN] Final metrics summary: {metrics_summary}")
+            # Shutdown providers to close connections
+        from gemini_sre_agent.llm.factory import LLMProviderFactory
+        await LLMProviderFactory.shutdown()
+
+        logger.info(f"[SHUTDOWN] Final metrics summary: {metrics_summary}")
 
         logger.info("[STARTUP] Enhanced Gemini SRE Agent stopped.")
 
