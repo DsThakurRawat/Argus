@@ -1,7 +1,27 @@
+# Copyright 2026 Divyansh Rawat
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""
+Interactive setup dashboard for the Cloud-SRE Agent.
+
+This script provides a premium CLI experience for configuring LLM providers,
+models, and environment variables.
+"""
+
 import os
 import sys
 import yaml
-import time
 import getpass
 from pathlib import Path
 from rich.console import Console
@@ -11,7 +31,6 @@ from rich.prompt import Prompt
 
 console = Console()
 
-# Premium Red Logo
 LOGO = """
  ██████ ██       ██████  ██    ██ ██████      ███████ ██████  ███████ 
 ██      ██      ██    ██ ██    ██ ██   ██     ██      ██   ██ ██      
@@ -20,7 +39,6 @@ LOGO = """
  ██████ ███████  ██████   ██████  ██████      ███████ ██   ██ ███████ 
 """
 
-# Optimized Model Mapping for Semantic Selection
 MODEL_MAP = {
     "gemini": ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"],
     "openai": ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
@@ -35,24 +53,35 @@ MODEL_MAP = {
 }
 
 def safe_input(prompt_text, choices=None, default=None, password=False):
-    """Safely get input even in restricted terminal environments."""
+    """
+    Safely handle user input with rich prompts and error recovery.
+
+    Args:
+        prompt_text: Text to display to the user.
+        choices: Optional list of valid input choices.
+        default: Default value if input is empty.
+        password: If True, mask the input.
+
+    Returns:
+        The validated user input string.
+    """
     try:
         if choices:
             return Prompt.ask(prompt_text, choices=choices, default=default, password=password)
-        else:
-            return Prompt.ask(prompt_text, default=default, password=password)
+        return Prompt.ask(prompt_text, default=default, password=password)
     except (EOFError, KeyboardInterrupt):
-        console.print("\n[bold red]⚠ Input interrupted. Exiting setup...[/]")
+        console.print("\n[bold red]⚠ Setup aborted.[/]")
         sys.exit(0)
-    except Exception:
-        # Fallback to standard input if rich fails
-        try:
-            val = input(f"{prompt_text} ")
-            return val.strip() or default
-        except (EOFError, KeyboardInterrupt):
-            sys.exit(0)
 
 def setup_env(provider, api_key, base_url=None):
+    """
+    Update the .env file with the chosen provider's credentials.
+
+    Args:
+        provider: Name of the LLM provider.
+        api_key: User provided API key.
+        base_url: Optional base URL for the provider.
+    """
     env_path = Path(".env")
     lines = []
     if env_path.exists():
@@ -60,28 +89,23 @@ def setup_env(provider, api_key, base_url=None):
             lines = f.readlines()
     
     key_name = f"{provider.upper()}_API_KEY"
-    found_key = False
-    found_url = False
-    new_lines = []
-    for line in lines:
-        if line.startswith(f"{key_name}="):
-            new_lines.append(f'{key_name}="{api_key}"\n')
-            found_key = True
-        elif base_url and line.startswith(f"{provider.upper()}_BASE_URL="):
-            new_lines.append(f'{provider.upper()}_BASE_URL="{base_url}"\n')
-            found_url = True
-        else:
-            new_lines.append(line)
-    
-    if not found_key:
-        new_lines.append(f'{key_name}="{api_key}"\n')
-    if base_url and not found_url:
+    new_lines = [l for l in lines if not l.startswith(f"{key_name}=") and not (base_url and l.startswith(f"{provider.upper()}_BASE_URL="))]
+    new_lines.append(f'{key_name}="{api_key}"\n')
+    if base_url:
         new_lines.append(f'{provider.upper()}_BASE_URL="{base_url}"\n')
     
     with open(env_path, "w") as f:
         f.writelines(new_lines)
 
 def generate_llm_config(provider, model, base_url=None):
+    """
+    Generate the llm_config.yaml file based on user selection.
+
+    Args:
+        provider: Selected provider name.
+        model: Selected model name.
+        base_url: Optional base URL.
+    """
     config = {
         "default_provider": provider,
         "default_model_type": "smart",
@@ -89,7 +113,7 @@ def generate_llm_config(provider, model, base_url=None):
         "providers": {
             provider: {
                 "provider": provider,
-                "api_key": None,
+                "api_key": f"${{{provider.upper()}_API_KEY}}",
                 "base_url": base_url,
                 "models": {
                     model: {
@@ -106,93 +130,56 @@ def generate_llm_config(provider, model, base_url=None):
             "remediation_agent": {"primary_provider": provider}
         }
     }
-    
-    if provider == "ollama" and not base_url:
-        config["providers"]["ollama"]["base_url"] = "http://localhost:11434"
-        config["providers"]["ollama"]["api_key"] = None
-
     os.makedirs("config", exist_ok=True)
     with open("config/llm_config.yaml", "w") as f:
         yaml.dump(config, f)
 
-def display_dashboard():
+def run_setup():
+    """Execute the interactive setup dashboard."""
     console.clear()
     console.print(Text(LOGO, style="bold red"))
-    console.print(f"[bold white]cloud-sre[/]  ·  [bold red]v2026.05.16[/]")
-    console.print("[dim white]autonomous multi-cloud SRE agent for incident remediation[/]\n")
+    console.print(f"[bold white]cloud-sre[/]  ·  [bold red]v2026.05.16[/]\n")
 
-    status_content = Text()
-    status_content.append(f"User: [bold white]{getpass.getuser()}[/]\n")
-    status_content.append(f"Directory: [bold red]{Path.cwd().name}[/]\n")
-    status_content.append(f"Available Providers: [bold green]12+ detected[/]")
+    status = Text()
+    status.append(f"User: [bold white]{getpass.getuser()}[/]\n")
+    status.append(f"System: [bold green]Ready for Configuration[/]")
+    console.print(Panel(status, title="[bold red]Dashboard Status[/]", border_style="red", width=80))
 
-    console.print(Panel(
-        status_content,
-        title="[bold red]System Status[/]",
-        border_style="red",
-        width=80
-    ))
-
-def run_setup():
-    display_dashboard()
-    
-    provider_names = [
-        "Gemini (Google)", "OpenAI (GPT-4o)", "Anthropic (Claude)", 
-        "Groq (Ultra-fast)", "Ollama (Local)", "Azure OpenAI", 
-        "Mistral AI", "xAI (Grok)", "Perplexity", "OpenRouter"
-    ]
     provider_keys = ["gemini", "openai", "anthropic", "groq", "ollama", "azure", "mistral", "xai", "perplexity", "openrouter"]
+    for i, p in enumerate(provider_keys, 1):
+        console.print(f" [bold red]{i}.[/] [white]{p.upper()}[/]")
     
-    console.print("\n[bold red]── 1. Select LLM Provider ─────────────────────────────────────────────────────[/]")
-    for i, p in enumerate(provider_names, 1):
-        console.print(f" [bold red]{i}.[/] [white]{p}[/]")
-    
-    choice = safe_input(
-        "\n[bold red]> [/][bold white]Enter choice number[/]",
-        choices=[str(i) for i in range(1, len(provider_names) + 1)],
-        default="1"
-    )
+    choice = safe_input("\n[bold red]> [/][bold white]Select Provider[/]", choices=[str(i) for i in range(1, 11)], default="1")
     provider = provider_keys[int(choice) - 1]
-    
-    console.print(f"\n[bold red]── 2. Configure {provider.upper()} ────────────────────────────────────────────────[/]")
-    
+
     api_key = ""
     if provider != "ollama":
-        while not api_key:
+        while True:
             api_key = safe_input(f"[bold red]> [/][bold white]Enter {provider.upper()} API Key[/]", password=True)
             if not api_key:
-                console.print("[bold yellow]⚠ API Key cannot be empty. Please enter a valid key.[/]")
-    
+                console.print("[bold yellow]⚠ API Key cannot be empty.[/]")
+                continue
+            if len(api_key) < 20:
+                console.print("[bold yellow]⚠ API Key looks suspiciously short.[/]")
+                if safe_input("[bold red]> [/][bold white]Continue anyway? (y/n)[/]", choices=["y", "n"], default="n") != "y":
+                    continue
+            break
+
     base_url = None
     if provider in ["azure", "openrouter", "ollama"]:
-        default_url = "http://localhost:11434" if provider == "ollama" else ""
-        base_url = safe_input(f"[bold red]> [/][bold white]Enter {provider.upper()} Base URL[/]", default=default_url)
+        base_url = safe_input(f"[bold red]> [/][bold white]Enter Base URL[/]", default="http://localhost:11434" if provider == "ollama" else "")
 
-    # Numbered Model Selection
     models = MODEL_MAP.get(provider, ["gpt-4o"])
-    console.print(f"\n[bold red]── 3. Select Model for {provider.upper()} ────────────────────────────────────────[/]")
     for i, m in enumerate(models, 1):
         console.print(f" [bold red]{i}.[/] [white]{m}[/]")
-    
-    model_choice = safe_input(
-        "\n[bold red]> [/][bold white]Enter model number[/]",
-        choices=[str(i) for i in range(1, len(models) + 1)],
-        default="1"
-    )
-    model = models[int(model_choice) - 1]
-    
-    with console.status("[bold red]Applying configurations...", spinner="dots"):
+    m_choice = safe_input("\n[bold red]> [/][bold white]Select Model[/]", choices=[str(i) for i in range(1, len(models) + 1)], default="1")
+    model = models[int(m_choice) - 1]
+
+    with console.status("[bold red]Saving configuration...", spinner="dots"):
         setup_env(provider, api_key, base_url)
         generate_llm_config(provider, model, base_url)
 
     console.print("\n[bold green]✅ CONFIGURATION SUCCESSFUL[/]")
-    console.print(Panel(
-        f"[bold white]Your configuration is saved to config/llm_config.yaml[/]\n\n"
-        f"[bold red]uv run python main.py[/]",
-        title="[bold green]Ready to Launch[/]",
-        border_style="green",
-        width=80
-    ))
 
 if __name__ == "__main__":
     run_setup()
