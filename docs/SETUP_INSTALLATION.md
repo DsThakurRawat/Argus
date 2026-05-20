@@ -1,6 +1,6 @@
 # Setup and Installation Guide
 
-This guide provides comprehensive instructions for setting up and installing the Cloud SRE Agent. Follow these steps to get the project up and running in your environment across multiple cloud platforms and AI providers.
+This guide provides comprehensive instructions for setting up and installing the Argus. Follow these steps to get the project up and running in your environment across multiple cloud platforms and AI providers.
 
 ## Prerequisites
 
@@ -48,13 +48,13 @@ Before running the agent, you need to set up the necessary cloud infrastructure 
 
 ## Local Setup
 
-Follow these steps to set up the Cloud SRE Agent on your local machine:
+Follow these steps to set up the Argus on your local machine:
 
 1.  **Clone the repository:**
     Begin by cloning the project repository to your local machine:
     ```bash
-    git clone https://github.com/avivl/cloud-sre-agent.git
-    cd cloud-sre-agent
+    git clone https://github.com/avivl/argus.git
+    cd argus
     ```
 
 2.  **Install dependencies:**

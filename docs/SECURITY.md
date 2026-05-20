@@ -1,12 +1,12 @@
 # Security Guide
 
-This guide outlines security best practices and considerations for deploying and operating the Cloud SRE Agent in a production environment. Ensuring the security of your agent and its interactions with cloud platforms and GitHub is paramount.
+This guide outlines security best practices and considerations for deploying and operating the Argus in a production environment. Ensuring the security of your agent and its interactions with cloud platforms and GitHub is paramount.
 
 ## 1. Authentication and Authorization
 
 ### Cloud Platform Authentication
 
-*   **Service Accounts:** Always use dedicated cloud platform service accounts for deploying and running the Cloud SRE Agent in production. Avoid using user credentials.
+*   **Service Accounts:** Always use dedicated cloud platform service accounts for deploying and running the Argus in production. Avoid using user credentials.
 *   **Least Privilege:** Grant the service account only the minimum necessary IAM roles and permissions. Refer to the [Cloud Platform Setup Guide](CLOUD_SETUP.md) for recommended roles.
 *   **Workload Identity (Kubernetes):** If deploying to Kubernetes, leverage Workload Identity to securely bind Kubernetes Service Accounts to cloud platform service accounts, eliminating the need to manage service account keys.
 *   **Application Default Credentials (ADC):** The agent uses ADC to authenticate with cloud platform services. Ensure the environment where the agent runs has access to valid ADC (e.g., via `GOOGLE_APPLICATION_CREDENTIALS` environment variable pointing to a service account key file, or by running on a cloud platform compute resource with an attached service account).

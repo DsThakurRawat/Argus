@@ -1,6 +1,6 @@
 # Provider Addition Framework
 
-The Provider Addition Framework is a comprehensive system designed to make adding LLM providers to the Cloud SRE Agent as simple as possible. The framework provides templates, auto-registration, validation, and plugin capabilities to minimize the code required for provider implementations.
+The Provider Addition Framework is a comprehensive system designed to make adding LLM providers to the Argus as simple as possible. The framework provides templates, auto-registration, validation, and plugin capabilities to minimize the code required for provider implementations.
 
 ## Overview
 

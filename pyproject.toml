@@ -1,5 +1,5 @@
 [project]
-name = "gemini-sre-agent"
+name = "argus"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

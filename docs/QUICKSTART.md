@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-This guide provides a rapid, 15-minute walkthrough to get the Cloud SRE Agent up and running with minimal effort. It's designed for users who want to quickly see the agent in action.
+This guide provides a rapid, 15-minute walkthrough to get the Argus up and running with minimal effort. It's designed for users who want to quickly see the agent in action.
 
 ## 1. Prerequisites (Quick Check)
 
@@ -14,8 +14,8 @@ Ensure you have the following installed:
 ## 2. Clone the Repository
 
 ```bash
-git clone https://github.com/avivl/cloud-sre-agent.git
-cd cloud-sre-agent
+git clone https://github.com/avivl/argus.git
+cd argus
 ```
 
 ## 3. Install Dependencies
@@ -32,14 +32,14 @@ uv sync
     ```
 2.  **Edit `config/config.yaml`:**
     Open `config/config.yaml` and update the following placeholders with your actual values:
-    *   `cloud_sre_agent.services[0].project_id`: Your cloud platform project ID.
-    *   `cloud_sre_agent.services[0].location`: Your cloud platform region (e.g., `us-central1`).
-    *   `cloud_sre_agent.services[0].subscription_id`: The name of a messaging service subscription you will create (e.g., `my-test-logs-sub`).
-    *   `cloud_sre_agent.default_github_config.repository`: Your GitHub test repository (e.g., `your-username/your-test-repo`).
+    *   `argus_agent.services[0].project_id`: Your cloud platform project ID.
+    *   `argus_agent.services[0].location`: Your cloud platform region (e.g., `us-central1`).
+    *   `argus_agent.services[0].subscription_id`: The name of a messaging service subscription you will create (e.g., `my-test-logs-sub`).
+    *   `argus_agent.default_github_config.repository`: Your GitHub test repository (e.g., `your-username/your-test-repo`).
 
     **Example `config/config.yaml` snippet:**
     ```yaml
-    cloud_sre_agent:
+    argus_agent:
       # ... other defaults ...
       services:
         - service_name: "quickstart-service"

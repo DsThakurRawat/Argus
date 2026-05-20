@@ -1,6 +1,6 @@
 # GCP Infrastructure Setup Guide
 
-This guide provides instructions for setting up the necessary Google Cloud Platform (GCP) infrastructure components required for the Cloud SRE Agent to function. This primarily involves configuring Google Cloud Logging to export logs to Pub/Sub, which the agent then consumes.
+This guide provides instructions for setting up the necessary Google Cloud Platform (GCP) infrastructure components required for the Argus to function. This primarily involves configuring Google Cloud Logging to export logs to Pub/Sub, which the agent then consumes.
 
 ## GCP Infrastructure Overview
 
@@ -36,7 +36,7 @@ graph TB
     end
     
     subgraph "External Services"
-        AGENT[Cloud SRE Agent<br/>Cloud Run / Local]
+        AGENT[Argus<br/>Cloud Run / Local]
         GITHUB[GitHub Repository<br/>Pull Requests]
     end
     
@@ -88,7 +88,7 @@ gcloud services enable aiplatform.googleapis.com
 
 ## 2. Create Pub/Sub Topic and Subscription
 
-For each service you wish to monitor, you need a dedicated Pub/Sub topic to receive log exports and a subscription for the Cloud SRE Agent to consume messages from that topic.
+For each service you wish to monitor, you need a dedicated Pub/Sub topic to receive log exports and a subscription for the Argus to consume messages from that topic.
 
 ### Create a Topic
 
@@ -145,7 +145,7 @@ Replace `YOUR_SINK_NAME` with a name for your sink, and adjust the `--log-filter
 
 ## 4. Configure Service Account Permissions for the Agent
 
-Ensure the service account (or your user account if running locally with `gcloud auth application-default login`) that the Cloud SRE Agent uses has the following IAM roles in your GCP project:
+Ensure the service account (or your user account if running locally with `gcloud auth application-default login`) that the Argus uses has the following IAM roles in your GCP project:
 
 *   **`Pub/Sub Subscriber`** (`roles/pubsub.subscriber`): To pull messages from the Pub/Sub subscriptions.
 *   **`Vertex AI User`** (`roles/aiplatform.user`): To interact with Vertex AI models.
@@ -170,4 +170,4 @@ Replace `YOUR_GCP_ACCOUNT_EMAIL` with the email of the account running the agent
 
 ## Next Steps
 
-Once your GCP infrastructure is set up, proceed to the [Local Setup](SETUP_INSTALLATION.md#local-setup) section in the main installation guide to configure and run the Cloud SRE Agent.
+Once your GCP infrastructure is set up, proceed to the [Local Setup](SETUP_INSTALLATION.md#local-setup) section in the main installation guide to configure and run the Argus.

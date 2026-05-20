@@ -1,6 +1,6 @@
 # Architecture Overview
 
-The Cloud SRE Agent is designed with a modular and extensible architecture, enabling autonomous log monitoring, analysis, and remediation across multiple cloud environments. The system operates on a continuous, event-driven loop, leveraging 100+ AI providers (OpenAI, Anthropic, Google, Cohere, Ollama, and more) for intelligent decision-making and the `hyx` library for robust resilience.
+The Argus is designed with a modular and extensible architecture, enabling autonomous log monitoring, analysis, and remediation across multiple cloud environments. The system operates on a continuous, event-driven loop, leveraging 100+ AI providers (OpenAI, Anthropic, Google, Cohere, Ollama, and more) for intelligent decision-making and the `hyx` library for robust resilience.
 
 ## Core Components
 

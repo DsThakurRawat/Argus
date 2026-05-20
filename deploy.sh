@@ -20,7 +20,7 @@ set -e
 
 # --- Configuration ---
 PROJECT_ID="your-gcp-project-id" # Replace with your GCP Project ID
-SERVICE_NAME="gemini-sre-agent"
+SERVICE_NAME="argus"
 REGION="us-central1" # Choose your desired GCP region
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
 

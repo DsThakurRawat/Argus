@@ -1,10 +1,10 @@
 # Operations Runbook
 
-This runbook provides guidelines and procedures for operating, monitoring, and maintaining the Cloud SRE Agent in a production environment. It covers system monitoring, incident response, maintenance, and cost optimization.
+This runbook provides guidelines and procedures for operating, monitoring, and maintaining the Argus in a production environment. It covers system monitoring, incident response, maintenance, and cost optimization.
 
 ## 1. System Monitoring Procedures
 
-Effective monitoring is crucial for ensuring the continuous and reliable operation of the Cloud SRE Agent. Leverage cloud platform monitoring services (e.g., Google Cloud Monitoring, AWS CloudWatch, Azure Monitor) for comprehensive observability.
+Effective monitoring is crucial for ensuring the continuous and reliable operation of the Argus. Leverage cloud platform monitoring services (e.g., Google Cloud Monitoring, AWS CloudWatch, Azure Monitor) for comprehensive observability.
 
 ### Key Metrics to Monitor
 
@@ -42,7 +42,7 @@ Configure alerts in your cloud platform monitoring service for critical threshol
 
 ## 2. Incident Response Playbook
 
-This section outlines procedures for responding to incidents detected or caused by the Cloud SRE Agent.
+This section outlines procedures for responding to incidents detected or caused by the Argus.
 
 ### Common Incident Scenarios
 

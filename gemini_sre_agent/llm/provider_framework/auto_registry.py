@@ -109,7 +109,7 @@ class ProviderAutoRegistry:
         """
         if search_paths is None:
             search_paths = [
-                os.path.expanduser("~/.gemini-sre-agent/providers"),
+                os.path.expanduser("~/.argus/providers"),
                 "./providers",
                 "./external_providers",
             ]

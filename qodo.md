@@ -43,7 +43,7 @@
 ## 📁 Project Structure [Partial Directory Tree]
 
 ```
-gemini-sre-agent/
+argus/
 ├── gemini_sre_agent/         # Core agent modules
 │   ├── config.py             # Configuration management with Pydantic models
 │   ├── triage_agent.py       # Gemini Flash-based log triage

@@ -10,7 +10,7 @@ debug: true
 log_level: DEBUG # DEBUG, INFO, WARNING, ERROR, CRITICAL
 
 # Application metadata
-app_name: gemini-sre-agent
+app_name: argus
 app_version: 1.0.0
 
 # Services configuration

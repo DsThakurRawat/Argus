@@ -1,6 +1,6 @@
 # Infrastructure as Code Guide
 
-This guide provides comprehensive instructions and examples for provisioning the necessary Google Cloud Platform (GCP) infrastructure for the Cloud SRE Agent using Infrastructure as Code (IaC) tools. Consistent and automated infrastructure deployment is crucial for operational readiness.
+This guide provides comprehensive instructions and examples for provisioning the necessary Google Cloud Platform (GCP) infrastructure for the Argus using Infrastructure as Code (IaC) tools. Consistent and automated infrastructure deployment is crucial for operational readiness.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ Before deploying the infrastructure, ensure you have:
 
 ## Terraform Configuration
 
-Terraform configurations are located in the `infra/terraform/` directory. These files define the GCP resources required for the Cloud SRE Agent.
+Terraform configurations are located in the `infra/terraform/` directory. These files define the GCP resources required for the Argus.
 
 ### Files Overview
 
@@ -28,8 +28,8 @@ Terraform configurations are located in the `infra/terraform/` directory. These 
 ### Resources Provisioned
 
 *   **Pub/Sub Topic (`google_pubsub_topic.logs_topic`):** A dedicated topic for receiving log exports from Cloud Logging.
-*   **Pub/Sub Subscription (`google_pubsub_subscription.logs_subscription`):** A subscription to the `logs_topic` that the Cloud SRE Agent will consume messages from.
-*   **Service Account for Agent (`google_service_account.agent_sa`):** A dedicated service account for the Cloud SRE Agent application.
+*   **Pub/Sub Subscription (`google_pubsub_subscription.logs_subscription`):** A subscription to the `logs_topic` that the Argus will consume messages from.
+*   **Service Account for Agent (`google_service_account.agent_sa`):** A dedicated service account for the Argus application.
 *   **IAM Permissions for Agent Service Account:** Grants the agent's service account necessary roles:
     *   `roles/pubsub.subscriber`
     *   `roles/aiplatform.user`
@@ -115,7 +115,7 @@ After deploying the infrastructure, you can verify the resources using the `gclo
     ```
 *   **Service Account:**
     ```bash
-    gcloud iam service-accounts describe gemini-sre-agent-sa@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com
+    gcloud iam service-accounts describe argus-sa@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com
     ```
 *   **Logging Sink:**
     ```bash
