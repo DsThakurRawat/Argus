@@ -36,7 +36,7 @@ from .agent import AgentError as AgentSpecificError
 from .base import (
     AgentError,
     ConfigurationError,
-    GeminiSREAgentError,
+    ArgusAgentError,
     LLMError,
     MonitoringError,
     ProcessingError,
@@ -57,7 +57,7 @@ from .llm import (
 
 __all__ = [
     # Base exceptions
-    "GeminiSREAgentError",
+    "ArgusAgentError",
     "ConfigurationError",
     "ValidationError",
     "ServiceError",

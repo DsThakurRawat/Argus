@@ -173,7 +173,7 @@ class BaseProviderTemplate(LLMProvider):
         return {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
-            "User-Agent": f"gemini-sre-agent/{self.provider_name}",
+            "User-Agent": f"argus/{self.provider_name}",
         }
 
     def _get_request_payload(self, request: LLMRequest) -> Dict[str, Any]:

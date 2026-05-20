@@ -41,7 +41,7 @@ class ConfigDevUtils:
 
 # Base application configuration
 app:
-  name: "gemini-sre-agent"
+  name: "argus"
   version: "0.1.0"
   environment: "{environment}"
   debug: false
@@ -187,7 +187,7 @@ monitoring:
 
             # Migrate app configuration
             new_config["app"] = {
-                "name": "gemini-sre-agent",
+                "name": "argus",
                 "version": "0.1.0",
                 "environment": "development",
                 "debug": False,

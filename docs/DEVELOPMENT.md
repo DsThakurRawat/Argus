@@ -1,6 +1,6 @@
 # Development Guide
 
-This guide provides essential information for developers working on the Cloud SRE Agent project. It covers setting up your development environment, running tests, and understanding code quality practices.
+This guide provides essential information for developers working on the Argus project. It covers setting up your development environment, running tests, and understanding code quality practices.
 
 ## Development Environment Setup
 
@@ -41,7 +41,7 @@ pytest
 
 ### Test Structure
 
-Tests are located in the `tests/` directory, mirroring the structure of the `cloud_sre_agent/` package. Each core module (e.g., `triage_agent.py`, `analysis_agent.py`) has a corresponding test file (e.g., `test_triage_agent.py`, `test_analysis_agent.py`).
+Tests are located in the `tests/` directory, mirroring the structure of the `argus_agent/` package. Each core module (e.g., `triage_agent.py`, `analysis_agent.py`) has a corresponding test file (e.g., `test_triage_agent.py`, `test_analysis_agent.py`).
 
 - **`pytest-asyncio`**: Used for testing asynchronous functions and methods.
 - **Mocking:** `unittest.mock.patch` is used extensively to mock external dependencies (like AI provider API calls or GitHub API calls) to ensure tests are isolated, fast, and do not require live credentials.
@@ -85,7 +85,7 @@ The project uses a modern, type-safe configuration system built on Pydantic and 
 #### Using the Configuration System
 
 ```python
-from cloud_sre_agent.config import ConfigManager
+from argus_agent.config import ConfigManager
 
 # Initialize configuration manager
 config_manager = ConfigManager("config/config.yaml")
@@ -105,16 +105,16 @@ The system includes powerful CLI tools for configuration management:
 
 ```bash
 # Validate configuration
-python -m cloud_sre_agent.config.cli_tools validate config/config.yaml
+python -m argus_agent.config.cli_tools validate config/config.yaml
 
 # Generate configuration template
-python -m cloud_sre_agent.config.cli_tools generate_template --output config/template.yaml
+python -m argus_agent.config.cli_tools generate_template --output config/template.yaml
 
 # Migrate from legacy format
-python -m cloud_sre_agent.config.cli_tools migrate --input old_config.yaml --output updated_config.yaml
+python -m argus_agent.config.cli_tools migrate --input old_config.yaml --output updated_config.yaml
 
 # Compare configurations
-python -m cloud_sre_agent.config.cli_tools diff config1.yaml config2.yaml
+python -m argus_agent.config.cli_tools diff config1.yaml config2.yaml
 ```
 
 For more details, see the [Configuration Guide](CONFIGURATION.md) and [Configuration Guide](CONFIGURATION.md).
@@ -151,7 +151,7 @@ The agent incorporates robust resilience patterns using the `hyx` library (for c
 
 ## Contributing
 
-We welcome contributions to the Cloud SRE Agent! To contribute:
+We welcome contributions to the Argus! To contribute:
 
 1.  Fork the repository.
 2.  Create a branch for your feature or bug fix.
@@ -207,5 +207,5 @@ The agent uses structured logging. When debugging, pay attention to the log leve
 
 ```bash
 # Example of filtering logs for a specific service in a JSON log file
-cat /var/log/cloud-sre-agent.log | grep "billing-service" | jq .
+cat /var/log/argus.log | grep "billing-service" | jq .
 ```

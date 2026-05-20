@@ -1,6 +1,6 @@
 # Mirascope Prompt Management Integration
 
-This document describes the comprehensive Mirascope integration for advanced prompt management in the Cloud SRE Agent system.
+This document describes the comprehensive Mirascope integration for advanced prompt management in the Argus system.
 
 ## Overview
 
@@ -461,6 +461,6 @@ result = await prompt_service.execute_prompt(
 
 ## Conclusion
 
-The Mirascope integration provides a comprehensive solution for prompt management in the Cloud SRE Agent system. It enables version control, testing, optimization, and team collaboration while maintaining seamless integration with existing LLM services.
+The Mirascope integration provides a comprehensive solution for prompt management in the Argus system. It enables version control, testing, optimization, and team collaboration while maintaining seamless integration with existing LLM services.
 
 For more information, see the unit tests in `tests/llm/test_mirascope_integration.py` and the implementation in `gemini_sre_agent/llm/mirascope_integration.py`.

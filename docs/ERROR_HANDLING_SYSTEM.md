@@ -1,6 +1,6 @@
 # Error Handling System
 
-This document describes the comprehensive error handling system implemented in the Cloud SRE Agent for source control operations. The system provides robust error classification, circuit breakers, retry mechanisms, graceful degradation, health checks, and metrics integration.
+This document describes the comprehensive error handling system implemented in the Argus for source control operations. The system provides robust error classification, circuit breakers, retry mechanisms, graceful degradation, health checks, and metrics integration.
 
 ## Table of Contents
 

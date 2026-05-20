@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Interactive setup dashboard for the Cloud-SRE Agent.
+Interactive setup dashboard for the Argus.
 
 This script provides a premium CLI experience for configuring LLM providers,
 models, and environment variables.
@@ -138,7 +138,7 @@ def run_setup():
     """Execute the interactive setup dashboard."""
     console.clear()
     console.print(Text(LOGO, style="bold red"))
-    console.print(f"[bold white]cloud-sre[/]  ·  [bold red]v2026.05.16[/]\n")
+    console.print(f"[bold white]argus[/]  ·  [bold red]v2026.05.16[/]\n")
 
     status = Text()
     status.append(f"User: [bold white]{getpass.getuser()}[/]\n")

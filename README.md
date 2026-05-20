@@ -1,22 +1,22 @@
-# Cloud SRE Agent: Multi-Provider Autonomous Monitoring and Remediation
+# Argus: Multi-Provider Autonomous Monitoring and Remediation
 
-[![GitHub Stars](https://img.shields.io/github/stars/avivl/cloud-sre-agent.svg?style=for-the-badge&logo=github&color=gold)](https://github.com/avivl/cloud-sre-agent/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/avivl/cloud-sre-agent?style=for-the-badge&logo=github)](https://github.com/avivl/cloud-sre-agent)
+[![GitHub Stars](https://img.shields.io/github/stars/avivl/argus.svg?style=for-the-badge&logo=github&color=gold)](https://github.com/avivl/argus/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/avivl/argus?style=for-the-badge&logo=github)](https://github.com/avivl/argus)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
-[![Multi-Provider AI](https://img.shields.io/badge/Multi--Provider%20AI-00BCD4?style=for-the-badge&logo=openai&logoColor=fff)](https://github.com/avivl/cloud-sre-agent)
-![Cloud SRE Agent](static/cloud_sre_agent.png)
+[![Multi-Provider AI](https://img.shields.io/badge/Multi--Provider%20AI-00BCD4?style=for-the-badge&logo=openai&logoColor=fff)](https://github.com/avivl/argus)
+![Argus](static/argus_agent.png)
 
-Welcome to the Cloud SRE Agent, an autonomous multi-provider system designed to enhance your cloud operations by intelligently monitoring logs and automating incident response. This project leverages the power of 100+ AI providers (OpenAI, Anthropic, Google, Cohere, Ollama, and more) to bring advanced AI capabilities directly into your Site Reliability Engineering (SRE) workflows.
+Welcome to the Argus, an autonomous multi-provider system designed to enhance your cloud operations by intelligently monitoring logs and automating incident response. This project leverages the power of 100+ AI providers (OpenAI, Anthropic, Google, Cohere, Ollama, and more) to bring advanced AI capabilities directly into your Site Reliability Engineering (SRE) workflows.
 
-At its core, the Cloud SRE Agent acts as a proactive digital assistant, continuously observing your cloud environment. When anomalies or critical events are detected in your logs, it doesn't just alert you; it initiates a structured process of analysis, generates intelligent code fixes using its unified code generation system, and proposes concrete remediation steps, culminating in automated GitHub Pull Requests. This approach aims to reduce manual toil, accelerate incident resolution, and improve the overall reliability of your cloud services.
+At its core, the Argus acts as a proactive digital assistant, continuously observing your cloud environment. When anomalies or critical events are detected in your logs, it doesn't just alert you; it initiates a structured process of analysis, generates intelligent code fixes using its unified code generation system, and proposes concrete remediation steps, culminating in automated GitHub Pull Requests. This approach aims to reduce manual toil, accelerate incident resolution, and improve the overall reliability of your cloud services.
 
-Whether you're looking to streamline your incident management, gain deeper insights from your operational data, or simply explore the practical applications of generative AI in SRE, the Cloud SRE Agent offers a robust and extensible foundation. It's built with an emphasis on configurability, resilience, and clear observability, ensuring it can adapt to diverse cloud environments and operational needs.
+Whether you're looking to streamline your incident management, gain deeper insights from your operational data, or simply explore the practical applications of generative AI in SRE, the Argus offers a robust and extensible foundation. It's built with an emphasis on configurability, resilience, and clear observability, ensuring it can adapt to diverse cloud environments and operational needs.
 
 Dive in to discover how this agent can transform your cloud log monitoring into an intelligent, automated, and resilient operation.
 
 ## System Architecture
 
-The Cloud SRE Agent employs a sophisticated multi-provider AI architecture with **dynamic prompt generation**, advanced pattern detection, a **unified code generation system**, and a **comprehensive log ingestion system** for intelligent log monitoring and automated remediation:
+The Argus employs a sophisticated multi-provider AI architecture with **dynamic prompt generation**, advanced pattern detection, a **unified code generation system**, and a **comprehensive log ingestion system** for intelligent log monitoring and automated remediation:
 
 ```mermaid
 graph TB
@@ -31,7 +31,7 @@ graph TB
         K8SL --> K8SAPI[Kubernetes API]
     end
 
-    subgraph "Cloud SRE Agent - Multi-Provider AI System"
+    subgraph "Argus - Multi-Provider AI System"
         SUB --> LM[Log Manager<br/>Orchestration Layer]
         LM --> |Multi-Source| GCP[GCP Pub/Sub Adapter]
         LM --> |Multi-Source| K8S[Kubernetes Adapter]
@@ -163,7 +163,7 @@ The system leverages different AI providers optimized for specific tasks:
 
 ### Dynamic Prompt Generation System
 
-The Cloud SRE Agent now features a **revolutionary dynamic prompt generation system** that automatically creates context-aware, specialized prompts for optimal code generation across multiple AI providers:
+The Argus now features a **revolutionary dynamic prompt generation system** that automatically creates context-aware, specialized prompts for optimal code generation across multiple AI providers:
 
 ```mermaid
 graph TB
@@ -213,7 +213,7 @@ graph TB
 
 ## Unified Code Generation System
 
-The Cloud SRE Agent features a **comprehensive unified code generation system** that provides end-to-end automated remediation capabilities. This system represents a significant advancement in AI-powered incident response, combining specialized code generators, multi-level validation, performance optimization, and adaptive learning.
+The Argus features a **comprehensive unified code generation system** that provides end-to-end automated remediation capabilities. This system represents a significant advancement in AI-powered incident response, combining specialized code generators, multi-level validation, performance optimization, and adaptive learning.
 
 ### Unified Code Generation Architecture
 
@@ -342,7 +342,7 @@ This unified system represents a significant advancement in AI-powered incident 
 
 ## Log Ingestion System
 
-The Cloud SRE Agent features a **comprehensive log ingestion system** that provides enterprise-grade log processing capabilities with full backward compatibility. This system offers pluggable adapters, comprehensive monitoring, and production-ready resilience patterns.
+The Argus features a **comprehensive log ingestion system** that provides enterprise-grade log processing capabilities with full backward compatibility. This system offers pluggable adapters, comprehensive monitoring, and production-ready resilience patterns.
 
 ### Log Ingestion Architecture
 
@@ -665,7 +665,7 @@ graph TB
 
 ## Documentation
 
-For detailed information on the Cloud SRE Agent, please refer to the following documentation sections:
+For detailed information on the Argus, please refer to the following documentation sections:
 
 - [**Quick Start Guide**](docs/QUICKSTART.md): Get the agent up and running in 15 minutes.
 - [**Architecture Overview**](docs/ARCHITECTURE.md): Understand the core components and data flow of the agent.

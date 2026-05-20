@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This guide provides instructions for deploying the Cloud SRE Agent to various cloud platforms and container orchestration systems. While Google Cloud Run is the recommended deployment target for its simplicity and scalability, the provided `Dockerfile` allows for deployment to other platforms like Google Kubernetes Engine (GKE), Amazon ECS, Azure Container Instances, or custom environments.
+This guide provides instructions for deploying the Argus to various cloud platforms and container orchestration systems. While Google Cloud Run is the recommended deployment target for its simplicity and scalability, the provided `Dockerfile` allows for deployment to other platforms like Google Kubernetes Engine (GKE), Amazon ECS, Azure Container Instances, or custom environments.
 
 ## Deployment Flow Overview
 
@@ -98,7 +98,7 @@ CMD ["python", "main.py"]
 
 ## Deployment to Cloud Platforms
 
-The Cloud SRE Agent can be deployed to various cloud platforms. Google Cloud Run is recommended for its event-driven nature (triggered by messaging services), automatic scaling (including scaling to zero when idle), and fully managed environment.
+The Argus can be deployed to various cloud platforms. Google Cloud Run is recommended for its event-driven nature (triggered by messaging services), automatic scaling (including scaling to zero when idle), and fully managed environment.
 
 The `deploy.sh` script automates the process of building the Docker image, pushing it to a container registry, and deploying it to your chosen cloud platform.
 
@@ -112,7 +112,7 @@ set -e
 
 # --- Configuration ---
 PROJECT_ID="your-project-id" # Replace with your project ID
-SERVICE_NAME="cloud-sre-agent"
+SERVICE_NAME="argus"
 REGION="us-central1" # Choose your desired region
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
 

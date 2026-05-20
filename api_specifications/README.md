@@ -16,7 +16,7 @@ Comprehensive API specification for the Gemini SRE Agent system including:
 - Alert and notification endpoints
 - System status and monitoring endpoints
 
-**Base URL:** `https://api.gemini-sre-agent.com/v1`
+**Base URL:** `https://api.argus.com/v1`
 
 ### 2. Dogfooding Service API (`dogfooding-service-openapi.yaml`)
 

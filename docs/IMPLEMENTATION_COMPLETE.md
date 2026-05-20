@@ -18,9 +18,9 @@ This document summarizes the complete implementation of all 4 recommendations fr
 - **Backward Compatibility**: 100% compatibility with existing interfaces
 
 ### Files Created:
-- `cloud_sre_agent/agents/triage_agent.py`
-- `cloud_sre_agent/agents/analysis_agent.py`
-- `cloud_sre_agent/agents/remediation_agent.py`
+- `argus_agent/agents/triage_agent.py`
+- `argus_agent/agents/analysis_agent.py`
+- `argus_agent/agents/remediation_agent.py`
 - `gemini_sre_agent/agents/legacy_adapter.py`
 
 ### Benefits:
@@ -80,7 +80,7 @@ This document summarizes the complete implementation of all 4 recommendations fr
 - **Prompt Optimization**: AI-powered prompt improvement suggestions
 
 ### Files Created:
-- `cloud_sre_agent/llm/mirascope_integration.py` - Advanced prompt management
+- `argus_agent/llm/mirascope_integration.py` - Advanced prompt management
 - `examples/mirascope_demo.py` - Comprehensive Mirascope demo
 
 ### Benefits:

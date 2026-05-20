@@ -1,10 +1,10 @@
 # Troubleshooting Guide
 
-This guide provides systematic approaches for troubleshooting the Cloud SRE Agent using the flow tracking system described in [LOGGING.md](LOGGING.md).
+This guide provides systematic approaches for troubleshooting the Argus using the flow tracking system described in [LOGGING.md](LOGGING.md).
 
 ## Overview
 
-The Cloud SRE Agent uses structured logging with flow tracking to enable complete traceability from log ingestion through remediation. Every issue can be traced using:
+The Argus uses structured logging with flow tracking to enable complete traceability from log ingestion through remediation. Every issue can be traced using:
 
 - **`flow_id`**: Tracks a single log entry through the entire pipeline
 - **`issue_id`**: Identifies a specific issue/incident across components
@@ -225,7 +225,7 @@ grep "Branch.*already exists\|Branch created successfully" /path/to/logs | tail 
 #!/bin/bash
 # health_check.sh - Daily system health verification
 
-echo "=== Cloud SRE Agent Health Check ==="
+echo "=== Argus Health Check ==="
 echo "Date: $(date)"
 echo
 
