@@ -1,6 +1,6 @@
 # Error Handling Quick Reference
 
-This is a quick reference guide for using the error handling system in the Cloud SRE Agent.
+This is a quick reference guide for using the error handling system in the Argus.
 
 ## Quick Start
 

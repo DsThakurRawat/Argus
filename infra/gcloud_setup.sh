@@ -30,7 +30,7 @@ LOG_SUBSCRIPTION_NAME="gemini-sre-logs-sub"
 # Name for the Cloud Logging sink
 LOG_SINK_NAME="gemini-sre-log-sink"
 # ID for the service account used by the Gemini SRE Agent
-AGENT_SERVICE_ACCOUNT_ID="gemini-sre-agent-sa"
+AGENT_SERVICE_ACCOUNT_ID="argus-sa"
 
 # --- Prerequisites ---
 echo "Ensuring gcloud CLI is authenticated and configured..."

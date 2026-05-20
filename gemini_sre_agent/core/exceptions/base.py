@@ -24,7 +24,7 @@ of the error handling system across all components.
 from typing import Any
 
 
-class GeminiSREAgentError(Exception):
+class ArgusAgentError(Exception):
     """
     Base exception class for all Gemini SRE Agent errors.
 
@@ -84,7 +84,7 @@ class GeminiSREAgentError(Exception):
         }
 
 
-class ConfigurationError(GeminiSREAgentError):
+class ConfigurationError(ArgusAgentError):
     """
     Exception raised for configuration-related errors.
 
@@ -95,7 +95,7 @@ class ConfigurationError(GeminiSREAgentError):
     pass
 
 
-class ValidationError(GeminiSREAgentError):
+class ValidationError(ArgusAgentError):
     """
     Exception raised for data validation errors.
 
@@ -106,7 +106,7 @@ class ValidationError(GeminiSREAgentError):
     pass
 
 
-class ServiceError(GeminiSREAgentError):
+class ServiceError(ArgusAgentError):
     """
     Exception raised for service-related errors.
 
@@ -117,7 +117,7 @@ class ServiceError(GeminiSREAgentError):
     pass
 
 
-class ProcessingError(GeminiSREAgentError):
+class ProcessingError(ArgusAgentError):
     """
     Exception raised for data processing errors.
 
@@ -128,7 +128,7 @@ class ProcessingError(GeminiSREAgentError):
     pass
 
 
-class AgentError(GeminiSREAgentError):
+class AgentError(ArgusAgentError):
     """
     Exception raised for agent-related errors.
 
@@ -139,7 +139,7 @@ class AgentError(GeminiSREAgentError):
     pass
 
 
-class LLMError(GeminiSREAgentError):
+class LLMError(ArgusAgentError):
     """
     Exception raised for LLM-related errors.
 
@@ -150,7 +150,7 @@ class LLMError(GeminiSREAgentError):
     pass
 
 
-class MonitoringError(GeminiSREAgentError):
+class MonitoringError(ArgusAgentError):
     """
     Exception raised for monitoring-related errors.
 
@@ -161,7 +161,7 @@ class MonitoringError(GeminiSREAgentError):
     pass
 
 
-class ResilienceError(GeminiSREAgentError):
+class ResilienceError(ArgusAgentError):
     """
     Exception raised for resilience-related errors.
 

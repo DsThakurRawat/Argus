@@ -63,7 +63,7 @@ class BaseConfig(BaseSettings):
     log_level: str = "INFO"
 
     # Application settings
-    app_name: str = "gemini-sre-agent"
+    app_name: str = "argus"
     app_version: str = "0.1.0"
 
     @field_validator("schema_version")

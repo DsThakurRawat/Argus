@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide helps you configure the Cloud SRE Agent with multi-provider LLM support while maintaining full backward compatibility.
+This guide helps you configure the Argus with multi-provider LLM support while maintaining full backward compatibility.
 
 ## Configuration Strategies
 
@@ -21,7 +21,7 @@ analysis_agent = AnalysisAgent(project_id, location, model)
 remediation_agent = RemediationAgent(github_token, repo_name)
 
 # After (Multi-Provider with Legacy Adapters)
-from cloud_sre_agent.agents.legacy_adapter import (
+from argus_agent.agents.legacy_adapter import (
     create_triage_agent,
     create_analysis_agent,
     create_remediation_agent,
@@ -46,7 +46,7 @@ Configure one agent at a time to multi-provider configurations:
 
 ```python
 # Step 1: Configure Triage Agent
-from cloud_sre_agent.agents.triage_agent import TriageAgent
+from argus_agent.agents.triage_agent import TriageAgent
 
 triage_agent = TriageAgent(
     llm_config=llm_config,
@@ -83,7 +83,7 @@ remediation_agent = RemediationAgent(
 Use the complete multi-provider system with all features:
 
 ```python
-from cloud_sre_agent.agents.specialized import (
+from argus_agent.agents.specialized import (
     TriageAgent,
     AnalysisAgent,
     RemediationAgentV2,
@@ -220,7 +220,7 @@ export OPENAI_API_KEY=your_key
 
 **Solution**: Use legacy adapters for zero-code compatibility:
 ```python
-from cloud_sre_agent.agents.legacy_adapter import create_analysis_agent
+from argus_agent.agents.legacy_adapter import create_analysis_agent
 ```
 
 ## Performance Optimization

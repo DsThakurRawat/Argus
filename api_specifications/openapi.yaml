@@ -14,9 +14,9 @@ info:
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: https://api.gemini-sre-agent.com/v1
+  - url: https://api.argus.com/v1
     description: Production server
-  - url: https://staging-api.gemini-sre-agent.com/v1
+  - url: https://staging-api.argus.com/v1
     description: Staging server
   - url: http://localhost:8000/v1
     description: Development server

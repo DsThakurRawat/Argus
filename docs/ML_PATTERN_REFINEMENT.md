@@ -1,6 +1,6 @@
-# Cloud SRE Agent ML Pattern Refinement System
+# Argus ML Pattern Refinement System
 
-The Cloud SRE Agent ML Pattern Refinement System is an advanced AI enhancement layer that transforms the traditional 4-layer pattern detection system into an intelligent, context-aware incident analysis pipeline. This system leverages multiple AI providers to provide sophisticated pattern classification, confidence scoring, and automated code repository integration.
+The Argus ML Pattern Refinement System is an advanced AI enhancement layer that transforms the traditional 4-layer pattern detection system into an intelligent, context-aware incident analysis pipeline. This system leverages multiple AI providers to provide sophisticated pattern classification, confidence scoring, and automated code repository integration.
 
 ## Overview
 
@@ -269,7 +269,7 @@ ml_pattern_refinement:
 ### Basic Pattern Detection
 
 ```python
-from cloud_sre_agent.ml.ai_pattern_detector import AIPatternDetector
+from argus_agent.ml.ai_pattern_detector import AIPatternDetector
 from gemini_sre_agent.ml.schemas import PatternContext
 
 # Initialize detector

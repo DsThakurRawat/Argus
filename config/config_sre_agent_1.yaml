@@ -24,7 +24,7 @@ llm:
 remediation:
   patch_directory: "/tmp/real_patches"
   github_token: null  # Will use local patches
-  repo_name: "gemini-sre-agent"
+  repo_name: "argus"
 
 analysis:
   patterns:

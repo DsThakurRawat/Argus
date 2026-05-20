@@ -1,6 +1,6 @@
 # Performance Tuning Guide
 
-This guide provides recommendations and strategies for optimizing the performance and cost-efficiency of the Cloud SRE Agent. Effective performance tuning ensures the agent operates efficiently, especially under high log volumes, and minimizes operational costs.
+This guide provides recommendations and strategies for optimizing the performance and cost-efficiency of the Argus. Effective performance tuning ensures the agent operates efficiently, especially under high log volumes, and minimizes operational costs.
 
 ## 1. Model Selection Optimization
 
