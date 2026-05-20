@@ -1,6 +1,6 @@
 # Multi-Environment Guide
 
-This guide outlines strategies for managing the Cloud SRE Agent across different environments, such as development, staging, and production. Proper environment management ensures consistency, reduces risks, and streamlines promotion workflows.
+This guide outlines strategies for managing the Argus across different environments, such as development, staging, and production. Proper environment management ensures consistency, reduces risks, and streamlines promotion workflows.
 
 ## 1. Environment Definitions
 
@@ -49,7 +49,7 @@ gemini_cloud_log_monitor:
   logging:
     log_level: "INFO"
     json_format: true
-    log_file: "/var/log/gemini-sre-agent.log"
+    log_file: "/var/log/argus.log"
 
   services:
     - service_name: "prod-billing-service"
@@ -64,7 +64,7 @@ gemini_cloud_log_monitor:
 For Cloud Run deployments, you can use environment variables to override specific configuration values without modifying the `config.yaml` file within the container image. This is particularly useful for sensitive data or environment-specific settings.
 
 ```bash
-gcloud run deploy gemini-sre-agent \
+gcloud run deploy argus \
   --set-env-vars="LOG_LEVEL=DEBUG,GITHUB_TOKEN=${GITHUB_TOKEN}" \
   # ... other configurations
 ```
@@ -92,7 +92,7 @@ Your CI/CD pipeline (e.g., GitHub Actions) should automate the promotion process
 
 ## 4. Resource Naming Conventions
 
-Adopt clear and consistent naming conventions for your GCP resources across environments to easily distinguish them (e.g., `prod-gemini-sre-agent-topic`, `dev-gemini-sre-agent-sub`).
+Adopt clear and consistent naming conventions for your GCP resources across environments to easily distinguish them (e.g., `prod-argus-topic`, `dev-argus-sub`).
 
 ## 5. Monitoring and Alerting per Environment
 

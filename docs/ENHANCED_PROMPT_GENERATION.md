@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Cloud SRE Agent's **Dynamic Prompt Generation System** represents a breakthrough in AI-powered code generation. This system automatically creates context-aware, specialized prompts that dramatically improve the quality and accuracy of generated code fixes.
+The Argus's **Dynamic Prompt Generation System** represents a breakthrough in AI-powered code generation. This system automatically creates context-aware, specialized prompts that dramatically improve the quality and accuracy of generated code fixes.
 
 ## Architecture Overview
 
@@ -340,4 +340,4 @@ The Dynamic Prompt Generation System represents a significant advancement in AI-
 - **Cost Efficiency**: Intelligent caching and optimization
 - **Adaptive Intelligence**: Automatic strategy selection based on context
 
-This system transforms the Cloud SRE Agent from a simple log analyzer into an intelligent, context-aware code generation engine that can handle the full spectrum of SRE challenges with superior results.
+This system transforms the Argus from a simple log analyzer into an intelligent, context-aware code generation engine that can handle the full spectrum of SRE challenges with superior results.

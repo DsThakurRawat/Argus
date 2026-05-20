@@ -1,6 +1,6 @@
 # Logging and Flow Tracking System
 
-The Cloud SRE Agent implements comprehensive flow tracking with structured logging to enable complete end-to-end traceability from log ingestion through remediation.
+The Argus implements comprehensive flow tracking with structured logging to enable complete end-to-end traceability from log ingestion through remediation.
 
 ## Overview
 

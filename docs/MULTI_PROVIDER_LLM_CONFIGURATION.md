@@ -1,6 +1,6 @@
 # Multi-Provider LLM Configuration Guide
 
-This guide covers the comprehensive multi-provider LLM configuration system that enables the Cloud SRE Agent to work with multiple LLM providers simultaneously, including Google Gemini, OpenAI, Anthropic, xAI (Grok), Amazon Bedrock, and Ollama.
+This guide covers the comprehensive multi-provider LLM configuration system that enables the Argus to work with multiple LLM providers simultaneously, including Google Gemini, OpenAI, Anthropic, xAI (Grok), Amazon Bedrock, and Ollama.
 
 ## Overview
 
@@ -767,4 +767,4 @@ logging:
 export LLM_LOG_LEVEL="DEBUG"
 ```
 
-This comprehensive configuration system provides the foundation for robust, cost-effective, and reliable multi-provider LLM operations in the Cloud SRE Agent.
+This comprehensive configuration system provides the foundation for robust, cost-effective, and reliable multi-provider LLM operations in the Argus.

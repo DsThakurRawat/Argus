@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Cloud SRE Agent features a comprehensive log ingestion system that provides monitoring, reliability, and extensibility for processing logs from multiple cloud platforms.
+The Argus features a comprehensive log ingestion system that provides monitoring, reliability, and extensibility for processing logs from multiple cloud platforms.
 
 ## Key Features
 

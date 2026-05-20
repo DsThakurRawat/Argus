@@ -1,6 +1,6 @@
 # Configuration Guide
 
-The Cloud SRE Agent's behavior is highly configurable through the configuration management system. This guide details the type-safe configuration structure and options available to tailor the agent to your specific monitoring and remediation needs across multiple cloud platforms and AI providers.
+The Argus's behavior is highly configurable through the configuration management system. This guide details the type-safe configuration structure and options available to tailor the agent to your specific monitoring and remediation needs across multiple cloud platforms and AI providers.
 
 ## Configuration System
 
@@ -27,7 +27,7 @@ graph TD
         BASE --> |environment| ENV[development/production]
         BASE --> |debug| DEBUG[true/false]
         BASE --> |log_level| LL[INFO/DEBUG/WARN/ERROR]
-        BASE --> |app_name| AN[Cloud SRE Agent]
+        BASE --> |app_name| AN[Argus]
         BASE --> |app_version| AV[0.1.0]
 
         ROOT --> SERVICES[services: List]
@@ -86,7 +86,7 @@ schema_version: "1.0.0"
 environment: "development"
 debug: false
 log_level: "INFO"
-app_name: "Cloud SRE Agent"
+app_name: "Argus"
 app_version: "0.1.0"
 
 services:
@@ -324,40 +324,40 @@ The configuration system includes powerful CLI tools for management:
 
 ```bash
 # Validate configuration file
-python -m cloud_sre_agent.config.cli_tools validate config/config.yaml
+python -m argus_agent.config.cli_tools validate config/config.yaml
 
 # Validate with detailed output
-python -m cloud_sre_agent.config.cli_tools validate config/config.yaml --verbose
+python -m argus_agent.config.cli_tools validate config/config.yaml --verbose
 ```
 
 ### Template Generation
 
 ```bash
 # Generate configuration template
-python -m cloud_sre_agent.config.cli_tools generate_template --output config/config_template.yaml
+python -m argus_agent.config.cli_tools generate_template --output config/config_template.yaml
 
 # Generate with environment-specific defaults
-python -m cloud_sre_agent.config.cli_tools generate_template --environment production --output config/production.yaml
+python -m argus_agent.config.cli_tools generate_template --environment production --output config/production.yaml
 ```
 
 ### Configuration Management
 
 ```bash
 # Convert from old configuration format
-python -m cloud_sre_agent.config.cli_tools migrate --input config/old_config.yaml --output config/updated_config.yaml
+python -m argus_agent.config.cli_tools migrate --input config/old_config.yaml --output config/updated_config.yaml
 
 # Convert with validation
-python -m cloud_sre_agent.config.cli_tools migrate --input config/old_config.yaml --output config/updated_config.yaml --validate
+python -m argus_agent.config.cli_tools migrate --input config/old_config.yaml --output config/updated_config.yaml --validate
 ```
 
 ### Configuration Diffing
 
 ```bash
 # Compare two configuration files
-python -m cloud_sre_agent.config.cli_tools diff config/config.yaml config/config_backup.yaml
+python -m argus_agent.config.cli_tools diff config/config.yaml config/config_backup.yaml
 
 # Compare with environment variables
-python -m cloud_sre_agent.config.cli_tools diff config/config.yaml --env
+python -m argus_agent.config.cli_tools diff config/config.yaml --env
 ```
 
 ## Example Scenarios
@@ -484,7 +484,7 @@ monitoring:
 logging:
   level: "INFO"
   format: "json"
-  file_path: "/var/log/cloud-sre-agent.log"
+  file_path: "/var/log/argus.log"
   max_file_size_mb: 100
   backup_count: 10
 ```
@@ -530,4 +530,4 @@ If you're configuring from the legacy configuration system, refer to the [Config
 5. **Schema Versioning**: Always specify the `schema_version` for compatibility tracking.
 6. **Hot Reloading**: Use the hot reloading feature for development, but restart services in production for configuration changes.
 
-By leveraging these configuration capabilities, the Cloud SRE Agent provides a robust, type-safe, and flexible solution for managing diverse cloud environments with comprehensive validation and monitoring.
+By leveraging these configuration capabilities, the Argus provides a robust, type-safe, and flexible solution for managing diverse cloud environments with comprehensive validation and monitoring.

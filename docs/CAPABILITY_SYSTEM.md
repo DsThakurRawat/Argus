@@ -375,4 +375,4 @@ When contributing to the capability system:
 
 ## License
 
-This capability discovery system is part of the Cloud SRE Agent project and follows the same licensing terms.
+This capability discovery system is part of the Argus project and follows the same licensing terms.

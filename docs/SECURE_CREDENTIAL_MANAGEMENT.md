@@ -341,7 +341,7 @@ curl -X POST "https://api.openai.com/v1/api_keys" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "gemini-sre-agent-production",
+    "name": "argus-production",
     "permissions": {
       "chat": true,
       "completions": true,
@@ -551,7 +551,7 @@ echo "Rotating OpenAI API key..."
 NEW_OPENAI_KEY=$(curl -X POST "https://api.openai.com/v1/api_keys" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"name": "gemini-sre-agent-rotated-'$(date +%Y%m%d)'"}' \
+  -d '{"name": "argus-rotated-'$(date +%Y%m%d)'"}' \
   | jq -r '.id')
 
 # Update environment variable
