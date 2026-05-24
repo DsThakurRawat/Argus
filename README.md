@@ -1,7 +1,5 @@
 # Argus: Multi-Provider Autonomous Monitoring and Remediation
 
-[![GitHub Stars](https://img.shields.io/github/stars/avivl/argus.svg?style=for-the-badge&logo=github&color=gold)](https://github.com/avivl/argus/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/avivl/argus?style=for-the-badge&logo=github)](https://github.com/avivl/argus)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Multi-Provider AI](https://img.shields.io/badge/Multi--Provider%20AI-00BCD4?style=for-the-badge&logo=openai&logoColor=fff)](https://github.com/avivl/argus)
 ![Argus](static/argus_agent.png)
@@ -12,7 +10,7 @@ At its core, Argus continuously observes your cloud environment. When anomalies 
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 Argus employs a modular, event-driven architecture designed for high availability, cost efficiency, and multi-provider redundancy.
 
@@ -23,11 +21,11 @@ Argus employs a modular, event-driven architecture designed for high availabilit
 * **Automated Remediation:** Code packaging and pull request assembly with human-in-the-loop validation.
 
 For a full breakdown of the architecture, data flows, and provider strategies:
-👉 See the [**System Architecture Overview**](docs/ARCHITECTURE.md).
+See the [**System Architecture Overview**](docs/ARCHITECTURE.md).
 
 ---
 
-## 🛠️ Key Capabilities
+## Key Capabilities
 
 * **Enterprise Log Ingestion:** Ingest from GCP Pub/Sub, Kubernetes, AWS CloudWatch, or local files with built-in backpressure, retries, and circuit breakers.
 * **4-Layer Pattern Detection:** Detects cascade failures, resource exhaustion, and service degradations via sliding window thresholds and confidence scoring.
@@ -38,7 +36,7 @@ For a full breakdown of the architecture, data flows, and provider strategies:
 
 ---
 
-## 📚 Documentation Directory
+## Documentation Directory
 
 Explore the sub-systems and configuration guides in detail:
 
@@ -62,7 +60,7 @@ Explore the sub-systems and configuration guides in detail:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 Ensure you have Python 3.12+ and `uv` installed.
 
@@ -91,12 +89,12 @@ Ensure you have Python 3.12+ and `uv` installed.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please refer to the [Development Guide](docs/DEVELOPMENT.md) to understand local testing patterns, syntax checking rules, and CI setup.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
