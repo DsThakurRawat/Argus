@@ -2,6 +2,153 @@
 
 The Argus is designed with a modular and extensible architecture, enabling autonomous log monitoring, analysis, and remediation across multiple cloud environments. The system operates on a continuous, event-driven loop, leveraging 100+ AI providers (OpenAI, Anthropic, Google, Cohere, Ollama, and more) for intelligent decision-making and the `hyx` library for robust resilience.
 
+## System Architecture
+
+The Argus employs a sophisticated multi-provider AI architecture with **dynamic prompt generation**, advanced pattern detection, a **unified code generation system**, and a **comprehensive log ingestion system** for intelligent log monitoring and automated remediation:
+
+```mermaid
+graph TB
+    subgraph "Multi-Cloud Platform"
+        GCP[Google Cloud Platform] --> GCPL[Cloud Logging]
+        AWS[Amazon Web Services] --> AWSL[CloudWatch Logs]
+        AZURE[Microsoft Azure] --> AZUREL[Azure Monitor]
+        K8S[Kubernetes] --> K8SL[Container Logs]
+        GCPL --> PS[Pub/Sub Topics]
+        AWSL --> KDS[Kinesis Data Streams]
+        AZUREL --> EH[Event Hubs]
+        K8SL --> K8SAPI[Kubernetes API]
+    end
+
+    subgraph "Argus - Multi-Provider AI System"
+        SUB --> LM[Log Manager<br/>Orchestration Layer]
+        LM --> |Multi-Source| GCP[GCP Pub/Sub Adapter]
+        LM --> |Multi-Source| K8S[Kubernetes Adapter]
+        LM --> |Multi-Source| FS[File System Adapter]
+        LM --> |Multi-Source| AWS[AWS CloudWatch Adapter]
+
+        GCP --> |LogEntry| LP[Log Processor]
+        K8S --> |LogEntry| LP
+        FS --> |LogEntry| LP
+        AWS --> |LogEntry| LP
+
+        LP --> |Structured Logs| MLPR[ML Pattern Refinement<br/>AI Enhancement Layer]
+        MLPR --> |Analysis| PD[Pattern Detection System<br/>Multi-Layer Analysis]
+        PD --> |Pattern Match| TA[Triage Agent<br/>Multi-Provider AI]
+        LP --> |Structured Logs| TA
+        TA --> |TriagePacket| AA[Analysis Agent<br/>Dynamic Prompt Generation]
+        AA --> |ValidationRequest| QA[Quantitative Analyzer<br/>Code Execution]
+        QA --> |EmpiricalData| AA
+        AA --> |RemediationPlan| UECG[Unified<br/>Code Generation System]
+        UECG --> |Generated Code| RA[Remediation Agent]
+    end
+
+    subgraph "Legacy System (Backward Compatible)"
+        SUB --> LS[Legacy Log Subscriber]
+        LS --> |Raw Logs| TA
+    end
+
+    subgraph "Comprehensive Monitoring System"
+        MM[Monitoring Manager] --> MC[Metrics Collector]
+        MM --> HC[Health Checker]
+        MM --> PM[Performance Monitor]
+        MM --> AM[Alert Manager]
+
+        LM --> |Health Status| MM
+        LP --> |Processing Metrics| MM
+        TA --> |Analysis Metrics| MM
+        AA --> |Generation Metrics| MM
+    end
+
+    subgraph "ML Pattern Refinement Layer"
+        MLPR --> LQV[Log Quality<br/>Validator]
+        MLPR --> LSan[Log Sanitizer<br/>PII Removal]
+        MLPR --> GEPD[AI Pattern<br/>Detector]
+        MLPR --> GRC[Response Cache<br/>Cost Optimization]
+    end
+
+    subgraph "Pattern Detection Layers"
+        PD --> TW[Time Window<br/>Management]
+        PD --> TE[Smart Threshold<br/>Evaluation]
+        PD --> PC[Pattern<br/>Classification]
+        PD --> CS[Confidence<br/>Scoring]
+    end
+
+    subgraph "Unified Code Generation System"
+        UECG --> UWO[Unified Workflow<br/>Orchestrator]
+        UWO --> WCM[Workflow Context<br/>Manager]
+        UWO --> WAE[Workflow Analysis<br/>Engine]
+        UWO --> WCG[Workflow Code<br/>Generator]
+        UWO --> WVE[Workflow Validation<br/>Engine]
+        UWO --> WMC[Workflow Metrics<br/>Collector]
+
+        WCG --> CGF[Code Generator<br/>Factory]
+        CGF --> APIG[API Code<br/>Generator]
+        CGF --> DBG[Database Code<br/>Generator]
+        CGF --> SECG[Security Code<br/>Generator]
+
+        WVE --> CVP[Code Validation<br/>Pipeline]
+        CVP --> SYN[Syntax<br/>Validation]
+        CVP --> PAT[Pattern<br/>Validation]
+        CVP --> SEC[Security<br/>Review]
+        CVP --> PERF[Performance<br/>Assessment]
+        CVP --> BP[Best Practices<br/>Check]
+    end
+
+    subgraph "External Services"
+        RA --> |Create PR| GH[GitHub Repository]
+        RA --> |Notifications| SLACK[Slack/PagerDuty]
+        MLPR --> |Code Context| GH
+        UECG --> |Repository Analysis| GH
+    end
+
+    subgraph "Multi-Provider AI System"
+        OAI[OpenAI<br/>GPT-4, GPT-3.5] --> TA
+        ANTH[Anthropic<br/>Claude-3] --> AA
+        GOOG[Google<br/>AI Models] --> QA
+        COH[Cohere<br/>Command] --> UECG
+        OLL[Ollama<br/>Local Models] --> RA
+        LITE[LiteLLM<br/>100+ Providers] --> TA
+    end
+
+    subgraph "Configuration & Resilience"
+        CONFIG[config.yaml<br/>Multi-Service Setup] --> LS
+        RESILIENCE[Hyx Resilience<br/>Circuit Breakers] --> TA
+        RESILIENCE --> AA
+        RESILIENCE --> RA
+        RESILIENCE --> MLPR
+        RESILIENCE --> UECG
+    end
+
+    classDef aiComponent fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef gcpService fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef config fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef mlComponent fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef codeGenComponent fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px
+    classDef ingestionComponent fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef monitoringComponent fill:#f1f8e9,stroke:#689f38,stroke-width:2px
+    classDef legacyComponent fill:#fafafa,stroke:#616161,stroke-width:2px
+
+    class TA,AA,QA aiComponent
+    class CL,PS,SUB gcpService
+    class GH,SLACK external
+    class CONFIG,RESILIENCE config
+    class MLPR,LQV,LSan,GEPD,GRC mlComponent
+    class UECG,UWO,WCM,WAE,WCG,WVE,WMC,CGF,APIG,DBG,SECG,CVP,SYN,PAT,SEC,PERF,BP codeGenComponent
+    class LM,GCP,K8S,FS,AWS,LP ingestionComponent
+    class MM,MC,HC,PM,AM monitoringComponent
+    class LS legacyComponent
+```
+
+### Multi-Provider AI Strategy
+
+The system leverages different AI providers optimized for specific tasks:
+
+- **Fast Models** (GPT-4o-mini, Claude-3 Haiku, Gemini Flash): High-speed log triage and classification (cost-optimized)
+- **Balanced Models** (GPT-4, Claude-3 Sonnet, Gemini Pro): Deep analysis and code generation (accuracy-optimized)
+- **Specialized Models** (Code-specific models, local Ollama): Empirical validation and quantitative analysis
+- **100+ Providers**: Via LiteLLM integration for maximum flexibility and cost optimization
+
 ## Core Components
 
 The agent's functionality is distributed across several key components, each with a specific role in the incident response workflow:
