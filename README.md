@@ -16,7 +16,7 @@ At its core, Argus continuously observes your cloud environment. When anomalies 
 
 Argus employs a modular, event-driven architecture designed for high availability, cost efficiency, and multi-provider redundancy.
 
-* **Log Ingestion:** Pluggable adapters that standardise and ingest raw log streams.
+* **Log Ingestion:** Pluggable adapters that standardize and ingest raw log streams.
 * **Triage & Pattern Detection:** Quick triage filtering and multi-layer analysis of log anomalies.
 * **Deep Analysis & Verification:** Context-aware root cause analysis backed by empirical, code-executing verification.
 * **Unified Code Generation:** Domain-specific code generators targeting API, database, and security fixes.
@@ -31,7 +31,7 @@ For a full breakdown of the architecture, data flows, and provider strategies:
 
 * **Enterprise Log Ingestion:** Ingest from GCP Pub/Sub, Kubernetes, AWS CloudWatch, or local files with built-in backpressure, retries, and circuit breakers.
 * **4-Layer Pattern Detection:** Detects cascade failures, resource exhaustion, and service degradations via sliding window thresholds and confidence scoring.
-* **ML Pattern Refinement:** Optimises log analysis via pre-processing validation, sensitive data sanitisation (PII/credential scrubbing), and similarity caching.
+* **ML Pattern Refinement:** Optimizes log analysis via pre-processing validation, sensitive data sanitization (PII/credential scrubbing), and similarity caching.
 * **Dynamic Prompt Generation:** Revolutionary "AI teaching AI" meta-prompting and domain-specific prompt templates.
 * **Unified Code Generation:** Features automated syntax validation, security checks, and best practices scanning.
 * **Multi-Service & Multi-Repo Support:** Simultaneously monitor multiple cloud systems and route pull requests to different target repositories.
@@ -53,7 +53,7 @@ Explore the sub-systems and configuration guides in detail:
 ### Setup & Operations
 * [**Quick Start Guide**](docs/QUICKSTART.md) - Get the agent up and running in 15 minutes.
 * [**Setup and Installation**](docs/SETUP_INSTALLATION.md) - Comprehensive setup and environment preparation details.
-* [**Configuration Guide**](docs/CONFIGURATION.md) - Customising agent behavior using type-safe Pydantic configuration.
+* [**Configuration Guide**](docs/CONFIGURATION.md) - Customizing agent behavior using type-safe Pydantic configuration.
 * [**GCP Infrastructure Setup**](docs/GCP_SETUP.md) - Preparing Google Cloud components (Pub/Sub, IAM, Logging).
 * [**Deployment Guide**](docs/DEPLOYMENT.md) - Guidelines for running on Cloud Run, Kubernetes, or other runtimes.
 * [**Operations Runbook**](docs/OPERATIONS.md) - Monitoring, error recovery, and day-2 operations guidelines.
