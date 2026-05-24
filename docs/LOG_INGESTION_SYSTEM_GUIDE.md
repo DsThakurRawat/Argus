@@ -1,6 +1,6 @@
 # Log Ingestion System Guide
 
-The Argus features a **comprehensive log ingestion system** that provides enterprise-grade log processing capabilities with full backward compatibility. This system offers pluggable adapters, comprehensive monitoring, and production-ready resilience patterns.
+Argus features a **comprehensive log ingestion system** that provides enterprise-grade log processing capabilities with full backward compatibility. This system offers pluggable adapters, comprehensive monitoring, and production-ready resilience patterns.
 
 ## Log Ingestion Architecture
 
