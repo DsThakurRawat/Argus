@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Multi-Provider AI](https://img.shields.io/badge/Multi--Provider%20AI-00BCD4?style=for-the-badge&logo=openai&logoColor=fff)](https://github.com/avivl/argus)
-![Argus](static/gemini_agent.png)
+
 
 Welcome to Argus, an autonomous multi-provider SRE assistant designed to enhance cloud operations by intelligently monitoring logs and automating incident response. This project leverages the power of 100+ AI providers (OpenAI, Anthropic, Google, Cohere, Ollama, and more) directly in SRE workflows.
 
