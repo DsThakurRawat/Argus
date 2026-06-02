@@ -48,21 +48,12 @@ def init():
 @app.command()
 def run(
     log_file: str = typer.Option(None, "--log-file", "-l", help="Path to the log file to monitor"),
-    provider: str = typer.Option(None, "--provider", "-p", help="LLM Provider to use (gemini, openai, etc)"),
-    framework: str = typer.Option(None, "--framework", "-f", help="SRE Framework profile (opensre, atomic-sre, etc)")
+    provider: str = typer.Option(None, "--provider", "-p", help="LLM Provider to use (gemini, openai, etc)")
 ):
     """Start the Argus SRE daemon."""
     print_banner()
 
     import questionary
-    
-    if not framework:
-        framework = questionary.select(
-            "Which SRE framework profile do you want to run?",
-            choices=["opensre", "agentic-sre", "atomic-sre", "argus-native"]
-        ).ask()
-        if not framework:
-            raise typer.Exit()
             
     if not provider:
         provider = questionary.select(
@@ -80,8 +71,6 @@ def run(
             raise typer.Exit()
 
     console.print(f"\n[bold cyan]Starting Argus Daemon...[/bold cyan]")
-    if framework:
-        console.print(f"Using Framework Profile: [bold yellow]{framework}[/bold yellow]")
     if provider:
         console.print(f"Using LLM Provider: [bold yellow]{provider}[/bold yellow]")
     if log_file:
