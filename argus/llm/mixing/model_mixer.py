@@ -1,5 +1,3 @@
-#
-
 # argus/llm/mixing/model_mixer.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/pattern_detector/threshold_evaluator.py
 
 """

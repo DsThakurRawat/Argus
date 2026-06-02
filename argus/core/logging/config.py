@@ -1,5 +1,3 @@
-#
-
 """Configuration management for the logging system."""
 
 from dataclasses import dataclass, field

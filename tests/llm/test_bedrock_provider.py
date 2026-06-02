@@ -1,5 +1,3 @@
-#
-
 # tests/llm/test_bedrock_provider.py
 
 """

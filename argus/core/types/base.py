@@ -1,5 +1,3 @@
-#
-
 # argus/core/types/base.py
 
 """

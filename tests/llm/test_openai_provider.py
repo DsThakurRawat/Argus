@@ -1,5 +1,3 @@
-#
-
 # tests/llm/test_openai_provider.py
 
 """

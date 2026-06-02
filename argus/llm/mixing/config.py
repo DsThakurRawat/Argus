@@ -1,5 +1,3 @@
-#
-
 # argus/llm/mixing/config.py
 
 from dataclasses import dataclass

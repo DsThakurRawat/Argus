@@ -1,5 +1,3 @@
-#
-
 # argus/security/data_filter.py
 
 """Data filtering and privacy controls for sensitive information."""

@@ -1,5 +1,3 @@
-#
-
 # argus/pattern_detector/confidence_calculators.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/llm/providers/ollama_provider.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/core/quality/__init__.py
 """
 Code quality gates and validation system.

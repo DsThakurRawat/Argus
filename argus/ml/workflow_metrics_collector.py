@@ -1,5 +1,3 @@
-#
-
 # argus/ml/workflow_metrics_collector.py
 
 """

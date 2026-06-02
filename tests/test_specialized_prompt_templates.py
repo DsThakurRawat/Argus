@@ -1,5 +1,3 @@
-#
-
 # tests/test_specialized_prompt_templates.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/llm/cost_management_integration.py
 
 """

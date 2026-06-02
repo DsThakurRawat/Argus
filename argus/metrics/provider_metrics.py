@@ -1,5 +1,3 @@
-#
-
 # argus/metrics/provider_metrics.py
 
 from collections import defaultdict

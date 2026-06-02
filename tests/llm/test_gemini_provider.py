@@ -1,5 +1,3 @@
-#
-
 # tests/llm/test_gemini_provider.py
 
 """

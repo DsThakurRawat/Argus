@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_repository_manager.py
 
 from unittest.mock import AsyncMock, MagicMock

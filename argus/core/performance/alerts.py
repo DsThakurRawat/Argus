@@ -1,5 +1,3 @@
-#
-
 """Performance alerting and threshold management system."""
 
 import asyncio

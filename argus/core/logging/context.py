@@ -1,5 +1,3 @@
-#
-
 # argus/core/logging/context.py
 """
 Logging context management.

@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/models.py
 
 """Data models for source control operations."""

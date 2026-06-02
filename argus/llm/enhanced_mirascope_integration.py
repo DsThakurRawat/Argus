@@ -1,5 +1,3 @@
-#
-
 # argus/llm/enhanced_mirascope_integration.py
 
 """

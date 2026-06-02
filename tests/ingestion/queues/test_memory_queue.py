@@ -1,5 +1,3 @@
-#
-
 # tests/ingestion/queues/test_memory_queue.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 """Tests for DataFilter."""
 
 from unittest.mock import patch

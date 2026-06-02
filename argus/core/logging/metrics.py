@@ -1,5 +1,3 @@
-#
-
 # argus/core/logging/metrics.py
 """
 Logging metrics and monitoring.

@@ -1,5 +1,3 @@
-#
-
 # argus/agents/validation_models.py
 
 """

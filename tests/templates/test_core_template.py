@@ -1,5 +1,3 @@
-#
-
 """Core module tests."""
 
 

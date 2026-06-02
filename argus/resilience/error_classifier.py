@@ -1,5 +1,3 @@
-#
-
 # argus/resilience/error_classifier.py
 
 """Error classification system for different error types."""

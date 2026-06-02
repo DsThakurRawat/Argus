@@ -1,5 +1,3 @@
-#
-
 # argus/agents/optimized_base.py
 
 """

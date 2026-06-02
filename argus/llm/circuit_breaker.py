@@ -1,5 +1,3 @@
-#
-
 # argus/llm/circuit_breaker.py
 
 """

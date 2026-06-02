@@ -1,5 +1,3 @@
-#
-
 # argus/agents/response_models.py
 
 """

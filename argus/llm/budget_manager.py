@@ -1,5 +1,3 @@
-#
-
 # argus/llm/budget_manager.py
 
 """

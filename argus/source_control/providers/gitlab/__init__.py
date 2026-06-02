@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/gitlab/__init__.py
 
 """GitLab provider implementation for source control operations."""

@@ -1,5 +1,3 @@
-#
-
 """Performance dashboards and visualization system."""
 
 import asyncio

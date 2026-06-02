@@ -1,5 +1,3 @@
-#
-
 """
 Tests for pattern classification logic.
 """

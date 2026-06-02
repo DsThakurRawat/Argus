@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/provider_factory.py
 
 import importlib

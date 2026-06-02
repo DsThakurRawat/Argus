@@ -1,5 +1,3 @@
-#
-
 """Performance optimization recommendations engine."""
 
 import asyncio

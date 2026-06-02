@@ -1,5 +1,3 @@
-#
-
 from unittest.mock import MagicMock, patch
 
 from github import GithubException  # Import GithubException for testing

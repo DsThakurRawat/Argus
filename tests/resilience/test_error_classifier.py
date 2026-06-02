@@ -1,5 +1,3 @@
-#
-
 """Tests for ErrorClassifier."""
 
 import pytest

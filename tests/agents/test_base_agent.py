@@ -1,5 +1,3 @@
-#
-
 # tests/agents/test_base_agent.py
 
 """

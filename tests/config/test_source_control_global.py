@@ -1,5 +1,3 @@
-#
-
 # tests/config/test_source_control_global.py
 
 """

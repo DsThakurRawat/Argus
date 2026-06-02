@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/credential_management/rotation.py
 
 """

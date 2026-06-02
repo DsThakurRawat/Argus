@@ -1,5 +1,3 @@
-#
-
 """Configuration validation system for the Gemini SRE Agent.
 
 This module provides a comprehensive configuration validation framework that supports:

@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_repository_permission_tests.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/llm/testing/mock_providers.py
 
 """

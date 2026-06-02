@@ -1,5 +1,3 @@
-#
-
 # argus/ml/code_generation_models.py
 
 from dataclasses import dataclass, field

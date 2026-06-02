@@ -1,5 +1,3 @@
-#
-
 # argus/ml/schemas.py
 
 """

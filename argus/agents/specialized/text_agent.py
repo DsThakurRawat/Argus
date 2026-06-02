@@ -1,5 +1,3 @@
-#
-
 # argus/agents/specialized/text_agent.py
 
 """

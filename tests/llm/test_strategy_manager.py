@@ -1,5 +1,3 @@
-#
-
 """Tests for StrategyManager and model selection strategies."""
 
 from datetime import time as dt_time

@@ -1,5 +1,3 @@
-#
-
 # argus/config/__init__.py
 
 """

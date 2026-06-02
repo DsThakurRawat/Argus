@@ -1,5 +1,3 @@
-#
-
 # tests/test_async_optimizer.py
 
 """

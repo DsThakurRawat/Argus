@@ -1,5 +1,3 @@
-#
-
 # argus/config/cli_tools.py
 
 """

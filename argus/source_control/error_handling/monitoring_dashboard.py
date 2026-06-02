@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/error_handling/monitoring_dashboard.py
 
 """

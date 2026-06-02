@@ -1,5 +1,3 @@
-#
-
 # argus/security/__init__.py
 
 """Security and compliance module for the Gemini SRE Agent."""

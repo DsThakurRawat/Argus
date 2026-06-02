@@ -1,5 +1,3 @@
-#
-
 # argus/ml/rate_limiter_config.py
 
 """

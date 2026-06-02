@@ -1,5 +1,3 @@
-#
-
 """Performance monitoring system for the Gemini SRE Agent.
 
 This module provides comprehensive performance tracking and optimization including:

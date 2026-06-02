@@ -1,5 +1,3 @@
-#
-
 # argus/core/quality/exceptions.py
 """
 Quality gate exceptions.

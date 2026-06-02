@@ -1,5 +1,3 @@
-#
-
 # tests/test_performance_optimizations.py
 
 """

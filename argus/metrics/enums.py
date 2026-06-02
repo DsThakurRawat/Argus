@@ -1,5 +1,3 @@
-#
-
 # argus/metrics/enums.py
 
 from enum import Enum

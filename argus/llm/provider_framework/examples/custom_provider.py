@@ -1,5 +1,3 @@
-#
-
 # argus/llm/provider_framework/examples/custom_provider.py
 
 """

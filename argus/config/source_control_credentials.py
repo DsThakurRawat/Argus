@@ -1,5 +1,3 @@
-#
-
 # argus/config/source_control_credentials.py
 
 """

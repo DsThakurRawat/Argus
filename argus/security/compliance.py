@@ -1,5 +1,3 @@
-#
-
 # argus/security/compliance.py
 
 """Compliance reporting tools for usage patterns and audit trails."""

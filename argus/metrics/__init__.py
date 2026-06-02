@@ -1,5 +1,3 @@
-#
-
 # argus/metrics/__init__.py
 
 from typing import Optional

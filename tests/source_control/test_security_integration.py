@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_security_integration.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 """
 Enhanced Mirascope Integration Demo.
 

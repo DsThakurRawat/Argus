@@ -1,5 +1,3 @@
-#
-
 """
 Tests for Enhanced Remediation Agent.
 

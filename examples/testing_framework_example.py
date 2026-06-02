@@ -1,5 +1,3 @@
-#
-
 # examples/testing_framework_example.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # tests/test_base_prompt_template.py
 
 """

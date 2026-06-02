@@ -1,5 +1,3 @@
-#
-
 """
 Groq provider implementation for high-speed inference.
 

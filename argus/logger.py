@@ -1,5 +1,3 @@
-#
-
 # argus/logger.py
 
 from datetime import datetime

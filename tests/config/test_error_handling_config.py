@@ -1,5 +1,3 @@
-#
-
 # tests/config/test_error_handling_config.py
 
 """

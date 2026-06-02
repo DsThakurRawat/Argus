@@ -1,5 +1,3 @@
-#
-
 """
 Tests for the ingestion configuration system.
 

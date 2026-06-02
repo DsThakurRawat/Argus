@@ -1,5 +1,3 @@
-#
-
 # tests/llm/test_mirascope_integration.py
 
 """

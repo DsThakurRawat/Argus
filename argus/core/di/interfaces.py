@@ -1,5 +1,3 @@
-#
-
 """Interfaces for the dependency injection system."""
 
 from abc import ABC, abstractmethod

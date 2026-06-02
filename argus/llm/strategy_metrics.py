@@ -1,5 +1,3 @@
-#
-
 # argus/llm/strategy_metrics.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/core/logging/handlers.py
 """
 Custom log handlers for structured logging.

@@ -1,5 +1,3 @@
-#
-
 # argus/llm/model_scorer.py
 
 """

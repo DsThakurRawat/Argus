@@ -1,5 +1,3 @@
-#
-
 """Alerting system for the logging framework."""
 
 from collections.abc import Callable

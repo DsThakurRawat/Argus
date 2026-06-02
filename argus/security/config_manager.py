@@ -1,5 +1,3 @@
-#
-
 # argus/security/config_manager.py
 
 """Secure configuration manager for API key management and rotation."""

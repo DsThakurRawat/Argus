@@ -1,5 +1,3 @@
-#
-
 # argus/security/access_control.py
 
 """Role-based access control system for provider configuration."""

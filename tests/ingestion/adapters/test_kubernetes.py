@@ -1,5 +1,3 @@
-#
-
 # tests/ingestion/adapters/test_kubernetes.py
 
 """

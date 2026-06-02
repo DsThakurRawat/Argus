@@ -1,5 +1,3 @@
-#
-
 # tests/ingestion/manager/test_log_manager.py
 
 """

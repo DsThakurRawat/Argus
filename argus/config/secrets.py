@@ -1,5 +1,3 @@
-#
-
 # argus/config/secrets.py
 
 """

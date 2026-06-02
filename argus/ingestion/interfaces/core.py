@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/interfaces/core.py
 
 """

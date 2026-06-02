@@ -1,5 +1,3 @@
-#
-
 # argus/llm/mixing/performance_optimizer.py
 
 """

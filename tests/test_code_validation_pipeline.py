@@ -1,5 +1,3 @@
-#
-
 # tests/test_code_validation_pipeline.py
 
 """

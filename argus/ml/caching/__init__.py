@@ -1,5 +1,3 @@
-#
-
 # argus/ml/caching/__init__.py
 
 """

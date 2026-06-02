@@ -1,5 +1,3 @@
-#
-
 """Exceptions for the logging system."""
 
 from typing import Any

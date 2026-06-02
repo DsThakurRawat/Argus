@@ -1,5 +1,3 @@
-#
-
 # argus/core/logging/formatters.py
 """
 Log formatters for structured logging.

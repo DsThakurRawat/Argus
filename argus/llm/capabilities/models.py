@@ -1,5 +1,3 @@
-#
-
 # argus/llm/capabilities/models.py
 
 from typing import Any

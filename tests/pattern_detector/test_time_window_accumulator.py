@@ -1,5 +1,3 @@
-#
-
 """
 Tests for time window accumulation logic.
 """

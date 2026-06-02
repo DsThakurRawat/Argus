@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/gitlab/gitlab_merge_request_operations.py
 
 """

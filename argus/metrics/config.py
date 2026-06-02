@@ -1,5 +1,3 @@
-#
-
 # argus/metrics/config.py
 
 from typing import Any

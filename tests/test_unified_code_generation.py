@@ -1,5 +1,3 @@
-#
-
 # tests/test_unified_code_generation.py
 
 """

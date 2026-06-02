@@ -1,5 +1,3 @@
-#
-
 """Validation schemas for the configuration validation system."""
 
 from abc import abstractmethod

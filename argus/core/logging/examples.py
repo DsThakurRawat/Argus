@@ -1,5 +1,3 @@
-#
-
 """Examples demonstrating the comprehensive logging framework usage."""
 
 import random

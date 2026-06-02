@@ -1,5 +1,3 @@
-#
-
 # argus/resilience/retry_handler.py
 
 """Retry handler with exponential backoff and jitter."""

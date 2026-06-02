@@ -1,5 +1,3 @@
-#
-
 # argus/ml/gemini_pattern_classifier.py
 
 """

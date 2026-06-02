@@ -1,5 +1,3 @@
-#
-
 """Simple tests for the Local Provider implementation."""
 
 from pathlib import Path

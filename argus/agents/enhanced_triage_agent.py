@@ -1,5 +1,3 @@
-#
-
 # argus/agents/enhanced_triage_agent.py
 
 """

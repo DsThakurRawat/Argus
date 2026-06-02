@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/error_handling/examples/advanced_usage_examples.py
 
 """

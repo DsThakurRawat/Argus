@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/metrics/background_processing.py
 
 """

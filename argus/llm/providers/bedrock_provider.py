@@ -1,5 +1,3 @@
-#
-
 # argus/llm/providers/bedrock_provider.py
 
 """

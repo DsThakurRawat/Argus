@@ -1,5 +1,3 @@
-#
-
 # tests/test_code_generation_models.py
 
 from datetime import datetime

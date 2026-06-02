@@ -1,5 +1,3 @@
-#
-
 """Standardized logging system for the Gemini SRE Agent.
 
 This module provides a comprehensive logging framework that supports:

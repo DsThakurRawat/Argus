@@ -1,5 +1,3 @@
-#
-
 # argus/llm/capabilities/testing.py
 
 from abc import ABC, abstractmethod

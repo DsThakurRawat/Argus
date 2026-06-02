@@ -1,5 +1,3 @@
-#
-
 # argus/ml/specialized_generators/api_generator.py
 
 """

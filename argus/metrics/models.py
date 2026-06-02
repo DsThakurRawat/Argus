@@ -1,5 +1,3 @@
-#
-
 # argus/metrics/models.py
 
 from typing import Literal

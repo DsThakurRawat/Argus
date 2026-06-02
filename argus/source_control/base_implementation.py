@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/base_implementation.py
 
 """

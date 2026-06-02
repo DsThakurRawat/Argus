@@ -1,5 +1,3 @@
-#
-
 # argus/llm/provider_framework/capability_discovery.py
 
 """

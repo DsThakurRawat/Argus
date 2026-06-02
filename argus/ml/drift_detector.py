@@ -1,5 +1,3 @@
-#
-
 """
 Drift detector and metric calculation helper utilities.
 """

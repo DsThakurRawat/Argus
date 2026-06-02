@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/monitoring/monitoring_manager.py
 
 """

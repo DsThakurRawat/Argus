@@ -1,5 +1,3 @@
-#
-
 """Main dependency injection container implementation."""
 
 from collections.abc import Callable

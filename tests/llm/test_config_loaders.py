@@ -1,5 +1,3 @@
-#
-
 """
 Tests for the configuration loaders.
 """

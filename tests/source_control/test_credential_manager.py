@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_credential_manager.py
 
 import os

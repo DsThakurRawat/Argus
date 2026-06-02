@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/github/__init__.py
 
 """GitHub provider implementation for source control operations."""

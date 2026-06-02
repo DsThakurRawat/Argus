@@ -1,5 +1,3 @@
-#
-
 # argus/llm/prompt_manager.py
 
 """

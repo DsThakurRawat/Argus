@@ -1,5 +1,3 @@
-#
-
 # argus/llm/capabilities/discovery.py
 
 import logging

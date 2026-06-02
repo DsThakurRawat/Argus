@@ -1,5 +1,3 @@
-#
-
 # argus/ml/prompt_context_models.py
 
 """

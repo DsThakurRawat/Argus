@@ -1,5 +1,3 @@
-#
-
 """
 Validation configuration and model definitions for log quality.
 """

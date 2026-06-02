@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_provider_factory.py
 
 from unittest.mock import MagicMock

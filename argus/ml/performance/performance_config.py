@@ -1,5 +1,3 @@
-#
-
 # argus/ml/performance/performance_config.py
 
 """

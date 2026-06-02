@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_local_file_operations_config.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/log_ingestion.py
 
 import logging

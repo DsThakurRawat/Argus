@@ -1,5 +1,3 @@
-#
-
 """
 Performance tests for metrics collection to ensure minimal impact on operations.
 """

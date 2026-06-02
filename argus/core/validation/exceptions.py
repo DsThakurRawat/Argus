@@ -1,5 +1,3 @@
-#
-
 """Exceptions for the configuration validation system."""
 
 from typing import Any

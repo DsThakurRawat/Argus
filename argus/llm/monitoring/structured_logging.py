@@ -1,5 +1,3 @@
-#
-
 # argus/llm/monitoring/structured_logging.py
 
 """

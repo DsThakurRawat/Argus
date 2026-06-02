@@ -1,5 +1,3 @@
-#
-
 """Tests for FallbackManager."""
 
 import asyncio

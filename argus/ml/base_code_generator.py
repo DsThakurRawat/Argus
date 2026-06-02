@@ -1,5 +1,3 @@
-#
-
 # argus/ml/base_code_generator.py
 
 from abc import ABC, abstractmethod

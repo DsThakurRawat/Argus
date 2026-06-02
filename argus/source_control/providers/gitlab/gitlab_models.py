@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/gitlab/gitlab_models.py
 
 """GitLab-specific models and data structures."""

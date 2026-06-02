@@ -1,5 +1,3 @@
-#
-
 # argus/local_patch_manager.py
 
 """

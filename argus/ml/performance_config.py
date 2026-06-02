@@ -1,5 +1,3 @@
-#
-
 """
 Performance configuration, drift alert, and metrics definitions.
 """

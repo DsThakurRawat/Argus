@@ -1,5 +1,3 @@
-#
-
 # argus/ml/gemini_response_cache.py
 
 """

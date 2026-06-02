@@ -1,5 +1,3 @@
-#
-
 # argus/llm/providers/gemini_provider.py
 
 """

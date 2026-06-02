@@ -1,5 +1,3 @@
-#
-
 """Tests for RetryHandler."""
 
 import asyncio

@@ -1,5 +1,3 @@
-#
-
 # argus/pattern_detector/time_window_accumulator.py
 
 """

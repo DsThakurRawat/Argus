@@ -1,5 +1,3 @@
-#
-
 """Asyncio profiling and async operation monitoring."""
 
 import asyncio

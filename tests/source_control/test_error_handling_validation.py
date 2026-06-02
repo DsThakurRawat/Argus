@@ -1,5 +1,3 @@
-#
-
 """
 Unit tests for error handling configuration validation.
 """

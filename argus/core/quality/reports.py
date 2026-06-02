@@ -1,5 +1,3 @@
-#
-
 # argus/core/quality/reports.py
 """
 Quality gate reporting and formatting.

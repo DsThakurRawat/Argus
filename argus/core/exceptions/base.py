@@ -1,5 +1,3 @@
-#
-
 # argus/core/exceptions/base.py
 
 """

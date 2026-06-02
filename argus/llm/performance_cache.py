@@ -1,5 +1,3 @@
-#
-
 # argus/llm/performance_cache.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 """Flow tracking system for the logging framework."""
 
 from contextlib import contextmanager

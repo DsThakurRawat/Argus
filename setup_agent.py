@@ -1,5 +1,3 @@
-#
-
 """
 Interactive setup dashboard for the Argus.
 

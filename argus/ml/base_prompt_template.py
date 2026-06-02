@@ -1,5 +1,3 @@
-#
-
 # argus/ml/base_prompt_template.py
 
 """

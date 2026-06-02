@@ -1,5 +1,3 @@
-#
-
 # argus/llm/testing/__init__.py
 
 """

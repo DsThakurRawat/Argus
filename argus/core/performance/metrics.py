@@ -1,5 +1,3 @@
-#
-
 """Core performance metrics collection system."""
 
 import asyncio

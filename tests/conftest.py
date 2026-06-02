@@ -1,5 +1,3 @@
-#
-
 """Pytest configuration and shared fixtures for the reorganized test structure."""
 
 import asyncio

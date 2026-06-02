@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/local/enhanced_local_provider.py
 
 """

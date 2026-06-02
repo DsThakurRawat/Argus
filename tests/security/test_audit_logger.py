@@ -1,5 +1,3 @@
-#
-
 """Tests for AuditLogger."""
 
 from datetime import datetime

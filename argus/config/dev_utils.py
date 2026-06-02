@@ -1,5 +1,3 @@
-#
-
 # argus/config/dev_utils.py
 
 """

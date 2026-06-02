@@ -1,5 +1,3 @@
-#
-
 # tests/ingestion/adapters/test_aws_cloudwatch.py
 
 """

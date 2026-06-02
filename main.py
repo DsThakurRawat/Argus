@@ -1,5 +1,3 @@
-#
-
 """
 Enhanced Main Application with Full Multi-Provider LLM Support.
 

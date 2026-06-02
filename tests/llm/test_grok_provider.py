@@ -1,5 +1,3 @@
-#
-
 # tests/llm/test_grok_provider.py
 
 """

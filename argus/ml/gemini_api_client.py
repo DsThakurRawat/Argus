@@ -1,5 +1,3 @@
-#
-
 # argus/ml/gemini_api_client.py
 
 """

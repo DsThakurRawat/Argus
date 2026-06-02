@@ -1,5 +1,3 @@
-#
-
 # argus/llm/monitoring/health_checks.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/repository_manager.py
 
 from contextlib import AsyncExitStack

@@ -1,5 +1,3 @@
-#
-
 # argus/resilience/resilience_manager.py
 
 """Main resilience manager orchestrating all resilience patterns."""

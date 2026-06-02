@@ -1,5 +1,3 @@
-#
-
 # tests/ingestion/queues/test_file_queue.py
 
 """

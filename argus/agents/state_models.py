@@ -1,5 +1,3 @@
-#
-
 # argus/agents/state_models.py
 
 """

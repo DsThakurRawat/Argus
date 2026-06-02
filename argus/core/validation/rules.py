@@ -1,5 +1,3 @@
-#
-
 """Validation rules for the configuration validation system."""
 
 from abc import ABC, abstractmethod

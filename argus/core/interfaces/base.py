@@ -1,5 +1,3 @@
-#
-
 # argus/core/interfaces/base.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 """Validation result classes for the configuration validation system."""
 
 from dataclasses import dataclass, field

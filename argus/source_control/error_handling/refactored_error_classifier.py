@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/error_handling/refactored_error_classifier.py
 
 """

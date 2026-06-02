@@ -1,5 +1,3 @@
-#
-
 """Exceptions for the resilience framework."""
 
 from typing import Any

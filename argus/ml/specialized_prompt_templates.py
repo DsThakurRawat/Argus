@@ -1,5 +1,3 @@
-#
-
 # argus/ml/specialized_prompt_templates.py
 
 """

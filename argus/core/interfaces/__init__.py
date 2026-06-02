@@ -1,5 +1,3 @@
-#
-
 # argus/core/interfaces/__init__.py
 
 """

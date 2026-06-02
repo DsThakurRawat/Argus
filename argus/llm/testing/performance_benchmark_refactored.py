@@ -1,5 +1,3 @@
-#
-
 # argus/llm/testing/performance_benchmark_refactored.py
 
 """

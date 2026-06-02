@@ -1,5 +1,3 @@
-#
-
 # argus/remediation_agent.py
 
 import asyncio

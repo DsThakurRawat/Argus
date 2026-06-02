@@ -1,5 +1,3 @@
-#
-
 """Tests for CircuitBreaker."""
 
 import asyncio

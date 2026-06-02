@@ -1,5 +1,3 @@
-#
-
 """Performance monitoring system for the logging framework."""
 
 from collections import defaultdict, deque

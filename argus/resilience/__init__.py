@@ -1,5 +1,3 @@
-#
-
 # argus/resilience/__init__.py
 
 """Resilience patterns and error handling module for the Gemini SRE Agent."""

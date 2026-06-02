@@ -1,5 +1,3 @@
-#
-
 # tests/ingestion/interfaces/test_resilience.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 """Decorators for dependency injection."""
 
 from collections.abc import Callable

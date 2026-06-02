@@ -1,5 +1,3 @@
-#
-
 # examples/error_handling_example.py
 
 """

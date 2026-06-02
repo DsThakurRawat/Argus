@@ -1,5 +1,3 @@
-#
-
 # argus/pattern_detector/classifier_ensemble.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/llm/providers/openai_provider.py
 
 """

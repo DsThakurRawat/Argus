@@ -1,5 +1,3 @@
-#
-
 # argus/core/exceptions/agent.py
 
 """

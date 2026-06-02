@@ -1,5 +1,3 @@
-#
-
 # argus/ml/workflow_validation.py
 
 """

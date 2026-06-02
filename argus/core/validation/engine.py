@@ -1,5 +1,3 @@
-#
-
 """Validation engine for the configuration validation system."""
 
 from concurrent.futures import ThreadPoolExecutor, as_completed

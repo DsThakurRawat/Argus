@@ -1,5 +1,3 @@
-#
-
 # argus/agents/request_models.py
 
 """

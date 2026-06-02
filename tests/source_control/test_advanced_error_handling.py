@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_advanced_error_handling.py
 
 """

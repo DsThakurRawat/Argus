@@ -1,5 +1,3 @@
-#
-
 # argus/ml/specialized_generators/__init__.py
 
 """

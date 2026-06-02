@@ -1,5 +1,3 @@
-#
-
 """Tests for SecureConfigManager."""
 
 from datetime import datetime

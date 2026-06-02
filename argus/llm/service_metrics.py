@@ -1,5 +1,3 @@
-#
-
 # argus/llm/service_metrics.py
 
 """

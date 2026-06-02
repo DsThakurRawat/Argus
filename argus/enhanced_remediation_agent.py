@@ -1,5 +1,3 @@
-#
-
 # argus/enhanced_remediation_agent.py
 
 """

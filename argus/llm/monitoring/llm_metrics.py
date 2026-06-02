@@ -1,5 +1,3 @@
-#
-
 # argus/llm/monitoring/llm_metrics.py
 
 """

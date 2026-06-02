@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/monitoring/performance.py
 
 """

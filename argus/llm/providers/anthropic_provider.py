@@ -1,5 +1,3 @@
-#
-
 # argus/llm/providers/anthropic_provider.py
 
 """

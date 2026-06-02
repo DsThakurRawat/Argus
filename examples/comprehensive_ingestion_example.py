@@ -1,5 +1,3 @@
-#
-
 # examples/comprehensive_ingestion_example.py
 
 """

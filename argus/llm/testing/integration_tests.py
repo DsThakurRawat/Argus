@@ -1,5 +1,3 @@
-#
-
 # argus/llm/testing/integration_tests.py
 
 """

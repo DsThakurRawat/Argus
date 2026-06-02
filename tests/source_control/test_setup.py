@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_setup.py
 
 from unittest.mock import AsyncMock, MagicMock, patch

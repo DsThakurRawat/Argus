@@ -1,5 +1,3 @@
-#
-
 # argus/ml/performance/async_optimizer.py
 
 """

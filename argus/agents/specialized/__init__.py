@@ -1,5 +1,3 @@
-#
-
 # argus/agents/specialized/__init__.py
 
 """

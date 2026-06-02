@@ -1,5 +1,3 @@
-#
-
 # argus/core/quality/cli.py
 """
 Command-line interface for quality gates.

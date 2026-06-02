@@ -1,5 +1,3 @@
-#
-
 # argus/legacy_config.py
 
 import re  # Added for regex validation

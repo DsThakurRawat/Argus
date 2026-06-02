@@ -1,5 +1,3 @@
-#
-
 # argus/metrics/alerting.py
 
 import asyncio

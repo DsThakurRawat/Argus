@@ -1,5 +1,3 @@
-#
-
 """
 Tests for the confidence scoring system.
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/ml/caching/issue_pattern_cache.py
 
 """

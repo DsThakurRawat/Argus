@@ -1,5 +1,3 @@
-#
-
 """
 Universal LiteLLM provider adapter.
 

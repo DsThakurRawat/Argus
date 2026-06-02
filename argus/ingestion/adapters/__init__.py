@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/adapters/__init__.py
 
 """

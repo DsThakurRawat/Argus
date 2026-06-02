@@ -1,5 +1,3 @@
-#
-
 """
 Performance Benchmark for Enhanced Multi-Provider LLM System.
 

@@ -1,5 +1,3 @@
-#
-
 # tests/test_week4_performance_optimization.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/llm/utils.py
 
 """

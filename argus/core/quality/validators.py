@@ -1,5 +1,3 @@
-#
-
 # argus/core/quality/validators.py
 """
 Quality gate validators for different aspects of code quality.

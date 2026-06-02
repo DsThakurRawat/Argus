@@ -1,5 +1,3 @@
-#
-
 # argus/agents/__init__.py
 
 """

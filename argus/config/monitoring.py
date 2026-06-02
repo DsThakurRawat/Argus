@@ -1,5 +1,3 @@
-#
-
 # argus/config/monitoring.py
 
 """

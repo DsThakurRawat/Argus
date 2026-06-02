@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/local/local_git_operations.py
 
 """

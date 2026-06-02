@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/manager/__init__.py
 
 """

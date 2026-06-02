@@ -1,5 +1,3 @@
-#
-
 """
 Tests for threshold evaluation logic.
 """

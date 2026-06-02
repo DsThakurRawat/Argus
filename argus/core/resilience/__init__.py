@@ -1,5 +1,3 @@
-#
-
 """Resilience patterns and fault tolerance for the Gemini SRE Agent.
 
 This module provides comprehensive resilience patterns including:

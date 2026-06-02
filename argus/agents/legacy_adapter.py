@@ -1,5 +1,3 @@
-#
-
 # argus/agents/legacy_adapter.py
 
 """

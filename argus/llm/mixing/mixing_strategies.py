@@ -1,5 +1,3 @@
-#
-
 # argus/llm/mixing/mixing_strategies.py
 
 """

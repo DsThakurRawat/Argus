@@ -1,5 +1,3 @@
-#
-
 # argus/core/logging/structured.py
 """
 Structured logging implementation.

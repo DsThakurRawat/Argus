@@ -1,5 +1,3 @@
-#
-
 """
 Tests for CodeContextExtractor and related models.
 

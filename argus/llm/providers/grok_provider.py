@@ -1,5 +1,3 @@
-#
-
 # argus/llm/providers/grok_provider.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # tests/ingestion/test_comprehensive_integration.py
 
 """

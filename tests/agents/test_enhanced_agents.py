@@ -1,5 +1,3 @@
-#
-
 """Tests for Enhanced Agent Classes with Multi-Provider Support."""
 
 from unittest.mock import AsyncMock, MagicMock, patch

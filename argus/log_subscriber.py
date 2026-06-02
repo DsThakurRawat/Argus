@@ -1,5 +1,3 @@
-#
-
 # argus/log_subscriber.py
 
 import asyncio

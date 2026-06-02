@@ -1,5 +1,3 @@
-#
-
 # argus/security/audit_logger.py
 
 """Audit logging system for all provider interactions."""

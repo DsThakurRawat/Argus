@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/processor/__init__.py
 
 """

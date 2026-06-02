@@ -1,5 +1,3 @@
-#
-
 # argus/llm/capabilities/database.py
 
 import logging

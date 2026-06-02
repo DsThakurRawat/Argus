@@ -1,5 +1,3 @@
-#
-
 # argus/resilience/fallback_manager.py
 
 """Fallback manager for automatic provider switching."""

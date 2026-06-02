@@ -1,5 +1,3 @@
-#
-
 # argus/llm/error_handler.py
 
 """

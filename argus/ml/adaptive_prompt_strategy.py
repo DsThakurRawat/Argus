@@ -1,5 +1,3 @@
-#
-
 # argus/ml/adaptive_prompt_strategy.py
 
 """

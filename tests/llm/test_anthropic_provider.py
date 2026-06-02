@@ -1,5 +1,3 @@
-#
-
 # tests/llm/test_anthropic_provider.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/ml/adaptive_rate_limiter.py
 
 """

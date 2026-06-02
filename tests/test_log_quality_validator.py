@@ -1,5 +1,3 @@
-#
-
 """
 Comprehensive unit tests for LogQualityValidator.
 

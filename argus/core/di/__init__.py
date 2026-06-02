@@ -1,5 +1,3 @@
-#
-
 """Dependency injection system for the Gemini SRE Agent.
 
 This module provides a comprehensive dependency injection system that supports:

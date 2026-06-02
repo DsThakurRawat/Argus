@@ -1,5 +1,3 @@
-#
-
 # argus/metrics/dashboard.py
 
 from typing import Any

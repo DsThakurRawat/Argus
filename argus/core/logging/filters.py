@@ -1,5 +1,3 @@
-#
-
 # argus/core/logging/filters.py
 """
 Custom log filters for structured logging.

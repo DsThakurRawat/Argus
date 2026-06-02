@@ -1,5 +1,3 @@
-#
-
 # argus/ml/log_sanitizer.py
 
 """

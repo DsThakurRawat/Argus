@@ -1,5 +1,3 @@
-#
-
 # argus/core/logging/manager.py
 """
 Logging manager for centralized logging configuration.

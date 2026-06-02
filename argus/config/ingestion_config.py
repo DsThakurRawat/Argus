@@ -1,5 +1,3 @@
-#
-
 # argus/config/ingestion_config.py
 
 """

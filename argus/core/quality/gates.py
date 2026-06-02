@@ -1,5 +1,3 @@
-#
-
 # argus/core/quality/gates.py
 """
 Core quality gate definitions and management.

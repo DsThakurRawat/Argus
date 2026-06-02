@@ -1,5 +1,3 @@
-#
-
 # argus/ml/cost_config.py
 
 """

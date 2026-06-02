@@ -1,5 +1,3 @@
-#
-
 """
 Code context extractor managing git, static analysis, and complexity metrics.
 """

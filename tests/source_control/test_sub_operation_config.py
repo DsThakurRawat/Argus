@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_sub_operation_config.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 import pytest
 
 from argus.llm.capabilities.requirements import CapabilityRequirements

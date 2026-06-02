@@ -1,5 +1,3 @@
-#
-
 # tests/config/test_credential_transmission_security.py
 
 """

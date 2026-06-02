@@ -1,5 +1,3 @@
-#
-
 """Circuit breaker implementation for fault tolerance."""
 
 from collections.abc import Callable

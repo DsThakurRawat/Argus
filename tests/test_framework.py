@@ -1,5 +1,3 @@
-#
-
 # tests/test_framework.py
 
 """

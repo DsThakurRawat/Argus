@@ -1,5 +1,3 @@
-#
-
 """
 Tests for the data models in the pattern detection system.
 """

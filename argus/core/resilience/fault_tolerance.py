@@ -1,5 +1,3 @@
-#
-
 """Fault tolerance implementation for resilience patterns."""
 
 import asyncio

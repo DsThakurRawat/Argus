@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/adapters/file_system.py
 
 """

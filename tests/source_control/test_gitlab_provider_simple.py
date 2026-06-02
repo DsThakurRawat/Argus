@@ -1,5 +1,3 @@
-#
-
 """Simple tests for the GitLab Provider implementation."""
 
 from unittest.mock import AsyncMock, MagicMock

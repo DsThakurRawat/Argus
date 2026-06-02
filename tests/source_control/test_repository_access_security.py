@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_repository_access_security.py
 
 """

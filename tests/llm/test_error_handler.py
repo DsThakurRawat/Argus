@@ -1,5 +1,3 @@
-#
-
 # tests/llm/test_error_handler.py
 
 """

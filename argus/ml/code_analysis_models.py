@@ -1,5 +1,3 @@
-#
-
 """
 Data models representing configuration and metrics for codebase analysis.
 """

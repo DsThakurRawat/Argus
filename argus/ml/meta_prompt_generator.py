@@ -1,5 +1,3 @@
-#
-
 # argus/ml/meta_prompt_generator.py
 
 """

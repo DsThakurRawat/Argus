@@ -1,5 +1,3 @@
-#
-
 """
 Comprehensive tests for agent response models.
 

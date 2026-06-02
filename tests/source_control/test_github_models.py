@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_github_models.py
 
 """

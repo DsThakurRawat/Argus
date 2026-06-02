@@ -1,5 +1,3 @@
-#
-
 """Tests for ResilienceManager."""
 
 import asyncio

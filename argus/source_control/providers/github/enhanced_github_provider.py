@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/github/enhanced_github_provider.py
 
 """

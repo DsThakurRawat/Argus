@@ -1,5 +1,3 @@
-#
-
 # argus/llm/mirascope_facade.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # tests/source_control/test_audit_trail_monitoring_tests.py
 
 """

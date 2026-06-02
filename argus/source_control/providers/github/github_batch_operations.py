@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/github/github_batch_operations.py
 
 """

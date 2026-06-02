@@ -1,5 +1,3 @@
-#
-
 # argus/ml/prompt_utils.py
 
 """

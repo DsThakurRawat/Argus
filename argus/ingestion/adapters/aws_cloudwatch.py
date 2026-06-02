@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/adapters/aws_cloudwatch.py
 
 """

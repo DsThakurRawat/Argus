@@ -1,5 +1,3 @@
-#
-
 """
 Integration tests for the Model Capability Discovery System.
 

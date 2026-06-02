@@ -1,5 +1,3 @@
-#
-
 """Enhanced Agent Adapters and Migration Helpers."""
 
 import logging

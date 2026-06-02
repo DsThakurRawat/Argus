@@ -1,5 +1,3 @@
-#
-
 # tests/llm/test_model_registry.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/metrics/metrics_manager.py
 
 from typing import Any

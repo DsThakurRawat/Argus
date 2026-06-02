@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/base_sub_operation.py
 
 """

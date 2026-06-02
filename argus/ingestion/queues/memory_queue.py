@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/queues/memory_queue.py
 
 """

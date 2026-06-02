@@ -1,5 +1,3 @@
-#
-
 # argus/llm/enhanced_service.py
 
 """

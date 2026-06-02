@@ -1,5 +1,3 @@
-#
-
 # argus/ml/validation/code_validation_pipeline.py
 
 """

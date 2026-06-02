@@ -1,5 +1,3 @@
-#
-
 """
 Tests for the log ingestion system components.
 

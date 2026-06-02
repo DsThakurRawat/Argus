@@ -1,5 +1,3 @@
-#
-
 """
 Enhanced Multi-Provider LLM System Demo.
 

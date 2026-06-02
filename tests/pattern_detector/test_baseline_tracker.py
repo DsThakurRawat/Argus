@@ -1,5 +1,3 @@
-#
-
 """
 Tests for baseline tracking logic.
 """

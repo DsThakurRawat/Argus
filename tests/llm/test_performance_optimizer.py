@@ -1,5 +1,3 @@
-#
-
 """
 Unit tests for the Performance Optimization System.
 

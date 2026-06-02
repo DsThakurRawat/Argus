@@ -1,5 +1,3 @@
-#
-
 # argus/ml/caching/repository_context_cache.py
 
 """

@@ -1,5 +1,3 @@
-#
-
 # argus/ml/specialized_generators/security_generator.py
 
 """

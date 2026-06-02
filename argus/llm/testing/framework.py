@@ -1,5 +1,3 @@
-#
-
 # argus/llm/testing/framework.py
 
 """

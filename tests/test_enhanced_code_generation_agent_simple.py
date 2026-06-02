@@ -1,5 +1,3 @@
-#
-
 # tests/test_enhanced_code_generation_agent_simple.py
 
 from unittest.mock import Mock

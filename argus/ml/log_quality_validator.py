@@ -1,5 +1,3 @@
-#
-
 """
 Log quality validator checking log completeness, noise, consistency, and duplicates.
 """

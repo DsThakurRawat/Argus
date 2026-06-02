@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/providers/local/local_file_operations.py
 
 """

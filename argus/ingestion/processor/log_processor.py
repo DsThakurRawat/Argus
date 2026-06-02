@@ -1,5 +1,3 @@
-#
-
 # argus/ingestion/processor/log_processor.py
 
 """

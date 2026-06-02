@@ -1,5 +1,3 @@
-#
-
 # argus/ml/performance/repository_analyzer.py
 
 """

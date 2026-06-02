@@ -1,5 +1,3 @@
-#
-
 """Rate limiter implementation for fault tolerance."""
 
 from collections.abc import Callable

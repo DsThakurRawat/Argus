@@ -1,5 +1,3 @@
-#
-
 # argus/source_control/health_checks.py
 
 """

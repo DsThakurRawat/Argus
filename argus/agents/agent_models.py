@@ -1,5 +1,3 @@
-#
-
 # argus/agents/agent_models.py
 
 """

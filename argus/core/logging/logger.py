@@ -1,5 +1,3 @@
-#
-
 """Main logger implementation for the logging framework."""
 
 from contextlib import contextmanager

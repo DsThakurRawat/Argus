@@ -1,5 +1,3 @@
-#
-
 """Service provider implementations for dependency injection."""
 
 from collections.abc import Callable

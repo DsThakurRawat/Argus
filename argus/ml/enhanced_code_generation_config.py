@@ -1,5 +1,3 @@
-#
-
 # argus/ml/enhanced_code_generation_config.py
 
 """

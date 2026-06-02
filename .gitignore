@@ -241,3 +241,4 @@ config/config.yaml
 tmp_repos_files/
 sre_comparison_report.html
 config/llm_config.yaml
+scratch/

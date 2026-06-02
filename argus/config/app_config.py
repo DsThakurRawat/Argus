@@ -1,5 +1,3 @@
-#
-
 # argus/config/app_config.py
 
 """

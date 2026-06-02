@@ -1,5 +1,3 @@
-#
-
 # argus/llm/testing/cost_analysis_tests.py
 
 """

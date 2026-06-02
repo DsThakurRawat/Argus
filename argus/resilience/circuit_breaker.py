@@ -1,5 +1,3 @@
-#
-
 # argus/resilience/circuit_breaker.py
 
 """Circuit breaker pattern implementation for resilience."""
