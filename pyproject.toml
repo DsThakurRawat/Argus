@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "argus"
 version = "0.1.1"
-description = "Add your description here"
+description = "An interactive, terminal-first SRE CLI for log monitoring and AI-driven triage."
 readme = "README.md"
 requires-python = ">=3.12.11"
 dependencies = [
