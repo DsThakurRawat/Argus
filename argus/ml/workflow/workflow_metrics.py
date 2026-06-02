@@ -21,10 +21,10 @@ This module handles metrics collection and monitoring within the workflow,
 including performance metrics, health metrics, and operational metrics.
 """
 
+from dataclasses import dataclass, field
 import logging
 import time
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
@@ -44,11 +44,11 @@ class MetricData:
     name: str
     value: float
     timestamp: Timestamp
-    tags: Dict[str, str] = field(default_factory=dict)
+    tags: dict[str, str] = field(default_factory=dict)
     unit: str = "count"
     description: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert metric data to dictionary."""
         return {
             "name": self.name,
@@ -72,8 +72,8 @@ class WorkflowMetrics:
     # Workflow metadata
     workflow_id: str
     start_time: Timestamp
-    end_time: Optional[Timestamp] = None
-    duration: Optional[float] = None
+    end_time: Timestamp | None = None
+    duration: float | None = None
 
     # Performance metrics
     total_operations: int = 0
@@ -99,9 +99,9 @@ class WorkflowMetrics:
     cache_misses: int = 0
 
     # Custom metrics
-    custom_metrics: List[MetricData] = field(default_factory=list)
+    custom_metrics: list[MetricData] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert workflow metrics to dictionary."""
         return {
             "workflow_id": self.workflow_id,
@@ -127,7 +127,7 @@ class WorkflowMetrics:
         }
 
 
-class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetrics]):
+class WorkflowMetricsCollector(ProcessableComponent[dict[str, Any], WorkflowMetrics]):
     """
     Metrics collector for workflow operations.
 
@@ -139,7 +139,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
         self,
         component_id: str = "workflow_metrics_collector",
         name: str = "Workflow Metrics Collector",
-        config: Optional[ConfigDict] = None,
+        config: ConfigDict | None = None,
     ) -> None:
         """
         Initialize the workflow metrics collector.
@@ -152,9 +152,9 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
         super().__init__(component_id, name, config)
 
         # Metrics tracking
-        self.active_workflows: Dict[str, WorkflowMetrics] = {}
-        self.completed_workflows: List[WorkflowMetrics] = []
-        self.metrics_history: List[MetricData] = []
+        self.active_workflows: dict[str, WorkflowMetrics] = {}
+        self.completed_workflows: list[WorkflowMetrics] = []
+        self.metrics_history: list[MetricData] = []
 
         # Collection settings
         self.metrics_retention_days = (
@@ -186,7 +186,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
         self.active_workflows[workflow_id] = metrics
         return metrics
 
-    def end_workflow_metrics(self, workflow_id: str) -> Optional[WorkflowMetrics]:
+    def end_workflow_metrics(self, workflow_id: str) -> WorkflowMetrics | None:
         """
         End metrics collection for a workflow.
 
@@ -315,7 +315,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
         value: float,
         unit: str = "count",
         description: str = "",
-        tags: Optional[Dict[str, str]] = None,
+        tags: dict[str, str] | None = None,
     ) -> None:
         """
         Add a custom metric to a workflow.
@@ -345,7 +345,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
 
         metrics.custom_metrics.append(metric_data)
 
-    def get_workflow_metrics(self, workflow_id: str) -> Optional[WorkflowMetrics]:
+    def get_workflow_metrics(self, workflow_id: str) -> WorkflowMetrics | None:
         """
         Get metrics for a specific workflow.
 
@@ -365,7 +365,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
 
         return None
 
-    def get_all_metrics(self) -> Dict[str, Any]:
+    def get_all_metrics(self) -> dict[str, Any]:
         """
         Get all collected metrics.
 
@@ -385,7 +385,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
             ),
         }
 
-    def process(self, input_data: Dict[str, Any]) -> WorkflowMetrics:
+    def process(self, input_data: dict[str, Any]) -> WorkflowMetrics:
         """
         Process metrics collection request (synchronous wrapper).
 
@@ -454,7 +454,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
         """
         return self._state.get(key, default)
 
-    def clear_state(self, key: Optional[str] = None) -> None:
+    def clear_state(self, key: str | None = None) -> None:
         """
         Clear state values.
 
@@ -466,7 +466,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
         else:
             self._state.pop(key, None)
 
-    def collect_metrics(self) -> Dict[str, Any]:
+    def collect_metrics(self) -> dict[str, Any]:
         """
         Collect component metrics.
 
@@ -493,7 +493,7 @@ class WorkflowMetricsCollector(ProcessableComponent[Dict[str, Any], WorkflowMetr
         if metrics.total_operations > 0 and metrics.duration:
             metrics.average_operation_time = metrics.duration / metrics.total_operations
 
-    def get_health_status(self) -> Dict[str, Any]:
+    def get_health_status(self) -> dict[str, Any]:
         """
         Get the component's health status.
 

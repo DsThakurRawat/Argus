@@ -277,12 +277,11 @@ class HyxResilientClient:
 
         try:
             # Apply rate limiting and bulkhead
-            async with self.rate_limiter:
-                async with self.bulkhead:
-                    # Simple timeout implementation
-                    result = await asyncio.wait_for(
-                        operation(), timeout=self.timeout.timeout
-                    )
+            async with self.rate_limiter, self.bulkhead:
+                # Simple timeout implementation
+                result = await asyncio.wait_for(
+                    operation(), timeout=self.timeout.timeout
+                )
 
             self._stats["successful_operations"] += 1
             return result

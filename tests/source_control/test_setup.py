@@ -107,25 +107,24 @@ class TestSetupRepositorySystem:
     @pytest.mark.asyncio
     async def test_setup_provider_registration(self, mock_config):
         """Test that providers are properly registered."""
-        with patch("argus.source_control.setup.CredentialManager"):
+        with patch("argus.source_control.setup.CredentialManager"), patch(
+            "argus.source_control.setup.ProviderFactory"
+        ) as mock_factory_class:
+            mock_factory = MagicMock()
+            mock_factory_class.return_value = mock_factory
+
             with patch(
-                "argus.source_control.setup.ProviderFactory"
-            ) as mock_factory_class:
-                mock_factory = MagicMock()
-                mock_factory_class.return_value = mock_factory
+                "argus.source_control.setup.RepositoryManager"
+            ) as mock_repo_manager_class:
+                mock_repo_manager = AsyncMock()
+                mock_repo_manager_class.return_value = mock_repo_manager
+                await setup_repository_system(mock_config)
 
-                with patch(
-                    "argus.source_control.setup.RepositoryManager"
-                ) as mock_repo_manager_class:
-                    mock_repo_manager = AsyncMock()
-                    mock_repo_manager_class.return_value = mock_repo_manager
-                    await setup_repository_system(mock_config)
-
-                    # Verify providers were registered
-                    assert mock_factory.register_provider.call_count == 1
-                    mock_factory.register_provider.assert_any_call(
-                        "github", mock_factory.register_provider.call_args_list[0][0][1]
-                    )
+                # Verify providers were registered
+                assert mock_factory.register_provider.call_count == 1
+                mock_factory.register_provider.assert_any_call(
+                    "github", mock_factory.register_provider.call_args_list[0][0][1]
+                )
 
 
 class TestCreateDefaultConfig:

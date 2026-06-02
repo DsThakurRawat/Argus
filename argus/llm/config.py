@@ -102,7 +102,7 @@ class LLMProviderConfig(BaseModel):
     models: dict[str, ModelConfig] = Field(
         default_factory=dict, description="Available models"
     )
-    # ModelType to model name mappings - allows users to configure which models 
+    # ModelType to model name mappings - allows users to configure which models
     # are used for each semantic type
     model_type_mappings: dict[ModelType, str] = Field(
         default_factory=dict,

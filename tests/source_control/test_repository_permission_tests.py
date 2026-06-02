@@ -545,12 +545,11 @@ class TestRepositoryPermissionTests:
             assert len(token) > 0
 
         # Test invalid credentials
-        with patch.dict("os.environ", {}, clear=True):
-            with pytest.raises(
-                ValueError,
-                match="At least one authentication method must be provided",
-            ):
-                CredentialConfig()
+        with patch.dict("os.environ", {}, clear=True), pytest.raises(
+            ValueError,
+            match="At least one authentication method must be provided",
+        ):
+            CredentialConfig()
 
         # Test expired credentials
         with patch.dict("os.environ", {"GITHUB_TOKEN": "expired_token"}):

@@ -23,7 +23,7 @@ degradation, health checks, and metrics collection.
 """
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ....config.source_control_repositories import LocalRepositoryConfig
 from ...enhanced_base_implementation import EnhancedBaseSourceControlProvider
@@ -46,7 +46,7 @@ from .local_git_operations import LocalGitOperations
 class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
     """Enhanced Local provider with comprehensive error handling."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize the enhanced Local provider."""
         super().__init__(config)
 
@@ -167,7 +167,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         )
 
     # File operations with error handling
-    async def get_file_content(self, path: str, ref: Optional[str] = None) -> str:
+    async def get_file_content(self, path: str, ref: str | None = None) -> str:
         """Get file content with error handling."""
         if not self.file_ops:
             raise RuntimeError("File operations not initialized")
@@ -176,7 +176,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         )
 
     async def apply_remediation(
-        self, path: str, content: str, message: str, branch: Optional[str] = None
+        self, path: str, content: str, message: str, branch: str | None = None
     ) -> RemediationResult:
         """Apply remediation with error handling."""
         if not self.file_ops:
@@ -185,7 +185,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
             "apply_remediation", self.file_ops.apply_remediation, path, content, message
         )
 
-    async def file_exists(self, path: str, ref: Optional[str] = None) -> bool:
+    async def file_exists(self, path: str, ref: str | None = None) -> bool:
         """Check if file exists with error handling."""
         if not self.file_ops:
             raise RuntimeError("File operations not initialized")
@@ -193,7 +193,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
             "file_exists", self.file_ops.file_exists, path
         )
 
-    async def get_file_info(self, path: str, ref: Optional[str] = None) -> FileInfo:
+    async def get_file_info(self, path: str, ref: str | None = None) -> FileInfo:
         """Get file information with error handling."""
         if not self.file_ops:
             raise RuntimeError("File operations not initialized")
@@ -202,8 +202,8 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         )
 
     async def list_files(
-        self, path: str = "", ref: Optional[str] = None
-    ) -> List[FileInfo]:
+        self, path: str = "", ref: str | None = None
+    ) -> list[FileInfo]:
         """List files with error handling."""
         if not self.file_ops:
             raise RuntimeError("File operations not initialized")
@@ -228,8 +228,8 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         )
 
     async def commit_changes(
-        self, file_path: str, content: str, message: str, branch: Optional[str] = None
-    ) -> Optional[str]:
+        self, file_path: str, content: str, message: str, branch: str | None = None
+    ) -> str | None:
         """Commit changes with error handling."""
         if not self.git_enabled:
             # For non-Git local operations, just write the file
@@ -251,7 +251,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         )
 
     # Branch operations with error handling (only if Git is enabled)
-    async def create_branch(self, name: str, base_ref: Optional[str] = None) -> bool:
+    async def create_branch(self, name: str, base_ref: str | None = None) -> bool:
         """Create branch with error handling."""
         if not self.git_enabled:
             raise RuntimeError("Git operations are not enabled")
@@ -273,7 +273,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
             "delete_branch", self.git_ops.delete_branch, name
         )
 
-    async def list_branches(self) -> List[BranchInfo]:
+    async def list_branches(self) -> list[BranchInfo]:
         """List branches with error handling."""
         if not self.git_enabled:
             return []
@@ -284,7 +284,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
             "list_branches", self.git_ops.list_branches
         )
 
-    async def get_branch_info(self, name: str) -> Optional[BranchInfo]:
+    async def get_branch_info(self, name: str) -> BranchInfo | None:
         """Get branch info with error handling."""
         if not self.git_enabled:
             return None
@@ -323,7 +323,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         )
 
     async def check_conflicts(
-        self, path: str, content: str, branch: Optional[str] = None
+        self, path: str, content: str, branch: str | None = None
     ) -> bool:
         """Check conflicts with error handling."""
         if not self.git_enabled:
@@ -349,7 +349,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         )
 
     # Git operations with error handling (only if Git is enabled)
-    async def get_file_history(self, path: str, limit: int = 10) -> List[CommitInfo]:
+    async def get_file_history(self, path: str, limit: int = 10) -> list[CommitInfo]:
         """Get file history with error handling."""
         if not self.git_enabled:
             return []  # No history for non-Git operations
@@ -418,8 +418,8 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
 
     # Enhanced batch operations with error handling
     async def batch_operations(
-        self, operations: List[BatchOperation]
-    ) -> List[OperationResult]:
+        self, operations: list[BatchOperation]
+    ) -> list[OperationResult]:
         """Execute batch operations with comprehensive error handling."""
         if not self.batch_ops:
             raise RuntimeError("Batch operations not initialized")

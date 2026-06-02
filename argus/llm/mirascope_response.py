@@ -21,14 +21,14 @@ This module provides comprehensive response processing, validation, and
 transformation capabilities for Mirascope provider responses.
 """
 
-import json
-import logging
-import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type, TypeVar
+import json
+import logging
+import re
+from typing import Any, TypeVar
 
 from pydantic import BaseModel, ValidationError
 
@@ -65,9 +65,9 @@ class ResponseMetadata:
     validation_passed: bool = True
     quality_score: float = 0.0
     quality_assessment: ResponseQuality = ResponseQuality.UNKNOWN
-    warnings: List[str] = field(default_factory=list)
-    errors: List[str] = field(default_factory=list)
-    transformations_applied: List[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    transformations_applied: list[str] = field(default_factory=list)
     confidence_score: float = 0.0
 
 
@@ -79,15 +79,15 @@ class ProcessedResponse:
     processed_content: str
     status: ResponseStatus
     metadata: ResponseMetadata
-    structured_data: Optional[Any] = None
-    validation_results: Optional[Dict[str, Any]] = None
+    structured_data: Any | None = None
+    validation_results: dict[str, Any] | None = None
 
 
 class ResponseValidator(ABC):
     """Abstract base class for response validators."""
 
     @abstractmethod
-    def validate(self, response: ClientResponse) -> Dict[str, Any]:
+    def validate(self, response: ClientResponse) -> dict[str, Any]:
         """Validate a response and return validation results."""
         pass
 
@@ -99,7 +99,7 @@ class ContentLengthValidator(ResponseValidator):
         self.min_length = min_length
         self.max_length = max_length
 
-    def validate(self, response: ClientResponse) -> Dict[str, Any]:
+    def validate(self, response: ClientResponse) -> dict[str, Any]:
         """Validate content length."""
         content_length = len(response.content)
 
@@ -119,10 +119,10 @@ class ContentLengthValidator(ResponseValidator):
 class JSONStructureValidator(ResponseValidator):
     """Validates JSON structure in responses."""
 
-    def __init__(self, required_fields: Optional[List[str]] = None) -> None:
+    def __init__(self, required_fields: list[str] | None = None) -> None:
         self.required_fields = required_fields or []
 
-    def validate(self, response: ClientResponse) -> Dict[str, Any]:
+    def validate(self, response: ClientResponse) -> dict[str, Any]:
         """Validate JSON structure."""
         try:
             data = json.loads(response.content)
@@ -153,7 +153,7 @@ class JSONStructureValidator(ResponseValidator):
         except json.JSONDecodeError as e:
             return {
                 "valid": False,
-                "error": f"Invalid JSON: {str(e)}",
+                "error": f"Invalid JSON: {e!s}",
                 "parsed_data": None,
             }
 
@@ -161,12 +161,12 @@ class JSONStructureValidator(ResponseValidator):
 class RegexPatternValidator(ResponseValidator):
     """Validates response against regex patterns."""
 
-    def __init__(self, patterns: Dict[str, str]) -> None:
+    def __init__(self, patterns: dict[str, str]) -> None:
         self.patterns = {
             name: re.compile(pattern) for name, pattern in patterns.items()
         }
 
-    def validate(self, response: ClientResponse) -> Dict[str, Any]:
+    def validate(self, response: ClientResponse) -> dict[str, Any]:
         """Validate against regex patterns."""
         results = {}
         all_valid = True
@@ -383,8 +383,8 @@ class ResponseProcessor:
     """Main response processor with validation, transformation, and quality assessment."""
 
     def __init__(self) -> None:
-        self.validators: List[ResponseValidator] = []
-        self.transformers: List[ResponseTransformer] = []
+        self.validators: list[ResponseValidator] = []
+        self.transformers: list[ResponseTransformer] = []
         self.quality_assessor = QualityAssessor()
         self.logger = logging.getLogger(__name__)
 
@@ -425,7 +425,7 @@ class ResponseProcessor:
                         status = ResponseStatus.VALIDATION_ERROR
                 except Exception as e:
                     error_msg = (
-                        f"Validator {validator.__class__.__name__} failed: {str(e)}"
+                        f"Validator {validator.__class__.__name__} failed: {e!s}"
                     )
                     errors.append(error_msg)
                     self.logger.warning(error_msg)
@@ -451,7 +451,7 @@ class ResponseProcessor:
                         transformations_applied.append(transformer.__class__.__name__)
                 except Exception as e:
                     error_msg = (
-                        f"Transformer {transformer.__class__.__name__} failed: {str(e)}"
+                        f"Transformer {transformer.__class__.__name__} failed: {e!s}"
                     )
                     errors.append(error_msg)
                     status = ResponseStatus.TRANSFORMATION_ERROR
@@ -464,7 +464,7 @@ class ResponseProcessor:
             try:
                 quality, quality_score = self.quality_assessor.assess_quality(response)
             except Exception as e:
-                warnings.append(f"Quality assessment failed: {str(e)}")
+                warnings.append(f"Quality assessment failed: {e!s}")
                 self.logger.warning(f"Quality assessment failed: {e}")
 
         # Calculate processing time
@@ -491,8 +491,8 @@ class ResponseProcessor:
         )
 
     def process_structured_response(
-        self, response: ClientResponse, response_model: Type[T], validate: bool = True
-    ) -> tuple[ProcessedResponse, Optional[T]]:
+        self, response: ClientResponse, response_model: type[T], validate: bool = True
+    ) -> tuple[ProcessedResponse, T | None]:
         """Process a response and attempt to parse it into a structured model."""
         processed = self.process_response(response, validate=validate, transform=False)
 
@@ -504,14 +504,14 @@ class ResponseProcessor:
                 structured_data = response_model(**data)
             except (json.JSONDecodeError, ValidationError) as e:
                 processed.metadata.errors.append(
-                    f"Failed to parse structured data: {str(e)}"
+                    f"Failed to parse structured data: {e!s}"
                 )
                 processed.status = ResponseStatus.PARSING_ERROR
                 self.logger.warning(f"Failed to parse structured response: {e}")
 
         return processed, structured_data
 
-    def get_processing_stats(self) -> Dict[str, Any]:
+    def get_processing_stats(self) -> dict[str, Any]:
         """Get statistics about response processing."""
         return {
             "validators_count": len(self.validators),
@@ -563,8 +563,8 @@ class ResponseProcessorFactory:
 
     @staticmethod
     def create_custom_processor(
-        validators: Optional[List[ResponseValidator]] = None,
-        transformers: Optional[List[ResponseTransformer]] = None,
+        validators: list[ResponseValidator] | None = None,
+        transformers: list[ResponseTransformer] | None = None,
     ) -> ResponseProcessor:
         """Create a processor with custom validators and transformers."""
         processor = ResponseProcessor()
@@ -581,7 +581,7 @@ class ResponseProcessorFactory:
 
 
 # Global response processor instance
-_response_processor: Optional[ResponseProcessor] = None
+_response_processor: ResponseProcessor | None = None
 
 
 def get_response_processor() -> ResponseProcessor:

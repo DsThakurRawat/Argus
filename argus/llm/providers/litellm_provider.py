@@ -19,8 +19,9 @@ This module provides the LiteLLMProvider class, which acts as a bridge to 100+
 LLM providers (Azure, Mistral, Anthropic, etc.) via the LiteLLM library.
 """
 
+from collections.abc import AsyncGenerator
 import logging
-from typing import Any, AsyncGenerator
+from typing import Any
 
 import litellm
 

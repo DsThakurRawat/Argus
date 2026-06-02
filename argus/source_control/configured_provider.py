@@ -18,7 +18,7 @@
 Provider that uses Pydantic configuration models.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from ..config.source_control_global import SourceControlGlobalConfig
 from ..config.source_control_repositories import RepositoryConfig
@@ -31,7 +31,7 @@ class ConfiguredSourceControlProvider(BaseSourceControlProvider):
     def __init__(
         self,
         repository_config: RepositoryConfig,
-        global_config: Optional[SourceControlGlobalConfig] = None,
+        global_config: SourceControlGlobalConfig | None = None,
     ):
         """Initialize with validated Pydantic configs."""
         # Convert Pydantic models to dictionary for base class
@@ -104,7 +104,7 @@ class ConfiguredSourceControlProvider(BaseSourceControlProvider):
 
         return self.global_config.operation_timeout_seconds
 
-    def get_retry_config(self) -> Dict[str, Any]:
+    def get_retry_config(self) -> dict[str, Any]:
         """Get retry configuration from global config."""
         if self.global_config is None:
             return {"max_retries": 3, "base_delay": 1.0, "max_delay": 60.0}
@@ -115,7 +115,7 @@ class ConfiguredSourceControlProvider(BaseSourceControlProvider):
             "max_delay": 60.0,
         }
 
-    def get_rate_limit_config(self) -> Dict[str, Any]:
+    def get_rate_limit_config(self) -> dict[str, Any]:
         """Get rate limit configuration from global config."""
         if self.global_config is None:
             return {"requests_per_minute": 60, "burst_size": 10}
@@ -125,7 +125,7 @@ class ConfiguredSourceControlProvider(BaseSourceControlProvider):
             "burst_size": self.global_config.rate_limit_burst_size,
         }
 
-    def get_cache_config(self) -> Dict[str, Any]:
+    def get_cache_config(self) -> dict[str, Any]:
         """Get cache configuration from global config."""
         if self.global_config is None:
             return {"enabled": False, "ttl_seconds": 3600, "max_size_mb": 100}
@@ -136,7 +136,7 @@ class ConfiguredSourceControlProvider(BaseSourceControlProvider):
             "max_size_mb": self.global_config.max_cache_size_mb,
         }
 
-    def get_security_config(self) -> Dict[str, Any]:
+    def get_security_config(self) -> dict[str, Any]:
         """Get security configuration from global config."""
         if self.global_config is None:
             return {
@@ -151,7 +151,7 @@ class ConfiguredSourceControlProvider(BaseSourceControlProvider):
             "credential_rotation_interval_days": self.global_config.credential_rotation_interval_days,
         }
 
-    def get_monitoring_config(self) -> Dict[str, Any]:
+    def get_monitoring_config(self) -> dict[str, Any]:
         """Get monitoring configuration from global config."""
         if self.global_config is None:
             return {"enable_metrics": True, "audit_logging": True}

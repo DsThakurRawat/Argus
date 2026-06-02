@@ -21,8 +21,8 @@ Gemini pattern classifier for SRE logs.
 import json
 from typing import Any
 
-from argus.ml.gemini_api_client import GeminiAPIClient, GeminiResponse
-from argus.pattern_detector.models import LogEntry, PatternMatch, PatternType, TimeWindow
+from argus.ml.gemini_api_client import GeminiAPIClient
+from argus.pattern_detector.models import PatternMatch, PatternType, TimeWindow
 
 
 class GeminiPatternClassifier:

@@ -416,25 +416,24 @@ class TestGitHubProviderBatchOperations:
         # Mock the apply_remediation method
         with patch.object(
             github_provider, "apply_remediation", return_value=MagicMock(success=True)
-        ):
-            with patch.object(github_provider, "create_branch", return_value=True):
-                operations = [
-                    BatchOperation(
-                        operation_type="update_file",
-                        path="file1.py",
-                        content="content1",
-                        message="Update file1",
-                    ),
-                    BatchOperation(
-                        operation_type="create_branch",
-                        parameters={"name": "new-branch"},
-                    ),
-                ]
+        ), patch.object(github_provider, "create_branch", return_value=True):
+            operations = [
+                BatchOperation(
+                    operation_type="update_file",
+                    path="file1.py",
+                    content="content1",
+                    message="Update file1",
+                ),
+                BatchOperation(
+                    operation_type="create_branch",
+                    parameters={"name": "new-branch"},
+                ),
+            ]
 
-                results = await github_provider.batch_operations(operations)
+            results = await github_provider.batch_operations(operations)
 
-                assert len(results) == 2
-                assert all(status == OperationStatus.SUCCESS for status in results)
+            assert len(results) == 2
+            assert all(status == OperationStatus.SUCCESS for status in results)
 
     @pytest.mark.asyncio
     async def test_batch_operations_with_failures(self, github_provider):

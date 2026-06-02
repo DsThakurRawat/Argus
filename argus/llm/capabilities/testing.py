@@ -14,9 +14,8 @@
 
 # argus/llm/capabilities/testing.py
 
-import logging
 from abc import ABC, abstractmethod
-from typing import Dict, List
+import logging
 
 from argus.llm.base import LLMProvider
 from argus.llm.capabilities.models import ModelCapability
@@ -79,7 +78,7 @@ class TextGenerationTest(CapabilityTest):
                 temperature=0.1
             )
             response = await provider._generate(request)
-            response_content = response.content if hasattr(response, 'content') else str(response)
+            response_content = response.content if hasattr(response, "content") else str(response)
             return expected_substring.lower() in response_content.lower()
         except Exception as e:
             logger.error(f"Text generation test failed for {model_name}: {e}")
@@ -118,7 +117,7 @@ class CodeGenerationTest(CapabilityTest):
                 temperature=0.1
             )
             response = await provider._generate(request)
-            response_content = response.content if hasattr(response, 'content') else str(response)
+            response_content = response.content if hasattr(response, "content") else str(response)
             return expected_substring.lower() in response_content.lower()
         except Exception as e:
             logger.error(f"Code generation test failed for {model_name}: {e}")
@@ -130,11 +129,11 @@ class CapabilityTester:
     Runs a suite of capability tests against LLM models.
     """
 
-    def __init__(self, providers: Dict[str, LLMProvider], tests: List[CapabilityTest]) -> None:
+    def __init__(self, providers: dict[str, LLMProvider], tests: list[CapabilityTest]) -> None:
         self.providers = providers
         self.tests = tests
 
-    async def run_all_tests(self) -> Dict[str, Dict[str, bool]]:
+    async def run_all_tests(self) -> dict[str, dict[str, bool]]:
         """
         Run all configured tests against all models.
 
@@ -145,13 +144,13 @@ class CapabilityTester:
         for provider_name, provider_instance in self.providers.items():
             available_models = provider_instance.get_available_models()
             # Handle both dict and list return types
-            model_items: List[tuple] = []
+            model_items: list[tuple] = []
             if isinstance(available_models, dict):
                 model_items = list(available_models.items())
             elif isinstance(available_models, list):
                 # If it's a list, create tuples with model names
                 model_items = [("default", model_name) for model_name in available_models]  # type: ignore
-            
+
             for _model_type, model_name in model_items:
                 model_id = f"{provider_name}/{model_name}"
                 results[model_id] = {}

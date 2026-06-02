@@ -103,11 +103,11 @@ class StaticAnalysisValidator:
                             "errors": errors
                         },
                         errors=[
-                            e.get("message", "") 
+                            e.get("message", "")
                             for e in errors if e.get("severity") == "error"
                         ],
                         warnings=[
-                            e.get("message", "") 
+                            e.get("message", "")
                             for e in errors if e.get("severity") == "warning"
                         ]
                     )

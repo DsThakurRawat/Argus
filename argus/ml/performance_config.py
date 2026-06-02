@@ -16,9 +16,9 @@
 Performance configuration, drift alert, and metrics definitions.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 @dataclass
@@ -62,7 +62,7 @@ class PerformanceMetrics:
     """Utility methods for calculating performance metrics and categorizing drift."""
 
     @staticmethod
-    def empty_metrics() -> Dict[str, Any]:
+    def empty_metrics() -> dict[str, Any]:
         """Returns default empty performance metrics."""
         return {
             "overall_accuracy": 0.0,

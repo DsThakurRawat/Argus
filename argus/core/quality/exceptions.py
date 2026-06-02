@@ -85,10 +85,10 @@ class ToolExecutionError(QualityGateError):
     """Exception raised when a quality tool execution fails."""
 
     def __init__(
-        self, 
-        tool_name: str, 
-        message: str, 
-        exit_code: int | None = None, 
+        self,
+        tool_name: str,
+        message: str,
+        exit_code: int | None = None,
         details: dict | None = None
     ):
         """Initialize the tool execution error.

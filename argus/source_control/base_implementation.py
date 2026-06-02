@@ -19,9 +19,10 @@ Base implementation of SourceControlProvider with common functionality.
 """
 
 import asyncio
-import logging
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional
+import logging
+from typing import Any
 
 from .base import SourceControlProvider
 from .error_handling import (
@@ -45,7 +46,7 @@ from .monitoring import MonitoringManager
 class BaseSourceControlProvider(SourceControlProvider):
     """Base implementation of SourceControlProvider with common functionality."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize with configuration."""
         super().__init__(config)
         self._client = None
@@ -120,7 +121,7 @@ class BaseSourceControlProvider(SourceControlProvider):
             operation_name, func, *args, **kwargs
         )
 
-    def _initialize_error_handling(self, provider_name: str, config: Optional[Dict[str, Any]] = None) -> None:
+    def _initialize_error_handling(self, provider_name: str, config: dict[str, Any] | None = None) -> None:
         """Initialize the advanced error handling system for a specific provider."""
         try:
             self._error_handling_components = create_provider_error_handling(
@@ -149,7 +150,7 @@ class BaseSourceControlProvider(SourceControlProvider):
 
     async def handle_operation_failure(self, operation: str, error: Exception) -> bool:
         """Default implementation for handling operation failures."""
-        self.logger.error(f"Operation {operation} failed: {str(error)}")
+        self.logger.error(f"Operation {operation} failed: {error!s}")
 
         # Check if this is a retryable error
         if self._is_retryable_error(error):
@@ -158,7 +159,7 @@ class BaseSourceControlProvider(SourceControlProvider):
         return False
 
     async def retry_operation(
-        self, operation: str, max_retries: Optional[int] = None
+        self, operation: str, max_retries: int | None = None
     ) -> bool:
         """Retry a failed operation with exponential backoff."""
         if max_retries is None:
@@ -202,8 +203,8 @@ class BaseSourceControlProvider(SourceControlProvider):
         return error_type in retryable_errors
 
     async def batch_operations(
-        self, operations: List[BatchOperation]
-    ) -> List[OperationResult]:
+        self, operations: list[BatchOperation]
+    ) -> list[OperationResult]:
         """Default implementation for batch operations."""
         results = []
 
@@ -228,7 +229,7 @@ class BaseSourceControlProvider(SourceControlProvider):
                     OperationResult(
                         operation_id=f"batch_{i}",
                         success=False,
-                        message=f"Operation failed: {str(e)}",
+                        message=f"Operation failed: {e!s}",
                         file_path=operation.file_path,
                         error_details=str(e),
                         additional_info={"operation_type": operation.operation_type},
@@ -297,7 +298,7 @@ class BaseSourceControlProvider(SourceControlProvider):
             return resilient_health
 
     async def check_conflicts(
-        self, path: str, content: str, branch: Optional[str] = None
+        self, path: str, content: str, branch: str | None = None
     ) -> bool:
         """Default implementation for conflict checking."""
         # This is a simplified implementation
@@ -329,7 +330,7 @@ class BaseSourceControlProvider(SourceControlProvider):
         else:
             raise ValueError(f"Unknown conflict resolution strategy: {strategy}")
 
-    async def get_conflict_info(self, path: str) -> Optional[ConflictInfo]:
+    async def get_conflict_info(self, path: str) -> ConflictInfo | None:
         """Get detailed information about conflicts in a file."""
         # This is a placeholder implementation
         # Real implementations would analyze the file for conflict markers
@@ -341,10 +342,10 @@ class BaseSourceControlProvider(SourceControlProvider):
         message: str,
         file_path: str,
         operation_type: str,
-        commit_sha: Optional[str] = None,
-        pull_request_url: Optional[str] = None,
-        error_details: Optional[str] = None,
-        additional_info: Optional[Dict[str, Any]] = None,
+        commit_sha: str | None = None,
+        pull_request_url: str | None = None,
+        error_details: str | None = None,
+        additional_info: dict[str, Any] | None = None,
     ) -> RemediationResult:
         """Helper method to create a RemediationResult."""
         return RemediationResult(
@@ -363,9 +364,9 @@ class BaseSourceControlProvider(SourceControlProvider):
         operation_id: str,
         success: bool,
         message: str,
-        file_path: Optional[str] = None,
-        error_details: Optional[str] = None,
-        additional_info: Optional[Dict[str, Any]] = None,
+        file_path: str | None = None,
+        error_details: str | None = None,
+        additional_info: dict[str, Any] | None = None,
     ) -> OperationResult:
         """Helper method to create an OperationResult."""
         return OperationResult(
@@ -378,7 +379,7 @@ class BaseSourceControlProvider(SourceControlProvider):
         )
 
     def _log_operation(
-        self, operation: str, success: bool, details: Optional[Dict[str, Any]] = None
+        self, operation: str, success: bool, details: dict[str, Any] | None = None
     ):
         """Log an operation with details."""
         level = logging.INFO if success else logging.ERROR
@@ -389,7 +390,7 @@ class BaseSourceControlProvider(SourceControlProvider):
 
         self.logger.log(level, message)
 
-    async def get_comprehensive_health_status(self) -> Dict[str, Any]:
+    async def get_comprehensive_health_status(self) -> dict[str, Any]:
         """Get comprehensive health status including monitoring data."""
         if not self.monitoring_manager:
             return {"error": "Monitoring not enabled"}
@@ -420,7 +421,7 @@ class BaseSourceControlProvider(SourceControlProvider):
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def get_metrics_summary(self) -> Dict[str, Any]:
+    async def get_metrics_summary(self) -> dict[str, Any]:
         """Get metrics summary for this provider."""
         if not self.metrics_collector:
             return {"error": "Metrics collection not enabled"}
@@ -428,8 +429,8 @@ class BaseSourceControlProvider(SourceControlProvider):
         return await self.metrics_collector.get_metrics_summary()
 
     async def get_operation_statistics(
-        self, operation_name: Optional[str] = None, window_minutes: int = 60
-    ) -> Dict[str, Any]:
+        self, operation_name: str | None = None, window_minutes: int = 60
+    ) -> dict[str, Any]:
         """Get operation statistics for this provider."""
         if not self.operation_metrics:
             return {"error": "Operation metrics not enabled"}

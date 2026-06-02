@@ -19,9 +19,9 @@ This module provides the GroqProvider class, which implements the LLMProvider
 interface for models hosted on the Groq platform (e.g., Llama 3, Mixtral).
 """
 
-import json
+from collections.abc import AsyncGenerator
 import logging
-from typing import Any, AsyncGenerator
+from typing import Any
 
 import httpx
 

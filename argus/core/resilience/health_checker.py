@@ -363,7 +363,7 @@ class HealthChecker:
             return HealthStatus.UNHEALTHY
 
         unhealthy_count = sum(
-            1 for status in self._health_status.values() 
+            1 for status in self._health_status.values()
             if status == HealthStatus.UNHEALTHY
         )
         if unhealthy_count > 0:

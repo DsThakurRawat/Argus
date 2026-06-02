@@ -164,9 +164,8 @@ class TestBasePromptTemplate:
         # Mock _get_context_variables to raise an exception
         with patch.object(
             template, "_get_context_variables", side_effect=Exception("Test error")
-        ):
-            with pytest.raises(ValueError, match="Failed to generate prompt"):
-                template.generate_prompt(Mock())
+        ), pytest.raises(ValueError, match="Failed to generate prompt"):
+            template.generate_prompt(Mock())
 
     def test_validate_context_success(self) -> None:
         """Test successful context validation."""
