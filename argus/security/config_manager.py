@@ -72,7 +72,7 @@ class SecureConfigManager:
             aws_region: AWS region for Secrets Manager
             secrets_manager_secret_name: Name of the secret in AWS Secrets Manager
         """
-        self.encryption_key = encryption_key or os.getenv("GEMINI_SRE_ENCRYPTION_KEY")
+        self.encryption_key = encryption_key or os.getenv("ARGUS_ENCRYPTION_KEY")
         self.aws_region = aws_region
         self.secrets_manager_secret_name = secrets_manager_secret_name
 

@@ -297,7 +297,7 @@ monitoring:
             return result
 
         config_dict = config.model_dump()
-        env_vars = flatten_dict(config_dict, "GEMINI_SRE_AGENT")
+        env_vars = flatten_dict(config_dict, "ARGUS_AGENT")
 
         return env_vars
 
