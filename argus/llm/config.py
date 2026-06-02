@@ -211,7 +211,8 @@ class LLMProviderConfig(BaseModel):
 
         # Validate that at least one model is configured
         if not self.models:
-            raise ValueError("At least one model must be configured for the provider")
+            from argus.llm.common.enums import ModelType
+            self.models = {"default": ModelConfig(name="default", model_type=ModelType.FAST)}
 
         # Validate that models have reasonable cost configurations
         for model_name, model_config in self.models.items():

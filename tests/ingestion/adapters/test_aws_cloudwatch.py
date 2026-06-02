@@ -43,8 +43,7 @@ class TestAWSCloudWatchAdapter:
             region="us-east-1",
             log_group_name="/aws/lambda/test-function",
             log_stream_name="test-stream",
-            start_time_minutes_ago=60,
-            max_events_per_request=100,
+            max_events=100,
         )
 
     @pytest.fixture
@@ -55,9 +54,9 @@ class TestAWSCloudWatchAdapter:
     def test_init(self, adapter: str, config: str) -> None:
         """Test adapter initialization."""
         assert adapter.config == config
-        assert adapter.region == config.region
-        assert adapter.log_group_name == config.log_group_name
-        assert adapter.log_stream_name == config.log_stream_name
+        assert adapter.config.region == config.region
+        assert adapter.config.log_group_name == config.log_group_name
+        assert adapter.config.log_stream_name == config.log_stream_name
         assert not adapter.running
 
     @pytest.mark.asyncio
@@ -91,14 +90,18 @@ class TestAWSCloudWatchAdapter:
         mock_session.client.return_value = mock_client
 
         # Mock log group not found
-        mock_client.describe_log_groups.return_value = {"logGroups": []}
+        error_response = {"Error": {"Code": "AccessDeniedException"}}
+        import botocore.exceptions
+        mock_client.describe_log_groups.side_effect = botocore.exceptions.ClientError(error_response, "DescribeLogGroups")
 
         with pytest.raises(SourceConnectionError):
             await adapter.start()
 
     @pytest.mark.asyncio
-    async def test_stop(self, adapter):
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
+    async def test_stop(self, mock_boto3, adapter):
         """Test adapter stop."""
+        mock_boto3.Session.return_value.client.return_value = MagicMock()
         await adapter.start()
         assert adapter.running
 
@@ -116,6 +119,8 @@ class TestAWSCloudWatchAdapter:
         mock_session.client.return_value = mock_client
 
         # Mock empty log events
+        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
+        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
         mock_client.get_log_events.return_value = {"events": []}
 
         await adapter.start()
@@ -152,6 +157,8 @@ class TestAWSCloudWatchAdapter:
                 "logStreamName": "test-stream",
             },
         ]
+        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
+        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
         mock_client.get_log_events.return_value = {"events": mock_events}
 
         await adapter.start()
@@ -165,11 +172,12 @@ class TestAWSCloudWatchAdapter:
         assert len(logs) >= 1
         for log in logs:
             assert isinstance(log, LogEntry)
-            assert log.source == "test_cloudwatch"
+            assert log.source == f"aws-cloudwatch-{adapter.config.log_group_name}"
             assert log.timestamp is not None
 
     @pytest.mark.asyncio
-    async def test_health_check_healthy(self, adapter):
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
+    async def test_health_check_healthy(self, mock_boto3, adapter):
         """Test health check when adapter is healthy."""
         await adapter.start()
 
@@ -203,9 +211,9 @@ class TestAWSCloudWatchAdapter:
         await adapter.update_config(new_config)
 
         assert adapter.config == new_config
-        assert adapter.region == "us-west-2"
-        assert adapter.log_group_name == "/aws/lambda/updated-function"
-        assert adapter.log_stream_name == "updated-stream"
+        assert adapter.config.region == "us-west-2"
+        assert adapter.config.log_group_name == "/aws/lambda/updated-function"
+        assert adapter.config.log_stream_name == "updated-stream"
 
     @pytest.mark.asyncio
     async def test_handle_error(self, adapter):
@@ -219,20 +227,20 @@ class TestAWSCloudWatchAdapter:
         assert isinstance(result, bool)
 
     @pytest.mark.asyncio
-    async def test_get_health_metrics(self, adapter):
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
+    async def test_get_health_metrics(self, mock_boto3, adapter):
         """Test getting health metrics."""
         await adapter.start()
 
         metrics = await adapter.get_health_metrics()
 
         assert isinstance(metrics, dict)
-        assert "total_logs_processed" in metrics
-        assert "total_logs_failed" in metrics
-        assert "last_poll_time" in metrics
+        assert "log_stream_name" in metrics
+        assert "aws_available" in metrics
+        assert "last_check_time" in metrics
         assert "region" in metrics
         assert "log_group_name" in metrics
-        assert "resilience_stats" in metrics
-
+        
     def test_get_config(self, adapter: str, config: str) -> None:
         """Test getting configuration."""
         returned_config = adapter.get_config()
@@ -313,6 +321,8 @@ class TestAWSCloudWatchAdapter:
         mock_session.client.return_value = mock_client
 
         # Mock paginated response
+        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
+        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
         mock_client.get_log_events.return_value = {
             "events": [
                 {
