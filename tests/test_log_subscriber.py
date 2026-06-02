@@ -18,7 +18,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from google.cloud.pubsub_v1.subscriber.message import Message
 import pytest
 
-from gemini_sre_agent.log_subscriber import LogSubscriber
+from argus.log_subscriber import LogSubscriber
 
 
 @pytest.fixture
@@ -28,7 +28,7 @@ def mock_pubsub_subscriber_client() -> None:
 
     """
     with patch(
-        "gemini_sre_agent.log_subscriber.pubsub_v1.SubscriberClient"
+        "argus.log_subscriber.pubsub_v1.SubscriberClient"
     ) as MockSubscriberClient:
         mock_instance = MockSubscriberClient.return_value
         mock_instance.subscription_path.return_value = (

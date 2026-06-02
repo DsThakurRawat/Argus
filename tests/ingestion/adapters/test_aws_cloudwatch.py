@@ -22,13 +22,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.config.ingestion_config import AWSCloudWatchConfig, SourceType
-from gemini_sre_agent.ingestion.adapters.aws_cloudwatch import AWSCloudWatchAdapter
-from gemini_sre_agent.ingestion.interfaces.core import (
+from argus.config.ingestion_config import AWSCloudWatchConfig, SourceType
+from argus.ingestion.adapters.aws_cloudwatch import AWSCloudWatchAdapter
+from argus.ingestion.interfaces.core import (
     LogEntry,
     SourceHealth,
 )
-from gemini_sre_agent.ingestion.interfaces.errors import SourceConnectionError
+from argus.ingestion.interfaces.errors import SourceConnectionError
 
 
 class TestAWSCloudWatchAdapter:
@@ -61,7 +61,7 @@ class TestAWSCloudWatchAdapter:
         assert not adapter.running
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.aws_cloudwatch.boto3")
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
     async def test_start_success(self, mock_boto3, adapter):
         """Test successful adapter start."""
         # Mock boto3 session and client
@@ -81,7 +81,7 @@ class TestAWSCloudWatchAdapter:
         assert adapter.client is not None
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.aws_cloudwatch.boto3")
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
     async def test_start_invalid_log_group(self, mock_boto3, adapter):
         """Test adapter start with invalid log group."""
         # Mock boto3 session and client
@@ -106,7 +106,7 @@ class TestAWSCloudWatchAdapter:
         assert not adapter.running
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.aws_cloudwatch.boto3")
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
     async def test_get_logs_empty(self, mock_boto3, adapter):
         """Test getting logs when no events exist."""
         # Mock boto3 session and client
@@ -130,7 +130,7 @@ class TestAWSCloudWatchAdapter:
         assert isinstance(logs, list)
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.aws_cloudwatch.boto3")
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
     async def test_get_logs_with_content(self, mock_boto3, adapter):
         """Test getting logs from CloudWatch with content."""
         # Mock boto3 session and client
@@ -239,7 +239,7 @@ class TestAWSCloudWatchAdapter:
         assert returned_config == config
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.aws_cloudwatch.boto3")
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
     async def test_validate_log_group_exists(self, mock_boto3, adapter):
         """Test log group validation."""
         # Mock boto3 session and client
@@ -259,7 +259,7 @@ class TestAWSCloudWatchAdapter:
         assert adapter.running
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.aws_cloudwatch.boto3")
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
     async def test_validate_log_stream_exists(self, mock_boto3, adapter):
         """Test log stream validation."""
         # Mock boto3 session and client
@@ -282,7 +282,7 @@ class TestAWSCloudWatchAdapter:
         assert adapter.running
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.aws_cloudwatch.boto3")
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
     async def test_aws_api_error_handling(self, mock_boto3, adapter):
         """Test handling of AWS API errors."""
         # Mock boto3 session and client
@@ -303,7 +303,7 @@ class TestAWSCloudWatchAdapter:
             await adapter.start()
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.aws_cloudwatch.boto3")
+    @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
     async def test_pagination_handling(self, mock_boto3, adapter):
         """Test handling of paginated log events."""
         # Mock boto3 session and client

@@ -16,7 +16,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.log_ingestion import LogIngestor
+from argus.log_ingestion import LogIngestor
 
 
 @pytest.fixture
@@ -25,7 +25,7 @@ def mock_logging_client() -> None:
     Mock Logging Client.
 
     """
-    with patch("gemini_sre_agent.log_ingestion.LoggingServiceV2Client") as mock_client:
+    with patch("argus.log_ingestion.LoggingServiceV2Client") as mock_client:
         yield mock_client
 
 

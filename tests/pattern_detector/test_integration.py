@@ -21,7 +21,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from gemini_sre_agent.pattern_detector import (
+from argus.pattern_detector import (
     LogEntry,
     PatternClassifier,
     ThresholdConfig,

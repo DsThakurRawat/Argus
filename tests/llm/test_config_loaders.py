@@ -23,7 +23,7 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.llm.config_loaders import (
+from argus.llm.config_loaders import (
     BaseConfigLoader,
     ConfigLoaderManager,
     EnvironmentConfigLoader,

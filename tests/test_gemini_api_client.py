@@ -24,14 +24,14 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from gemini_sre_agent.ml.adaptive_rate_limiter import AdaptiveRateLimiter
-from gemini_sre_agent.ml.cost_tracker import CostTracker
-from gemini_sre_agent.ml.gemini_api_client import (
+from argus.ml.adaptive_rate_limiter import AdaptiveRateLimiter
+from argus.ml.cost_tracker import CostTracker
+from argus.ml.gemini_api_client import (
     GeminiAPIClient,
     GeminiRequest,
     GeminiResponse,
 )
-from gemini_sre_agent.ml.rate_limiter_config import UrgencyLevel
+from argus.ml.rate_limiter_config import UrgencyLevel
 
 
 class TestGeminiRequest:
@@ -102,8 +102,8 @@ class TestGeminiResponse:
 class TestGeminiAPIClientInit:
     """Test GeminiAPIClient initialization."""
 
-    @patch("gemini_sre_agent.ml.gemini_api_client.GENAI_AVAILABLE", True)
-    @patch("gemini_sre_agent.ml.gemini_api_client.genai")
+    @patch("argus.ml.gemini_api_client.GENAI_AVAILABLE", True)
+    @patch("argus.ml.gemini_api_client.genai")
     def test_successful_init(self, mock_genai: str) -> None:
         """Test successful client initialization."""
         client = GeminiAPIClient(api_key="test_key")
@@ -113,7 +113,7 @@ class TestGeminiAPIClientInit:
         assert client._total_latency == 0.0
         mock_genai.configure.assert_called_once_with(api_key="test_key")
 
-    @patch("gemini_sre_agent.ml.gemini_api_client.GENAI_AVAILABLE", False)
+    @patch("argus.ml.gemini_api_client.GENAI_AVAILABLE", False)
     def test_init_without_genai(self) -> None:
         """Test initialization when google-generativeai not available."""
         with pytest.raises(
@@ -121,8 +121,8 @@ class TestGeminiAPIClientInit:
         ):
             GeminiAPIClient(api_key="test_key")
 
-    @patch("gemini_sre_agent.ml.gemini_api_client.GENAI_AVAILABLE", True)
-    @patch("gemini_sre_agent.ml.gemini_api_client.genai")
+    @patch("argus.ml.gemini_api_client.GENAI_AVAILABLE", True)
+    @patch("argus.ml.gemini_api_client.genai")
     def test_init_with_monitoring_components(self, mock_genai: str) -> None:
         """Test initialization with cost tracker and rate limiter."""
         cost_tracker = Mock(spec=CostTracker)
@@ -152,8 +152,8 @@ class TestGeminiAPIClientGeneration:
 
         # Patch both GENAI_AVAILABLE and the genai module at import time
         patches = [
-            patch("gemini_sre_agent.ml.gemini_api_client.GENAI_AVAILABLE", True),
-            patch("gemini_sre_agent.ml.gemini_api_client.genai", mock_genai),
+            patch("argus.ml.gemini_api_client.GENAI_AVAILABLE", True),
+            patch("argus.ml.gemini_api_client.genai", mock_genai),
         ]
 
         for p in patches:
@@ -324,8 +324,8 @@ class TestGeminiAPIClientGeneration:
 class TestGeminiAPIClientHelpers:
     """Test helper methods."""
 
-    @patch("gemini_sre_agent.ml.gemini_api_client.GENAI_AVAILABLE", True)
-    @patch("gemini_sre_agent.ml.gemini_api_client.genai")
+    @patch("argus.ml.gemini_api_client.GENAI_AVAILABLE", True)
+    @patch("argus.ml.gemini_api_client.genai")
     def setUp(self, mock_genai: str) -> None:
         """Setup client for helper tests."""
         self.client = GeminiAPIClient(api_key="test_key")

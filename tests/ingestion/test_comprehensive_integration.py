@@ -24,14 +24,14 @@ import tempfile
 
 import pytest
 
-from gemini_sre_agent.config.ingestion_config import (
+from argus.config.ingestion_config import (
     FileSystemConfig,
     SourceType,
 )
-from gemini_sre_agent.ingestion.adapters.file_system import FileSystemAdapter
-from gemini_sre_agent.ingestion.interfaces.core import LogEntry, LogSeverity
-from gemini_sre_agent.ingestion.manager.log_manager import LogManager
-from gemini_sre_agent.ingestion.queues.memory_queue import MemoryQueue, QueueConfig
+from argus.ingestion.adapters.file_system import FileSystemAdapter
+from argus.ingestion.interfaces.core import LogEntry, LogSeverity
+from argus.ingestion.manager.log_manager import LogManager
+from argus.ingestion.queues.memory_queue import MemoryQueue, QueueConfig
 
 
 class TestComprehensiveIntegration:

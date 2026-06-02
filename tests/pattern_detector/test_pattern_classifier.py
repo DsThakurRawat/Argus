@@ -20,13 +20,13 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from gemini_sre_agent.pattern_detector.models import (
+from argus.pattern_detector.models import (
     LogEntry,
     ThresholdResult,
     ThresholdType,
     TimeWindow,
 )
-from gemini_sre_agent.pattern_detector.pattern_classifier import PatternClassifier
+from argus.pattern_detector.pattern_classifier import PatternClassifier
 
 
 class TestPatternClassifier:

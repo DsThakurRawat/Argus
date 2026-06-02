@@ -14,8 +14,8 @@
 
 import pytest
 
-from gemini_sre_agent.llm.capabilities.requirements import CapabilityRequirements
-from gemini_sre_agent.llm.common.enums import ModelType
+from argus.llm.capabilities.requirements import CapabilityRequirements
+from argus.llm.common.enums import ModelType
 
 
 def test_capability_requirements_initialization() -> None:

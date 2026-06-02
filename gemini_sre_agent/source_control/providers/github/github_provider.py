@@ -52,7 +52,7 @@ from .github_utils import GitHubUtils
 class GitHubProvider(BaseSourceControlProvider):
     """GitHub implementation of the SourceControlProvider interface."""
 
-    def __init__(self, config: Dict[str, Any]: str) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """Initialize the GitHub provider with configuration."""
         super().__init__(config)
         # Convert config dict back to GitHubRepositoryConfig for type safety

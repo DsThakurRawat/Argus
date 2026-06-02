@@ -20,9 +20,9 @@ Unit tests for the ModelScorer class.
 
 import time
 
-from gemini_sre_agent.llm.base import ModelType, ProviderType
-from gemini_sre_agent.llm.model_registry import ModelCapability, ModelInfo
-from gemini_sre_agent.llm.model_scorer import (
+from argus.llm.base import ModelType, ProviderType
+from argus.llm.model_registry import ModelCapability, ModelInfo
+from argus.llm.model_scorer import (
     ModelScore,
     ModelScorer,
     ScoringContext,

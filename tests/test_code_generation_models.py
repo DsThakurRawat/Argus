@@ -16,7 +16,7 @@
 
 from datetime import datetime
 
-from gemini_sre_agent.ml.code_generation_models import (
+from argus.ml.code_generation_models import (
     CodeFix,
     CodeGenerationContext,
     CodeGenerationResult,
@@ -477,7 +477,7 @@ class TestCodeGenerationResult:
 
     def test_is_high_quality_with_code_fix(self) -> None:
         """Test high quality check with code fix"""
-        from gemini_sre_agent.ml.code_generation_models import CodeFix, ValidationResult
+        from argus.ml.code_generation_models import CodeFix, ValidationResult
 
         # Create a high-quality code fix
         validation_result = ValidationResult(

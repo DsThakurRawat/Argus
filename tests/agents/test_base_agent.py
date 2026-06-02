@@ -26,8 +26,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from pydantic import BaseModel
 import pytest
 
-from gemini_sre_agent.agents.base import BaseAgent
-from gemini_sre_agent.agents.stats import AgentStats
+from argus.agents.base import BaseAgent
+from argus.agents.stats import AgentStats
 
 
 class MockResponseModel(BaseModel):

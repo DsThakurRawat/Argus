@@ -17,7 +17,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.triage_agent import TriageAgent, TriagePacket
+from argus.triage_agent import TriageAgent, TriagePacket
 
 
 @pytest.fixture
@@ -26,7 +26,7 @@ def mock_aiplatform() -> None:
     Mock Aiplatform.
 
     """
-    with patch("gemini_sre_agent.triage_agent.aiplatform") as mock_aiplatform:
+    with patch("argus.triage_agent.aiplatform") as mock_aiplatform:
         yield mock_aiplatform
 
 
@@ -47,7 +47,7 @@ def mock_gemini_response() -> None:
     }
 
 
-@patch("gemini_sre_agent.triage_agent.GenerativeModel")
+@patch("argus.triage_agent.GenerativeModel")
 @pytest.mark.asyncio
 async def test_analyze_logs(
     mock_generative_model, mock_aiplatform, mock_gemini_response

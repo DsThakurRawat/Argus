@@ -14,9 +14,10 @@
 
 """Core module tests."""
 
-from gemini_sre_agent.core.exceptions import *
-from gemini_sre_agent.core.interfaces import *
-from gemini_sre_agent.core.types import *
+from argus.core.exceptions import *
+from typing import Optional
+from argus.core.interfaces import *
+from argus.core.types import *
 
 
 class TestCoreExceptions:

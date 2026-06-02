@@ -22,19 +22,19 @@ from unittest.mock import Mock
 
 import pytest
 
-from gemini_sre_agent.llm.base import ModelType, ProviderType
-from gemini_sre_agent.llm.model_registry import (
+from argus.llm.base import ModelType, ProviderType
+from argus.llm.model_registry import (
     ModelCapability,
     ModelInfo,
     ModelRegistry,
 )
-from gemini_sre_agent.llm.model_scorer import (
+from argus.llm.model_scorer import (
     ModelScore,
     ModelScorer,
     ScoringContext,
     ScoringWeights,
 )
-from gemini_sre_agent.llm.model_selector import (
+from argus.llm.model_selector import (
     ModelSelector,
     SelectionCriteria,
     SelectionResult,

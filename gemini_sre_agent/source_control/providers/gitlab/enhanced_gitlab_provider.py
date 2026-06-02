@@ -48,7 +48,7 @@ from .gitlab_models import GitLabCredentials
 class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
     """Enhanced GitLab provider with comprehensive error handling."""
 
-    def __init__(self, config: Dict[str, Any]: str) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """Initialize the enhanced GitLab provider."""
         super().__init__(config)
 

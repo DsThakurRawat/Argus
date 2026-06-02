@@ -309,11 +309,11 @@ class AlertManager:
         self.notification_handlers: List[Callable[[Alert], None]] = []
         self.logger = logging.getLogger("AlertManager")
 
-    def add_alert_rule(self, name: str, rule_func: Callable[[Dict[str, Any]]: str, bool]: str) -> None:
+    def add_alert_rule(self, name: str, rule_func: Callable[[Dict[str, Any]], bool]) -> None:
         """Add an alert rule."""
         self.alert_rules[name] = rule_func
 
-    def add_notification_handler(self, handler: Callable[[Alert], None]: str) -> None:
+    def add_notification_handler(self, handler: Callable[[Alert], None]) -> None:
         """Add a notification handler."""
         self.notification_handlers.append(handler)
 
@@ -553,7 +553,7 @@ class MonitoringManager:
 
         return summary
 
-    def add_notification_handler(self, handler: Callable[[Alert], None]: str) -> None:
+    def add_notification_handler(self, handler: Callable[[Alert], None]) -> None:
         """Add a notification handler for alerts."""
         if self.alert_manager:
             self.alert_manager.add_notification_handler(handler)

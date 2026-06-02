@@ -25,7 +25,7 @@ from datetime import datetime
 
 import pytest
 
-from gemini_sre_agent.source_control.providers.github_models import (
+from argus.source_control.providers.github_models import (
     GitHubAuthType,
     GitHubBranchInfo,
     GitHubCommitInfo,

@@ -251,6 +251,6 @@ def build_evidence_kwargs(evidence_data: Dict[str, Any]) -> Dict[str, Any]:
 class PatternContext:
     """Context for pattern-based prompt generation."""
 
-    def __init__(self, pattern_type: str, data: Dict[str, Any]: str) -> None:
+    def __init__(self, pattern_type: str, data: Dict[str, Any]) -> None:
         self.pattern_type = pattern_type
         self.data = data

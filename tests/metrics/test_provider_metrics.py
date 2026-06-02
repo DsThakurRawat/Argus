@@ -16,8 +16,8 @@ from datetime import datetime, timedelta
 
 from freezegun import freeze_time
 
-from gemini_sre_agent.metrics.enums import ErrorCategory
-from gemini_sre_agent.metrics.provider_metrics import ProviderMetrics
+from argus.metrics.enums import ErrorCategory
+from argus.metrics.provider_metrics import ProviderMetrics
 
 
 def test_provider_metrics_initialization() -> None:

@@ -21,13 +21,13 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.pattern_detector.models import (
+from argus.pattern_detector.models import (
     LogEntry,
     ThresholdConfig,
     ThresholdType,
     TimeWindow,
 )
-from gemini_sre_agent.pattern_detector.threshold_evaluator import ThresholdEvaluator
+from argus.pattern_detector.threshold_evaluator import ThresholdEvaluator
 
 
 class TestThresholdEvaluator:
@@ -267,7 +267,7 @@ class TestThresholdEvaluator:
         config = ThresholdConfig(threshold_type="unknown_threshold", min_value=5.0)
         evaluator = ThresholdEvaluator([config])
         with patch(
-            "gemini_sre_agent.pattern_detector.threshold_evaluator.logger"
+            "argus.pattern_detector.threshold_evaluator.logger"
         ) as mock_logger:
             results = evaluator.evaluate_window(sample_window_with_errors)
             assert mock_logger.error.call_count == 1

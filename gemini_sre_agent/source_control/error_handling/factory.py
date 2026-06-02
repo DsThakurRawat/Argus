@@ -40,7 +40,7 @@ from .validation import ErrorHandlingConfigValidator
 class ErrorHandlingFactory:
     """Factory for creating error handling components."""
 
-    def __init__(self, config: Optional[Dict[str, Any]]: Optional[str] = None) -> None:
+    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
         """Initialize the factory with configuration."""
         self.config = config or {}
         self.validator = ErrorHandlingConfigValidator()

@@ -26,7 +26,7 @@ from urllib.parse import urlparse
 from pydantic import ValidationError
 import pytest
 
-from gemini_sre_agent.config.source_control_credentials import CredentialConfig
+from argus.config.source_control_credentials import CredentialConfig
 
 
 class TestCredentialTransmissionSecurity:

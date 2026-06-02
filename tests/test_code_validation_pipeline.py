@@ -25,7 +25,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from gemini_sre_agent.ml.validation import (
+from argus.ml.validation import (
     CodeValidationPipeline,
     ValidationIssue,
     ValidationLevel,

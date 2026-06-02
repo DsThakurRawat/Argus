@@ -26,7 +26,7 @@ import tempfile
 import pytest
 import yaml
 
-from gemini_sre_agent.config.ingestion_config import (
+from argus.config.ingestion_config import (
     AWSCloudWatchConfig,
     BufferStrategy,
     FileSystemConfig,

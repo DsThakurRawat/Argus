@@ -18,11 +18,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.config.source_control_global import (
+from argus.config.source_control_global import (
     SourceControlConfig,
     SourceControlGlobalConfig,
 )
-from gemini_sre_agent.source_control.setup import (
+from argus.source_control.setup import (
     create_default_config,
     setup_repository_system,
 )
@@ -46,7 +46,7 @@ class TestSetupRepositorySystem:
     async def test_setup_with_encryption_key(self, mock_config):
         """Test setting up repository system with encryption key."""
         with patch(
-            "gemini_sre_agent.source_control.setup.RepositoryManager"
+            "argus.source_control.setup.RepositoryManager"
         ) as mock_repo_manager_class:
             mock_repo_manager = AsyncMock()
             mock_repo_manager_class.return_value = mock_repo_manager
@@ -60,7 +60,7 @@ class TestSetupRepositorySystem:
     async def test_setup_without_encryption_key(self, mock_config):
         """Test setting up repository system without encryption key."""
         with patch(
-            "gemini_sre_agent.source_control.setup.RepositoryManager"
+            "argus.source_control.setup.RepositoryManager"
         ) as mock_repo_manager_class:
             mock_repo_manager = AsyncMock()
             mock_repo_manager_class.return_value = mock_repo_manager
@@ -74,19 +74,19 @@ class TestSetupRepositorySystem:
     async def test_setup_credential_manager_configuration(self, mock_config):
         """Test that credential manager is properly configured."""
         with patch(
-            "gemini_sre_agent.source_control.setup.CredentialManager"
+            "argus.source_control.setup.CredentialManager"
         ) as mock_cred_manager_class:
             mock_cred_manager = MagicMock()
             mock_cred_manager_class.return_value = mock_cred_manager
 
             with patch(
-                "gemini_sre_agent.source_control.setup.ProviderFactory"
+                "argus.source_control.setup.ProviderFactory"
             ) as mock_factory_class:
                 mock_factory = MagicMock()
                 mock_factory_class.return_value = mock_factory
 
                 with patch(
-                    "gemini_sre_agent.source_control.setup.RepositoryManager"
+                    "argus.source_control.setup.RepositoryManager"
                 ) as mock_repo_manager_class:
                     mock_repo_manager = AsyncMock()
                     mock_repo_manager_class.return_value = mock_repo_manager
@@ -107,15 +107,15 @@ class TestSetupRepositorySystem:
     @pytest.mark.asyncio
     async def test_setup_provider_registration(self, mock_config):
         """Test that providers are properly registered."""
-        with patch("gemini_sre_agent.source_control.setup.CredentialManager"):
+        with patch("argus.source_control.setup.CredentialManager"):
             with patch(
-                "gemini_sre_agent.source_control.setup.ProviderFactory"
+                "argus.source_control.setup.ProviderFactory"
             ) as mock_factory_class:
                 mock_factory = MagicMock()
                 mock_factory_class.return_value = mock_factory
 
                 with patch(
-                    "gemini_sre_agent.source_control.setup.RepositoryManager"
+                    "argus.source_control.setup.RepositoryManager"
                 ) as mock_repo_manager_class:
                     mock_repo_manager = AsyncMock()
                     mock_repo_manager_class.return_value = mock_repo_manager
@@ -147,7 +147,7 @@ class TestCreateDefaultConfig:
         """Test that default config creates correct repository types."""
         config = create_default_config()
 
-        from gemini_sre_agent.config.source_control_repositories import (
+        from argus.config.source_control_repositories import (
             GitHubRepositoryConfig,
         )
 

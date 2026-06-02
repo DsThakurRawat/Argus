@@ -19,7 +19,7 @@ import time
 
 import pytest
 
-from gemini_sre_agent.resilience.circuit_breaker import (
+from argus.resilience.circuit_breaker import (
     CircuitBreaker,
     CircuitBreakerOpenException,
     CircuitState,

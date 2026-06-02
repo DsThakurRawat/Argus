@@ -69,7 +69,7 @@ class ConfiguredSourceControlProvider(BaseSourceControlProvider):
         """Get the remediation strategy from config."""
         return self.repository_config.remediation
 
-    def get_global_config_value(self, key: str, default: Any : Optional[str] = None) -> Any:
+    def get_global_config_value(self, key: str, default: Any = None) -> Any:
         """Get a value from the global configuration."""
         if self.global_config is None:
             return default

@@ -24,13 +24,13 @@ from unittest.mock import AsyncMock, MagicMock
 from pydantic import BaseModel
 import pytest
 
-from gemini_sre_agent.llm.mirascope_integration import (
+from argus.llm.mirascope_integration import (
     PromptCollaborationManager,
     PromptEnvironment,
     PromptManager,
     PromptOptimizer,
 )
-from gemini_sre_agent.llm.prompt_service import (
+from argus.llm.prompt_service import (
     LLMPromptService,
     MirascopeIntegratedLLMService,
 )

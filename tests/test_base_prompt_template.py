@@ -25,11 +25,11 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from gemini_sre_agent.ml.base_prompt_template import (
+from argus.ml.base_prompt_template import (
     BasePromptTemplate,
     GenericErrorPromptTemplate,
 )
-from gemini_sre_agent.ml.prompt_context_models import (
+from argus.ml.prompt_context_models import (
     IssueContext,
     IssueType,
     PromptContext,

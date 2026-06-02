@@ -23,8 +23,8 @@ import tempfile
 
 import yaml
 
-from gemini_sre_agent.llm.base import ModelType, ProviderType
-from gemini_sre_agent.llm.model_registry import (
+from argus.llm.base import ModelType, ProviderType
+from argus.llm.model_registry import (
     ModelCapability,
     ModelInfo,
     ModelRegistry,

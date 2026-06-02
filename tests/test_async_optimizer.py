@@ -30,7 +30,7 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.ml.performance.async_optimizer import (
+from argus.ml.performance.async_optimizer import (
     AsyncOptimizer,
     AsyncTask,
     BatchResult,
@@ -412,7 +412,7 @@ class TestAsyncOptimizerIntegration:
 
         # Mock the record_performance function
         with patch(
-            "gemini_sre_agent.ml.performance.async_optimizer.record_performance"
+            "argus.ml.performance.async_optimizer.record_performance"
         ) as mock_record:
             result = await monitoring_optimizer.execute_with_retry(task)
 

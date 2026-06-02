@@ -18,7 +18,7 @@ import asyncio
 
 import pytest
 
-from gemini_sre_agent.resilience.retry_handler import RetryHandler
+from argus.resilience.retry_handler import RetryHandler
 
 
 @pytest.fixture

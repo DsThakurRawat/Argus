@@ -21,7 +21,7 @@ Tests for the resilience system using circuitbreaker and tenacity.
 
 import pytest
 
-from gemini_sre_agent.ingestion.interfaces.resilience import (
+from argus.ingestion.interfaces.resilience import (
     HyxResilientClient,
     ResilienceConfig,
     create_resilience_config,

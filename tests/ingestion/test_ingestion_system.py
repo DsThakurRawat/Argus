@@ -26,10 +26,10 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from gemini_sre_agent.config.ingestion_config import FileSystemConfig, SourceType
-from gemini_sre_agent.ingestion import LogManager
-from gemini_sre_agent.ingestion.adapters import FileSystemAdapter
-from gemini_sre_agent.ingestion.interfaces.core import (
+from argus.config.ingestion_config import FileSystemConfig, SourceType
+from argus.ingestion import LogManager
+from argus.ingestion.adapters import FileSystemAdapter
+from argus.ingestion.interfaces.core import (
     LogEntry,
     LogSeverity,
     SourceHealth,

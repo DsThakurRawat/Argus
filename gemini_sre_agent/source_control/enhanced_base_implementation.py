@@ -49,7 +49,7 @@ from .monitoring import MonitoringManager
 class EnhancedBaseSourceControlProvider(SourceControlProvider):
     """Enhanced base implementation with comprehensive error handling."""
 
-    def __init__(self, config: Dict[str, Any]: str) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """Initialize with enhanced error handling configuration."""
         super().__init__(config)
         self._client = None
@@ -381,7 +381,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         else:
             raise ValueError(f"Unsupported operation type: {operation_type}")
 
-    def get_config_value(self, key: str, default: Any : Optional[str] = None) -> Any:
+    def get_config_value(self, key: str, default: Any = None) -> Any:
         """Get a configuration value with fallback to default."""
         return self.config.get(key, default)
 

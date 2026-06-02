@@ -25,7 +25,7 @@ from pathlib import Path
 import tempfile
 from unittest.mock import patch
 
-from gemini_sre_agent.config.source_control_error_handling import (
+from argus.config.source_control_error_handling import (
     CircuitBreakerConfig,
     ErrorHandlingConfig,
     GracefulDegradationConfig,
@@ -34,13 +34,13 @@ from gemini_sre_agent.config.source_control_error_handling import (
     OperationCircuitBreakerConfig,
     RetryConfig,
 )
-from gemini_sre_agent.config.source_control_error_handling_loader import (
+from argus.config.source_control_error_handling_loader import (
     ErrorHandlingConfigLoader,
 )
-from gemini_sre_agent.config.source_control_error_handling_validation import (
+from argus.config.source_control_error_handling_validation import (
     ErrorHandlingConfigValidator,
 )
-from gemini_sre_agent.config.source_control_repositories import (
+from argus.config.source_control_repositories import (
     GitHubRepositoryConfig,
     GitLabRepositoryConfig,
     LocalRepositoryConfig,

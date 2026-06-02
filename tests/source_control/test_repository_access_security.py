@@ -25,10 +25,10 @@ from unittest.mock import MagicMock, patch
 from pydantic import ValidationError
 import pytest
 
-from gemini_sre_agent.config.source_control_credentials import CredentialConfig
-from gemini_sre_agent.config.source_control_repositories import GitHubRepositoryConfig
-from gemini_sre_agent.source_control.models import BranchInfo, RepositoryInfo
-from gemini_sre_agent.source_control.providers.github_provider import GitHubProvider
+from argus.config.source_control_credentials import CredentialConfig
+from argus.config.source_control_repositories import GitHubRepositoryConfig
+from argus.source_control.models import BranchInfo, RepositoryInfo
+from argus.source_control.providers.github.github_provider import GitHubProvider
 
 
 class TestRepositoryAccessSecurity:

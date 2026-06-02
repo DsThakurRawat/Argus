@@ -26,11 +26,11 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from gemini_sre_agent.ml.enhanced_analysis_agent import (
+from argus.ml.enhanced_analysis_agent import (
     EnhancedAnalysisAgent,
     EnhancedAnalysisConfig,
 )
-from gemini_sre_agent.ml.prompt_context_models import IssueType
+from argus.ml.prompt_context_models import IssueType
 
 
 class TestEnhancedAnalysisConfig:
@@ -85,23 +85,23 @@ class TestEnhancedAnalysisAgent:
     @pytest.fixture
     def agent(self, config: str) -> None:
         """Create test agent with mocked dependencies."""
-        with patch("gemini_sre_agent.ml.enhanced_analysis_agent.GenerativeModel"):
+        with patch("argus.ml.enhanced_analysis_agent.GenerativeModel"):
             with patch(
-                "gemini_sre_agent.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
+                "argus.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
             ):
                 with patch(
-                    "gemini_sre_agent.ml.enhanced_analysis_agent.MetaPromptGenerator"
+                    "argus.ml.enhanced_analysis_agent.MetaPromptGenerator"
                 ):
                     return EnhancedAnalysisAgent(config)
 
     def test_agent_initialization(self, config: str) -> None:
         """Test agent initialization."""
-        with patch("gemini_sre_agent.ml.enhanced_analysis_agent.GenerativeModel"):
+        with patch("argus.ml.enhanced_analysis_agent.GenerativeModel"):
             with patch(
-                "gemini_sre_agent.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
+                "argus.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
             ):
                 with patch(
-                    "gemini_sre_agent.ml.enhanced_analysis_agent.MetaPromptGenerator"
+                    "argus.ml.enhanced_analysis_agent.MetaPromptGenerator"
                 ):
                     agent = EnhancedAnalysisAgent(config)
 
@@ -153,7 +153,7 @@ class TestEnhancedAnalysisAgent:
 
     def test_determine_generator_type(self, agent: str) -> None:
         """Test generator type determination."""
-        from gemini_sre_agent.ml.prompt_context_models import IssueContext
+        from argus.ml.prompt_context_models import IssueContext
 
         # Test database error
         issue_context = IssueContext(

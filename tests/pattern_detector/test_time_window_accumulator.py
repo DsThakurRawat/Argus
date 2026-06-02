@@ -21,7 +21,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.pattern_detector.time_window_accumulator import (
+from argus.pattern_detector.time_window_accumulator import (
     LogAccumulator,
     WindowManager,
 )
@@ -241,7 +241,7 @@ class TestWindowManager:
         mock_window.get_error_logs.return_value = []
 
         with patch(
-            "gemini_sre_agent.pattern_detector.time_window_accumulator.logger"
+            "argus.pattern_detector.time_window_accumulator.logger"
         ) as mock_logger:
             manager._on_fast_window_ready(mock_window)
             manager._on_trend_window_ready(mock_window)

@@ -19,7 +19,7 @@ Unit tests for the LLM Provider interface.
 from unittest.mock import MagicMock, patch
 
 from pydantic import BaseModel
-
+from typing import Optional
 # Mock the dependencies before importing the provider
 mock_prompt_class = MagicMock()
 with patch.dict(
@@ -27,10 +27,10 @@ with patch.dict(
     {"instructor": MagicMock(), "litellm": MagicMock(), "mirascope": MagicMock()},
 ):
     # Patch the Prompt class in the provider module
-    from gemini_sre_agent.llm.base import ModelType
-    from gemini_sre_agent.llm.config import LLMProviderConfig, ModelConfig
-    import gemini_sre_agent.llm.provider as provider_module
-    from gemini_sre_agent.llm.provider import LLMProvider
+    from argus.llm.base import ModelType
+    from argus.llm.config import LLMProviderConfig, ModelConfig
+    import argus.llm.provider as provider_module
+    from argus.llm.provider import LLMProvider
 
     provider_module.Prompt = mock_prompt_class
 

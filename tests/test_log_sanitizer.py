@@ -23,8 +23,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from gemini_sre_agent.ml.log_sanitizer import LogSanitizer
-from gemini_sre_agent.pattern_detector.models import LogEntry
+from argus.ml.log_sanitizer import LogSanitizer
+from argus.pattern_detector.models import LogEntry
 
 
 class TestLogSanitizerInit:

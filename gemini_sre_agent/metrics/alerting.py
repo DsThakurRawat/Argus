@@ -26,7 +26,7 @@ class AlertManager:
     Manages alerts based on metrics and thresholds.
     """
 
-    def __init__(self, config: Dict[str, Any]: str) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """
         Initialize the AlertManager.
 

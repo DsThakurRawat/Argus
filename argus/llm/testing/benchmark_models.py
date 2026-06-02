@@ -1,0 +1,123 @@
+# Copyright 2026 Divyansh Rawat
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# argus/llm/testing/benchmark_models.py
+
+"""
+Data models and configuration for performance benchmarking.
+
+This module defines the core data structures used throughout the
+benchmarking system including results, configuration, and metadata.
+"""
+
+from dataclasses import dataclass, field
+
+
+@dataclass
+class BenchmarkResult:
+    """Result of a performance benchmark."""
+
+    test_name: str
+    provider: str
+    model: str
+    total_requests: int
+    successful_requests: int
+    failed_requests: int
+    total_duration_ms: float
+    avg_latency_ms: float
+    min_latency_ms: float
+    max_latency_ms: float
+    p50_latency_ms: float
+    p95_latency_ms: float
+    p99_latency_ms: float
+    requests_per_second: float
+    success_rate: float
+    memory_usage_mb: float
+    cpu_usage_percent: float
+    cost_per_request: float = 0.0
+    total_cost: float = 0.0
+    errors: list[str] = field(default_factory=list)
+    metadata: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
+class BenchmarkConfig:
+    """Configuration for benchmark tests."""
+
+    num_requests: int = 10
+    concurrency: int = 1
+    timeout_seconds: int = 30
+    warmup_requests: int = 2
+    test_prompt: str | None = None
+    max_tokens: int = 100
+    temperature: float = 0.7
+    metadata: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
+class BenchmarkMetadata:
+    """Metadata for benchmark execution."""
+
+    test_id: str
+    start_time: float
+    end_time: float | None = None
+    environment: dict[str, str] = field(default_factory=dict)
+    system_info: dict[str, str] = field(default_factory=dict)
+    test_config: BenchmarkConfig | None = None
+
+
+@dataclass
+class LatencyMetrics:
+    """Latency-specific metrics."""
+
+    latencies: list[float]
+    avg_latency: float
+    min_latency: float
+    max_latency: float
+    p50_latency: float
+    p95_latency: float
+    p99_latency: float
+    std_deviation: float
+
+
+@dataclass
+class ThroughputMetrics:
+    """Throughput-specific metrics."""
+
+    total_requests: int
+    successful_requests: int
+    failed_requests: int
+    total_duration: float
+    requests_per_second: float
+    success_rate: float
+
+
+@dataclass
+class ResourceMetrics:
+    """System resource usage metrics."""
+
+    memory_usage_mb: float
+    cpu_usage_percent: float
+    peak_memory_mb: float
+    avg_cpu_percent: float
+
+
+@dataclass
+class CostMetrics:
+    """Cost-related metrics."""
+
+    cost_per_request: float
+    total_cost: float
+    tokens_used: int
+    cost_per_token: float

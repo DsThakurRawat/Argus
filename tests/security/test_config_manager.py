@@ -19,7 +19,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from gemini_sre_agent.security.config_manager import (
+from argus.security.config_manager import (
     APIKeyInfo,
     RotationPolicy,
     SecureConfigManager,
