@@ -1,12 +1,46 @@
 import typer
 from rich.console import Console
+from rich.panel import Panel
+from rich.align import Align
+from rich.text import Text
 
 app = typer.Typer(help="👁️ Argus: Autonomous Multi-Provider Cloud SRE & AI Monitoring Assistant")
 console = Console()
 
+def print_banner():
+    ascii_art = """
+    █████╗ ██████╗  ██████╗ ██╗   ██╗███████╗
+   ██╔══██╗██╔══██╗██╔════╝ ██║   ██║██╔════╝
+   ███████║██████╔╝██║  ███╗██║   ██║███████╗
+   ██╔══██║██╔══██╗██║   ██║██║   ██║╚════██║
+   ██║  ██║██║  ██║╚██████╔╝╚██████╔╝███████║
+   ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝
+    """
+    
+    subtitle = Text("🤖 Autonomous Multi-Provider Cloud SRE & AI Monitoring Assistant\nObserve • Reason • Act • Heal", justify="center", style="dim")
+    version = Text("\nv0.2.1\nMade by DIVYANSH RAWAT", justify="right", style="dim")
+    
+    content = Text(ascii_art, style="bold cyan", justify="center")
+    content.append(subtitle)
+    content.append(version)
+    
+    panel = Panel(
+        content,
+        title="Welcome to Argus SRE",
+        border_style="cyan",
+        padding=(1, 2)
+    )
+    console.print(panel)
+
+@app.callback()
+def main_callback():
+    """Argus: Autonomous Multi-Provider Cloud SRE & AI Monitoring Assistant"""
+    pass
+
 @app.command()
 def init():
     """Initialize the Argus base directory and default configurations."""
+    print_banner()
     console.print("[bold green]Initializing Argus configuration...[/bold green]")
     # Setup ~/.argus directory logic here
     console.print("✅ Created ~/.argus configuration directory.")
@@ -18,6 +52,7 @@ def run(
     framework: str = typer.Option(None, "--framework", "-f", help="SRE Framework profile (opensre, atomic-sre, etc)")
 ):
     """Start the Argus SRE daemon."""
+    print_banner()
     console.print(f"[bold cyan]Starting Argus Daemon...[/bold cyan]")
     if framework:
         console.print(f"Using Framework Profile: [bold yellow]{framework}[/bold yellow]")
@@ -32,6 +67,7 @@ def run(
 @app.command()
 def config():
     """Manage Argus configurations and keys interactively."""
+    print_banner()
     console.print("[bold green]Argus Configuration[/bold green]")
     # Interactive prompt logic here
     console.print("Configuration feature coming soon.")
