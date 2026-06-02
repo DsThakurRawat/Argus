@@ -277,8 +277,8 @@ class EnhancedLLMService[T]:
                 elif response_model.__name__ == "RemediationPlan":
                     # Truncate the prompt to avoid overwhelming the model
                     truncated_prompt = prompt[:500] + "..." if len(prompt) > 500 else prompt
-                    structured_prompt = f"""Return only this JSON, no other text:
-{{
+                    structured_prompt = """Return only this JSON, no other text:
+{
     "agent_id": "remediation-agent-1",
     "agent_type": "remediation",
     "status": "success",
@@ -288,7 +288,7 @@ class EnhancedLLMService[T]:
     "estimated_total_duration": "1 hour",
     "estimated_total_effort": "medium",
     "steps": [
-        {{
+        {
             "step_id": "step-1",
             "order": 1,
             "title": "Fix Error",
@@ -305,7 +305,7 @@ class EnhancedLLMService[T]:
             "affected_systems": ["main system"],
             "requires_approval": false,
             "automated": true
-        }}
+        }
     ],
     "success_criteria": ["Error fixed", "Service running"],
     "risk_assessment": "Low risk",
@@ -315,7 +315,7 @@ class EnhancedLLMService[T]:
     "approval_required": false,
     "automated_steps": 1,
     "manual_steps": 0
-}}"""
+}"""
                 else:
                     # Truncate the prompt to avoid overwhelming the model
                     truncated_prompt = prompt[:2000] + "..." if len(prompt) > 2000 else prompt
@@ -380,7 +380,7 @@ IMPORTANT:
 
                 # Extract JSON from response (in case there's extra text)
                 self.logger.debug(f"Raw LLM response: {response.content}")
-                
+
                 # Try multiple patterns to extract JSON
                 json_str = None
                 patterns = [
@@ -388,14 +388,14 @@ IMPORTANT:
                     r"```\s*(\{.*?\})\s*```",      # Generic code blocks
                     r"(\{.*\})",                   # Plain JSON
                 ]
-                
+
                 for pattern in patterns:
                     json_match = re.search(pattern, response.content, re.DOTALL)
                     if json_match:
                         json_str = json_match.group(1)
                         self.logger.debug(f"Extracted JSON with pattern {pattern}: {json_str}")
                         break
-                
+
                 if json_str:
                     try:
                         parsed_data = json.loads(json_str)

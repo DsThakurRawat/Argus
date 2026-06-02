@@ -23,7 +23,7 @@ templates, and prompt-related operations.
 
 import json
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 
 def format_prompt(template: str, **kwargs: Any) -> str:
@@ -40,7 +40,7 @@ def format_prompt(template: str, **kwargs: Any) -> str:
     return template.format(**kwargs)
 
 
-def extract_variables(template: str) -> List[str]:
+def extract_variables(template: str) -> list[str]:
     """
     Extract variable names from a prompt template.
 
@@ -124,7 +124,7 @@ def count_tokens_estimate(text: str) -> int:
     return len(text) // 4
 
 
-def merge_prompts(prompts: List[str], separator: str = "\n\n") -> str:
+def merge_prompts(prompts: list[str], separator: str = "\n\n") -> str:
     """
     Merge multiple prompts into a single prompt.
 
@@ -138,7 +138,7 @@ def merge_prompts(prompts: List[str], separator: str = "\n\n") -> str:
     return separator.join(filter(None, prompts))
 
 
-def build_context_kwargs(context_data: Any) -> Dict[str, Any]:
+def build_context_kwargs(context_data: Any) -> dict[str, Any]:
     """
     Build keyword arguments for context-based prompts.
 
@@ -149,22 +149,22 @@ def build_context_kwargs(context_data: Any) -> Dict[str, Any]:
         Formatted keyword arguments with normalized dict keys for JSON compatibility
     """
     # Handle both PatternContext objects and dictionaries
-    if hasattr(context_data, '__dict__'):
+    if hasattr(context_data, "__dict__"):
         data = context_data.__dict__
     else:
         data = context_data if isinstance(context_data, dict) else {}
-    
+
     def normalize_dict_keys(obj: Any) -> Any:
         """Recursively normalize dict keys to strings for JSON compatibility."""
         if isinstance(obj, dict):
             return {str(k): normalize_dict_keys(v) for k, v in obj.items()}
         elif isinstance(obj, list):
             return [normalize_dict_keys(item) for item in obj]
-        elif hasattr(obj, 'isoformat'):  # datetime objects
+        elif hasattr(obj, "isoformat"):  # datetime objects
             return obj.isoformat()
         else:
             return obj
-    
+
     # Convert complex objects to JSON strings for template compatibility
     def safe_json_serialize(obj: Any) -> str:
         """Safely serialize objects to JSON strings."""
@@ -173,14 +173,14 @@ def build_context_kwargs(context_data: Any) -> Dict[str, Any]:
             return json.dumps(normalized, ensure_ascii=False)
         except (TypeError, ValueError):
             return str(obj)
-    
+
     # Handle list fields by joining with commas
     def safe_list_join(obj: Any, default: str = "Unknown") -> str:
         """Safely join list items or return default."""
         if isinstance(obj, list) and obj:
             return ", ".join(str(item) for item in obj)
         return default
-    
+
     return {
         "primary_service": data.get("primary_service", "Unknown"),
         "affected_services": safe_list_join(data.get("affected_services"), "No services identified"),
@@ -198,7 +198,7 @@ def build_context_kwargs(context_data: Any) -> Dict[str, Any]:
     }
 
 
-def build_evidence_kwargs(evidence_data: Dict[str, Any]) -> Dict[str, Any]:
+def build_evidence_kwargs(evidence_data: dict[str, Any]) -> dict[str, Any]:
     """
     Build keyword arguments for evidence-based prompts.
 
@@ -216,7 +216,7 @@ def build_evidence_kwargs(evidence_data: Dict[str, Any]) -> Dict[str, Any]:
             return [normalize_dict_keys(item) for item in obj]
         else:
             return obj
-    
+
     # Convert complex objects to JSON strings for template compatibility
     def safe_json_serialize(obj: Any) -> str:
         """Safely serialize objects to JSON strings."""
@@ -225,7 +225,7 @@ def build_evidence_kwargs(evidence_data: Dict[str, Any]) -> Dict[str, Any]:
             return json.dumps(normalized, ensure_ascii=False)
         except (TypeError, ValueError):
             return str(obj)
-    
+
     return {
         "log_completeness": evidence_data.get("log_completeness", 0.0),
         "timestamp_consistency": evidence_data.get("timestamp_consistency", "unknown"),
@@ -251,6 +251,6 @@ def build_evidence_kwargs(evidence_data: Dict[str, Any]) -> Dict[str, Any]:
 class PatternContext:
     """Context for pattern-based prompt generation."""
 
-    def __init__(self, pattern_type: str, data: Dict[str, Any]) -> None:
+    def __init__(self, pattern_type: str, data: dict[str, Any]) -> None:
         self.pattern_type = pattern_type
         self.data = data

@@ -28,8 +28,8 @@ from typing import Any
 import ollama
 
 from ..base import LLMProvider, LLMRequest, LLMResponse, ModelType
-from ..config import LLMProviderConfig
 from ..capabilities.models import ModelCapability
+from ..config import LLMProviderConfig
 
 logger = logging.getLogger(__name__)
 

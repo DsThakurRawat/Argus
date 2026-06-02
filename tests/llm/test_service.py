@@ -234,8 +234,7 @@ class TestImportErrors:
         """Test behavior when required dependencies are missing."""
         with patch.dict(
             "sys.modules", {"instructor": None, "litellm": None, "mirascope": None}
+        ), pytest.raises(
+            ImportError, match="Required dependencies not installed"
         ):
-            with pytest.raises(
-                ImportError, match="Required dependencies not installed"
-            ):
-                pass
+            pass

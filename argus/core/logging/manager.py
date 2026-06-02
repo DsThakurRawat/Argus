@@ -84,8 +84,8 @@ class LoggingManager:
             if handler_config.destination == OutputDestination.CONSOLE:
                 return create_console_handler(
                     formatter_type=(
-                        handler_config.format.value 
-                        if hasattr(handler_config.format, "value") 
+                        handler_config.format.value
+                        if hasattr(handler_config.format, "value")
                         else "structured"
                     ),
                     colorize=handler_config.colorize
@@ -95,8 +95,8 @@ class LoggingManager:
                 return create_file_handler(
                     filename=handler_config.file_path or "app.log",
                     formatter_type=(
-                        handler_config.format.value 
-                        if hasattr(handler_config.format, "value") 
+                        handler_config.format.value
+                        if hasattr(handler_config.format, "value")
                         else "json"
                     ),
                     max_bytes=handler_config.max_file_size_mb * 1024 * 1024,
@@ -109,8 +109,8 @@ class LoggingManager:
                     facility=handler_config.syslog_facility,
                     address=handler_config.syslog_address,
                     formatter_type=(
-                        handler_config.format.value 
-                        if hasattr(handler_config.format, "value") 
+                        handler_config.format.value
+                        if hasattr(handler_config.format, "value")
                         else "json"
                     )
                 )
@@ -122,8 +122,8 @@ class LoggingManager:
                     headers=handler_config.remote_headers,
                     timeout=handler_config.remote_timeout,
                     formatter_type=(
-                        handler_config.format.value 
-                        if hasattr(handler_config.format, "value") 
+                        handler_config.format.value
+                        if hasattr(handler_config.format, "value")
                         else "json"
                     )
                 )

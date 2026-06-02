@@ -17,12 +17,13 @@ Code context extractor managing git, static analysis, and complexity metrics.
 """
 
 import asyncio
-import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+import re
+from typing import Any
 
-from argus.pattern_detector.models import LogEntry, TimeWindow
+from argus.pattern_detector.models import TimeWindow
+
 from .code_analysis_models import CodeAnalysisConfig, CodeChange
 
 
@@ -35,7 +36,7 @@ class CodeContextExtractor:
         if not self.repo_path.exists():
             raise ValueError("Repository path does not exist")
 
-    def _parse_git_log_output(self, output: str) -> List[CodeChange]:
+    def _parse_git_log_output(self, output: str) -> list[CodeChange]:
         """Parses raw git log output into a list of CodeChange objects."""
         commits = []
         for line in output.strip().split("\n"):
@@ -65,7 +66,7 @@ class CodeContextExtractor:
         return commits
 
     def _generate_code_changes_summary(
-        self, commits: List[CodeChange], time_window: TimeWindow
+        self, commits: list[CodeChange], time_window: TimeWindow
     ) -> str:
         """Generates a summary string for commits within the incident window."""
         # Calculate window end time based on start_time and duration_minutes
@@ -83,7 +84,7 @@ class CodeContextExtractor:
             f"{rollbacks} rollback/revert commits detected."
         )
 
-    async def _extract_git_context(self, time_window: TimeWindow) -> Dict[str, Any]:
+    async def _extract_git_context(self, time_window: TimeWindow) -> dict[str, Any]:
         """Runs git log command and extracts recent commits and change summaries."""
         try:
             process = await asyncio.create_subprocess_exec(
@@ -98,8 +99,8 @@ class CodeContextExtractor:
             )
 
             # Bypass Python 3.11/3.12 AsyncMock limitation with raw coroutine side_effects
-            from unittest.mock import Mock
             import inspect
+            from unittest.mock import Mock
             communicate_callable = process.communicate
             if isinstance(communicate_callable, Mock) and getattr(communicate_callable, "side_effect", None):
                 se = communicate_callable.side_effect
@@ -136,10 +137,10 @@ class CodeContextExtractor:
         except Exception as e:
             return {
                 "recent_commits": [],
-                "code_changes_summary": f"Git analysis failed: {str(e)}",
+                "code_changes_summary": f"Git analysis failed: {e!s}",
             }
 
-    async def _extract_error_related_files(self, time_window: TimeWindow) -> List[str]:
+    async def _extract_error_related_files(self, time_window: TimeWindow) -> list[str]:
         """Scans logs for file paths and line numbers linked to error context."""
         related = []
         for log in time_window.logs:
@@ -154,19 +155,19 @@ class CodeContextExtractor:
                     related.append(m)
         return related
 
-    async def _empty_static_analysis(self) -> Dict[str, Any]:
+    async def _empty_static_analysis(self) -> dict[str, Any]:
         """Returns default disabled static analysis results."""
         return {"enabled": False}
 
-    async def _empty_complexity_analysis(self) -> Dict[str, Any]:
+    async def _empty_complexity_analysis(self) -> dict[str, Any]:
         """Returns default disabled complexity metrics."""
         return {"enabled": False}
 
-    async def _empty_dependency_scan(self) -> List[Any]:
+    async def _empty_dependency_scan(self) -> list[Any]:
         """Returns default empty dependency vulnerabilities list."""
         return []
 
-    def _empty_context(self) -> Dict[str, Any]:
+    def _empty_context(self) -> dict[str, Any]:
         """Returns a default empty codebase context dictionary."""
         return {
             "changes_summary": "Code context extraction failed",
@@ -178,8 +179,8 @@ class CodeContextExtractor:
         }
 
     async def extract_code_context(
-        self, time_window: TimeWindow, services: List[str]
-    ) -> Dict[str, Any]:
+        self, time_window: TimeWindow, services: list[str]
+    ) -> dict[str, Any]:
         """Aggregates all analysis tasks with a timeout limit."""
         try:
             git_task = self._extract_git_context(time_window)
@@ -199,7 +200,7 @@ class CodeContextExtractor:
                 ),
                 timeout=self.config.analysis_timeout_seconds,
             )
-        except (asyncio.TimeoutError, Exception):
+        except (TimeoutError, Exception):
             return self._empty_context()
 
         git_res = results[0]

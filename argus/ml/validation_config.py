@@ -18,7 +18,7 @@ Validation configuration and model definitions for log quality.
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -26,12 +26,12 @@ class LogEntry:
     """Represents a single parsed log entry for quality validation."""
 
     timestamp: datetime
-    service_name: Optional[str] = None
-    error_message: Optional[str] = None
-    severity: Optional[str] = None
-    trace_id: Optional[str] = None
-    span_id: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    service_name: str | None = None
+    error_message: str | None = None
+    severity: str | None = None
+    trace_id: str | None = None
+    span_id: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.metadata is None:
@@ -55,7 +55,7 @@ class TimeWindow:
 
     start_time: datetime
     end_time: datetime
-    logs: List[LogEntry]
+    logs: list[LogEntry]
 
     def __post_init__(self) -> None:
         if self.start_time >= self.end_time:
@@ -76,7 +76,7 @@ class ValidationMetrics:
     """Helper utilities for formatting and generating empty validation metrics."""
 
     @staticmethod
-    def empty_metrics() -> Dict[str, Any]:
+    def empty_metrics() -> dict[str, Any]:
         """Returns default empty metrics dictionary."""
         return {
             "completeness": 0.0,
@@ -123,14 +123,14 @@ class ValidationRules:
         return bool(log.service_name and log.error_message and log.severity)
 
     @staticmethod
-    def is_noisy_severity(severity: Optional[str]) -> bool:
+    def is_noisy_severity(severity: str | None) -> bool:
         """Checks if severity is noisy (e.g. DEBUG, TRACE)."""
         if not severity:
             return False
         return severity.upper() in ("DEBUG", "TRACE")
 
     @staticmethod
-    def is_message_too_short(message: Optional[str]) -> bool:
+    def is_message_too_short(message: str | None) -> bool:
         """Checks if message is too short (less than 10 characters)."""
         if not message:
             return True

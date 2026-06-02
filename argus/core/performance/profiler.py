@@ -376,7 +376,7 @@ class PerformanceProfiler:
 
         start_time = time.time()
         memory_before = (
-            self._async_profiler._get_memory_usage() 
+            self._async_profiler._get_memory_usage()
             if self._config.enable_memory_profiling else 0
         )
 
@@ -387,7 +387,7 @@ class PerformanceProfiler:
             end_time = time.time()
             duration = end_time - start_time
             memory_after = (
-                self._async_profiler._get_memory_usage() 
+                self._async_profiler._get_memory_usage()
                 if self._config.enable_memory_profiling else 0
             )
             memory_delta = memory_after - memory_before

@@ -21,10 +21,10 @@ This module provides a base template class that handles common provider function
 making it easy to implement new providers with minimal code.
 """
 
+from abc import abstractmethod
 import asyncio
 import logging
-from abc import abstractmethod
-from typing import Any, Dict, List
+from typing import Any
 
 from ..base import LLMProvider, LLMRequest, LLMResponse, ModelType
 from ..config import LLMProviderConfig
@@ -66,17 +66,17 @@ class BaseProviderTemplate(LLMProvider):
 
     # Abstract methods that must be implemented by subclasses
     @abstractmethod
-    async def _make_api_request(self, request: LLMRequest) -> Dict[str, Any]:
+    async def _make_api_request(self, request: LLMRequest) -> dict[str, Any]:
         """Make the actual API request to the provider. Must be implemented."""
         pass
 
     @abstractmethod
-    def _parse_response(self, response_data: Dict[str, Any]) -> LLMResponse:
+    def _parse_response(self, response_data: dict[str, Any]) -> LLMResponse:
         """Parse the API response into LLMResponse format. Must be implemented."""
         pass
 
     @abstractmethod
-    def _get_model_mapping(self) -> Dict[ModelType, str]:
+    def _get_model_mapping(self) -> dict[ModelType, str]:
         """Get the mapping of semantic types to actual model names. Must be implemented."""
         pass
 
@@ -138,11 +138,11 @@ class BaseProviderTemplate(LLMProvider):
         """Check if provider supports tool calling. Override in subclasses."""
         return False
 
-    def get_available_models(self) -> Dict[ModelType, str]:
+    def get_available_models(self) -> dict[ModelType, str]:
         """Get available models mapped to semantic types."""
         return self._get_model_mapping()
 
-    async def embeddings(self, text: str) -> List[float]:
+    async def embeddings(self, text: str) -> list[float]:
         """Generate embeddings for the given text. Override if supported."""
         raise NotImplementedError(f"Embeddings not supported by {self.provider_name}")
 
@@ -168,7 +168,7 @@ class BaseProviderTemplate(LLMProvider):
             raise ValueError("Base URL must start with http:// or https://")
 
     # Helper methods for common functionality
-    def _get_headers(self) -> Dict[str, str]:
+    def _get_headers(self) -> dict[str, str]:
         """Get common HTTP headers for API requests."""
         return {
             "Authorization": f"Bearer {self.api_key}",
@@ -176,7 +176,7 @@ class BaseProviderTemplate(LLMProvider):
             "User-Agent": f"argus/{self.provider_name}",
         }
 
-    def _get_request_payload(self, request: LLMRequest) -> Dict[str, Any]:
+    def _get_request_payload(self, request: LLMRequest) -> dict[str, Any]:
         """Convert LLMRequest to provider-specific payload format."""
         # Default OpenAI-compatible format
         return {
@@ -187,7 +187,7 @@ class BaseProviderTemplate(LLMProvider):
             "stream": False,
         }
 
-    def _parse_openai_response(self, response_data: Dict[str, Any]) -> LLMResponse:
+    def _parse_openai_response(self, response_data: dict[str, Any]) -> LLMResponse:
         """Parse OpenAI-compatible response format."""
         choices = response_data.get("choices", [])
         if not choices:

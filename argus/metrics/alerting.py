@@ -15,7 +15,7 @@
 # argus/metrics/alerting.py
 
 import asyncio
-from typing import Any, Dict, List
+from typing import Any
 
 from .metrics_manager import MetricsManager
 from .models import Alert
@@ -26,7 +26,7 @@ class AlertManager:
     Manages alerts based on metrics and thresholds.
     """
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """
         Initialize the AlertManager.
 
@@ -35,9 +35,9 @@ class AlertManager:
         """
         self.thresholds = config.get("alert_thresholds", {})
         self.notification_channels = config.get("notification_channels", [])
-        self.alert_history: List[Alert] = []
+        self.alert_history: list[Alert] = []
 
-    def check_metrics(self, metrics_manager: MetricsManager) -> List[Alert]:
+    def check_metrics(self, metrics_manager: MetricsManager) -> list[Alert]:
         """
         Check metrics for threshold violations and generate alerts.
 
@@ -68,7 +68,7 @@ class AlertManager:
         self.alert_history.extend(alerts)
         return alerts
 
-    async def send_alerts(self, alerts: List[Alert]) -> None:
+    async def send_alerts(self, alerts: list[Alert]) -> None:
         """
         Send alerts to configured notification channels.
 

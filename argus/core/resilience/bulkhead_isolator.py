@@ -170,7 +170,7 @@ class BulkheadIsolator:
             failed_operations = total_operations - successful_operations
 
             success_rate = (
-                (successful_operations / total_operations * 100) 
+                (successful_operations / total_operations * 100)
                 if total_operations > 0 else 0.0
             )
 
@@ -181,7 +181,7 @@ class BulkheadIsolator:
             # Calculate current utilization
             current_usage = len(self._active_operations)
             utilization_rate = (
-                (current_usage / self._config.max_concurrency * 100) 
+                (current_usage / self._config.max_concurrency * 100)
                 if self._config.max_concurrency > 0 else 0.0
             )
 

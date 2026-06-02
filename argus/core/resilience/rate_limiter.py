@@ -190,13 +190,13 @@ class RateLimiter:
             failed_requests = sum(1 for req in self._request_history if req["success"] is False)
 
             success_rate = (
-                (successful_requests / total_requests * 100) 
+                (successful_requests / total_requests * 100)
                 if total_requests > 0 else 0.0
             )
 
             # Calculate requests per second
             requests_per_second = (
-                current_requests / self._config.window_seconds 
+                current_requests / self._config.window_seconds
                 if self._config.window_seconds > 0 else 0.0
             )
 
@@ -211,7 +211,7 @@ class RateLimiter:
                 "failed_requests": failed_requests,
                 "success_rate": success_rate,
                 "utilization_rate": (
-                    (current_requests / self._config.limit * 100) 
+                    (current_requests / self._config.limit * 100)
                     if self._config.limit > 0 else 0.0
                 ),
                 "config": {
