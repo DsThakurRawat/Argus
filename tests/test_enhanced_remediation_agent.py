@@ -24,10 +24,10 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from gemini_sre_agent.analysis_agent import RemediationPlan
-from gemini_sre_agent.config.source_control_global import SourceControlGlobalConfig
-from gemini_sre_agent.enhanced_remediation_agent import EnhancedRemediationAgent
-from gemini_sre_agent.remediation_agent_adapter import RemediationAgentAdapter
+from argus.analysis_agent import RemediationPlan
+from argus.config.source_control_global import SourceControlGlobalConfig
+from argus.enhanced_remediation_agent import EnhancedRemediationAgent
+from argus.remediation_agent_adapter import RemediationAgentAdapter
 
 
 class TestEnhancedRemediationAgent:

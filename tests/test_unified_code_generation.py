@@ -25,11 +25,11 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.ml.enhanced_analysis_agent import (
+from argus.ml.enhanced_analysis_agent import (
     EnhancedAnalysisAgent,
     EnhancedAnalysisConfig,
 )
-from gemini_sre_agent.ml.prompt_context_models import (
+from argus.ml.prompt_context_models import (
     IssueContext,
     IssueType,
 )

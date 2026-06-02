@@ -1,0 +1,86 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.11, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/divyansh-rawat/Argus/tests
+configfile: pytest.ini
+plugins: anyio-4.10.0, asyncio-1.1.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 14 items
+
+tests/llm/test_factory_core.py ..EEFEEE.EE.E.                            [100%]
+
+==================================== ERRORS ====================================
+____ ERROR at setup of TestLLMProviderFactory.test_create_provider_success _____
+tests/llm/test_factory_core.py:107: in mock_config
+    return LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='test', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+_ ERROR at setup of TestLLMProviderFactory.test_create_provider_force_recreate _
+tests/llm/test_factory_core.py:107: in mock_config
+    return LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='test', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+_ ERROR at setup of TestLLMProviderFactory.test_create_provider_invalid_config _
+tests/llm/test_factory_core.py:107: in mock_config
+    return LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='test', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+_ ERROR at setup of TestLLMProviderFactory.test_create_provider_creation_failure _
+tests/llm/test_factory_core.py:107: in mock_config
+    return LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='test', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+_____ ERROR at setup of TestLLMProviderFactory.test_get_provider_existing ______
+tests/llm/test_factory_core.py:107: in mock_config
+    return LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='test', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+_______ ERROR at setup of TestLLMProviderFactory.test_get_all_providers ________
+tests/llm/test_factory_core.py:107: in mock_config
+    return LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='test', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+____ ERROR at setup of TestLLMProviderFactory.test_remove_provider_existing ____
+tests/llm/test_factory_core.py:107: in mock_config
+    return LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='test', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+________ ERROR at setup of TestLLMProviderFactory.test_clear_providers _________
+tests/llm/test_factory_core.py:107: in mock_config
+    return LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='test', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+=================================== FAILURES ===================================
+_________ TestLLMProviderFactory.test_create_provider_unsupported_type _________
+tests/llm/test_factory_core.py:172: in test_create_provider_unsupported_type
+    config = LLMProviderConfig(
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for LLMProviderConfig
+E   provider
+E     Input should be 'gemini', 'ollama', 'claude', 'openai', 'grok', 'bedrock', 'anthropic', 'groq', 'azure', 'mistral', 'xai', 'perplexity' or 'openrouter' [type=literal_error, input_value='unsupported', input_type=str]
+E       For further information visit https://errors.pydantic.dev/2.11/v/literal_error
+=========================== short test summary info ============================
+FAILED tests/llm/test_factory_core.py::TestLLMProviderFactory::test_create_provider_unsupported_type
+ERROR tests/llm/test_factory_core.py::TestLLMProviderFactory::test_create_provider_success
+ERROR tests/llm/test_factory_core.py::TestLLMProviderFactory::test_create_provider_force_recreate
+ERROR tests/llm/test_factory_core.py::TestLLMProviderFactory::test_create_provider_invalid_config
+ERROR tests/llm/test_factory_core.py::TestLLMProviderFactory::test_create_provider_creation_failure
+ERROR tests/llm/test_factory_core.py::TestLLMProviderFactory::test_get_provider_existing
+ERROR tests/llm/test_factory_core.py::TestLLMProviderFactory::test_get_all_providers
+ERROR tests/llm/test_factory_core.py::TestLLMProviderFactory::test_remove_provider_existing
+ERROR tests/llm/test_factory_core.py::TestLLMProviderFactory::test_clear_providers
+==================== 1 failed, 5 passed, 8 errors in 1.79s =====================

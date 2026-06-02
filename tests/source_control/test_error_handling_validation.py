@@ -18,14 +18,14 @@ Unit tests for error handling configuration validation.
 
 import pytest
 
-from gemini_sre_agent.source_control.error_handling.core import (
+from argus.source_control.error_handling.core import (
     CircuitBreakerConfig,
     CircuitState,
     ErrorType,
     OperationCircuitBreakerConfig,
     RetryConfig,
 )
-from gemini_sre_agent.source_control.error_handling.validation import (
+from argus.source_control.error_handling.validation import (
     ErrorHandlingConfigValidator,
 )
 

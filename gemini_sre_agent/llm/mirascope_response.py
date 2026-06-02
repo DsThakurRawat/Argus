@@ -161,7 +161,7 @@ class JSONStructureValidator(ResponseValidator):
 class RegexPatternValidator(ResponseValidator):
     """Validates response against regex patterns."""
 
-    def __init__(self, patterns: Dict[str, str]: str) -> None:
+    def __init__(self, patterns: Dict[str, str]) -> None:
         self.patterns = {
             name: re.compile(pattern) for name, pattern in patterns.items()
         }

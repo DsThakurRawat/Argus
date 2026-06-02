@@ -22,13 +22,13 @@ including database, API, and security error templates.
 """
 
 
-from gemini_sre_agent.ml.prompt_context_models import (
+from argus.ml.prompt_context_models import (
     IssueContext,
     IssueType,
     PromptContext,
     RepositoryContext,
 )
-from gemini_sre_agent.ml.specialized_prompt_templates import (
+from argus.ml.specialized_prompt_templates import (
     APIErrorPromptTemplate,
     DatabaseErrorPromptTemplate,
     SecurityErrorPromptTemplate,

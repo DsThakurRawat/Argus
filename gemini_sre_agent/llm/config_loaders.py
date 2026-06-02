@@ -264,7 +264,7 @@ class EnvironmentConfigLoader(BaseConfigLoader):
 class FileConfigLoader(BaseConfigLoader):
     """Loader for file-based configuration (YAML/JSON)."""
 
-    def __init__(self, file_path: Union[str, Path]: str, priority: int = 1) -> None:
+    def __init__(self, file_path: Union[str, Path], priority: int = 1) -> None:
         """
         Initialize file loader.
 
@@ -337,7 +337,7 @@ class FileConfigLoader(BaseConfigLoader):
 class ProgrammaticConfigLoader(BaseConfigLoader):
     """Loader for programmatically provided configuration."""
 
-    def __init__(self, config_data: Dict[str, Any]: str, priority: int = 3) -> None:
+    def __init__(self, config_data: Dict[str, Any], priority: int = 3) -> None:
         """
         Initialize programmatic loader.
 

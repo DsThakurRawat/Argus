@@ -25,15 +25,15 @@ import asyncio
 
 import pytest
 
-from gemini_sre_agent.ml.adaptive_prompt_strategy import (
+from argus.ml.adaptive_prompt_strategy import (
     AdaptivePromptStrategy,
     StrategyConfig,
 )
-from gemini_sre_agent.ml.caching import (
+from argus.ml.caching import (
     IssuePatternCache,
     RepositoryContextCache,
 )
-from gemini_sre_agent.ml.performance import (
+from argus.ml.performance import (
     PerformanceMonitor,
     get_performance_monitor,
     get_performance_summary,
@@ -274,7 +274,7 @@ class TestModelSelectionOptimization:
     @pytest.fixture
     def high_complexity_context(self) -> None:
         """High complexity task context."""
-        from gemini_sre_agent.ml.prompt_context_models import TaskContext
+        from argus.ml.prompt_context_models import TaskContext
 
         return TaskContext(
             task_type="complex_analysis",
@@ -291,7 +291,7 @@ class TestModelSelectionOptimization:
     @pytest.fixture
     def low_complexity_context(self) -> None:
         """Low complexity task context."""
-        from gemini_sre_agent.ml.prompt_context_models import TaskContext
+        from argus.ml.prompt_context_models import TaskContext
 
         return TaskContext(
             task_type="simple_fix",
@@ -331,7 +331,7 @@ class TestModelSelectionOptimization:
 
     def test_medium_complexity_model_selection(self, strategy: str) -> None:
         """Test model selection for medium complexity tasks."""
-        from gemini_sre_agent.ml.prompt_context_models import TaskContext
+        from argus.ml.prompt_context_models import TaskContext
 
         medium_context = TaskContext(
             task_type="medium_analysis",

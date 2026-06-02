@@ -14,8 +14,8 @@
 
 import pytest
 
-from gemini_sre_agent.llm.capabilities.database import CapabilityDatabase
-from gemini_sre_agent.llm.capabilities.models import ModelCapabilities, ModelCapability
+from argus.llm.capabilities.database import CapabilityDatabase
+from argus.llm.capabilities.models import ModelCapabilities, ModelCapability
 
 
 @pytest.fixture

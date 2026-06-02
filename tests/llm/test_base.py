@@ -23,7 +23,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from gemini_sre_agent.llm.base import (
+from argus.llm.base import (
     CircuitBreaker,
     ErrorSeverity,
     LLMProvider,

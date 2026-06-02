@@ -19,15 +19,15 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.llm.base import ModelType, ProviderType
-from gemini_sre_agent.llm.model_registry import ModelCapability, ModelInfo
-from gemini_sre_agent.llm.model_scorer import (
+from argus.llm.base import ModelType, ProviderType
+from argus.llm.model_registry import ModelCapability, ModelInfo
+from argus.llm.model_scorer import (
     ModelScore,
     ScoringContext,
     ScoringDimension,
     ScoringWeights,
 )
-from gemini_sre_agent.llm.strategy_manager import (
+from argus.llm.strategy_manager import (
     CostOptimizedStrategy,
     HybridStrategy,
     OptimizationGoal,
@@ -185,7 +185,7 @@ class TestStrategyManager:
         assert len(result.fallback_models) <= 3
         assert "quality" in result.reasoning.lower()
 
-    @patch("gemini_sre_agent.llm.strategy_manager.datetime")
+    @patch("argus.llm.strategy_manager.datetime")
     def test_select_model_time_based_business_hours(
         self, mock_datetime, strategy_manager, mock_model_info, strategy_context
     ):
@@ -203,7 +203,7 @@ class TestStrategyManager:
         assert result.metadata["is_business_hours"] is True
         assert "business hours" in result.reasoning
 
-    @patch("gemini_sre_agent.llm.strategy_manager.datetime")
+    @patch("argus.llm.strategy_manager.datetime")
     def test_select_model_time_based_off_hours(
         self, mock_datetime, strategy_manager, mock_model_info, strategy_context
     ):
@@ -458,7 +458,7 @@ class TestTimeBasedStrategy:
         assert strategy.name == "time_based"
         assert strategy.model_scorer == mock_model_scorer
 
-    @patch("gemini_sre_agent.llm.strategy_manager.datetime")
+    @patch("argus.llm.strategy_manager.datetime")
     def test_is_business_hours(
         self, mock_datetime: str, mock_model_scorer: str
     ) -> None:
@@ -473,7 +473,7 @@ class TestTimeBasedStrategy:
         mock_datetime.now.return_value.time.return_value = dt_time(20, 0)
         assert strategy._is_business_hours() is False
 
-    @patch("gemini_sre_agent.llm.strategy_manager.datetime")
+    @patch("argus.llm.strategy_manager.datetime")
     def test_select_model_business_hours(
         self, mock_datetime, mock_model_scorer, mock_model_info, strategy_context
     ):

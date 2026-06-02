@@ -203,6 +203,6 @@ class BaseProviderTemplate(LLMProvider):
             finish_reason=choice.get("finish_reason", "stop"),
         )
 
-    def _get_provider_specific_config(self, key: str, default: Any : Optional[str] = None) -> Any:
+    def _get_provider_specific_config(self, key: str, default: Any = None) -> Any:
         """Get provider-specific configuration value."""
         return self.provider_specific.get(key, default)

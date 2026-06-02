@@ -14,10 +14,10 @@
 
 """LLM module tests."""
 
-from gemini_sre_agent.llm.base import *
-from gemini_sre_agent.llm.config_manager import *
-from gemini_sre_agent.llm.factory import *
-from gemini_sre_agent.llm.providers import *
+from argus.llm.base import *
+from argus.llm.config_manager import *
+from argus.llm.factory import *
+from argus.llm.providers import *
 
 
 class TestLLMBase:

@@ -46,7 +46,7 @@ from .gitlab_models import GitLabCredentials
 class GitLabProvider(BaseSourceControlProvider):
     """GitLab provider implementation."""
 
-    def __init__(self, config: Dict[str, Any]: str) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """Initialize the GitLab provider."""
         super().__init__(config)
         self.repo_config = GitLabRepositoryConfig(**config)

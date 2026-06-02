@@ -17,8 +17,8 @@ from unittest.mock import MagicMock, patch
 from github import GithubException  # Import GithubException for testing
 import pytest
 
-from gemini_sre_agent.analysis_agent import RemediationPlan
-from gemini_sre_agent.remediation_agent import RemediationAgent
+from argus.analysis_agent import RemediationPlan
+from argus.remediation_agent import RemediationAgent
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ def mock_github() -> None:
     Mock Github.
 
     """
-    with patch("gemini_sre_agent.remediation_agent.Github") as mock_github:
+    with patch("argus.remediation_agent.Github") as mock_github:
         yield mock_github
 
 

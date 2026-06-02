@@ -21,14 +21,14 @@ Tests for source control global configuration models.
 from pydantic import ValidationError
 import pytest
 
-from gemini_sre_agent.config.source_control_credentials import CredentialConfig
-from gemini_sre_agent.config.source_control_global import (
+from argus.config.source_control_credentials import CredentialConfig
+from argus.config.source_control_global import (
     CredentialStore,
     SourceControlConfig,
     SourceControlGlobalConfig,
 )
-from gemini_sre_agent.config.source_control_remediation import RemediationStrategyConfig
-from gemini_sre_agent.config.source_control_repositories import (
+from argus.config.source_control_remediation import RemediationStrategyConfig
+from argus.config.source_control_repositories import (
     GitHubRepositoryConfig,
     GitLabRepositoryConfig,
 )

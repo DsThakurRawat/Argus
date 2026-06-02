@@ -26,7 +26,7 @@ from unittest.mock import patch
 from pydantic import ValidationError
 import pytest
 
-from gemini_sre_agent.config.source_control_credentials import CredentialConfig
+from argus.config.source_control_credentials import CredentialConfig
 
 
 class TestCredentialStorageSecurity:

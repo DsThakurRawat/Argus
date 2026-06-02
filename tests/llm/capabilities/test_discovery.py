@@ -16,10 +16,10 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.llm.capabilities.discovery import CapabilityDiscovery
-from gemini_sre_agent.llm.capabilities.models import ModelCapabilities, ModelCapability
-from gemini_sre_agent.llm.common.enums import ModelType
-from gemini_sre_agent.llm.config import LLMProviderConfig, ModelConfig
+from argus.llm.capabilities.discovery import CapabilityDiscovery
+from argus.llm.capabilities.models import ModelCapabilities, ModelCapability
+from argus.llm.common.enums import ModelType
+from argus.llm.config import LLMProviderConfig, ModelConfig
 
 
 @pytest.fixture

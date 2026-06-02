@@ -28,25 +28,25 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from gemini_sre_agent.source_control.error_handling.advanced_circuit_breaker import (
+from argus.source_control.error_handling.advanced_circuit_breaker import (
     AdvancedCircuitBreaker,
 )
-from gemini_sre_agent.source_control.error_handling.core import (
+from argus.source_control.error_handling.core import (
     CircuitBreakerConfig,
     CircuitBreakerTimeoutError,
     CircuitState,
     ErrorType,
 )
-from gemini_sre_agent.source_control.error_handling.custom_fallback_strategies import (
+from argus.source_control.error_handling.custom_fallback_strategies import (
     CustomFallbackManager,
     FallbackStrategyBase,
 )
-from gemini_sre_agent.source_control.error_handling.error_recovery_automation import (
+from argus.source_control.error_handling.error_recovery_automation import (
     CredentialRefreshAction,
     RetryWithBackoffAction,
     SelfHealingManager,
 )
-from gemini_sre_agent.source_control.error_handling.monitoring_dashboard import (
+from argus.source_control.error_handling.monitoring_dashboard import (
     MonitoringDashboard,
 )
 

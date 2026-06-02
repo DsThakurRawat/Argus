@@ -23,9 +23,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from pydantic import HttpUrl
 import pytest
 
-from gemini_sre_agent.llm.base import LLMRequest, LLMResponse, ModelType
-from gemini_sre_agent.llm.config import LLMProviderConfig
-from gemini_sre_agent.llm.providers.anthropic_provider import AnthropicProvider
+from argus.llm.base import LLMRequest, LLMResponse, ModelType
+from argus.llm.config import LLMProviderConfig
+from argus.llm.providers.anthropic_provider import AnthropicProvider
 
 
 @pytest.fixture
@@ -52,7 +52,7 @@ def mock_config() -> None:
 def provider(mock_config: str) -> None:
     """Create an AnthropicProvider instance with mocked dependencies."""
     with patch(
-        "gemini_sre_agent.llm.providers.anthropic_provider.anthropic.AsyncAnthropic"
+        "argus.llm.providers.anthropic_provider.anthropic.AsyncAnthropic"
     ) as mock_client:
         mock_client_instance = MagicMock()
         mock_client.return_value = mock_client_instance
@@ -67,7 +67,7 @@ class TestAnthropicProvider:
     def test_provider_initialization(self, mock_config: str) -> None:
         """Test provider initialization."""
         with patch(
-            "gemini_sre_agent.llm.providers.anthropic_provider.anthropic.AsyncAnthropic"
+            "argus.llm.providers.anthropic_provider.anthropic.AsyncAnthropic"
         ):
             provider = AnthropicProvider(mock_config)
             assert provider.provider_type == "anthropic"

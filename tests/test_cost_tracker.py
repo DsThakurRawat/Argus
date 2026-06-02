@@ -21,8 +21,8 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.ml.cost_config import BudgetConfig, UsageRecord
-from gemini_sre_agent.ml.cost_tracker import CostTracker
+from argus.ml.cost_config import BudgetConfig, UsageRecord
+from argus.ml.cost_tracker import CostTracker
 
 
 class TestCostTracker:
@@ -208,7 +208,7 @@ class TestCostTracker:
         assert cost_tracker.daily_usage == 0.0
         assert cost_tracker.monthly_usage == 0.0
 
-    @patch("gemini_sre_agent.ml.cost_tracker.date")
+    @patch("argus.ml.cost_tracker.date")
     @pytest.mark.asyncio
     async def test_daily_usage_reset_new_day(
         self, mock_date, cost_tracker: CostTracker
@@ -233,7 +233,7 @@ class TestCostTracker:
         assert cost_tracker.daily_usage == 0.0
         assert cost_tracker.current_date == new_date
 
-    @patch("gemini_sre_agent.ml.cost_tracker.date")
+    @patch("argus.ml.cost_tracker.date")
     @pytest.mark.asyncio
     async def test_monthly_usage_reset_new_month(
         self, mock_date, cost_tracker: CostTracker

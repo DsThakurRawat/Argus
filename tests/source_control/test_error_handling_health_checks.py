@@ -22,8 +22,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.source_control.error_handling.core import CircuitState
-from gemini_sre_agent.source_control.error_handling.health_checks import (
+from argus.source_control.error_handling.core import CircuitState
+from argus.source_control.error_handling.health_checks import (
     HealthCheckManager,
 )
 

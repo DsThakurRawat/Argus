@@ -18,9 +18,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from gemini_sre_agent.config.source_control_global import SourceControlGlobalConfig
-from gemini_sre_agent.source_control.provider_factory import ProviderFactory
-from gemini_sre_agent.source_control.repository_manager import RepositoryManager
+from argus.config.source_control_global import SourceControlGlobalConfig
+from argus.source_control.provider_factory import ProviderFactory
+from argus.source_control.repository_manager import RepositoryManager
 
 
 class TestRepositoryManager:
@@ -247,7 +247,7 @@ class TestRepositoryManager:
         """Test listing branches across repositories."""
         from datetime import datetime
 
-        from gemini_sre_agent.source_control.models import BranchInfo
+        from argus.source_control.models import BranchInfo
 
         mock_branches = [
             BranchInfo(
@@ -336,5 +336,5 @@ class TestRepositoryManager:
         assert repository_manager.logger is not None
         assert (
             repository_manager.logger.name
-            == "gemini_sre_agent.source_control.repository_manager"
+            == "argus.source_control.repository_manager"
         )

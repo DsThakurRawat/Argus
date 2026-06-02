@@ -45,7 +45,7 @@ from .monitoring import MonitoringManager
 class BaseSourceControlProvider(SourceControlProvider):
     """Base implementation of SourceControlProvider with common functionality."""
 
-    def __init__(self, config: Dict[str, Any]: str) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """Initialize with configuration."""
         super().__init__(config)
         self._client = None

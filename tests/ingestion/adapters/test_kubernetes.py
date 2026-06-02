@@ -22,14 +22,14 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.config.ingestion_config import KubernetesConfig, SourceType
-from gemini_sre_agent.ingestion.adapters.kubernetes import KubernetesAdapter
-from gemini_sre_agent.ingestion.interfaces.core import (
+from argus.config.ingestion_config import KubernetesConfig, SourceType
+from argus.ingestion.adapters.kubernetes import KubernetesAdapter
+from argus.ingestion.interfaces.core import (
     LogEntry,
     LogSeverity,
     SourceHealth,
 )
-from gemini_sre_agent.ingestion.interfaces.errors import SourceConnectionError
+from argus.ingestion.interfaces.errors import SourceConnectionError
 
 
 class TestKubernetesAdapter:
@@ -63,7 +63,7 @@ class TestKubernetesAdapter:
         assert not adapter.running
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.kubernetes.kubernetes")
+    @patch("argus.ingestion.adapters.kubernetes.kubernetes")
     async def test_start_success(self, mock_kubernetes, adapter):
         """Test successful adapter start."""
         # Mock kubernetes client
@@ -81,7 +81,7 @@ class TestKubernetesAdapter:
         assert adapter.client is not None
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.kubernetes.kubernetes")
+    @patch("argus.ingestion.adapters.kubernetes.kubernetes")
     async def test_start_invalid_namespace(self, mock_kubernetes, adapter):
         """Test adapter start with invalid namespace."""
         # Mock kubernetes client
@@ -104,7 +104,7 @@ class TestKubernetesAdapter:
         assert not adapter.running
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.kubernetes.kubernetes")
+    @patch("argus.ingestion.adapters.kubernetes.kubernetes")
     async def test_get_logs_empty(self, mock_kubernetes, adapter):
         """Test getting logs when no pods exist."""
         # Mock kubernetes client
@@ -126,7 +126,7 @@ class TestKubernetesAdapter:
         assert isinstance(logs, list)
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.kubernetes.kubernetes")
+    @patch("argus.ingestion.adapters.kubernetes.kubernetes")
     async def test_get_logs_with_content(self, mock_kubernetes, adapter):
         """Test getting logs from Kubernetes pods with content."""
         # Mock kubernetes client
@@ -229,7 +229,7 @@ class TestKubernetesAdapter:
         assert returned_config == config
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.kubernetes.kubernetes")
+    @patch("argus.ingestion.adapters.kubernetes.kubernetes")
     async def test_pod_discovery(self, mock_kubernetes, adapter):
         """Test pod discovery functionality."""
         # Mock kubernetes client
@@ -264,7 +264,7 @@ class TestKubernetesAdapter:
         assert "other-pod" not in pod_names
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.kubernetes.kubernetes")
+    @patch("argus.ingestion.adapters.kubernetes.kubernetes")
     async def test_container_filtering(self, mock_kubernetes, adapter):
         """Test container name filtering."""
         # Mock kubernetes client
@@ -293,7 +293,7 @@ class TestKubernetesAdapter:
         assert "init" not in container_names
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.kubernetes.kubernetes")
+    @patch("argus.ingestion.adapters.kubernetes.kubernetes")
     async def test_kubernetes_api_error_handling(self, mock_kubernetes, adapter):
         """Test handling of Kubernetes API errors."""
         # Mock kubernetes client
@@ -311,7 +311,7 @@ class TestKubernetesAdapter:
             await adapter.start()
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ingestion.adapters.kubernetes.kubernetes")
+    @patch("argus.ingestion.adapters.kubernetes.kubernetes")
     async def test_log_parsing(self, mock_kubernetes, adapter):
         """Test log parsing functionality."""
         # Mock kubernetes client

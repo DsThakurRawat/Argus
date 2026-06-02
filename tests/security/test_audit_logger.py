@@ -19,7 +19,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.security.audit_logger import (
+from argus.security.audit_logger import (
     AuditEvent,
     AuditEventType,
     AuditLogger,

@@ -40,7 +40,7 @@ from .models import (
 class SourceControlProvider(ABC):
     """Abstract base class defining the interface for source control providers."""
 
-    def __init__(self, config: Dict[str, Any]: str) -> None:
+    def __init__(self, config: Dict[str, Any]) -> None:
         """Initialize with configuration."""
         self.config = config
         self._initialized = False
@@ -226,7 +226,7 @@ class SourceControlProvider(ABC):
         if not self._initialized:
             await self.initialize()
 
-    def get_config_value(self, key: str, default: Any : Optional[str] = None) -> Any:
+    def get_config_value(self, key: str, default: Any = None) -> Any:
         """Get a configuration value with optional default."""
         return self.config.get(key, default)
 

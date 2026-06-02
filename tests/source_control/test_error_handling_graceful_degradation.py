@@ -22,12 +22,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.source_control.error_handling.core import ErrorType
-from gemini_sre_agent.source_control.error_handling.graceful_degradation import (
+from argus.source_control.error_handling.core import ErrorType
+from argus.source_control.error_handling.graceful_degradation import (
     GracefulDegradationManager,
     create_graceful_degradation_manager,
 )
-from gemini_sre_agent.source_control.error_handling.resilient_operations import (
+from argus.source_control.error_handling.resilient_operations import (
     ResilientOperationManager,
 )
 

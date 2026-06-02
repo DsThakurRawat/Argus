@@ -23,8 +23,8 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from gemini_sre_agent.ml.log_quality_validator import LogQualityValidator
-from gemini_sre_agent.ml.validation_config import (
+from argus.ml.log_quality_validator import LogQualityValidator
+from argus.ml.validation_config import (
     LogEntry,
     QualityThresholds,
     TimeWindow,

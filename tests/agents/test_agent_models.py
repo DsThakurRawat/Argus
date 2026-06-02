@@ -24,7 +24,7 @@ import json
 from pydantic import ValidationError
 import pytest
 
-from gemini_sre_agent.agents.agent_models import (
+from argus.agents.agent_models import (
     ActionType,
     AnalysisFinding,
     AnalysisResult,
@@ -47,7 +47,7 @@ from gemini_sre_agent.agents.agent_models import (
     create_remediation_plan,
     create_triage_result,
 )
-from gemini_sre_agent.agents.agent_models import ValidationError as ModelValidationError
+from argus.agents.agent_models import ValidationError as ModelValidationError
 
 
 class TestBaseAgentResponse:
@@ -837,7 +837,7 @@ class TestModelRegistry:
 
     def test_get_response_model(self) -> None:
         """Test getting response models by agent type."""
-        from gemini_sre_agent.agents.agent_models import get_response_model
+        from argus.agents.agent_models import get_response_model
 
         assert get_response_model("triage") == TriageResult
         assert get_response_model("analysis") == AnalysisResult
@@ -848,7 +848,7 @@ class TestModelRegistry:
 
     def test_get_response_model_invalid(self) -> None:
         """Test getting response model for invalid agent type."""
-        from gemini_sre_agent.agents.agent_models import get_response_model
+        from argus.agents.agent_models import get_response_model
 
         with pytest.raises(ValueError) as exc_info:
             get_response_model("invalid_type")
@@ -857,7 +857,7 @@ class TestModelRegistry:
 
     def test_validate_response_model(self) -> None:
         """Test validating response model from raw data."""
-        from gemini_sre_agent.agents.agent_models import validate_response_model
+        from argus.agents.agent_models import validate_response_model
 
         raw_data = {
             "agent_id": "test-agent-1",

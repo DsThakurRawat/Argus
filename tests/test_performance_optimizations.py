@@ -25,12 +25,12 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from gemini_sre_agent.ml.caching import (
+from argus.ml.caching import (
     ContextCache,
     IssuePatternCache,
     RepositoryContextCache,
 )
-from gemini_sre_agent.ml.performance import (
+from argus.ml.performance import (
     AnalysisConfig,
     CacheConfig,
     ModelPerformanceConfig,

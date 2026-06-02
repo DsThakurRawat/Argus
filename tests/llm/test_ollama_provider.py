@@ -23,9 +23,9 @@ from unittest.mock import MagicMock, patch
 from pydantic import HttpUrl
 import pytest
 
-from gemini_sre_agent.llm.base import LLMRequest, LLMResponse, ModelType
-from gemini_sre_agent.llm.config import LLMProviderConfig
-from gemini_sre_agent.llm.providers.ollama_provider import OllamaProvider
+from argus.llm.base import LLMRequest, LLMResponse, ModelType
+from argus.llm.config import LLMProviderConfig
+from argus.llm.providers.ollama_provider import OllamaProvider
 
 
 @pytest.fixture
@@ -53,7 +53,7 @@ def mock_config() -> None:
 def provider(mock_config: str) -> None:
     """Create an OllamaProvider instance with mocked dependencies."""
     with patch(
-        "gemini_sre_agent.llm.providers.ollama_provider.ollama.Client"
+        "argus.llm.providers.ollama_provider.ollama.Client"
     ) as mock_client:
         mock_client_instance = MagicMock()
         mock_client.return_value = mock_client_instance
@@ -67,7 +67,7 @@ class TestOllamaProvider:
 
     def test_provider_initialization(self, mock_config: str) -> None:
         """Test provider initialization."""
-        with patch("gemini_sre_agent.llm.providers.ollama_provider.ollama.Client"):
+        with patch("argus.llm.providers.ollama_provider.ollama.Client"):
             provider = OllamaProvider(mock_config)
             assert provider.provider_type == "ollama"
             assert provider.model == "llama3.1:8b"

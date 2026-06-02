@@ -20,10 +20,10 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.source_control.error_handling.core import (
+from argus.source_control.error_handling.core import (
     ErrorType,
 )
-from gemini_sre_agent.source_control.error_handling.error_classification import (
+from argus.source_control.error_handling.error_classification import (
     ErrorClassifier,
 )
 

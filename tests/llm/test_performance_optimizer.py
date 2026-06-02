@@ -25,15 +25,15 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.llm.base import ModelType, ProviderType
-from gemini_sre_agent.llm.config import LLMConfig, LLMProviderConfig
-from gemini_sre_agent.llm.model_registry import ModelInfo
-from gemini_sre_agent.llm.model_scorer import (
+from argus.llm.base import ModelType, ProviderType
+from argus.llm.config import LLMConfig, LLMProviderConfig
+from argus.llm.model_registry import ModelInfo
+from argus.llm.model_scorer import (
     ScoringContext,
     ScoringWeights,
 )
-from gemini_sre_agent.llm.model_selector import SelectionResult, SelectionStrategy
-from gemini_sre_agent.llm.performance_optimizer import (
+from argus.llm.model_selector import SelectionResult, SelectionStrategy
+from argus.llm.performance_optimizer import (
     BatchProcessor,
     ConnectionPool,
     LazyLoader,

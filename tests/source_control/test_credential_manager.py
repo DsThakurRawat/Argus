@@ -19,7 +19,7 @@ import tempfile
 
 import pytest
 
-from gemini_sre_agent.source_control.credential_manager import (
+from argus.source_control.credential_manager import (
     CredentialManager,
     EnvironmentBackend,
     FileBackend,

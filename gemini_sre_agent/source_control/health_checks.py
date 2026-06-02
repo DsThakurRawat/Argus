@@ -67,7 +67,7 @@ health_check_registry = HealthCheckRegistry()
 def register_health_check(name: str) -> None:
     """Decorator to register a health check function."""
 
-    def decorator(func: Callable[[SourceControlProvider], Awaitable[HealthCheck]]: str) -> None:
+    def decorator(func: Callable[[SourceControlProvider], Awaitable[HealthCheck]]) -> None:
         """
         Decorator.
 

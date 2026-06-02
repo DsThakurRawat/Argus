@@ -18,12 +18,12 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.config.source_control_repositories import (
+from argus.config.source_control_repositories import (
     GitHubRepositoryConfig,
     LocalRepositoryConfig,
 )
-from gemini_sre_agent.source_control.credential_manager import CredentialManager
-from gemini_sre_agent.source_control.provider_factory import ProviderFactory
+from argus.source_control.credential_manager import CredentialManager
+from argus.source_control.provider_factory import ProviderFactory
 
 
 class TestProviderFactory:

@@ -28,10 +28,10 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from gemini_sre_agent.source_control.providers.local.local_file_operations import (
+from argus.source_control.providers.local.local_file_operations import (
     LocalFileOperations,
 )
-from gemini_sre_agent.source_control.providers.sub_operation_config import (
+from argus.source_control.providers.sub_operation_config import (
     SubOperationConfig,
 )
 

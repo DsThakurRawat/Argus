@@ -16,7 +16,7 @@
 
 import pytest
 
-from gemini_sre_agent.resilience.error_classifier import (
+from argus.resilience.error_classifier import (
     ErrorCategory,
     ErrorClassifier,
 )

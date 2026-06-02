@@ -16,8 +16,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.metrics.analytics import PerformanceAnalytics
-from gemini_sre_agent.metrics.metrics_manager import MetricsManager
+from argus.metrics.analytics import PerformanceAnalytics
+from argus.metrics.metrics_manager import MetricsManager
 
 
 @pytest.fixture

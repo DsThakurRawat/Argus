@@ -24,8 +24,8 @@ import tempfile
 from pydantic import ValidationError
 import pytest
 
-from gemini_sre_agent.config.source_control_remediation import RemediationStrategyConfig
-from gemini_sre_agent.config.source_control_repositories import (
+from argus.config.source_control_remediation import RemediationStrategyConfig
+from argus.config.source_control_repositories import (
     GitHubRepositoryConfig,
     GitLabRepositoryConfig,
     LocalRepositoryConfig,

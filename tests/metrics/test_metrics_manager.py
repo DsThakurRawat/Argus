@@ -16,9 +16,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.llm.config import LLMConfig
-from gemini_sre_agent.metrics.config import MetricsConfig
-from gemini_sre_agent.metrics.metrics_manager import MetricsManager
+from argus.llm.config import LLMConfig
+from argus.metrics.config import MetricsConfig
+from argus.metrics.metrics_manager import MetricsManager
 
 
 @pytest.fixture

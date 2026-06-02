@@ -393,7 +393,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
         """
         self._state[key] = value
 
-    def get_state(self, key: str, default: Any : Optional[str] = None) -> Any:
+    def get_state(self, key: str, default: Any = None) -> Any:
         """
         Get a state value.
 
