@@ -20,14 +20,14 @@ def print_banner():
     subtitle = Text("🤖 Autonomous Multi-Provider Cloud SRE & AI Monitoring Assistant\nObserve • Reason • Act • Heal", justify="center", style="dim")
     version = Text("\nv0.2.1\nMade by DIVYANSH RAWAT", justify="right", style="dim")
     
-    content = Text(ascii_art, style="bold red", justify="center")
+    content = Text(ascii_art, style="bold cyan", justify="center")
     content.append(subtitle)
     content.append(version)
     
     panel = Panel(
         content,
         title="Welcome to Argus SRE",
-        border_style="red",
+        border_style="cyan",
         padding=(1, 2)
     )
     console.print(panel)
@@ -54,6 +54,16 @@ def run(
     print_banner()
 
     import questionary
+    
+    custom_style = questionary.Style([
+        ('qmark', 'fg:#00ffff bold'),
+        ('question', 'bold'),
+        ('answer', 'fg:#00ffff bold'),
+        ('pointer', 'fg:#00ffff bold'),
+        ('highlighted', 'fg:#aaffaa bold'), # Light green when selected
+        ('selected', 'fg:#aaffaa bold'),    # Light green in checkbox
+        ('text', 'fg:#aaffaa'),             # Light green for unselected
+    ])
             
     cloud_platform = questionary.select(
         "Where is your project deployed? (Select log source)",
@@ -66,7 +76,8 @@ def run(
             "Render",
             "Railway",
             "Cloudflare"
-        ]
+        ],
+        style=custom_style
     ).ask()
     if not cloud_platform:
         raise typer.Exit()
@@ -74,19 +85,24 @@ def run(
     if not provider:
         provider = questionary.select(
             "Which AI / LLM Provider do you want to use?",
-            choices=["gemini", "openai", "anthropic", "ollama", "groq"]
+            choices=["gemini", "openai", "anthropic", "ollama", "groq"],
+            style=custom_style
         ).ask()
         if not provider:
             raise typer.Exit()
         
         # Ask for API Key securely
         if provider != "ollama":
-            api_key = questionary.password(f"Enter your {provider.capitalize()} API Key (input hidden):").ask()
+            api_key = questionary.password(
+                f"Enter your {provider.capitalize()} API Key (input hidden):",
+                style=custom_style
+            ).ask()
             if not api_key: raise typer.Exit()
 
     bots = questionary.checkbox(
         "Which notification bots would you like to enable? (Space to select, Enter to confirm)",
-        choices=["Slack", "Discord", "Telegram"]
+        choices=["Slack", "Discord", "Telegram"],
+        style=custom_style
     ).ask()
     
     if bots is None:
@@ -94,11 +110,11 @@ def run(
         
     bot_tokens = {}
     if "Slack" in bots:
-        bot_tokens["slack"] = questionary.password("Enter your Slack Bot Token:").ask()
+        bot_tokens["slack"] = questionary.password("Enter your Slack Bot Token:", style=custom_style).ask()
     if "Discord" in bots:
-        bot_tokens["discord"] = questionary.text("Enter your Discord Webhook URL:").ask()
+        bot_tokens["discord"] = questionary.text("Enter your Discord Webhook URL:", style=custom_style).ask()
     if "Telegram" in bots:
-        bot_tokens["telegram"] = questionary.password("Enter your Telegram Bot Token:").ask()
+        bot_tokens["telegram"] = questionary.password("Enter your Telegram Bot Token:", style=custom_style).ask()
 
     console.print(f"\n[bold cyan]Starting Argus Daemon...[/bold cyan]")
     console.print(f"Monitoring Source: [bold yellow]{cloud_platform}[/bold yellow]")
