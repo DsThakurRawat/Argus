@@ -37,7 +37,7 @@ from argus.agents.response_models import (
     TextResponse,
 )
 from argus.llm.base import ModelType, ProviderType
-from argus.llm.config import LLMConfig, LLMProviderConfig
+from argus.llm.config import LLMConfig, LLMProviderConfig, ModelConfig
 from argus.llm.strategy_manager import OptimizationGoal
 
 
@@ -54,6 +54,12 @@ def mock_llm_config() -> None:
         timeout=30,
         max_retries=3,
         rate_limit=100,
+        models={
+            "default": ModelConfig(
+                name="gemini-pro",
+                model_type=ModelType.FAST
+            )
+        }
     )
 
     return LLMConfig(
