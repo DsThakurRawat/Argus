@@ -20,7 +20,7 @@ instantiation, and cleanup of various LLM providers based on configuration.
 """
 
 import logging
-from typing import Any
+from typing import Any, ClassVar
 
 from .base import LLMProvider
 from .config import LLMConfig, LLMProviderConfig
@@ -38,13 +38,13 @@ logger = logging.getLogger(__name__)
 class LLMProviderFactory:
     """
     Registry and factory for LLM provider implementations.
-    
+
     This class maintains a registry of supported providers and manages
     cached instances to ensure efficient resource reuse. Supports both
     class-level logic and instance-level logic for backward compatibility.
     """
 
-    _providers_registry = {
+    _providers_registry: ClassVar[dict[str, Any]] = {
         "gemini": GeminiProvider,
         "openai": OpenAIProvider,
         "ollama": OllamaProvider,
@@ -61,7 +61,7 @@ class LLMProviderFactory:
         "test_provider": LiteLLMProvider,
         "test": LiteLLMProvider,
     }
-    _instances: dict[str, LLMProvider] = {}
+    _instances: ClassVar[dict[str, LLMProvider]] = {}
 
     def __init__(self):
         """Initialize instance-level factory."""
@@ -99,7 +99,7 @@ class LLMProviderFactory:
         except ValueError:
             raise
         except Exception as e:
-            raise RuntimeError(f"Provider creation failed: {e}")
+            raise RuntimeError(f"Provider creation failed: {e}") from e
 
     def get_provider(self, name: str | LLMProviderConfig) -> Any:
         """Hybrid get_provider: supports both string name and config object."""

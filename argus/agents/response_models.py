@@ -24,8 +24,8 @@ LLM system.
 """
 
 from datetime import UTC, datetime
-from enum import Enum
-from typing import Any
+from enum import StrEnum
+from typing import Any, ClassVar
 from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator
@@ -35,7 +35,7 @@ from pydantic import BaseModel, Field, field_validator
 # ============================================================================
 
 
-class StatusCode(str, Enum):
+class StatusCode(StrEnum):
     """Standard status codes for agent responses."""
 
     SUCCESS = "success"
@@ -45,7 +45,7 @@ class StatusCode(str, Enum):
     PARTIAL = "partial"
 
 
-class SeverityLevel(str, Enum):
+class SeverityLevel(StrEnum):
     """Severity levels for issues and alerts."""
 
     CRITICAL = "critical"
@@ -55,7 +55,7 @@ class SeverityLevel(str, Enum):
     INFO = "info"
 
 
-class ConfidenceLevel(str, Enum):
+class ConfidenceLevel(StrEnum):
     """Confidence levels for agent assessments."""
 
     VERY_HIGH = "very_high"  # 0.9-1.0
@@ -65,7 +65,7 @@ class ConfidenceLevel(str, Enum):
     VERY_LOW = "very_low"  # 0.0-0.3
 
 
-class IssueCategory(str, Enum):
+class IssueCategory(StrEnum):
     """Categories for different types of issues."""
 
     PERFORMANCE = "performance"
@@ -80,7 +80,7 @@ class IssueCategory(str, Enum):
     MONITORING = "monitoring"
 
 
-class ActionType(str, Enum):
+class ActionType(StrEnum):
     """Types of actions that can be recommended."""
 
     IMMEDIATE = "immediate"
@@ -136,7 +136,7 @@ class BaseAgentResponse(BaseModel):
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[Any, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 # ============================================================================
