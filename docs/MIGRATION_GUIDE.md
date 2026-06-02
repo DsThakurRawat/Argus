@@ -12,9 +12,9 @@ Use legacy adapters to configure without changing any existing code:
 
 ```python
 # Before (Original)
-from gemini_sre_agent.triage_agent import TriageAgent
-from gemini_sre_agent.analysis_agent import AnalysisAgent
-from gemini_sre_agent.remediation_agent import RemediationAgent
+from argus.triage_agent import TriageAgent
+from argus.analysis_agent import AnalysisAgent
+from argus.remediation_agent import RemediationAgent
 
 triage_agent = TriageAgent(project_id, location, model)
 analysis_agent = AnalysisAgent(project_id, location, model)
@@ -26,7 +26,7 @@ from argus_agent.agents.legacy_adapter import (
     create_analysis_agent,
     create_remediation_agent,
 )
-from gemini_sre_agent.llm.config_manager import ConfigManager
+from argus.llm.config_manager import ConfigManager
 
 # Load multi-provider configuration
 config_manager = ConfigManager("config/llm_config.yaml")
@@ -58,7 +58,7 @@ triage_agent = TriageAgent(
 )
 
 # Step 2: Migrate Analysis Agent
-from gemini_sre_agent.agents.enhanced_analysis_agent import AnalysisAgent
+from argus.agents.enhanced_analysis_agent import AnalysisAgent
 
 analysis_agent = AnalysisAgent(
     llm_config=llm_config,
@@ -68,7 +68,7 @@ analysis_agent = AnalysisAgent(
 )
 
 # Step 3: Migrate Remediation Agent
-from gemini_sre_agent.agents.enhanced_remediation_agent import RemediationAgent
+from argus.agents.enhanced_remediation_agent import RemediationAgent
 
 remediation_agent = RemediationAgent(
     llm_config=llm_config,
@@ -181,7 +181,7 @@ python examples/legacy_compatibility_test.py
 
 ```bash
 python -c "
-from gemini_sre_agent.llm.config_manager import ConfigManager
+from argus.llm.config_manager import ConfigManager
 config = ConfigManager('config/llm_config.yaml').get_config()
 print(f'Loaded {len(config.providers)} providers')
 "
@@ -256,7 +256,7 @@ analysis_agent = AnalysisAgent(
 ### 1. Enable Metrics Collection
 
 ```python
-from gemini_sre_agent.llm.monitoring.llm_metrics import get_llm_metrics_collector
+from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
 
 metrics_collector = get_llm_metrics_collector()
 summary = metrics_collector.get_metrics_summary()

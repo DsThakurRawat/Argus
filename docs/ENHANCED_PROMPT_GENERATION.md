@@ -283,13 +283,13 @@ gcloud ai models list --filter="name:gemini-1.5-flash-001"
 #### Specialized Templates Not Working
 ```bash
 # Verify template configuration
-ls -la gemini_sre_agent/ml/specialized_prompt_templates.py
+ls -la argus/ml/specialized_prompt_templates.py
 
 # Check issue type classification
 grep "issue_type" logs/analysis.log
 
 # Validate template inheritance
-python -c "from gemini_sre_agent.ml.specialized_prompt_templates import *; print('OK')"
+python -c "from argus.ml.specialized_prompt_templates import *; print('OK')"
 ```
 
 #### Performance Issues

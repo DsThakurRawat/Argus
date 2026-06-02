@@ -107,11 +107,11 @@ After deploying the infrastructure, you can verify the resources using the `gclo
 
 *   **Pub/Sub Topic:**
     ```bash
-    gcloud pubsub topics describe gemini-sre-logs --project=YOUR_GCP_PROJECT_ID
+    gcloud pubsub topics describe argus-logs --project=YOUR_GCP_PROJECT_ID
     ```
 *   **Pub/Sub Subscription:**
     ```bash
-    gcloud pubsub subscriptions describe gemini-sre-logs-sub --project=YOUR_GCP_PROJECT_ID
+    gcloud pubsub subscriptions describe argus-logs-sub --project=YOUR_GCP_PROJECT_ID
     ```
 *   **Service Account:**
     ```bash
@@ -119,7 +119,7 @@ After deploying the infrastructure, you can verify the resources using the `gclo
     ```
 *   **Logging Sink:**
     ```bash
-    gcloud logging sinks describe gemini-sre-log-sink --project=YOUR_GCP_PROJECT_ID
+    gcloud logging sinks describe argus-log-sink --project=YOUR_GCP_PROJECT_ID
     ```
 
 ## Cost Estimation and Resource Optimization

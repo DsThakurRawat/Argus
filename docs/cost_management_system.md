@@ -26,7 +26,7 @@ The system consists of four main components:
 ### Basic Usage
 
 ```python
-from gemini_sre_agent.llm.cost_management_integration import create_default_cost_manager
+from argus.llm.cost_management_integration import create_default_cost_manager
 
 # Create a cost manager with default settings
 cost_manager = create_default_cost_manager(
@@ -52,11 +52,11 @@ cost_manager.record_request(
 ### Advanced Configuration
 
 ```python
-from gemini_sre_agent.llm.cost_management import CostManagementConfig, BudgetPeriod, EnforcementPolicy
-from gemini_sre_agent.llm.budget_manager import BudgetConfig
-from gemini_sre_agent.llm.cost_optimizer import OptimizationConfig
-from gemini_sre_agent.llm.cost_analytics import AnalyticsConfig
-from gemini_sre_agent.llm.cost_management_integration import IntegratedCostManager
+from argus.llm.cost_management import CostManagementConfig, BudgetPeriod, EnforcementPolicy
+from argus.llm.budget_manager import BudgetConfig
+from argus.llm.cost_optimizer import OptimizationConfig
+from argus.llm.cost_analytics import AnalyticsConfig
+from argus.llm.cost_management_integration import IntegratedCostManager
 
 # Configure cost management
 cost_config = CostManagementConfig(
@@ -118,7 +118,7 @@ Manages real-time pricing data and provides cost estimation.
 #### Usage
 
 ```python
-from gemini_sre_agent.llm.cost_management import DynamicCostManager, CostManagementConfig
+from argus.llm.cost_management import DynamicCostManager, CostManagementConfig
 
 config = CostManagementConfig(
     cache_duration_minutes=60,
@@ -152,7 +152,7 @@ Provides intelligent provider and model selection based on cost, performance, an
 #### Usage
 
 ```python
-from gemini_sre_agent.llm.cost_optimizer import CostOptimizer, OptimizationConfig
+from argus.llm.cost_optimizer import CostOptimizer, OptimizationConfig
 
 config = OptimizationConfig(
     enable_optimization=True,
@@ -187,7 +187,7 @@ Tracks spending, enforces budgets, and manages alerts.
 #### Usage
 
 ```python
-from gemini_sre_agent.llm.budget_manager import BudgetManager, BudgetConfig, BudgetPeriod, EnforcementPolicy
+from argus.llm.budget_manager import BudgetManager, BudgetConfig, BudgetPeriod, EnforcementPolicy
 
 config = BudgetConfig(
     budget_limit=100.0,
@@ -227,7 +227,7 @@ Generates insights, trends, and optimization recommendations.
 #### Usage
 
 ```python
-from gemini_sre_agent.llm.cost_analytics import CostAnalytics, AnalyticsConfig
+from argus.llm.cost_analytics import CostAnalytics, AnalyticsConfig
 
 config = AnalyticsConfig(
     retention_days=90,
@@ -371,8 +371,8 @@ print(f"Days Until Budget Exhausted: {forecast['days_until_budget_exhausted']}")
 ### With LLM Provider Factory
 
 ```python
-from gemini_sre_agent.llm.provider_factory import LLMProviderFactory
-from gemini_sre_agent.llm.cost_management_integration import create_default_cost_manager
+from argus.llm.provider_factory import LLMProviderFactory
+from argus.llm.cost_management_integration import create_default_cost_manager
 
 # Create cost manager
 cost_manager = create_default_cost_manager(budget_limit=200.0)
@@ -403,8 +403,8 @@ cost_manager.record_request(
 ### With Strategy Manager
 
 ```python
-from gemini_sre_agent.llm.strategy_manager import StrategyManager
-from gemini_sre_agent.llm.cost_management_integration import create_default_cost_manager
+from argus.llm.strategy_manager import StrategyManager
+from argus.llm.cost_management_integration import create_default_cost_manager
 
 # Create cost manager
 cost_manager = create_default_cost_manager()
@@ -518,7 +518,7 @@ Enable debug logging for detailed information:
 ```python
 import logging
 
-logging.getLogger("gemini_sre_agent.llm.cost_management").setLevel(logging.DEBUG)
+logging.getLogger("argus.llm.cost_management").setLevel(logging.DEBUG)
 ```
 
 ## API Reference

@@ -38,7 +38,7 @@ A unified, enterprise-grade logging system for the Gemini SRE Agent that provide
 ### Basic Usage
 
 ```python
-from gemini_sre_agent.core.logging import get_logger
+from argus.core.logging import get_logger
 
 # Get a logger
 logger = get_logger()
@@ -97,7 +97,7 @@ logger.clear_context()
 ### Basic Configuration
 
 ```python
-from gemini_sre_agent.core.logging import LoggingConfig, get_logger
+from argus.core.logging import LoggingConfig, get_logger
 
 config = LoggingConfig(
     name="my_app",

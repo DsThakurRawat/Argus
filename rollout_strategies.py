@@ -27,7 +27,7 @@ import logging
 import random
 import time
 
-from gemini_sre_agent.llm.monitoring.llm_metrics import get_llm_metrics_collector
+from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

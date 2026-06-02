@@ -23,8 +23,8 @@ import asyncio
 import os
 from typing import Any
 
-from gemini_sre_agent.config.ingestion_config import IngestionConfigManager
-from gemini_sre_agent.ingestion.interfaces.resilience import (
+from argus.config.ingestion_config import IngestionConfigManager
+from argus.ingestion.interfaces.resilience import (
     HyxResilientClient,
     ResilienceConfig,
     create_resilience_config,

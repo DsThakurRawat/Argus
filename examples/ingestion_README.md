@@ -19,8 +19,8 @@ A pluggable architecture for ingesting logs from multiple sources with unified p
 
 ```python
 import asyncio
-from gemini_sre_agent.ingestion import LogManager
-from gemini_sre_agent.ingestion.adapters import FileSystemAdapter, FileSystemConfig
+from argus.ingestion import LogManager
+from argus.ingestion.adapters import FileSystemAdapter, FileSystemConfig
 
 async def log_callback(log_entry):
     print(f"Received: {log_entry.message}")
@@ -52,7 +52,7 @@ asyncio.run(main())
 ### 2. Configuration-Based Setup
 
 ```python
-from gemini_sre_agent.config.ingestion_config import IngestionConfigManager
+from argus.config.ingestion_config import IngestionConfigManager
 
 # Load configuration
 config_manager = IngestionConfigManager()
@@ -67,7 +67,7 @@ if errors:
 ### 3. Multiple Sources
 
 ```python
-from gemini_sre_agent.ingestion.adapters import (
+from argus.ingestion.adapters import (
     GCPPubSubAdapter, GCPPubSubConfig,
     FileSystemAdapter, FileSystemConfig
 )
@@ -248,11 +248,11 @@ The new system is designed to be backward compatible. To migrate:
 
    ```python
    # Old
-   from gemini_sre_agent.log_subscriber import LogSubscriber
+   from argus.log_subscriber import LogSubscriber
 
    # New
-   from gemini_sre_agent.ingestion import LogManager
-   from gemini_sre_agent.ingestion.adapters import GCPPubSubAdapter
+   from argus.ingestion import LogManager
+   from argus.ingestion.adapters import GCPPubSubAdapter
    ```
 
 2. **Update configuration**:

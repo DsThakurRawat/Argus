@@ -12,29 +12,29 @@ variable "gcp_region" {
 variable "service_name_prefix" {
   description = "Prefix for resource names to ensure uniqueness."
   type        = string
-  default     = "gemini-sre-agent"
+  default     = "argus-agent"
 }
 
 variable "log_topic_name" {
   description = "Name of the Pub/Sub topic for logs."
   type        = string
-  default     = "gemini-sre-logs"
+  default     = "argus-logs"
 }
 
 variable "log_subscription_name" {
   description = "Name of the Pub/Sub subscription for logs."
   type        = string
-  default     = "gemini-sre-logs-sub"
+  default     = "argus-logs-sub"
 }
 
 variable "log_sink_name" {
   description = "Name of the Cloud Logging sink."
   type        = string
-  default     = "gemini-sre-log-sink"
+  default     = "argus-log-sink"
 }
 
 variable "agent_service_account_id" {
   description = "ID for the service account used by the Gemini SRE Agent."
   type        = string
-  default     = "gemini-sre-agent-sa"
+  default     = "argus-agent-sa"
 }

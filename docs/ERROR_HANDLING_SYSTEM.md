@@ -34,7 +34,7 @@ The error handling system is designed to make source control operations resilien
 The error handling system is organized into several modules:
 
 ```text
-gemini_sre_agent/source_control/error_handling/
+argus/source_control/error_handling/
 ├── core.py                    # Core types and configurations
 ├── error_classification.py    # Error classification logic
 ├── circuit_breaker.py         # Circuit breaker implementation
@@ -130,7 +130,7 @@ The classifier uses a comprehensive set of rules to identify error types:
 ### Usage
 
 ```python
-from gemini_sre_agent.source_control.error_handling import ErrorClassifier
+from argus.source_control.error_handling import ErrorClassifier
 
 classifier = ErrorClassifier()
 classification = classifier.classify_error(exception)
@@ -154,7 +154,7 @@ The circuit breaker prevents cascade failures by monitoring error rates and temp
 ### Circuit Breaker Configuration
 
 ```python
-from gemini_sre_agent.source_control.error_handling import CircuitBreakerConfig
+from argus.source_control.error_handling import CircuitBreakerConfig
 
 config = CircuitBreakerConfig(
     failure_threshold=5,
@@ -188,7 +188,7 @@ The retry system provides intelligent retry logic with exponential backoff and j
 ### Retry Configuration
 
 ```python
-from gemini_sre_agent.source_handling.error_handling import RetryConfig
+from argus.source_handling.error_handling import RetryConfig
 
 config = RetryConfig(
     max_attempts=3,
@@ -225,7 +225,7 @@ The graceful degradation system provides fallback strategies when primary operat
 ### Graceful Degradation Usage
 
 ```python
-from gemini_sre_agent.source_control.error_handling import GracefulDegradationManager
+from argus.source_control.error_handling import GracefulDegradationManager
 
 degradation_manager = GracefulDegradationManager(resilient_manager)
 
@@ -251,7 +251,7 @@ The health check system monitors service availability and operational status.
 ### Health Check Usage
 
 ```python
-from gemini_sre_agent.source_control.error_handling import HealthCheckManager
+from argus.source_control.error_handling import HealthCheckManager
 
 health_manager = HealthCheckManager()
 
@@ -280,7 +280,7 @@ The metrics system provides comprehensive observability for error handling opera
 ### Metrics Usage
 
 ```python
-from gemini_sre_agent.source_control.error_handling import ErrorHandlingMetrics
+from argus.source_control.error_handling import ErrorHandlingMetrics
 
 metrics = ErrorHandlingMetrics()
 
@@ -338,7 +338,7 @@ error_handling:
 ### Basic Error Handling
 
 ```python
-from gemini_sre_agent.source_control.error_handling import ResilientOperations
+from argus.source_control.error_handling import ResilientOperations
 
 resilient_ops = ResilientOperations()
 
@@ -354,7 +354,7 @@ result = await resilient_ops.execute_resilient_operation(
 ### Custom Error Handling
 
 ```python
-from gemini_sre_agent.source_control.error_handling import (
+from argus.source_control.error_handling import (
     ErrorClassifier, CircuitBreaker, RetryManager
 )
 
@@ -385,7 +385,7 @@ async def custom_operation():
 ### Health Monitoring
 
 ```python
-from gemini_sre_agent.source_control.error_handling import HealthCheckManager
+from argus.source_control.error_handling import HealthCheckManager
 
 health_manager = HealthCheckManager()
 
@@ -487,7 +487,7 @@ Enable debug logging for error handling:
 ```python
 import logging
 
-logging.getLogger("gemini_sre_agent.source_control.error_handling").setLevel(logging.DEBUG)
+logging.getLogger("argus.source_control.error_handling").setLevel(logging.DEBUG)
 ```
 
 ### Monitoring

@@ -25,9 +25,9 @@ integration testing, and cost analysis.
 import asyncio
 import logging
 
-from gemini_sre_agent.llm.cost_management_integration import IntegratedCostManager
-from gemini_sre_agent.llm.testing.framework import TestingFramework
-from gemini_sre_agent.llm.testing.mock_providers import (
+from argus.llm.cost_management_integration import IntegratedCostManager
+from argus.llm.testing.framework import TestingFramework
+from argus.llm.testing.mock_providers import (
     MockModelRegistry,
     MockProviderFactory,
 )
@@ -35,8 +35,8 @@ from gemini_sre_agent.llm.testing.mock_providers import (
 # from typing import Dict, Any  # Imported when needed
 
 
-# from gemini_sre_agent.llm.factory import LLMProviderFactory  # Imported when needed
-# from gemini_sre_agent.llm.model_registry import ModelRegistry  # Imported when needed
+# from argus.llm.factory import LLMProviderFactory  # Imported when needed
+# from argus.llm.model_registry import ModelRegistry  # Imported when needed
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -137,12 +137,12 @@ async def cost_analysis_example():
     mock_model_registry = MockModelRegistry()
 
     # Create a mock cost manager for testing
-    # from gemini_sre_agent.llm.testing.mock_providers import MockCostManager
+    # from argus.llm.testing.mock_providers import MockCostManager
     # mock_cost_manager = MockCostManager()
 
-    from gemini_sre_agent.llm.budget_manager import BudgetConfig
-    from gemini_sre_agent.llm.cost_analytics import AnalyticsConfig
-    from gemini_sre_agent.llm.cost_management import CostManagementConfig
+    from argus.llm.budget_manager import BudgetConfig
+    from argus.llm.cost_analytics import AnalyticsConfig
+    from argus.llm.cost_management import CostManagementConfig
 
     cost_manager = IntegratedCostManager(
         cost_config=CostManagementConfig(
@@ -190,12 +190,12 @@ async def comprehensive_testing_example():
     mock_model_registry = MockModelRegistry()
 
     # Create mock cost manager
-    # from gemini_sre_agent.llm.testing.mock_providers import MockCostManager
+    # from argus.llm.testing.mock_providers import MockCostManager
     # mock_cost_manager = MockCostManager()
 
-    from gemini_sre_agent.llm.budget_manager import BudgetConfig
-    from gemini_sre_agent.llm.cost_analytics import AnalyticsConfig
-    from gemini_sre_agent.llm.cost_management import CostManagementConfig
+    from argus.llm.budget_manager import BudgetConfig
+    from argus.llm.cost_analytics import AnalyticsConfig
+    from argus.llm.cost_management import CostManagementConfig
 
     cost_manager = IntegratedCostManager(
         cost_config=CostManagementConfig(

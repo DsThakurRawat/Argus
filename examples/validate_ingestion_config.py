@@ -27,7 +27,7 @@ import sys
 # Add the parent directory to the path so we can import the modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from gemini_sre_agent.config.ingestion_config import (
+from argus.config.ingestion_config import (
     ConfigError,
     IngestionConfigManager,
 )

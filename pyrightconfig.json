@@ -1,7 +1,7 @@
 {
   "venvPath": ".",
   "venv": ".venv",
-  "include": ["gemini_sre_agent", "main.py"],
+  "include": ["argus", "main.py"],
   "exclude": [
     "**/__pycache__",
     "**/.pytest_cache",
@@ -9,7 +9,7 @@
     "**/test_*.py",
     "tests/**/*"
   ],
-  "extraPaths": ["gemini_sre_agent"],
+  "extraPaths": ["argus"],
   "reportMissingImports": true,
   "reportMissingModuleSource": false,
   "reportUndefinedVariable": true,

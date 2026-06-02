@@ -30,8 +30,8 @@ The Model Capability Discovery System is a comprehensive framework for discoveri
 ### Basic Usage
 
 ```python
-from gemini_sre_agent.llm.capabilities.discovery import CapabilityDiscovery
-from gemini_sre_agent.llm.factory import LLMProviderFactory
+from argus.llm.capabilities.discovery import CapabilityDiscovery
+from argus.llm.factory import LLMProviderFactory
 
 # Initialize providers
 providers = LLMProviderFactory.create_providers_from_config(llm_config)
@@ -93,7 +93,7 @@ print(f"Average discovery time: {health['average_discovery_time']:.2f}s")
 ### Configuration Management
 
 ```python
-from gemini_sre_agent.llm.capabilities.config import get_capability_config
+from argus.llm.capabilities.config import get_capability_config
 
 # Get capability configuration
 config = get_capability_config()
@@ -305,7 +305,7 @@ logger.info(f"Discovered capabilities for {len(capability_discovery.model_capabi
 Use with the model selection system:
 
 ```python
-from gemini_sre_agent.llm.model_selector import ModelSelector
+from argus.llm.model_selector import ModelSelector
 
 # Create model selector with capability discovery
 model_selector = ModelSelector(model_registry, capability_discovery, model_scorer)
@@ -341,7 +341,7 @@ Enable debug logging for detailed information:
 
 ```python
 import logging
-logging.getLogger("gemini_sre_agent.llm.capabilities").setLevel(logging.DEBUG)
+logging.getLogger("argus.llm.capabilities").setLevel(logging.DEBUG)
 ```
 
 ## Future Enhancements

@@ -246,7 +246,7 @@ anthropic_key = get_azure_secret(vault_url, "anthropic-api-key")
 ```python
 import os
 from pathlib import Path
-from gemini_sre_agent.llm.config_manager import ConfigManager
+from argus.llm.config_manager import ConfigManager
 
 def load_secure_config(config_path: Path) -> ConfigManager:
     """Load configuration with secure credential handling."""

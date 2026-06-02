@@ -99,7 +99,7 @@ Real-time monitoring and alerting for the error handling system.
 ### Basic Circuit Breaker Usage
 
 ```python
-from gemini_sre_agent.source_control.error_handling.advanced_circuit_breaker import (
+from argus.source_control.error_handling.advanced_circuit_breaker import (
     AdvancedCircuitBreaker,
     AdvancedCircuitBreakerConfig,
 )
@@ -130,7 +130,7 @@ except Exception as e:
 ### Custom Fallback Strategy
 
 ```python
-from gemini_sre_agent.source_control.error_handling.custom_fallback_strategies import (
+from argus.source_control.error_handling.custom_fallback_strategies import (
     CustomFallbackManager,
     FallbackStrategy,
     FallbackStrategyConfig,
@@ -162,7 +162,7 @@ result = await fallback_manager.execute_fallback(
 ### Self-Healing System
 
 ```python
-from gemini_sre_agent.source_control.error_handling.error_recovery_automation import (
+from argus.source_control.error_handling.error_recovery_automation import (
     SelfHealingManager,
 )
 
@@ -183,7 +183,7 @@ else:
 ### Monitoring Dashboard
 
 ```python
-from gemini_sre_agent.source_control.error_handling.monitoring_dashboard import (
+from argus.source_control.error_handling.monitoring_dashboard import (
     MonitoringDashboard,
 )
 

@@ -25,7 +25,7 @@ import sys
 # Add the parent directory to the path so we can import the config module
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from gemini_sre_agent.config import (
+from argus.config import (
     AppConfig,
     ConfigError,
     ConfigManager,
@@ -43,8 +43,8 @@ def main() -> None:
     print("\n1. Creating a basic configuration...")
 
     # Create required models for MLConfig
-    from gemini_sre_agent.config.app_config import ServiceConfig
-    from gemini_sre_agent.config.ml_config import ModelConfig, ModelType
+    from argus.config.app_config import ServiceConfig
+    from argus.config.ml_config import ModelConfig, ModelType
 
     required_models = {
         ModelType.TRIAGE: ModelConfig(

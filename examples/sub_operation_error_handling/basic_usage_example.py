@@ -26,24 +26,24 @@ import logging
 from pathlib import Path
 
 # Import the error handling components
-from gemini_sre_agent.source_control.error_handling import (
+from argus.source_control.error_handling import (
     CircuitBreakerConfig,
     ErrorHandlingFactory,
     RetryConfig,
 )
-from gemini_sre_agent.source_control.providers.local.local_file_operations import (
+from argus.source_control.providers.local.local_file_operations import (
     LocalFileOperations,
 )
-from gemini_sre_agent.source_control.providers.sub_operation_config import (
+from argus.source_control.providers.sub_operation_config import (
     SubOperationConfig,
     SubOperationConfigManager,
 )
 
 # Note: GitHub and GitLab providers would require actual API credentials
-# from gemini_sre_agent.source_control.providers.github.github_file_operations import (
+# from argus.source_control.providers.github.github_file_operations import (
 #     GitHubFileOperations,
 # )
-# from gemini_sre_agent.source_control.providers.gitlab.gitlab_file_operations import (
+# from argus.source_control.providers.gitlab.gitlab_file_operations import (
 #     GitLabFileOperations,
 # )
 
@@ -57,7 +57,7 @@ async def basic_local_file_operations_example():
     logger = logging.getLogger(__name__)
 
     # Create a temporary directory for testing
-    temp_dir = Path("/tmp/gemini_sre_example")
+    temp_dir = Path("/tmp/argus_example")
     temp_dir.mkdir(exist_ok=True)
 
     try:
@@ -160,7 +160,7 @@ async def error_scenarios_example():
     logger = logging.getLogger(__name__)
 
     # Create a temporary directory for testing
-    temp_dir = Path("/tmp/gemini_sre_error_example")
+    temp_dir = Path("/tmp/argus_error_example")
     temp_dir.mkdir(exist_ok=True)
 
     try:

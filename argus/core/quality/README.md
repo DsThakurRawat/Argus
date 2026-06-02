@@ -19,16 +19,16 @@ The Quality Gates system provides automated validation of code quality across mu
 
 ```bash
 # Run all quality gates
-python -m gemini_sre_agent.core.quality.cli run
+python -m argus.core.quality.cli run
 
 # Run specific gates
-python -m gemini_sre_agent.core.quality.cli run --gates=static_analysis,security
+python -m argus.core.quality.cli run --gates=static_analysis,security
 
 # Generate HTML report
-python -m gemini_sre_agent.core.quality.cli run --output=report.html --format=html
+python -m argus.core.quality.cli run --output=report.html --format=html
 
 # Run with custom configuration
-python -m gemini_sre_agent.core.quality.cli run --min-coverage=90 --max-line-length=120
+python -m argus.core.quality.cli run --min-coverage=90 --max-line-length=120
 ```
 
 ### Using Make
@@ -61,7 +61,7 @@ make pre-commit-all
 Create a configuration file to customize quality gate behavior:
 
 ```python
-from gemini_sre_agent.core.quality import QualityGateConfig
+from argus.core.quality import QualityGateConfig
 
 config = QualityGateConfig(
     # Static analysis
@@ -123,7 +123,7 @@ Type checking is configured via `pyrightconfig.json`:
 {
   "venvPath": ".",
   "venv": ".venv",
-  "include": ["gemini_sre_agent", "main.py"],
+  "include": ["argus", "main.py"],
   "exclude": ["**/__pycache__", "**/.pytest_cache", "**/tests"],
   "reportMissingImports": true,
   "reportUndefinedVariable": true,
@@ -143,7 +143,7 @@ Validates code using static analysis tools:
 - **Ruff**: Linting and code style validation
 
 ```python
-from gemini_sre_agent.core.quality.validators import StaticAnalysisGate
+from argus.core.quality.validators import StaticAnalysisGate
 
 gate = StaticAnalysisGate()
 result = await gate.check(config)
@@ -158,7 +158,7 @@ Ensures adequate test coverage:
 - Integration with pytest-cov
 
 ```python
-from gemini_sre_agent.core.quality.validators import TestCoverageGate
+from argus.core.quality.validators import TestCoverageGate
 
 gate = TestCoverageGate()
 result = await gate.check(config)
@@ -172,7 +172,7 @@ Scans for security vulnerabilities:
 - **Safety**: Dependency vulnerability scanning
 
 ```python
-from gemini_sre_agent.core.quality.validators import SecurityGate
+from argus.core.quality.validators import SecurityGate
 
 gate = SecurityGate()
 result = await gate.check(config)
@@ -187,7 +187,7 @@ Monitors performance metrics:
 - Resource threshold enforcement
 
 ```python
-from gemini_sre_agent.core.quality.validators import PerformanceGate
+from argus.core.quality.validators import PerformanceGate
 
 gate = PerformanceGate()
 result = await gate.check(config)
@@ -202,7 +202,7 @@ Validates documentation quality:
 - Quality metrics validation
 
 ```python
-from gemini_sre_agent.core.quality.validators import DocumentationGate
+from argus.core.quality.validators import DocumentationGate
 
 gate = DocumentationGate()
 result = await gate.check(config)
@@ -217,7 +217,7 @@ Enforces code style consistency:
 - Style rule enforcement
 
 ```python
-from gemini_sre_agent.core.quality.validators import StyleGate
+from argus.core.quality.validators import StyleGate
 
 gate = StyleGate()
 result = await gate.check(config)
@@ -229,8 +229,8 @@ result = await gate.check(config)
 
 ```python
 import asyncio
-from gemini_sre_agent.core.quality import QualityGateManager, QualityGateConfig
-from gemini_sre_agent.core.quality.validators import (
+from argus.core.quality import QualityGateManager, QualityGateConfig
+from argus.core.quality.validators import (
     StaticAnalysisGate,
     TestCoverageGate,
     SecurityGate
@@ -273,7 +273,7 @@ asyncio.run(run_quality_gates())
 Create custom quality gates by implementing the `QualityGate` protocol:
 
 ```python
-from gemini_sre_agent.core.quality.gates import QualityGate, QualityGateResult, QualityGateStatus
+from argus.core.quality.gates import QualityGate, QualityGateResult, QualityGateStatus
 
 class CustomGate:
     async def check(self, config: QualityGateConfig) -> QualityGateResult:
@@ -310,7 +310,7 @@ The system supports multiple report formats:
 ### Generating Reports
 
 ```python
-from gemini_sre_agent.core.quality.reports import (
+from argus.core.quality.reports import (
     QualityReportGenerator,
     QualityReportFormatter,
     ReportFormat

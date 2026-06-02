@@ -24,11 +24,11 @@ PROJECT_ID="your-gcp-project-id"
 # The GCP region for your resources (e.g., us-central1)
 REGION="us-central1"
 # Name for the Pub/Sub topic for logs
-LOG_TOPIC_NAME="gemini-sre-logs"
+LOG_TOPIC_NAME="argus-logs"
 # Name for the Pub/Sub subscription for logs
-LOG_SUBSCRIPTION_NAME="gemini-sre-logs-sub"
+LOG_SUBSCRIPTION_NAME="argus-logs-sub"
 # Name for the Cloud Logging sink
-LOG_SINK_NAME="gemini-sre-log-sink"
+LOG_SINK_NAME="argus-log-sink"
 # ID for the service account used by the Gemini SRE Agent
 AGENT_SERVICE_ACCOUNT_ID="argus-sa"
 

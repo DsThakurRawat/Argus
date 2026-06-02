@@ -24,9 +24,9 @@ import asyncio
 import logging
 import time
 
-from gemini_sre_agent.agents.enhanced_triage_agent import EnhancedTriageAgent
-from gemini_sre_agent.llm.config import LLMConfig
-from gemini_sre_agent.llm.monitoring.llm_metrics import get_llm_metrics_collector
+from argus.agents.enhanced_triage_agent import EnhancedTriageAgent
+from argus.llm.config import LLMConfig
+from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -191,8 +191,8 @@ async def run_simple_benchmark():
 
     try:
         # Test that all components work together
-        from gemini_sre_agent.agents.enhanced_analysis_agent import EnhancedAnalysisAgent
-        from gemini_sre_agent.agents.enhanced_remediation_agent import EnhancedRemediationAgent
+        from argus.agents.enhanced_analysis_agent import EnhancedAnalysisAgent
+        from argus.agents.enhanced_remediation_agent import EnhancedRemediationAgent
 
         # Initialize all enhanced agents
         triage_agent = EnhancedTriageAgent(

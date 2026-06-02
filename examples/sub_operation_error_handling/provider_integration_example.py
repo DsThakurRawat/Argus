@@ -28,21 +28,21 @@ from pathlib import Path
 from typing import Any
 
 # Import the error handling components
-from gemini_sre_agent.source_control.error_handling import (
+from argus.source_control.error_handling import (
     CircuitBreakerConfig,
     ErrorHandlingFactory,
     RetryConfig,
 )
-from gemini_sre_agent.source_control.providers.github.github_file_operations import (
+from argus.source_control.providers.github.github_file_operations import (
     GitHubFileOperations,
 )
-from gemini_sre_agent.source_control.providers.gitlab.gitlab_file_operations import (
+from argus.source_control.providers.gitlab.gitlab_file_operations import (
     GitLabFileOperations,
 )
-from gemini_sre_agent.source_control.providers.local.local_file_operations import (
+from argus.source_control.providers.local.local_file_operations import (
     LocalFileOperations,
 )
-from gemini_sre_agent.source_control.providers.sub_operation_config import (
+from argus.source_control.providers.sub_operation_config import (
     SubOperationConfig,
     SubOperationConfigManager,
 )
@@ -419,7 +419,7 @@ async def local_provider_example():
     logger = logging.getLogger(__name__)
 
     # Create a temporary directory for testing
-    temp_dir = Path("/tmp/gemini_sre_local_provider")
+    temp_dir = Path("/tmp/argus_local_provider")
     temp_dir.mkdir(exist_ok=True)
 
     try:
@@ -501,7 +501,7 @@ async def multi_provider_example():
     logger = logging.getLogger(__name__)
 
     # Create a temporary directory for testing
-    temp_dir = Path("/tmp/gemini_sre_multi_provider")
+    temp_dir = Path("/tmp/argus_multi_provider")
     temp_dir.mkdir(exist_ok=True)
 
     try:

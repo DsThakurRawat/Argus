@@ -44,7 +44,7 @@
 
 ```
 argus/
-├── gemini_sre_agent/         # Core agent modules
+├── argus/         # Core agent modules
 │   ├── config.py             # Configuration management with Pydantic models
 │   ├── triage_agent.py       # Gemini Flash-based log triage
 │   ├── analysis_agent.py     # Gemini Pro-based deep analysis
@@ -68,10 +68,10 @@ argus/
 |------|---------|---------------------|
 | `main.py` | Application entry point and service orchestration | Adding new services to monitor |
 | `config/config.yaml` | Multi-service configuration with model selection | Configuring new services or changing AI models |
-| `gemini_sre_agent/config.py` | Pydantic configuration models | Modifying configuration schema |
-| `gemini_sre_agent/triage_agent.py` | Gemini Flash triage logic | Adjusting triage prompts or logic |
-| `gemini_sre_agent/analysis_agent.py` | Gemini Pro analysis logic | Modifying root cause analysis approach |
-| `gemini_sre_agent/resilience.py` | Hyx resilience patterns | Tuning circuit breakers or retry policies |
+| `argus/config.py` | Pydantic configuration models | Modifying configuration schema |
+| `argus/triage_agent.py` | Gemini Flash triage logic | Adjusting triage prompts or logic |
+| `argus/analysis_agent.py` | Gemini Pro analysis logic | Modifying root cause analysis approach |
+| `argus/resilience.py` | Hyx resilience patterns | Tuning circuit breakers or retry policies |
 | `pyproject.toml` | Dependencies and Python configuration | Adding new libraries or updating versions |
 
 ---

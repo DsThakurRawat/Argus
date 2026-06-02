@@ -23,7 +23,7 @@ import asyncio
 import json
 import logging
 
-from gemini_sre_agent.llm.enhanced_mirascope_integration import (
+from argus.llm.enhanced_mirascope_integration import (
     EnhancedPromptManager,
     get_enhanced_prompt_manager,
 )

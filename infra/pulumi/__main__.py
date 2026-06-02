@@ -19,9 +19,9 @@ import pulumi_gcp as gcp
 project_id = gcp.config.project or pulumi.Config().require("gcp_project_id")
 region = gcp.config.region or pulumi.Config().get("gcp_region") or "us-central1"
 service_name_prefix = pulumi.Config().get("service_name_prefix") or "argus"
-log_topic_name = pulumi.Config().get("log_topic_name") or "gemini-sre-logs"
-log_subscription_name = pulumi.Config().get("log_subscription_name") or "gemini-sre-logs-sub"
-log_sink_name = pulumi.Config().get("log_sink_name") or "gemini-sre-log-sink"
+log_topic_name = pulumi.Config().get("log_topic_name") or "argus-logs"
+log_subscription_name = pulumi.Config().get("log_subscription_name") or "argus-logs-sub"
+log_sink_name = pulumi.Config().get("log_sink_name") or "argus-log-sink"
 agent_service_account_id = pulumi.Config().get("agent_service_account_id") or "argus-sa"
 
 # --- Pub/Sub Topic for Logs ---

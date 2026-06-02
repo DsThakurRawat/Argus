@@ -27,8 +27,8 @@ import time
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
 
-from gemini_sre_agent.llm.config import LLMConfig
-from gemini_sre_agent.llm.monitoring.llm_metrics import get_llm_metrics_collector
+from argus.llm.config import LLMConfig
+from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

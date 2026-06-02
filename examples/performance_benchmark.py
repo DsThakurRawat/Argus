@@ -24,10 +24,10 @@ import logging
 import statistics
 import time
 
-from gemini_sre_agent.agents.enhanced_triage_agent import EnhancedTriageAgent
-from gemini_sre_agent.llm.config_manager import ConfigManager
-from gemini_sre_agent.llm.monitoring.llm_metrics import get_llm_metrics_collector
-from gemini_sre_agent.llm.strategy_manager import OptimizationGoal
+from argus.agents.enhanced_triage_agent import EnhancedTriageAgent
+from argus.llm.config_manager import ConfigManager
+from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
+from argus.llm.strategy_manager import OptimizationGoal
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

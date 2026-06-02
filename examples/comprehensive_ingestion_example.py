@@ -29,13 +29,13 @@ import logging
 import os
 import tempfile
 
-from gemini_sre_agent.config.ingestion_config import (
+from argus.config.ingestion_config import (
     AWSCloudWatchConfig,
     FileSystemConfig,
     KubernetesConfig,
     SourceType,
 )
-from gemini_sre_agent.ingestion import (
+from argus.ingestion import (
     AWSCloudWatchAdapter,
     KubernetesAdapter,
     LogEntry,

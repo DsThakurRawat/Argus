@@ -32,16 +32,16 @@ import time
 from typing import Any
 
 # Import the error handling components
-from gemini_sre_agent.source_control.error_handling import (
+from argus.source_control.error_handling import (
     CircuitBreakerConfig,
     ErrorHandlingFactory,
     RetryConfig,
 )
-from gemini_sre_agent.source_control.metrics.collectors import MetricsCollector
-from gemini_sre_agent.source_control.providers.local.local_file_operations import (
+from argus.source_control.metrics.collectors import MetricsCollector
+from argus.source_control.providers.local.local_file_operations import (
     LocalFileOperations,
 )
-from gemini_sre_agent.source_control.providers.sub_operation_config import (
+from argus.source_control.providers.sub_operation_config import (
     SubOperationConfig,
 )
 
@@ -96,7 +96,7 @@ async def circuit_breaker_example():
     logger = logging.getLogger(__name__)
 
     # Create a temporary directory for testing
-    temp_dir = Path("/tmp/gemini_sre_circuit_breaker")
+    temp_dir = Path("/tmp/argus_circuit_breaker")
     temp_dir.mkdir(exist_ok=True)
 
     try:
@@ -202,7 +202,7 @@ async def retry_strategies_example():
     logger = logging.getLogger(__name__)
 
     # Create a temporary directory for testing
-    temp_dir = Path("/tmp/gemini_sre_retry_strategies")
+    temp_dir = Path("/tmp/argus_retry_strategies")
     temp_dir.mkdir(exist_ok=True)
 
     try:
@@ -326,7 +326,7 @@ async def metrics_collection_example():
     logger = logging.getLogger(__name__)
 
     # Create a temporary directory for testing
-    temp_dir = Path("/tmp/gemini_sre_metrics")
+    temp_dir = Path("/tmp/argus_metrics")
     temp_dir.mkdir(exist_ok=True)
 
     try:
@@ -454,7 +454,7 @@ async def health_check_example():
     logger = logging.getLogger(__name__)
 
     # Create a temporary directory for testing
-    temp_dir = Path("/tmp/gemini_sre_health_check")
+    temp_dir = Path("/tmp/argus_health_check")
     temp_dir.mkdir(exist_ok=True)
 
     try:

@@ -25,18 +25,18 @@ graceful degradation strategies.
 import asyncio
 import logging
 
-from gemini_sre_agent.llm.base import LLMRequest
-from gemini_sre_agent.llm.common.enums import ModelType
-from gemini_sre_agent.llm.factory import LLMProviderFactory
-from gemini_sre_agent.llm.mixing import (
+from argus.llm.base import LLMRequest
+from argus.llm.common.enums import ModelType
+from argus.llm.factory import LLMProviderFactory
+from argus.llm.mixing import (
     IntelligentCache,
     MixingStrategy,
     ModelConfig,
     ModelMixer,
     TaskType,
 )
-from gemini_sre_agent.llm.monitoring import CircuitBreakerHealthChecker
-from gemini_sre_agent.llm.testing.mock_providers import RealisticMockProvider
+from argus.llm.monitoring import CircuitBreakerHealthChecker
+from argus.llm.testing.mock_providers import RealisticMockProvider
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -63,7 +63,7 @@ class ErrorHandlingExample:
         ]
 
         # Create a mock model registry for testing
-        from gemini_sre_agent.llm.model_registry import ModelRegistry
+        from argus.llm.model_registry import ModelRegistry
 
         self.model_registry = ModelRegistry()
 
