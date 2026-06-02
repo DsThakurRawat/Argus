@@ -30,9 +30,9 @@ with patch.dict(
     "sys.modules",
     {"instructor": MagicMock(), "litellm": MagicMock(), "mirascope": MagicMock()},
 ):
-    from gemini_sre_agent.llm.base import ModelType
-    from gemini_sre_agent.llm.config import LLMConfig, LLMProviderConfig, ModelConfig
-    from gemini_sre_agent.llm.service import LLMService, create_llm_service
+    from argus.llm.base import ModelType
+    from argus.llm.config import LLMConfig, LLMProviderConfig, ModelConfig
+    from argus.llm.service import LLMService, create_llm_service
 
 
 class TestResponseModel(BaseModel):
@@ -68,9 +68,9 @@ def mock_llm_config() -> None:
 @pytest.fixture
 def mock_llm_service(mock_llm_config: str) -> None:
     """Create a mock LLM service for testing."""
-    with patch("gemini_sre_agent.llm.service.instructor") as mock_instructor, patch(
-        "gemini_sre_agent.llm.service.litellm"
-    ), patch("gemini_sre_agent.llm.service.PromptManager"):
+    with patch("argus.llm.service.instructor") as mock_instructor, patch(
+        "argus.llm.service.litellm"
+    ), patch("argus.llm.service.PromptManager"):
 
         mock_client = MagicMock()
         mock_instructor.patch.return_value = mock_client
@@ -85,9 +85,9 @@ class TestLLMService:
 
     def test_initialization(self, mock_llm_config: str) -> None:
         """Test LLMService initialization."""
-        with patch("gemini_sre_agent.llm.service.instructor") as mock_instructor, patch(
-            "gemini_sre_agent.llm.service.litellm"
-        ) as mock_litellm, patch("gemini_sre_agent.llm.service.PromptManager"):
+        with patch("argus.llm.service.instructor") as mock_instructor, patch(
+            "argus.llm.service.litellm"
+        ) as mock_litellm, patch("argus.llm.service.PromptManager"):
 
             mock_client = MagicMock()
             mock_instructor.patch.return_value = mock_client
@@ -118,7 +118,7 @@ class TestLLMService:
     async def test_generate_text(self, mock_llm_service):
         """Test text response generation."""
         with patch(
-            "gemini_sre_agent.llm.service.litellm.acompletion"
+            "argus.llm.service.litellm.acompletion"
         ) as mock_completion:
             # Arrange
             mock_response = MagicMock()
@@ -214,9 +214,9 @@ class TestFactoryFunction:
 
     def test_create_llm_service(self, mock_llm_config: str) -> None:
         """Test the create_llm_service factory function."""
-        with patch("gemini_sre_agent.llm.service.instructor") as mock_instructor, patch(
-            "gemini_sre_agent.llm.service.litellm"
-        ), patch("gemini_sre_agent.llm.service.PromptManager"):
+        with patch("argus.llm.service.instructor") as mock_instructor, patch(
+            "argus.llm.service.litellm"
+        ), patch("argus.llm.service.PromptManager"):
 
             mock_client = MagicMock()
             mock_instructor.patch.return_value = mock_client

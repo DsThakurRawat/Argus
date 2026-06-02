@@ -27,10 +27,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.source_control.providers.base_sub_operation import (
+from argus.source_control.providers.base_sub_operation import (
     BaseSubOperation,
 )
-from gemini_sre_agent.source_control.providers.sub_operation_config import (
+from argus.source_control.providers.sub_operation_config import (
     SubOperationConfig,
 )
 

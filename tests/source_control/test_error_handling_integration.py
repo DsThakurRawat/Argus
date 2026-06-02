@@ -26,17 +26,17 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.source_control.error_handling import (
+from argus.source_control.error_handling import (
     create_provider_error_handling_with_preset,
     get_provider_config,
 )
-from gemini_sre_agent.source_control.providers.github.enhanced_github_provider import (
+from argus.source_control.providers.github.enhanced_github_provider import (
     EnhancedGitHubProvider,
 )
-from gemini_sre_agent.source_control.providers.gitlab.enhanced_gitlab_provider import (
+from argus.source_control.providers.gitlab.enhanced_gitlab_provider import (
     EnhancedGitLabProvider,
 )
-from gemini_sre_agent.source_control.providers.local.enhanced_local_provider import (
+from argus.source_control.providers.local.enhanced_local_provider import (
     EnhancedLocalProvider,
 )
 
@@ -383,7 +383,7 @@ class TestErrorHandlingIntegration:
             )
 
             # Test batch operations error handling
-            from gemini_sre_agent.source_control.models import BatchOperation
+            from argus.source_control.models import BatchOperation
 
             operations = [
                 BatchOperation(

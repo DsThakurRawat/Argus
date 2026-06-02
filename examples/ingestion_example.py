@@ -37,18 +37,18 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from datetime import UTC
 
-from gemini_sre_agent.config.ingestion_config import (
+from argus.config.ingestion_config import (
     FileSystemConfig,
     IngestionConfigManager,
     SourceType,
 )
-from gemini_sre_agent.ingestion import LogManager
-from gemini_sre_agent.ingestion.adapters import (
+from argus.ingestion import LogManager
+from argus.ingestion.adapters import (
     FileSystemAdapter,
     GCPPubSubAdapter,
 )
-from gemini_sre_agent.ingestion.interfaces.core import LogEntry, LogSeverity
-from gemini_sre_agent.ingestion.interfaces.resilience import (
+from argus.ingestion.interfaces.core import LogEntry, LogSeverity
+from argus.ingestion.interfaces.resilience import (
     HyxResilientClient,
     create_resilience_config,
 )

@@ -26,18 +26,18 @@ import asyncio
 import logging
 import time
 
-from gemini_sre_agent.llm.base import ModelType
-from gemini_sre_agent.llm.cost_management_integration import create_default_cost_manager
-from gemini_sre_agent.llm.factory import LLMProviderFactory
-from gemini_sre_agent.llm.mixing import (
+from argus.llm.base import ModelType
+from argus.llm.cost_management_integration import create_default_cost_manager
+from argus.llm.factory import LLMProviderFactory
+from argus.llm.mixing import (
     MixingStrategy,
     ModelConfig,
     ModelMixer,
     TaskType,
     context_manager,
 )
-from gemini_sre_agent.llm.model_registry import ModelRegistry
-from gemini_sre_agent.llm.monitoring import (
+from argus.llm.model_registry import ModelRegistry
+from argus.llm.monitoring import (
     LLMDashboardAPI,
     LLMHealthChecker,
     error_logger,

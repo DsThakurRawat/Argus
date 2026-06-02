@@ -23,15 +23,15 @@ install:
 
 # Run tests with coverage
 test:
-	pytest --cov=gemini_sre_agent --cov-report=xml --cov-report=html --cov-fail-under=80
+	pytest --cov=argus --cov-report=xml --cov-report=html --cov-fail-under=80
 
 # Run linting
 lint:
-	ruff check gemini_sre_agent tests
+	ruff check argus tests
 
 # Format code
 format:
-	ruff format gemini_sre_agent tests
+	ruff format argus tests
 
 # Run type checking
 type-check:
@@ -39,26 +39,26 @@ type-check:
 
 # Run security scan
 security:
-	bandit -r gemini_sre_agent -f json -o bandit-report.json
-	bandit -r gemini_sre_agent
+	bandit -r argus -f json -o bandit-report.json
+	bandit -r argus
 
 # Run quick quality gates (static analysis only)
 quality-gates-quick:
-	python -m gemini_sre_agent.core.quality.cli run \
+	python -m argus.core.quality.cli run \
 		--gates=static_analysis,style \
 		--output=quality-report-quick.json \
 		--format=json
 
 # Run full quality gates
 quality-gates-full:
-	python -m gemini_sre_agent.core.quality.cli run \
+	python -m argus.core.quality.cli run \
 		--output=quality-report-full.json \
 		--format=json \
 		--fail-on-warning
 
 # Run all quality gates (default)
 quality-gates:
-	python -m gemini_sre_agent.core.quality.cli run \
+	python -m argus.core.quality.cli run \
 		--output=quality-report.json \
 		--format=console
 

@@ -21,7 +21,7 @@ This document summarizes the complete implementation of all 4 recommendations fr
 - `argus_agent/agents/triage_agent.py`
 - `argus_agent/agents/analysis_agent.py`
 - `argus_agent/agents/remediation_agent.py`
-- `gemini_sre_agent/agents/legacy_adapter.py`
+- `argus/agents/legacy_adapter.py`
 
 ### Benefits:
 - **Zero-Code Compatibility**: Existing code works unchanged

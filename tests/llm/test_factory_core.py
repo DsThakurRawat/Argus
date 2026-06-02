@@ -25,10 +25,10 @@ with patch.dict(
     "sys.modules",
     {"instructor": MagicMock(), "litellm": MagicMock(), "mirascope": MagicMock()},
 ):
-    from gemini_sre_agent.llm.base import ModelType
-    from gemini_sre_agent.llm.config import LLMProviderConfig, ModelConfig
-    from gemini_sre_agent.llm.factory import LLMProviderFactory
-    from gemini_sre_agent.llm.provider import LLMProvider
+    from argus.llm.base import ModelType
+    from argus.llm.config import LLMProviderConfig, ModelConfig
+    from argus.llm.factory import LLMProviderFactory
+    from argus.llm.provider import LLMProvider
 
 
 class MockProvider(LLMProvider):
@@ -132,7 +132,7 @@ class TestLLMProviderFactory:
     def test_create_provider_success(self, factory: str, mock_config: str) -> None:
         """Test successful provider creation."""
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
@@ -150,7 +150,7 @@ class TestLLMProviderFactory:
     ) -> None:
         """Test provider creation with force_recreate=True."""
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider1 = MagicMock()
             mock_provider1.validate_config.return_value = True
@@ -182,7 +182,7 @@ class TestLLMProviderFactory:
     ) -> None:
         """Test creating provider with invalid configuration."""
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = False
@@ -198,7 +198,7 @@ class TestLLMProviderFactory:
     ) -> None:
         """Test provider creation failure."""
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider_class.side_effect = Exception("Creation failed")
 
@@ -208,7 +208,7 @@ class TestLLMProviderFactory:
     def test_get_provider_existing(self, factory: str, mock_config: str) -> None:
         """Test getting an existing provider."""
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
@@ -227,7 +227,7 @@ class TestLLMProviderFactory:
     def test_get_all_providers(self, factory: str, mock_config: str) -> None:
         """Test getting all providers."""
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
@@ -244,7 +244,7 @@ class TestLLMProviderFactory:
     def test_remove_provider_existing(self, factory: str, mock_config: str) -> None:
         """Test removing an existing provider."""
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
@@ -264,7 +264,7 @@ class TestLLMProviderFactory:
     def test_clear_providers(self, factory: str, mock_config: str) -> None:
         """Test clearing all providers."""
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True

@@ -19,9 +19,9 @@ The framework consists of several key components:
 The easiest way to add a provider is to use one of the pre-built templates:
 
 ```python
-from gemini_sre_agent.llm.provider_framework.templates import HTTPAPITemplate
-from gemini_sre_agent.llm.base import ModelType
-from gemini_sre_agent.llm.config import LLMProviderConfig, ProviderType
+from argus.llm.provider_framework.templates import HTTPAPITemplate
+from argus.llm.base import ModelType
+from argus.llm.config import LLMProviderConfig, ProviderType
 
 class MyProvider(HTTPAPITemplate):
     def _get_model_mapping(self):
@@ -124,7 +124,7 @@ class MyStreamingProvider(StreamingTemplate):
 The framework automatically discovers and registers providers:
 
 ```python
-from gemini_sre_agent.llm.provider_framework import ProviderAutoRegistry
+from argus.llm.provider_framework import ProviderAutoRegistry
 
 # Discover built-in providers
 registry = ProviderAutoRegistry()
@@ -142,7 +142,7 @@ info = registry.get_provider_info("my_provider")
 Validate your provider implementation:
 
 ```python
-from gemini_sre_agent.llm.provider_framework import ProviderValidator
+from argus.llm.provider_framework import ProviderValidator
 
 validator = ProviderValidator()
 errors = validator.validate_provider_class(MyProvider)
@@ -158,7 +158,7 @@ else:
 Load external provider plugins:
 
 ```python
-from gemini_sre_agent.llm.provider_framework import ProviderPluginLoader
+from argus.llm.provider_framework import ProviderPluginLoader
 
 loader = ProviderPluginLoader()
 loader.add_plugin_path("/path/to/plugins")
@@ -175,7 +175,7 @@ provider_class = loader.load_plugin("my_plugin")
 Discover what capabilities your provider supports:
 
 ```python
-from gemini_sre_agent.llm.provider_framework import ProviderCapabilityDiscovery
+from argus.llm.provider_framework import ProviderCapabilityDiscovery
 
 discovery = ProviderCapabilityDiscovery()
 capabilities = await discovery.discover_provider_capabilities(provider)
@@ -191,8 +191,8 @@ print("Tools support:", capabilities["tools"].supported)
 For providers that don't fit the templates, implement the base interface directly:
 
 ```python
-from gemini_sre_agent.llm.provider_framework.base_template import BaseProviderTemplate
-from gemini_sre_agent.llm.base import LLMRequest, LLMResponse
+from argus.llm.provider_framework.base_template import BaseProviderTemplate
+from argus.llm.base import LLMRequest, LLMResponse
 
 class CustomProvider(BaseProviderTemplate):
     async def _make_api_request(self, request: LLMRequest) -> dict:

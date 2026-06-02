@@ -23,11 +23,11 @@ to ensure proper configuration management for sub-operation modules.
 
 import pytest
 
-from gemini_sre_agent.source_control.error_handling.core import (
+from argus.source_control.error_handling.core import (
     CircuitBreakerConfig,
     RetryConfig,
 )
-from gemini_sre_agent.source_control.providers.sub_operation_config import (
+from argus.source_control.providers.sub_operation_config import (
     SubOperationConfig,
     SubOperationConfigManager,
     create_sub_operation_config,

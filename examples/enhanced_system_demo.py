@@ -23,21 +23,21 @@ import asyncio
 import json
 import logging
 
-from gemini_sre_agent.agents.enhanced_specialized import (
+from argus.agents.enhanced_specialized import (
     EnhancedAnalysisAgent,
     EnhancedRemediationAgentV2,
     EnhancedTriageAgent,
 )
-from gemini_sre_agent.agents.legacy_adapter import (
+from argus.agents.legacy_adapter import (
     create_enhanced_analysis_agent,
     create_enhanced_remediation_agent,
     create_enhanced_triage_agent,
 )
-from gemini_sre_agent.llm.capabilities.discovery import CapabilityDiscovery
-from gemini_sre_agent.llm.config_manager import ConfigManager
-from gemini_sre_agent.llm.factory import LLMProviderFactory
-from gemini_sre_agent.llm.monitoring.llm_metrics import get_llm_metrics_collector
-from gemini_sre_agent.llm.strategy_manager import OptimizationGoal
+from argus.llm.capabilities.discovery import CapabilityDiscovery
+from argus.llm.config_manager import ConfigManager
+from argus.llm.factory import LLMProviderFactory
+from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
+from argus.llm.strategy_manager import OptimizationGoal
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)

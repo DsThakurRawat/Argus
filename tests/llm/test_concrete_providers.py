@@ -20,8 +20,8 @@ Tests for concrete LLM provider implementations.
 
 import pytest
 
-from gemini_sre_agent.llm.base import ModelType
-from gemini_sre_agent.llm.concrete_providers import (
+from argus.llm.base import ModelType
+from argus.llm.concrete_providers import (
     AnthropicProvider,
     BedrockProvider,
     GeminiProvider,
@@ -29,7 +29,7 @@ from gemini_sre_agent.llm.concrete_providers import (
     OllamaProvider,
     OpenAIProvider,
 )
-from gemini_sre_agent.llm.config import LLMProviderConfig
+from argus.llm.config import LLMProviderConfig
 
 
 def create_test_config(provider: str, **kwargs) -> LLMProviderConfig:
@@ -452,7 +452,7 @@ class TestProviderIntegration:
 
     def test_all_providers_registered(self) -> None:
         """Test that all providers are registered with the factory."""
-        from gemini_sre_agent.llm.factory import LLMProviderFactory
+        from argus.llm.factory import LLMProviderFactory
 
         registered_providers = LLMProviderFactory.list_providers()
 
@@ -469,7 +469,7 @@ class TestProviderIntegration:
 
     def test_provider_creation_via_factory(self) -> None:
         """Test creating providers via factory."""
-        from gemini_sre_agent.llm.factory import LLMProviderFactory
+        from argus.llm.factory import LLMProviderFactory
 
         # Test Gemini
         config = create_test_config(

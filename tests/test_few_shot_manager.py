@@ -26,12 +26,12 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.ml.few_shot_manager import (
+from argus.ml.few_shot_manager import (
     FewShotExample,
     FewShotManager,
     FewShotSource,
 )
-from gemini_sre_agent.ml.schemas import PatternContext
+from argus.ml.schemas import PatternContext
 
 
 @pytest.fixture

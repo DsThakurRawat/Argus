@@ -17,14 +17,14 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from gemini_sre_agent.llm.capabilities.testing import (
+from argus.llm.capabilities.testing import (
     CapabilityTester,
     CodeGenerationTest,
     TextGenerationTest,
 )
-from gemini_sre_agent.llm.common.enums import ModelType
-from gemini_sre_agent.llm.config import LLMProviderConfig, ModelConfig
-from gemini_sre_agent.llm.provider import LLMProvider
+from argus.llm.common.enums import ModelType
+from argus.llm.config import LLMProviderConfig, ModelConfig
+from argus.llm.provider import LLMProvider
 
 
 @pytest.fixture

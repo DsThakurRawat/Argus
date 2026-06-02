@@ -83,7 +83,7 @@ Update your startup configuration to use the system by default.
 ### Basic GCP Pub/Sub Configuration
 
 ```python
-from gemini_sre_agent.config.ingestion_config import GCPPubSubConfig, SourceType
+from argus.config.ingestion_config import GCPPubSubConfig, SourceType
 
 config = GCPPubSubConfig(
     name="my_service_logs",
@@ -99,7 +99,7 @@ config = GCPPubSubConfig(
 ### Monitoring Configuration
 
 ```python
-from gemini_sre_agent.ingestion.monitoring.monitoring_manager import MonitoringManager
+from argus.ingestion.monitoring.monitoring_manager import MonitoringManager
 
 # Initialize comprehensive monitoring
 monitoring_manager = MonitoringManager()

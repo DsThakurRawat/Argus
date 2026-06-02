@@ -22,9 +22,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.llm.base import LLMRequest, ModelType
-from gemini_sre_agent.llm.config import LLMProviderConfig
-from gemini_sre_agent.llm.providers.gemini_provider import GeminiProvider
+from argus.llm.base import LLMRequest, ModelType
+from argus.llm.config import LLMProviderConfig
+from argus.llm.providers.gemini_provider import GeminiProvider
 
 
 class TestGeminiProvider:

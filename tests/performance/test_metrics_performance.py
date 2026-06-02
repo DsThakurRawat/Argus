@@ -22,11 +22,11 @@ from typing import Any
 
 import pytest
 
-from gemini_sre_agent.source_control.error_handling.core import CircuitState, ErrorType
-from gemini_sre_agent.source_control.error_handling.metrics_integration import (
+from argus.source_control.error_handling.core import CircuitState, ErrorType
+from argus.source_control.error_handling.metrics_integration import (
     ErrorHandlingMetrics,
 )
-from gemini_sre_agent.source_control.metrics.core import MetricType
+from argus.source_control.metrics.core import MetricType
 
 
 class MockMetricsCollector:

@@ -1,7 +1,7 @@
 # Argus: Multi-Provider Autonomous Monitoring and Remediation
 
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
-[![Multi-Provider AI](https://img.shields.io/badge/Multi--Provider%20AI-00BCD4?style=for-the-badge&logo=openai&logoColor=fff)](https://github.com/avivl/argus)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge)](LICENSE)
+[![Multi-Provider AI](https://img.shields.io/badge/Multi--Provider%20AI-00BCD4?style=for-the-badge&logo=openai&logoColor=fff)](https://github.com/DsThakurRawat/Cloud-SRE)
 ![Argus](static/gemini_agent.png)
 
 Welcome to Argus, an autonomous multi-provider SRE assistant designed to enhance cloud operations by intelligently monitoring logs and automating incident response. This project leverages the power of 100+ AI providers (OpenAI, Anthropic, Google, Cohere, Ollama, and more) directly in SRE workflows.
@@ -97,4 +97,4 @@ We welcome contributions! Please refer to the [Development Guide](docs/DEVELOPME
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.

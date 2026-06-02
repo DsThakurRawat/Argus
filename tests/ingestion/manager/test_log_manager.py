@@ -24,17 +24,17 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from gemini_sre_agent.config.ingestion_config import FileSystemConfig, SourceType
-from gemini_sre_agent.ingestion.interfaces.core import (
+from argus.config.ingestion_config import FileSystemConfig, SourceType
+from argus.ingestion.interfaces.core import (
     LogEntry,
     LogSeverity,
     SourceHealth,
 )
-from gemini_sre_agent.ingestion.interfaces.errors import (
+from argus.ingestion.interfaces.errors import (
     SourceAlreadyRunningError,
     SourceNotFoundError,
 )
-from gemini_sre_agent.ingestion.manager.log_manager import LogManager
+from argus.ingestion.manager.log_manager import LogManager
 
 
 class MockAdapter:

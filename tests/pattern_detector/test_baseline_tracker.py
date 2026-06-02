@@ -20,8 +20,8 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from gemini_sre_agent.pattern_detector.baseline_tracker import BaselineTracker
-from gemini_sre_agent.pattern_detector.models import LogEntry, TimeWindow
+from argus.pattern_detector.baseline_tracker import BaselineTracker
+from argus.pattern_detector.models import LogEntry, TimeWindow
 
 
 class TestBaselineTracker:

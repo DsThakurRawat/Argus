@@ -1,0 +1,40 @@
+# Copyright 2026 Divyansh Rawat
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# argus/ml/validation/__init__.py
+
+"""
+Code validation pipeline for enhanced code generation.
+
+This package provides comprehensive validation capabilities for generated code,
+including syntax validation, pattern compliance, security review, and performance analysis.
+"""
+
+from .code_validation_pipeline import CodeValidationPipeline
+from .validation_models import (
+    ValidationFeedback,
+    ValidationIssue,
+    ValidationLevel,
+    ValidationResult,
+    ValidationType,
+)
+
+__all__ = [
+    "CodeValidationPipeline",
+    "ValidationFeedback",
+    "ValidationIssue",
+    "ValidationLevel",
+    "ValidationResult",
+    "ValidationType",
+]

@@ -25,10 +25,10 @@ import logging
 import os
 import tempfile
 
-from gemini_sre_agent.config.ingestion_config import FileSystemConfig, SourceType
-from gemini_sre_agent.ingestion.adapters.file_system import FileSystemAdapter
-from gemini_sre_agent.ingestion.interfaces.core import LogEntry, LogSeverity
-from gemini_sre_agent.ingestion.interfaces.resilience import create_resilience_config
+from argus.config.ingestion_config import FileSystemConfig, SourceType
+from argus.ingestion.adapters.file_system import FileSystemAdapter
+from argus.ingestion.interfaces.core import LogEntry, LogSeverity
+from argus.ingestion.interfaces.resilience import create_resilience_config
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

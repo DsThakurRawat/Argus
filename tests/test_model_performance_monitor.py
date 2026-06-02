@@ -20,9 +20,9 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from gemini_sre_agent.ml.drift_detector import DriftDetector, MetricsCalculator
-from gemini_sre_agent.ml.model_performance_monitor import ModelPerformanceMonitor
-from gemini_sre_agent.ml.performance_config import (
+from argus.ml.drift_detector import DriftDetector, MetricsCalculator
+from argus.ml.model_performance_monitor import ModelPerformanceMonitor
+from argus.ml.performance_config import (
     DriftAlert,
     PerformanceConfig,
     PerformanceMetrics,

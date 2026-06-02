@@ -613,7 +613,7 @@ export LLM_ALERT_THRESHOLD="0.8"
 ### Basic Usage
 
 ```python
-from gemini_sre_agent.llm.config_manager import get_config_manager
+from argus.llm.config_manager import get_config_manager
 
 # Get configuration manager
 config_manager = get_config_manager()
@@ -631,8 +631,8 @@ analysis_config = config_manager.get_agent_config("analysis_agent")
 ### Provider Factory Usage
 
 ```python
-from gemini_sre_agent.llm.factory import LLMProviderFactory
-from gemini_sre_agent.llm.config_manager import get_config_manager
+from argus.llm.factory import LLMProviderFactory
+from argus.llm.config_manager import get_config_manager
 
 # Get configuration
 config_manager = get_config_manager()
@@ -655,8 +655,8 @@ response = openai_provider.generate_response(
 ### Agent Usage
 
 ```python
-from gemini_sre_agent.analysis_agent import AnalysisAgent
-from gemini_sre_agent.llm.config_manager import get_config_manager
+from argus.analysis_agent import AnalysisAgent
+from argus.llm.config_manager import get_config_manager
 
 # Get configuration
 config_manager = get_config_manager()
@@ -675,20 +675,20 @@ result = agent.analyze_logs(log_entries)
 
 ```bash
 # Validate configuration file
-python -m gemini_sre_agent.llm.config_manager validate config/llm_config.yaml
+python -m argus.llm.config_manager validate config/llm_config.yaml
 
 # Validate with detailed output
-python -m gemini_sre_agent.llm.config_manager validate config/llm_config.yaml --verbose
+python -m argus.llm.config_manager validate config/llm_config.yaml --verbose
 
 # Test provider connections
-python -m gemini_sre_agent.llm.config_manager test-providers config/llm_config.yaml
+python -m argus.llm.config_manager test-providers config/llm_config.yaml
 ```
 
 ### Programmatic Validation
 
 ```python
-from gemini_sre_agent.llm.config_manager import ConfigManager
-from gemini_sre_agent.llm.config import LLMConfig
+from argus.llm.config_manager import ConfigManager
+from argus.llm.config import LLMConfig
 
 # Validate configuration
 try:

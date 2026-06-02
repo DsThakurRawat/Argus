@@ -268,7 +268,7 @@ Continuous learning and improvement based on generation history and feedback.
 ### Basic Code Generation
 
 ```python
-from gemini_sre_agent.ml.unified_workflow_orchestrator import UnifiedWorkflowOrchestrator
+from argus.ml.unified_workflow_orchestrator import UnifiedWorkflowOrchestrator
 
 # Initialize the orchestrator
 orchestrator = UnifiedWorkflowOrchestrator()
@@ -295,7 +295,7 @@ validation_result = result.validation_result
 ### Specialized Code Generation
 
 ```python
-from gemini_sre_agent.ml.code_generator_factory import CodeGeneratorFactory
+from argus.ml.code_generator_factory import CodeGeneratorFactory
 
 # Get specialized generator
 factory = CodeGeneratorFactory()
@@ -311,7 +311,7 @@ code = await generator.generate_code(
 ### Validation and Quality Assurance
 
 ```python
-from gemini_sre_agent.ml.validation import CodeValidationPipeline
+from argus.ml.validation import CodeValidationPipeline
 
 # Initialize validation pipeline
 pipeline = CodeValidationPipeline()

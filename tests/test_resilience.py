@@ -20,7 +20,7 @@ from hyx.ratelimit.exceptions import RateLimitExceeded
 from hyx.retry.exceptions import MaxAttemptsExceeded
 import pytest
 
-from gemini_sre_agent.resilience import (
+from argus.resilience import (
     HyxResilientClient,
     ResilienceConfig,
     create_resilience_config,

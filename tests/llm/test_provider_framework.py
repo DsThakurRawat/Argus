@@ -25,16 +25,16 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.llm.base import LLMRequest, LLMResponse, ModelType, ProviderType
-from gemini_sre_agent.llm.config import LLMProviderConfig
-from gemini_sre_agent.llm.provider_framework import (
+from argus.llm.base import LLMRequest, LLMResponse, ModelType, ProviderType
+from argus.llm.config import LLMProviderConfig
+from argus.llm.provider_framework import (
     ProviderAutoRegistry,
     ProviderCapabilityDiscovery,
     ProviderPluginLoader,
     ProviderValidator,
 )
-from gemini_sre_agent.llm.provider_framework.base_template import BaseProviderTemplate
-from gemini_sre_agent.llm.provider_framework.templates import (
+from argus.llm.provider_framework.base_template import BaseProviderTemplate
+from argus.llm.provider_framework.templates import (
     HTTPAPITemplate,
     OpenAICompatibleTemplate,
     RESTAPITemplate,
@@ -338,7 +338,7 @@ class TestProviderAutoRegistry:
         auto_registry.discovered_providers["test"] = MockProvider
 
         with patch(
-            "gemini_sre_agent.llm.factory.LLMProviderFactory.register_provider"
+            "argus.llm.factory.LLMProviderFactory.register_provider"
         ) as mock_register:
             auto_registry.register_discovered_providers()
             mock_register.assert_called_once_with("test", MockProvider)
@@ -367,7 +367,7 @@ class TestProviderAutoRegistry:
         auto_registry.discovered_providers["test"] = MockProvider
 
         with patch(
-            "gemini_sre_agent.llm.provider_framework.validator.ProviderValidator"
+            "argus.llm.provider_framework.validator.ProviderValidator"
         ) as mock_validator:
             mock_validator.return_value.validate_provider_class.return_value = [
                 "error1",

@@ -20,8 +20,8 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from gemini_sre_agent.pattern_detector.confidence_scorer import ConfidenceScorer
-from gemini_sre_agent.pattern_detector.models import (
+from argus.pattern_detector.confidence_scorer import ConfidenceScorer
+from argus.pattern_detector.models import (
     ConfidenceFactors,
     LogEntry,
     PatternType,

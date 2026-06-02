@@ -20,16 +20,16 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from gemini_sre_agent.agents.enhanced_analysis_agent import EnhancedAnalysisAgent
-from gemini_sre_agent.agents.enhanced_remediation_agent import EnhancedRemediationAgent
-from gemini_sre_agent.agents.enhanced_triage_agent import EnhancedTriageAgent
-from gemini_sre_agent.agents.legacy_adapter import (
+from argus.agents.enhanced_analysis_agent import EnhancedAnalysisAgent
+from argus.agents.enhanced_remediation_agent import EnhancedRemediationAgent
+from argus.agents.enhanced_triage_agent import EnhancedTriageAgent
+from argus.agents.legacy_adapter import (
     LegacyAnalysisAgentAdapter,
     LegacyRemediationAgentAdapter,
     LegacyTriageAgentAdapter,
 )
-from gemini_sre_agent.llm.config import LLMConfig, ProviderConfig
-from gemini_sre_agent.llm.strategy_manager import OptimizationGoal
+from argus.llm.config import LLMConfig, ProviderConfig
+from argus.llm.strategy_manager import OptimizationGoal
 
 
 @pytest.fixture

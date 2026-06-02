@@ -22,9 +22,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.llm.base import ErrorSeverity, LLMProviderError, ModelType
-from gemini_sre_agent.llm.config import LLMProviderConfig, ModelConfig
-from gemini_sre_agent.llm.providers import (
+from argus.llm.base import ErrorSeverity, LLMProviderError, ModelType
+from argus.llm.config import LLMProviderConfig, ModelConfig
+from argus.llm.providers import (
     AnthropicProviderHandler,
     BedrockProviderHandler,
     GrokProviderHandler,

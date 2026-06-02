@@ -19,10 +19,10 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.analysis_agent import AnalysisAgent, RemediationPlan
-from gemini_sre_agent.config import load_config
-from gemini_sre_agent.remediation_agent import RemediationAgent
-from gemini_sre_agent.triage_agent import TriageAgent, TriagePacket
+from argus.analysis_agent import AnalysisAgent, RemediationPlan
+from argus.config import load_config
+from argus.remediation_agent import RemediationAgent
+from argus.triage_agent import TriageAgent, TriagePacket
 
 # --- Fixtures for Configuration and Credentials ---
 
@@ -123,7 +123,7 @@ async def test_triage_agent_live_call(gcp_project_id, gcp_location, integration_
     triage_model = integration_config.default_model_selection.triage_model
 
     # Mock the Gemini model to avoid real API calls
-    with patch("gemini_sre_agent.triage_agent.GenerativeModel") as mock_model_class:
+    with patch("argus.triage_agent.GenerativeModel") as mock_model_class:
         mock_model = MagicMock()
         mock_model_class.return_value = mock_model
 
@@ -185,7 +185,7 @@ async def test_analysis_agent_live_call(
     analysis_model = integration_config.default_model_selection.analysis_model
 
     # Mock the Gemini model to avoid real API calls
-    with patch("gemini_sre_agent.analysis_agent.GenerativeModel") as mock_model_class:
+    with patch("argus.analysis_agent.GenerativeModel") as mock_model_class:
         mock_model = MagicMock()
         mock_model_class.return_value = mock_model
 
@@ -248,7 +248,7 @@ async def test_remediation_agent_live_github(
 ):
     """Test remediation agent with mocked GitHub API calls"""
     # Mock the GitHub API to avoid real API calls
-    with patch("gemini_sre_agent.remediation_agent.Github") as mock_github_class:
+    with patch("argus.remediation_agent.Github") as mock_github_class:
         mock_github = MagicMock()
         mock_github_class.return_value = mock_github
 

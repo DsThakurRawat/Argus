@@ -27,14 +27,14 @@ import pytest
 with patch.dict(
     "sys.modules", {"mirascope": Mock(), "instructor": Mock(), "litellm": Mock()}
 ):
-    from gemini_sre_agent.llm.enhanced_service import EnhancedLLMService
+    from argus.llm.enhanced_service import EnhancedLLMService
 
-from gemini_sre_agent.llm.base import ModelType, ProviderType
-from gemini_sre_agent.llm.config import LLMConfig, LLMProviderConfig, ModelConfig
-from gemini_sre_agent.llm.model_registry import ModelInfo, ModelRegistry
-from gemini_sre_agent.llm.model_scorer import ScoringWeights
-from gemini_sre_agent.llm.model_selector import SelectionStrategy
-from gemini_sre_agent.llm.performance_cache import MetricType, PerformanceMonitor
+from argus.llm.base import ModelType, ProviderType
+from argus.llm.config import LLMConfig, LLMProviderConfig, ModelConfig
+from argus.llm.model_registry import ModelInfo, ModelRegistry
+from argus.llm.model_scorer import ScoringWeights
+from argus.llm.model_selector import SelectionStrategy
+from argus.llm.performance_cache import MetricType, PerformanceMonitor
 
 
 class MockResponse(BaseModel):

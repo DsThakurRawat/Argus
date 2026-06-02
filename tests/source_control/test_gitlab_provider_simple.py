@@ -18,8 +18,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from gemini_sre_agent.config.source_control_repositories import GitLabRepositoryConfig
-from gemini_sre_agent.source_control.providers.gitlab_provider import GitLabProvider
+from argus.config.source_control_repositories import GitLabRepositoryConfig
+from argus.source_control.providers.gitlab_provider import GitLabProvider
 
 
 class TestGitLabProviderSimple:

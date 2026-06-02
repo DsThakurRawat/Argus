@@ -19,7 +19,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from gemini_sre_agent.resilience.fallback_manager import FallbackManager
+from argus.resilience.fallback_manager import FallbackManager
 
 
 @pytest.fixture

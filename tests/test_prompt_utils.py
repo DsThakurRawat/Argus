@@ -24,8 +24,8 @@ import json
 
 import pytest
 
-from gemini_sre_agent.ml.prompt_utils import build_context_kwargs, build_evidence_kwargs
-from gemini_sre_agent.ml.schemas import PatternContext
+from argus.ml.prompt_utils import build_context_kwargs, build_evidence_kwargs
+from argus.ml.schemas import PatternContext
 
 
 class TestBuildContextKwargs:

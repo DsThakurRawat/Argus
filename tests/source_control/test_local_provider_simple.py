@@ -21,8 +21,8 @@ import tempfile
 import git
 import pytest
 
-from gemini_sre_agent.config.source_control_repositories import LocalRepositoryConfig
-from gemini_sre_agent.source_control.models import (
+from argus.config.source_control_repositories import LocalRepositoryConfig
+from argus.source_control.models import (
     BatchOperation,
     CommitOptions,
     FileInfo,
@@ -32,7 +32,7 @@ from gemini_sre_agent.source_control.models import (
     ProviderHealth,
     RepositoryInfo,
 )
-from gemini_sre_agent.source_control.providers.local_provider import LocalProvider
+from argus.source_control.providers.local_provider import LocalProvider
 
 
 class TestLocalProviderSimple:

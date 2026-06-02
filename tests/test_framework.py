@@ -26,12 +26,12 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from gemini_sre_agent.llm.testing.framework import (
+from argus.llm.testing.framework import (
     TestingFramework,
     TestReport,
     TestResult,
 )
-from gemini_sre_agent.llm.testing.mock_providers import (
+from argus.llm.testing.mock_providers import (
     MockModelRegistry,
     MockProviderFactory,
 )

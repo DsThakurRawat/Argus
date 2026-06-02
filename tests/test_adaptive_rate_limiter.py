@@ -21,8 +21,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.ml.adaptive_rate_limiter import AdaptiveRateLimiter
-from gemini_sre_agent.ml.rate_limiter_config import (
+from argus.ml.adaptive_rate_limiter import AdaptiveRateLimiter
+from argus.ml.rate_limiter_config import (
     CircuitState,
     RateLimiterConfig,
     UrgencyLevel,
@@ -236,7 +236,7 @@ class TestAdaptiveRateLimiter:
         assert rate_limiter.circuit_state == CircuitState.OPEN
         assert rate_limiter.circuit_opened_at is not None
 
-    @patch("gemini_sre_agent.ml.adaptive_rate_limiter.datetime")
+    @patch("argus.ml.adaptive_rate_limiter.datetime")
     def test_circuit_state_transitions_to_half_open(
         self, mock_datetime: MagicMock, rate_limiter: AdaptiveRateLimiter
     ):
@@ -342,7 +342,7 @@ class TestAdaptiveRateLimiter:
 
     def test_success_rate_calculation_edge_cases(self) -> None:
         """Test success rate calculation with edge cases."""
-        from gemini_sre_agent.ml.rate_limiter_config import RateLimiterMetrics
+        from argus.ml.rate_limiter_config import RateLimiterMetrics
 
         # Zero requests
         assert RateLimiterMetrics.calculate_success_rate(0, 0) == 0.0
@@ -358,7 +358,7 @@ class TestAdaptiveRateLimiter:
 
     def test_critical_override_logic(self) -> None:
         """Test critical override decision logic."""
-        from gemini_sre_agent.ml.rate_limiter_config import RateLimiterMetrics
+        from argus.ml.rate_limiter_config import RateLimiterMetrics
 
         # Non-critical should not override
         metrics = RateLimiterMetrics(success_rate=0.3)
@@ -378,7 +378,7 @@ class TestAdaptiveRateLimiter:
 
     def test_rate_limit_skip_logic(self) -> None:
         """Test rate limit skip decision logic."""
-        from gemini_sre_agent.ml.rate_limiter_config import RateLimiterMetrics
+        from argus.ml.rate_limiter_config import RateLimiterMetrics
 
         # No rate limit active - should not skip
         metrics = RateLimiterMetrics(rate_limited_requests=0, total_requests=10)

@@ -25,14 +25,14 @@ with patch.dict(
     "sys.modules",
     {"instructor": MagicMock(), "litellm": MagicMock(), "mirascope": MagicMock()},
 ):
-    from gemini_sre_agent.llm.base import ModelType
-    from gemini_sre_agent.llm.config import LLMConfig, LLMProviderConfig, ModelConfig
-    from gemini_sre_agent.llm.factory import (
+    from argus.llm.base import ModelType
+    from argus.llm.config import LLMConfig, LLMProviderConfig, ModelConfig
+    from argus.llm.factory import (
         LLMProviderFactory,
         create_provider_factory,
         get_provider_factory,
     )
-    from gemini_sre_agent.llm.provider import LLMProvider
+    from argus.llm.provider import LLMProvider
 
 
 class MockProvider(LLMProvider):
@@ -126,7 +126,7 @@ class TestFactoryAdvanced:
         )
 
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
@@ -149,7 +149,7 @@ class TestFactoryAdvanced:
         )
 
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
@@ -173,7 +173,7 @@ class TestFactoryAdvanced:
         )
 
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
@@ -200,7 +200,7 @@ class TestFactoryAdvanced:
         )
 
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider1 = MagicMock()
             mock_provider1.validate_config.return_value = True
@@ -234,7 +234,7 @@ class TestFactoryAdvanced:
         )
 
         with patch(
-            "gemini_sre_agent.llm.factory.LiteLLMProvider"
+            "argus.llm.factory.LiteLLMProvider"
         ) as mock_provider_class:
             mock_provider1 = MagicMock()
             mock_provider1.validate_config.return_value = True

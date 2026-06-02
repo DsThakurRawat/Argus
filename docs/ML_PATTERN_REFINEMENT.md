@@ -270,7 +270,7 @@ ml_pattern_refinement:
 
 ```python
 from argus_agent.ml.ai_pattern_detector import AIPatternDetector
-from gemini_sre_agent.ml.schemas import PatternContext
+from argus.ml.schemas import PatternContext
 
 # Initialize detector
 detector = AIPatternDetector()
@@ -296,7 +296,7 @@ print(f"Reasoning: {result.reasoning}")
 ### Cache Usage Optimization
 
 ```python
-from gemini_sre_agent.ml.gemini_response_cache import GeminiResponseCache
+from argus.ml.gemini_response_cache import GeminiResponseCache
 
 # Initialize cache
 cache = GeminiResponseCache(
@@ -319,8 +319,8 @@ await cache.cache_response(context, "gemini-1.5-pro", response)
 ### Quality Validation
 
 ```python
-from gemini_sre_agent.ml.log_quality_validator import LogQualityValidator
-from gemini_sre_agent.ml.validation_config import TimeWindow, LogEntry
+from argus.ml.log_quality_validator import LogQualityValidator
+from argus.ml.validation_config import TimeWindow, LogEntry
 
 # Initialize validator
 validator = LogQualityValidator()
@@ -424,7 +424,7 @@ Enable detailed debugging:
 
 ```python
 import logging
-logging.getLogger('gemini_sre_agent.ml').setLevel(logging.DEBUG)
+logging.getLogger('argus.ml').setLevel(logging.DEBUG)
 ```
 
 This provides detailed logs for:

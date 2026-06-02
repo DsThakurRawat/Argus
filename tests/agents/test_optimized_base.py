@@ -26,10 +26,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from pydantic import BaseModel
 import pytest
 
-from gemini_sre_agent.agents.optimized_base import OptimizedBaseAgent
-from gemini_sre_agent.llm.base import ModelType, ProviderType
-from gemini_sre_agent.llm.config import LLMConfig, LLMProviderConfig
-from gemini_sre_agent.llm.strategy_manager import OptimizationGoal
+from argus.agents.optimized_base import OptimizedBaseAgent
+from argus.llm.base import ModelType, ProviderType
+from argus.llm.config import LLMConfig, LLMProviderConfig
+from argus.llm.strategy_manager import OptimizationGoal
 
 
 class TestResponse(BaseModel):

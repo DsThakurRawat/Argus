@@ -24,7 +24,7 @@ URL parsing, branch name sanitization, and error handling.
 
 import pytest
 
-from gemini_sre_agent.source_control.providers.github_utils import (
+from argus.source_control.providers.github_utils import (
     extract_github_links,
     format_github_markdown_table,
     format_pull_request_body,

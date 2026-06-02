@@ -14,8 +14,8 @@ Ensure you have the following installed:
 ## 2. Clone the Repository
 
 ```bash
-git clone https://github.com/avivl/argus.git
-cd argus
+git clone https://github.com/DsThakurRawat/Cloud-SRE.git
+cd Cloud-SRE
 ```
 
 ## 3. Install Dependencies

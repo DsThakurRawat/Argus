@@ -18,7 +18,7 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.security.data_filter import (
+from argus.security.data_filter import (
     DataFilter,
     FilterRule,
     SensitiveDataType,
@@ -266,7 +266,7 @@ class TestDataFilter:
             replacement="[CUSTOM_REDACTED]",
         )
 
-        with patch("gemini_sre_agent.security.data_filter.logger") as mock_logger:
+        with patch("argus.security.data_filter.logger") as mock_logger:
             data_filter.add_rule(rule)
 
             assert len(data_filter.rules) == initial_count + 1

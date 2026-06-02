@@ -23,10 +23,10 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.llm.config import (
+from argus.llm.config import (
     LLMConfig,
 )
-from gemini_sre_agent.llm.config_manager import (
+from argus.llm.config_manager import (
     ConfigManager,
     ConfigSource,
     get_config_manager,

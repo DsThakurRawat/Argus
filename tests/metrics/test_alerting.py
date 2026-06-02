@@ -16,8 +16,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from gemini_sre_agent.metrics.alerting import AlertManager
-from gemini_sre_agent.metrics.metrics_manager import MetricsManager
+from argus.metrics.alerting import AlertManager
+from argus.metrics.metrics_manager import MetricsManager
 
 
 @pytest.fixture

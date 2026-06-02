@@ -30,7 +30,7 @@ ignore = [
 "**/__init__.py" = ["F401"]  # Allow unused imports in __init__.py
 
 [lint.isort]
-known-first-party = ["gemini_sre_agent"]
+known-first-party = ["argus"]
 force-sort-within-sections = true
 
 [lint.flake8-quotes]

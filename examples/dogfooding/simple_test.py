@@ -27,8 +27,8 @@ import time
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from gemini_sre_agent.ingestion.adapters.file_system import FileSystemAdapter
-from gemini_sre_agent.ingestion.manager.log_manager import LogManager
+from argus.ingestion.adapters.file_system import FileSystemAdapter
+from argus.ingestion.manager.log_manager import LogManager
 
 
 async def simple_log_processor(log_entry):
@@ -66,7 +66,7 @@ async def main():
     log_manager = LogManager(simple_log_processor)
 
     # Create a file system adapter
-    from gemini_sre_agent.config.ingestion_config import FileSystemConfig, SourceType
+    from argus.config.ingestion_config import FileSystemConfig, SourceType
 
     config = FileSystemConfig(
         name="test_logs",

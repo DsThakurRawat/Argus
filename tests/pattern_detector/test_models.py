@@ -18,7 +18,7 @@ Tests for the data models in the pattern detection system.
 
 from datetime import UTC, datetime
 
-from gemini_sre_agent.pattern_detector.models import (
+from argus.pattern_detector.models import (
     ConfidenceFactors,
     ConfidenceRule,
     ConfidenceScore,

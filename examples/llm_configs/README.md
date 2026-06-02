@@ -71,8 +71,8 @@ python validate_config.py your_config.yaml --test-providers
 ### 4. Use in Your Application
 
 ```python
-from gemini_sre_agent.llm.config_manager import get_config_manager
-from gemini_sre_agent.analysis_agent import AnalysisAgent
+from argus.llm.config_manager import get_config_manager
+from argus.analysis_agent import AnalysisAgent
 
 # Load configuration
 config_manager = get_config_manager("your_config.yaml")

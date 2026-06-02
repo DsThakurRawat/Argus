@@ -46,12 +46,12 @@ jobs:
 
     - name: Run Security Scan (Bandit)
       run: |
-        bandit -r gemini_sre_agent -f json -o bandit-report.json || true
-        bandit -r gemini_sre_agent
+        bandit -r argus -f json -o bandit-report.json || true
+        bandit -r argus
 
     - name: Run Tests with Coverage
       run: |
-        pytest --cov=gemini_sre_agent --cov-report=xml --cov-report=html --cov-fail-under=80
+        pytest --cov=argus --cov-report=xml --cov-report=html --cov-fail-under=80
 
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -62,7 +62,7 @@ jobs:
 
     - name: Run Quality Gates
       run: |
-        python -m gemini_sre_agent.core.quality.cli run \
+        python -m argus.core.quality.cli run \
           --output=quality-report.json \
           --format=json \
           --fail-on-warning
@@ -131,7 +131,7 @@ jobs:
 
     - name: Run Performance Gates
       run: |
-        python -m gemini_sre_agent.core.quality.cli run \
+        python -m argus.core.quality.cli run \
           --gates=performance \
           --output=performance-report.json \
           --format=json

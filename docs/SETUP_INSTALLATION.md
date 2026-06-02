@@ -53,8 +53,8 @@ Follow these steps to set up the Argus on your local machine:
 1.  **Clone the repository:**
     Begin by cloning the project repository to your local machine:
     ```bash
-    git clone https://github.com/avivl/argus.git
-    cd argus
+    git clone https://github.com/DsThakurRawat/Cloud-SRE.git
+    cd Cloud-SRE
     ```
 
 2.  **Install dependencies:**

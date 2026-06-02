@@ -24,9 +24,9 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from gemini_sre_agent.ml.gemini_api_client import GeminiResponse
-from gemini_sre_agent.ml.gemini_response_cache import GeminiResponseCache
-from gemini_sre_agent.ml.schemas import PatternContext
+from argus.ml.gemini_api_client import GeminiResponse
+from argus.ml.gemini_response_cache import GeminiResponseCache
+from argus.ml.schemas import PatternContext
 
 
 class TestGeminiResponseCacheInit:

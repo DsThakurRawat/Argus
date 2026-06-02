@@ -18,8 +18,8 @@
 Unit tests for the Performance Cache system.
 """
 
-from gemini_sre_agent.llm.base import ProviderType
-from gemini_sre_agent.llm.performance_cache import (
+from argus.llm.base import ProviderType
+from argus.llm.performance_cache import (
     MetricType,
     ModelPerformanceStats,
     PerformanceCache,

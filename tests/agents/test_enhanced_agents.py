@@ -18,27 +18,27 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.agents.enhanced_adapter import (
+from argus.agents.enhanced_adapter import (
     AgentMigrationHelper,
     BackwardCompatibilityWrapper,
     EnhancedAgentAdapter,
 )
-from gemini_sre_agent.agents.enhanced_base import EnhancedBaseAgent
-from gemini_sre_agent.agents.enhanced_specialized import (
+from argus.agents.enhanced_base import EnhancedBaseAgent
+from argus.agents.enhanced_specialized import (
     EnhancedAnalysisAgent,
     EnhancedCodeAgent,
     EnhancedRemediationAgent,
     EnhancedTextAgent,
     EnhancedTriageAgent,
 )
-from gemini_sre_agent.agents.response_models import (
+from argus.agents.response_models import (
     AnalysisResponse,
     CodeResponse,
     TextResponse,
 )
-from gemini_sre_agent.llm.base import ModelType, ProviderType
-from gemini_sre_agent.llm.config import LLMConfig, LLMProviderConfig
-from gemini_sre_agent.llm.strategy_manager import OptimizationGoal
+from argus.llm.base import ModelType, ProviderType
+from argus.llm.config import LLMConfig, LLMProviderConfig
+from argus.llm.strategy_manager import OptimizationGoal
 
 
 @pytest.fixture
@@ -101,8 +101,8 @@ def mock_strategy_manager() -> None:
 class TestEnhancedBaseAgent:
     """Test EnhancedBaseAgent functionality."""
 
-    @patch("gemini_sre_agent.agents.enhanced_base.EnhancedLLMService")
-    @patch("gemini_sre_agent.agents.enhanced_base.StrategyManager")
+    @patch("argus.agents.enhanced_base.EnhancedLLMService")
+    @patch("argus.agents.enhanced_base.StrategyManager")
     def test_initialization(
         self, mock_strategy_manager_class, mock_llm_service_class, mock_llm_config
     ):
@@ -123,8 +123,8 @@ class TestEnhancedBaseAgent:
         assert agent.max_retries == 2
         assert agent.collect_stats is True
 
-    @patch("gemini_sre_agent.agents.enhanced_base.EnhancedLLMService")
-    @patch("gemini_sre_agent.agents.enhanced_base.StrategyManager")
+    @patch("argus.agents.enhanced_base.EnhancedLLMService")
+    @patch("argus.agents.enhanced_base.StrategyManager")
     async def test_execute_success(
         self, mock_strategy_manager_class, mock_llm_service_class, mock_llm_config
     ):
@@ -159,8 +159,8 @@ class TestEnhancedBaseAgent:
         assert result.text == "Generated text"
         assert result.confidence == 0.9
 
-    @patch("gemini_sre_agent.agents.enhanced_base.EnhancedLLMService")
-    @patch("gemini_sre_agent.agents.enhanced_base.StrategyManager")
+    @patch("argus.agents.enhanced_base.EnhancedLLMService")
+    @patch("argus.agents.enhanced_base.StrategyManager")
     async def test_execute_with_fallback(
         self, mock_strategy_manager_class, mock_llm_service_class, mock_llm_config
     ):
@@ -195,8 +195,8 @@ class TestEnhancedBaseAgent:
         assert isinstance(result, TextResponse)
         assert result.text == "Fallback text"
 
-    @patch("gemini_sre_agent.agents.enhanced_base.EnhancedLLMService")
-    @patch("gemini_sre_agent.agents.enhanced_base.StrategyManager")
+    @patch("argus.agents.enhanced_base.EnhancedLLMService")
+    @patch("argus.agents.enhanced_base.StrategyManager")
     async def test_model_selection(
         self, mock_strategy_manager_class, mock_llm_service_class, mock_llm_config
     ):
@@ -231,8 +231,8 @@ class TestEnhancedBaseAgent:
 
     def test_conversation_context_management(self, mock_llm_config: str) -> None:
         """Test conversation context management."""
-        with patch("gemini_sre_agent.agents.enhanced_base.EnhancedLLMService"), patch(
-            "gemini_sre_agent.agents.enhanced_base.StrategyManager"
+        with patch("argus.agents.enhanced_base.EnhancedLLMService"), patch(
+            "argus.agents.enhanced_base.StrategyManager"
         ):
 
             agent = EnhancedBaseAgent(
@@ -262,8 +262,8 @@ class TestEnhancedBaseAgent:
 
     def test_configuration_updates(self, mock_llm_config: str) -> None:
         """Test configuration update methods."""
-        with patch("gemini_sre_agent.agents.enhanced_base.EnhancedLLMService"), patch(
-            "gemini_sre_agent.agents.enhanced_base.StrategyManager"
+        with patch("argus.agents.enhanced_base.EnhancedLLMService"), patch(
+            "argus.agents.enhanced_base.StrategyManager"
         ):
 
             agent = EnhancedBaseAgent(
@@ -289,8 +289,8 @@ class TestEnhancedBaseAgent:
 
     def test_stats_summary(self, mock_llm_config: str) -> None:
         """Test comprehensive stats summary."""
-        with patch("gemini_sre_agent.agents.enhanced_base.EnhancedLLMService"), patch(
-            "gemini_sre_agent.agents.enhanced_base.StrategyManager"
+        with patch("argus.agents.enhanced_base.EnhancedLLMService"), patch(
+            "argus.agents.enhanced_base.StrategyManager"
         ) as mock_strategy_manager_class:
 
             mock_strategy_manager = MagicMock()
@@ -318,7 +318,7 @@ class TestEnhancedBaseAgent:
 class TestEnhancedSpecializedAgents:
     """Test enhanced specialized agent classes."""
 
-    @patch("gemini_sre_agent.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
+    @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
     def test_enhanced_text_agent(self, mock_init: str, mock_llm_config: str) -> None:
         """Test EnhancedTextAgent initialization."""
         mock_init.return_value = None
@@ -333,7 +333,7 @@ class TestEnhancedSpecializedAgents:
         assert call_args[1]["response_model"] == TextResponse
         assert call_args[1]["optimization_goal"] == OptimizationGoal.QUALITY
 
-    @patch("gemini_sre_agent.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
+    @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
     def test_enhanced_analysis_agent(
         self, mock_init: str, mock_llm_config: str
     ) -> None:
@@ -350,7 +350,7 @@ class TestEnhancedSpecializedAgents:
         assert call_args[1]["response_model"] == AnalysisResponse
         assert call_args[1]["optimization_goal"] == OptimizationGoal.QUALITY
 
-    @patch("gemini_sre_agent.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
+    @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
     def test_enhanced_code_agent(self, mock_init: str, mock_llm_config: str) -> None:
         """Test EnhancedCodeAgent initialization."""
         mock_init.return_value = None
@@ -365,7 +365,7 @@ class TestEnhancedSpecializedAgents:
         assert call_args[1]["response_model"] == CodeResponse
         assert call_args[1]["optimization_goal"] == OptimizationGoal.QUALITY
 
-    @patch("gemini_sre_agent.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
+    @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
     def test_enhanced_triage_agent(self, mock_init: str, mock_llm_config: str) -> None:
         """Test EnhancedTriageAgent initialization."""
         mock_init.return_value = None
@@ -380,7 +380,7 @@ class TestEnhancedSpecializedAgents:
         assert call_args[1]["response_model"] == AnalysisResponse
         assert call_args[1]["optimization_goal"] == OptimizationGoal.PERFORMANCE
 
-    @patch("gemini_sre_agent.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
+    @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
     def test_enhanced_remediation_agent(
         self, mock_init: str, mock_llm_config: str
     ) -> None:
@@ -410,7 +410,7 @@ class TestEnhancedAgentAdapter:
         legacy_agent.fallback_model = "gemini-1.5-flash"
         legacy_agent.__class__.__name__ = "TextAgent"
 
-        with patch("gemini_sre_agent.agents.enhanced_adapter.EnhancedTextAgent"):
+        with patch("argus.agents.enhanced_adapter.EnhancedTextAgent"):
             adapter = EnhancedAgentAdapter(
                 legacy_agent=legacy_agent,
                 llm_config=mock_llm_config,
@@ -420,7 +420,7 @@ class TestEnhancedAgentAdapter:
             assert adapter.llm_config == mock_llm_config
             assert adapter.enable_enhancements is True
 
-    @patch("gemini_sre_agent.agents.enhanced_adapter.EnhancedTextAgent")
+    @patch("argus.agents.enhanced_adapter.EnhancedTextAgent")
     async def test_adapter_execute_enhanced(
         self, mock_enhanced_agent_class, mock_llm_config
     ):
@@ -454,7 +454,7 @@ class TestEnhancedAgentAdapter:
         assert result.text == "Enhanced response"
         mock_enhanced_agent.execute.assert_called_once()
 
-    @patch("gemini_sre_agent.agents.enhanced_adapter.EnhancedTextAgent")
+    @patch("argus.agents.enhanced_adapter.EnhancedTextAgent")
     async def test_adapter_execute_legacy(
         self, mock_enhanced_agent_class, mock_llm_config
     ):
@@ -497,7 +497,7 @@ class TestEnhancedAgentAdapter:
         legacy_agent.fallback_model = "gemini-1.5-flash"
         legacy_agent.__class__.__name__ = "TextAgent"
 
-        with patch("gemini_sre_agent.agents.enhanced_adapter.EnhancedTextAgent"):
+        with patch("argus.agents.enhanced_adapter.EnhancedTextAgent"):
             adapter = EnhancedAgentAdapter(
                 legacy_agent=legacy_agent,
                 llm_config=mock_llm_config,
@@ -527,7 +527,7 @@ class TestAgentMigrationHelper:
         legacy_agent.__class__.__name__ = "TextAgent"
 
         with patch(
-            "gemini_sre_agent.agents.enhanced_adapter.EnhancedTextAgent"
+            "argus.agents.enhanced_adapter.EnhancedTextAgent"
         ) as mock_enhanced_class:
             AgentMigrationHelper.create_enhanced_agent_from_legacy(
                 legacy_agent=legacy_agent,
@@ -583,7 +583,7 @@ class TestAgentMigrationHelper:
         # Cast to proper type for testing
         from typing import cast
 
-        from gemini_sre_agent.agents.base import BaseAgent
+        from argus.agents.base import BaseAgent
 
         agents = cast("list[BaseAgent]", [compatible_agent, incompatible_agent])
 
@@ -602,7 +602,7 @@ class TestBackwardCompatibilityWrapper:
     def test_wrapper_initialization(self, mock_llm_config: str) -> None:
         """Test wrapper initialization."""
         with patch(
-            "gemini_sre_agent.agents.enhanced_base.EnhancedBaseAgent"
+            "argus.agents.enhanced_base.EnhancedBaseAgent"
         ) as mock_enhanced_class:
             mock_enhanced_agent = MagicMock()
             mock_enhanced_agent.llm_service = MagicMock()
@@ -630,7 +630,7 @@ class TestBackwardCompatibilityWrapper:
     async def test_wrapper_execute(self, mock_llm_config):
         """Test wrapper execute method."""
         with patch(
-            "gemini_sre_agent.agents.enhanced_base.EnhancedBaseAgent"
+            "argus.agents.enhanced_base.EnhancedBaseAgent"
         ) as mock_enhanced_class:
             mock_enhanced_agent = MagicMock()
             mock_enhanced_agent.execute = AsyncMock(
@@ -660,7 +660,7 @@ class TestBackwardCompatibilityWrapper:
     def test_wrapper_stats_summary(self, mock_llm_config: str) -> None:
         """Test wrapper stats summary method."""
         with patch(
-            "gemini_sre_agent.agents.enhanced_base.EnhancedBaseAgent"
+            "argus.agents.enhanced_base.EnhancedBaseAgent"
         ) as mock_enhanced_class:
             mock_enhanced_agent = MagicMock()
             mock_enhanced_agent.get_stats_summary.return_value = {"enhanced": "stats"}

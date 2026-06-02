@@ -507,7 +507,7 @@ config/config.prod.yaml
 Load environment-specific configuration:
 
 ```python
-from gemini_sre_agent.config import ConfigManager
+from argus.config import ConfigManager
 import os
 
 environment = os.getenv('ENVIRONMENT', 'development')

@@ -24,9 +24,9 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from gemini_sre_agent.ml.gemini_prompt_engine import PatternContext
-from gemini_sre_agent.ml.pattern_context_extractor import PatternContextExtractor
-from gemini_sre_agent.pattern_detector.models import LogEntry, TimeWindow
+from argus.ml.gemini_prompt_engine import PatternContext
+from argus.ml.pattern_context_extractor import PatternContextExtractor
+from argus.pattern_detector.models import LogEntry, TimeWindow
 
 
 class TestPatternContextExtractor:

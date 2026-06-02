@@ -23,9 +23,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from pydantic import HttpUrl
 import pytest
 
-from gemini_sre_agent.llm.base import LLMRequest, ModelType
-from gemini_sre_agent.llm.config import LLMProviderConfig
-from gemini_sre_agent.llm.providers.openai_provider import OpenAIProvider
+from argus.llm.base import LLMRequest, ModelType
+from argus.llm.config import LLMProviderConfig
+from argus.llm.providers.openai_provider import OpenAIProvider
 
 
 @pytest.fixture

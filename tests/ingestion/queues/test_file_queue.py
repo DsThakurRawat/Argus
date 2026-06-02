@@ -25,8 +25,8 @@ import tempfile
 
 import pytest
 
-from gemini_sre_agent.ingestion.interfaces.core import LogEntry, LogSeverity
-from gemini_sre_agent.ingestion.queues.file_queue import (
+from argus.ingestion.interfaces.core import LogEntry, LogSeverity
+from argus.ingestion.queues.file_queue import (
     FileQueueConfig,
     FileSystemQueue,
 )

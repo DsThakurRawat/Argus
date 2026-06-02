@@ -24,25 +24,25 @@ from unittest.mock import patch
 
 import pytest
 
-from gemini_sre_agent.llm.budget_manager import (
+from argus.llm.budget_manager import (
     BudgetConfig,
     BudgetManager,
     BudgetPeriod,
     EnforcementPolicy,
 )
-from gemini_sre_agent.llm.cost_analytics import AnalyticsConfig, CostAnalytics
-from gemini_sre_agent.llm.cost_management import (
+from argus.llm.cost_analytics import AnalyticsConfig, CostAnalytics
+from argus.llm.cost_management import (
     CostManagementConfig,
     DynamicCostManager,
     ModelPricing,
     ProviderType,
     UsageRecord,
 )
-from gemini_sre_agent.llm.cost_management_integration import (
+from argus.llm.cost_management_integration import (
     IntegratedCostManager,
     create_default_cost_manager,
 )
-from gemini_sre_agent.llm.cost_optimizer import (
+from argus.llm.cost_optimizer import (
     CostOptimizer,
     OptimizationConfig,
 )

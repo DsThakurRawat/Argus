@@ -25,9 +25,9 @@ import asyncio
 
 import pytest
 
-from gemini_sre_agent.llm.circuit_breaker import CircuitBreaker, CircuitBreakerConfig
-from gemini_sre_agent.llm.deduplicator import DeduplicationConfig, RequestDeduplicator
-from gemini_sre_agent.llm.error_handler import (
+from argus.llm.circuit_breaker import CircuitBreaker, CircuitBreakerConfig
+from argus.llm.deduplicator import DeduplicationConfig, RequestDeduplicator
+from argus.llm.error_handler import (
     EnhancedErrorHandler,
     ErrorCategory,
     ErrorHandlerConfig,

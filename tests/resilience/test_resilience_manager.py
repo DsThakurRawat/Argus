@@ -19,8 +19,8 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from gemini_sre_agent.resilience.circuit_breaker import CircuitBreakerOpenException
-from gemini_sre_agent.resilience.resilience_manager import ResilienceManager
+from argus.resilience.circuit_breaker import CircuitBreakerOpenException
+from argus.resilience.resilience_manager import ResilienceManager
 
 
 @pytest.fixture

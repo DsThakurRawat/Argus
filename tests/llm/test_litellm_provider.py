@@ -26,9 +26,9 @@ with patch.dict(
     "sys.modules",
     {"instructor": MagicMock(), "litellm": MagicMock(), "mirascope": MagicMock()},
 ):
-    from gemini_sre_agent.llm.base import ModelType
-    from gemini_sre_agent.llm.config import LLMProviderConfig, ModelConfig
-    from gemini_sre_agent.llm.litellm_provider import LiteLLMProvider
+    from argus.llm.base import ModelType
+    from argus.llm.config import LLMProviderConfig, ModelConfig
+    from argus.llm.litellm_provider import LiteLLMProvider
 
 
 class TestResponse(BaseModel):
@@ -59,7 +59,7 @@ class TestLiteLLMProvider:
     @pytest.fixture
     def provider(self, mock_config: str) -> None:
         """Create a LiteLLMProvider instance."""
-        with patch("gemini_sre_agent.llm.litellm_provider.litellm"):
+        with patch("argus.llm.litellm_provider.litellm"):
             return LiteLLMProvider(mock_config)
 
     def test_provider_initialization(self, provider: str, mock_config: str) -> None:
@@ -70,7 +70,7 @@ class TestLiteLLMProvider:
 
     def test_configure_litellm(self, provider: str) -> None:
         """Test LiteLLM configuration."""
-        with patch("gemini_sre_agent.llm.litellm_provider.litellm") as mock_litellm:
+        with patch("argus.llm.litellm_provider.litellm") as mock_litellm:
             provider._configure_litellm()
             assert mock_litellm.api_key == "test-key"
             assert mock_litellm.verbose is True
@@ -88,7 +88,7 @@ class TestLiteLLMProvider:
     async def test_generate_text(self, provider):
         """Test text generation."""
         with patch(
-            "gemini_sre_agent.llm.litellm_provider.litellm.acompletion"
+            "argus.llm.litellm_provider.litellm.acompletion"
         ) as mock_completion:
             mock_response = MagicMock()
             mock_response.choices[0].message.content = "Generated text"
@@ -102,7 +102,7 @@ class TestLiteLLMProvider:
     async def test_generate_structured(self, provider):
         """Test structured output generation."""
         with patch(
-            "gemini_sre_agent.llm.litellm_provider.instructor.from_litellm"
+            "argus.llm.litellm_provider.instructor.from_litellm"
         ) as mock_instructor:
             mock_client = MagicMock()
             mock_instructor.return_value = mock_client
@@ -118,7 +118,7 @@ class TestLiteLLMProvider:
     async def test_generate_stream(self, provider):
         """Test streaming text generation."""
         with patch(
-            "gemini_sre_agent.llm.litellm_provider.litellm.acompletion"
+            "argus.llm.litellm_provider.litellm.acompletion"
         ) as mock_completion:
             # Mock streaming response
             mock_chunk1 = MagicMock()

@@ -86,8 +86,8 @@ python provider_integration_example.py
 Each sub-operation can be configured with:
 
 ```python
-from gemini_sre_agent.source_control.providers.sub_operation_config import SubOperationConfig
-from gemini_sre_agent.source_control.error_handling.core import CircuitBreakerConfig, RetryConfig
+from argus.source_control.providers.sub_operation_config import SubOperationConfig
+from argus.source_control.error_handling.core import CircuitBreakerConfig, RetryConfig
 
 config = SubOperationConfig(
     operation_name="file_operations",

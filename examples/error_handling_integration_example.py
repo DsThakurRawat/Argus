@@ -46,9 +46,9 @@ async def demonstrate_provider_integration():
 
     try:
         # Test that providers have error handling methods
-        from gemini_sre_agent.source_control.providers.github.github_provider import GitHubProvider
-        from gemini_sre_agent.source_control.providers.gitlab.gitlab_provider import GitLabProvider
-        from gemini_sre_agent.source_control.providers.local.local_provider import LocalProvider
+        from argus.source_control.providers.github.github_provider import GitHubProvider
+        from argus.source_control.providers.gitlab.gitlab_provider import GitLabProvider
+        from argus.source_control.providers.local.local_provider import LocalProvider
 
         # Check that providers have the required methods
         providers = [
@@ -89,7 +89,7 @@ async def demonstrate_error_handling_factory():
     logger.info("🔧 Demonstrating Error Handling Factory")
 
     try:
-        from gemini_sre_agent.source_control.error_handling import create_provider_error_handling
+        from argus.source_control.error_handling import create_provider_error_handling
 
         # Test creating error handling for different providers
         providers = ["github", "gitlab", "local", "custom"]
@@ -129,7 +129,7 @@ async def demonstrate_monitoring_dashboard():
     logger.info("🔧 Demonstrating Monitoring Dashboard")
 
     try:
-        from gemini_sre_agent.source_control.error_handling import create_provider_error_handling
+        from argus.source_control.error_handling import create_provider_error_handling
 
         # Create error handling components
         components = create_provider_error_handling("github")
@@ -162,7 +162,7 @@ async def demonstrate_self_healing():
     logger.info("🔧 Demonstrating Self-Healing Capabilities")
 
     try:
-        from gemini_sre_agent.source_control.error_handling import create_provider_error_handling
+        from argus.source_control.error_handling import create_provider_error_handling
 
         # Create error handling components
         components = create_provider_error_handling("github")
@@ -172,7 +172,7 @@ async def demonstrate_self_healing():
             logger.info("✅ Self-healing manager available")
 
             # Simulate some errors
-            from gemini_sre_agent.source_control.error_handling.error_classification import (
+            from argus.source_control.error_handling.error_classification import (
                 ErrorType,
             )
 

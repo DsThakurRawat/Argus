@@ -25,8 +25,8 @@ import asyncio
 from datetime import datetime, timedelta
 import logging
 
-from gemini_sre_agent.llm.config import CostConfig
-from gemini_sre_agent.llm.cost_management_integration import (
+from argus.llm.config import CostConfig
+from argus.llm.cost_management_integration import (
     create_cost_manager_from_config,
     create_default_cost_manager,
 )

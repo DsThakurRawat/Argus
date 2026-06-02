@@ -24,10 +24,10 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from gemini_sre_agent.ml.gemini_enhanced_pattern_detector import (
+from argus.ml.gemini_enhanced_pattern_detector import (
     GeminiEnhancedPatternDetector,
 )
-from gemini_sre_agent.pattern_detector.models import (
+from argus.pattern_detector.models import (
     LogEntry,
     PatternMatch,
     PatternType,
@@ -40,9 +40,9 @@ class TestGeminiEnhancedPatternDetectorInit:
     """Test GeminiEnhancedPatternDetector initialization."""
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     def test_successful_init(
         self, mock_pattern_classifier: str, mock_gemini_classifier: str
     ) -> None:
@@ -58,9 +58,9 @@ class TestGeminiEnhancedPatternDetectorInit:
         mock_pattern_classifier.assert_called_once()
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     def test_init_with_custom_config(
         self, mock_pattern_classifier, mock_gemini_classifier
     ):
@@ -79,9 +79,9 @@ class TestGeminiEnhancedPatternDetectorInit:
         assert detector.fallback_enabled is False
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     def test_init_with_monitoring_components(
         self, mock_pattern_classifier, mock_gemini_classifier
     ):
@@ -109,9 +109,9 @@ class TestGeminiEnhancedPatternDetectorInit:
         )
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     def test_init_with_code_analysis(
         self, mock_pattern_classifier, mock_gemini_classifier
     ):
@@ -206,9 +206,9 @@ class TestGeminiEnhancedPatternDetectorClassification:
         )
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     @pytest.mark.asyncio
     async def test_rules_only_mode(
         self,
@@ -237,9 +237,9 @@ class TestGeminiEnhancedPatternDetectorClassification:
         mock_rule_classifier.classify_patterns.assert_called_once()
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     @pytest.mark.asyncio
     async def test_gemini_primary_mode_high_confidence(
         self,
@@ -276,9 +276,9 @@ class TestGeminiEnhancedPatternDetectorClassification:
             assert "approaches_agree" in pattern.evidence
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     @pytest.mark.asyncio
     async def test_gemini_primary_mode_low_confidence_fallback(
         self,
@@ -321,9 +321,9 @@ class TestGeminiEnhancedPatternDetectorClassification:
         assert results[0].confidence_score == 0.75
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     @pytest.mark.asyncio
     async def test_ensemble_mode(
         self,
@@ -361,9 +361,9 @@ class TestGeminiEnhancedPatternDetectorClassification:
         assert "rule_weight" in pattern.evidence
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     @pytest.mark.asyncio
     async def test_error_handling_with_fallback(
         self,
@@ -393,9 +393,9 @@ class TestGeminiEnhancedPatternDetectorClassification:
         assert results[0].pattern_type == PatternType.CASCADE_FAILURE
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     @pytest.mark.asyncio
     async def test_error_handling_without_fallback(
         self,
@@ -426,9 +426,9 @@ class TestGeminiEnhancedPatternDetectorPatternMerging:
     """Test pattern merging functionality."""
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     def test_merge_patterns_high_confidence(
         self, mock_pattern_classifier, mock_gemini_classifier
     ):
@@ -476,9 +476,9 @@ class TestGeminiEnhancedPatternDetectorPatternMerging:
         assert "Review logs" in merged.suggested_actions
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     def test_merge_patterns_low_confidence(
         self, mock_pattern_classifier, mock_gemini_classifier
     ):
@@ -523,9 +523,9 @@ class TestGeminiEnhancedPatternDetectorFeedback:
     """Test feedback processing functionality."""
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     @pytest.mark.asyncio
     async def test_process_feedback(
         self, mock_pattern_classifier, mock_gemini_classifier
@@ -546,9 +546,9 @@ class TestGeminiEnhancedPatternDetectorFeedback:
         )
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     @pytest.mark.asyncio
     async def test_process_feedback_error_handling(
         self, mock_pattern_classifier, mock_gemini_classifier
@@ -570,9 +570,9 @@ class TestGeminiEnhancedPatternDetectorStats:
     """Test performance statistics functionality."""
 
     @patch(
-        "gemini_sre_agent.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
+        "argus.ml.gemini_enhanced_pattern_detector.GeminiPatternClassifier"
     )
-    @patch("gemini_sre_agent.ml.gemini_enhanced_pattern_detector.PatternClassifier")
+    @patch("argus.ml.gemini_enhanced_pattern_detector.PatternClassifier")
     def test_get_performance_stats(
         self, mock_pattern_classifier, mock_gemini_classifier
     ):

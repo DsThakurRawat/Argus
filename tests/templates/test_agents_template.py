@@ -14,11 +14,11 @@
 
 """Agent module tests."""
 
-from gemini_sre_agent.agents.agent_models import *
-from gemini_sre_agent.agents.request_models import *
-from gemini_sre_agent.agents.response_models import *
-from gemini_sre_agent.agents.state_models import *
-from gemini_sre_agent.agents.validation_models import *
+from argus.agents.agent_models import *
+from argus.agents.request_models import *
+from argus.agents.response_models import *
+from argus.agents.state_models import *
+from argus.agents.validation_models import *
 
 
 class TestAgentModels:

@@ -38,7 +38,7 @@ The Mirascope integration provides enterprise-grade prompt management capabiliti
 The central component for managing prompts with full configuration control.
 
 ```python
-from gemini_sre_agent.llm.mirascope_integration import PromptManager
+from argus.llm.mirascope_integration import PromptManager
 
 # Initialize prompt manager
 manager = PromptManager(storage_path="./prompts")
@@ -65,7 +65,7 @@ prompt = manager.get_prompt(prompt_id, config)
 Environment-specific prompt deployment and management.
 
 ```python
-from gemini_sre_agent.llm.mirascope_integration import PromptEnvironment
+from argus.llm.mirascope_integration import PromptEnvironment
 
 # Create environments
 prod_env = PromptEnvironment("production", manager)
@@ -85,8 +85,8 @@ dev_prompt = dev_env.get_prompt(prompt_id)
 Service for executing managed prompts with full tracking.
 
 ```python
-from gemini_sre_agent.llm.prompt_service import LLMPromptService
-from gemini_sre_agent.agents.agent_models import TriageResult
+from argus.llm.prompt_service import LLMPromptService
+from argus.agents.agent_models import TriageResult
 
 # Initialize service
 prompt_service = LLMPromptService(llm_service, manager)
@@ -110,7 +110,7 @@ text_result = await prompt_service.execute_prompt_text(
 Team collaboration and review workflows.
 
 ```python
-from gemini_sre_agent.llm.mirascope_integration import PromptCollaborationManager
+from argus.llm.mirascope_integration import PromptCollaborationManager
 
 # Initialize collaboration manager
 collab_manager = PromptCollaborationManager(manager)
@@ -134,7 +134,7 @@ collab_manager.reject_review(review_id, "Needs more examples")
 AI-powered prompt optimization.
 
 ```python
-from gemini_sre_agent.llm.mirascope_integration import PromptOptimizer
+from argus.llm.mirascope_integration import PromptOptimizer
 
 # Initialize optimizer
 optimizer = PromptOptimizer(manager, llm_service)
@@ -205,7 +205,7 @@ staging_prompt = staging_env.get_prompt(prompt_id)
 
 ```python
 # 3. Structured output with Pydantic models
-from gemini_sre_agent.agents.agent_models import TriageResult
+from argus.agents.agent_models import TriageResult
 
 prompt_service = LLMPromptService(llm_service, manager)
 
@@ -354,7 +354,7 @@ export MIRASCOPE_ENABLE_ANALYTICS="true"
 The Mirascope integration seamlessly integrates with the existing LLM service:
 
 ```python
-from gemini_sre_agent.llm.prompt_service import MirascopeIntegratedLLMService
+from argus.llm.prompt_service import MirascopeIntegratedLLMService
 
 # Create integrated service
 integrated_service = MirascopeIntegratedLLMService(
@@ -463,4 +463,4 @@ result = await prompt_service.execute_prompt(
 
 The Mirascope integration provides a comprehensive solution for prompt management in the Argus system. It enables version control, testing, optimization, and team collaboration while maintaining seamless integration with existing LLM services.
 
-For more information, see the unit tests in `tests/llm/test_mirascope_integration.py` and the implementation in `gemini_sre_agent/llm/mirascope_integration.py`.
+For more information, see the unit tests in `tests/llm/test_mirascope_integration.py` and the implementation in `argus/llm/mirascope_integration.py`.

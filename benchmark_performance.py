@@ -24,9 +24,9 @@ import asyncio
 import logging
 import time
 
-from gemini_sre_agent.llm.config import LLMConfig
-from gemini_sre_agent.llm.monitoring.llm_metrics import get_llm_metrics_collector
-from gemini_sre_agent.llm.testing.framework import TestingFramework
+from argus.llm.config import LLMConfig
+from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
+from argus.llm.testing.framework import TestingFramework
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

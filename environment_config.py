@@ -28,7 +28,7 @@ from typing import Any, Dict, Optional
 
 import yaml
 
-from gemini_sre_agent.llm.config import LLMConfig
+from argus.llm.config import LLMConfig
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

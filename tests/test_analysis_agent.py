@@ -17,8 +17,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.analysis_agent import AnalysisAgent, RemediationPlan
-from gemini_sre_agent.triage_agent import TriagePacket
+from argus.analysis_agent import AnalysisAgent, RemediationPlan
+from argus.triage_agent import TriagePacket
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ def mock_aiplatform() -> None:
     Mock Aiplatform.
 
     """
-    with patch("gemini_sre_agent.analysis_agent.aiplatform") as mock_aiplatform:
+    with patch("argus.analysis_agent.aiplatform") as mock_aiplatform:
         yield mock_aiplatform
 
 
@@ -61,7 +61,7 @@ def mock_gemini_response_analysis() -> None:
     }
 
 
-@patch("gemini_sre_agent.analysis_agent.GenerativeModel")
+@patch("argus.analysis_agent.GenerativeModel")
 def test_analyze_issue(
     mock_generative_model, mock_aiplatform, triage_packet, mock_gemini_response_analysis
 ):

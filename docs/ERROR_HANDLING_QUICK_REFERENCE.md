@@ -5,7 +5,7 @@ This is a quick reference guide for using the error handling system in the Argus
 ## Quick Start
 
 ```python
-from gemini_sre_agent.source_control.error_handling import ResilientOperations
+from argus.source_control.error_handling import ResilientOperations
 
 # Create resilient operations manager
 resilient_ops = ResilientOperations()
@@ -24,7 +24,7 @@ result = await resilient_ops.execute_resilient_operation(
 ### 1. Basic Error Handling
 
 ```python
-from gemini_sre_agent.source_control.error_handling import ResilientOperations
+from argus.source_control.error_handling import ResilientOperations
 
 resilient_ops = ResilientOperations()
 
@@ -48,7 +48,7 @@ result = await resilient_ops.execute_resilient_operation(
 ### 2. Custom Error Classification
 
 ```python
-from gemini_sre_agent.source_control.error_handling import ErrorClassifier, ErrorType
+from argus.source_control.error_handling import ErrorClassifier, ErrorType
 
 classifier = ErrorClassifier()
 
@@ -72,7 +72,7 @@ except Exception as e:
 ### 3. Circuit Breaker Usage
 
 ```python
-from gemini_sre_agent.source_control.error_handling import CircuitBreaker, CircuitBreakerConfig
+from argus.source_control.error_handling import CircuitBreaker, CircuitBreakerConfig
 
 # Configure circuit breaker
 config = CircuitBreakerConfig(
@@ -99,7 +99,7 @@ async def operation():
 ### 4. Retry with Custom Configuration
 
 ```python
-from gemini_sre_agent.source_control.error_handling import RetryManager, RetryConfig
+from argus.source_control.error_handling import RetryManager, RetryConfig
 
 # Configure retry
 config = RetryConfig(
@@ -126,7 +126,7 @@ result = await retry_manager.execute_with_retry(operation_func, *args)
 ### 5. Graceful Degradation
 
 ```python
-from gemini_sre_agent.source_control.error_handling import GracefulDegradationManager
+from argus.source_control.error_handling import GracefulDegradationManager
 
 # Create degradation manager
 degradation_manager = GracefulDegradationManager(resilient_manager)
@@ -143,7 +143,7 @@ result = await degradation_manager.execute_with_graceful_degradation(
 ### 6. Health Monitoring
 
 ```python
-from gemini_sre_agent.source_control.error_handling import HealthCheckManager
+from argus.source_control.error_handling import HealthCheckManager
 
 health_manager = HealthCheckManager()
 
@@ -163,7 +163,7 @@ print(f"Overall health: {overall_health['status']}")
 ### 7. Metrics Collection
 
 ```python
-from gemini_sre_agent.source_control.error_handling import ErrorHandlingMetrics
+from argus.source_control.error_handling import ErrorHandlingMetrics
 
 metrics = ErrorHandlingMetrics()
 
@@ -315,7 +315,7 @@ print(f"Health details: {health}")
 ```python
 import pytest
 from unittest.mock import AsyncMock, MagicMock
-from gemini_sre_agent.source_control.error_handling import ErrorClassifier
+from argus.source_control.error_handling import ErrorClassifier
 
 def test_error_classification():
     classifier = ErrorClassifier()
@@ -329,7 +329,7 @@ def test_error_classification():
 
 ```python
 import pytest
-from gemini_sre_agent.source_control.error_handling import ResilientOperations
+from argus.source_control.error_handling import ResilientOperations
 
 @pytest.mark.asyncio
 async def test_resilient_operation():

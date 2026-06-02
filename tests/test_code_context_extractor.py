@@ -26,15 +26,15 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from gemini_sre_agent.ml.code_analysis_models import (
+from argus.ml.code_analysis_models import (
     CodeAnalysisConfig,
     CodeChange,
     ComplexityMetrics,
     DependencyVulnerability,
     StaticAnalysisResult,
 )
-from gemini_sre_agent.ml.code_context_extractor import CodeContextExtractor
-from gemini_sre_agent.pattern_detector.models import LogEntry, TimeWindow
+from argus.ml.code_context_extractor import CodeContextExtractor
+from argus.pattern_detector.models import LogEntry, TimeWindow
 
 
 class TestCodeAnalysisConfig:
@@ -576,7 +576,7 @@ class TestCodeContextExtractor:
         assert "db_client.py:123" in result
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ml.code_context_extractor.asyncio.wait_for")
+    @patch("argus.ml.code_context_extractor.asyncio.wait_for")
     async def test_extract_code_context_success(
         self,
         mock_wait_for: AsyncMock,
@@ -608,7 +608,7 @@ class TestCodeContextExtractor:
         assert result["related_files"] == ["error.py"]
 
     @pytest.mark.asyncio
-    @patch("gemini_sre_agent.ml.code_context_extractor.asyncio.wait_for")
+    @patch("argus.ml.code_context_extractor.asyncio.wait_for")
     async def test_extract_code_context_with_exceptions(
         self,
         mock_wait_for: AsyncMock,
@@ -646,7 +646,7 @@ class TestCodeContextExtractor:
         extractor = CodeContextExtractor(config_short_timeout)
 
         with patch(
-            "gemini_sre_agent.ml.code_context_extractor.asyncio.create_subprocess_exec"
+            "argus.ml.code_context_extractor.asyncio.create_subprocess_exec"
         ) as mock_subprocess:
             # Mock a slow subprocess
             mock_process = AsyncMock()

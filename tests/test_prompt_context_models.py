@@ -22,7 +22,7 @@ used in the enhanced prompt generation system.
 """
 
 
-from gemini_sre_agent.ml.prompt_context_models import (
+from argus.ml.prompt_context_models import (
     BusinessImpact,
     IssueContext,
     IssueType,

@@ -24,16 +24,16 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from gemini_sre_agent.llm.base import LLMProvider
-from gemini_sre_agent.llm.capabilities.config import CapabilityConfig
-from gemini_sre_agent.llm.capabilities.discovery import CapabilityDiscovery
-from gemini_sre_agent.llm.capabilities.models import ModelCapabilities, ModelCapability
+from argus.llm.base import LLMProvider
+from argus.llm.capabilities.config import CapabilityConfig
+from argus.llm.capabilities.discovery import CapabilityDiscovery
+from argus.llm.capabilities.models import ModelCapabilities, ModelCapability
 
 
 class MockLLMProvider(LLMProvider):
     """Mock LLM provider for testing."""
 
-    def __init__(self, name: str, models: Dict[str, Any]: str) -> None:
+    def __init__(self, name: str, models: Dict[str, Any]) -> None:
         self.name = name
         self.models = models
         self.config = Mock()
@@ -139,7 +139,7 @@ def capability_config() -> None:
 def discovery_system(mock_providers: str, capability_config: str) -> None:
     """Create a capability discovery system for testing."""
     with patch(
-        "gemini_sre_agent.llm.capabilities.discovery.get_capability_config",
+        "argus.llm.capabilities.discovery.get_capability_config",
         return_value=capability_config,
     ):
         discovery = CapabilityDiscovery(mock_providers, cache_ttl=60)

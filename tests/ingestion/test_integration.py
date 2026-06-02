@@ -23,9 +23,9 @@ import tempfile
 
 import pytest
 
-from gemini_sre_agent.config.ingestion_config import FileSystemConfig, SourceType
-from gemini_sre_agent.ingestion.adapters.file_system import FileSystemAdapter
-from gemini_sre_agent.ingestion.interfaces.core import LogEntry, LogSeverity
+from argus.config.ingestion_config import FileSystemConfig, SourceType
+from argus.ingestion.adapters.file_system import FileSystemAdapter
+from argus.ingestion.interfaces.core import LogEntry, LogSeverity
 
 
 class TestFileSystemIntegration:

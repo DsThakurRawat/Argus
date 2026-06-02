@@ -27,10 +27,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from gemini_sre_agent.config.source_control_credentials import CredentialConfig
-from gemini_sre_agent.config.source_control_repositories import GitHubRepositoryConfig
-from gemini_sre_agent.source_control.models import OperationStatus
-from gemini_sre_agent.source_control.providers.github_provider import GitHubProvider
+from argus.config.source_control_credentials import CredentialConfig
+from argus.config.source_control_repositories import GitHubRepositoryConfig
+from argus.source_control.models import OperationStatus
+from argus.source_control.providers.github_provider import GitHubProvider
 
 
 @pytest.fixture
@@ -411,7 +411,7 @@ class TestGitHubProviderBatchOperations:
     @pytest.mark.asyncio
     async def test_batch_operations_success(self, github_provider):
         """Test successful batch operations."""
-        from gemini_sre_agent.source_control.models import BatchOperation
+        from argus.source_control.models import BatchOperation
 
         # Mock the apply_remediation method
         with patch.object(
@@ -439,7 +439,7 @@ class TestGitHubProviderBatchOperations:
     @pytest.mark.asyncio
     async def test_batch_operations_with_failures(self, github_provider):
         """Test batch operations with some failures."""
-        from gemini_sre_agent.source_control.models import BatchOperation
+        from argus.source_control.models import BatchOperation
 
         operations = [
             BatchOperation(

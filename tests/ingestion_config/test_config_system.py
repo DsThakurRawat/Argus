@@ -25,7 +25,7 @@ import json
 from pathlib import Path
 import tempfile
 
-from gemini_sre_agent.config.ingestion_config import (
+from argus.config.ingestion_config import (
     BufferStrategy,
     FileSystemConfig,
     GCPLoggingConfig,

@@ -38,8 +38,8 @@ import yaml
 # Add the project root to the path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gemini_sre_agent.llm.config import LLMConfig
-from gemini_sre_agent.llm.providers import ProviderHandlerFactory
+from argus.llm.config import LLMConfig
+from argus.llm.providers import ProviderHandlerFactory
 
 
 def setup_logging(verbose: bool = False) -> None:
