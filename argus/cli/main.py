@@ -20,14 +20,14 @@ def print_banner():
     subtitle = Text("🤖 Autonomous Multi-Provider Cloud SRE & AI Monitoring Assistant\nObserve • Reason • Act • Heal", justify="center", style="dim")
     version = Text("\nv0.2.1\nMade by DIVYANSH RAWAT", justify="right", style="dim")
     
-    content = Text(ascii_art, style="bold cyan", justify="center")
+    content = Text(ascii_art, style="bold red", justify="center")
     content.append(subtitle)
     content.append(version)
     
     panel = Panel(
         content,
         title="Welcome to Argus SRE",
-        border_style="cyan",
+        border_style="red",
         padding=(1, 2)
     )
     console.print(panel)
