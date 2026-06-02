@@ -19,7 +19,7 @@ This module tests the complete capability discovery pipeline including
 configuration loading, capability discovery, caching, and task-based selection.
 """
 
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import Mock, patch
 
 import pytest
@@ -33,7 +33,7 @@ from argus.llm.capabilities.models import ModelCapabilities, ModelCapability
 class MockLLMProvider(LLMProvider):
     """Mock LLM provider for testing."""
 
-    def __init__(self, name: str, models: Dict[str, Any]) -> None:
+    def __init__(self, name: str, models: dict[str, Any]) -> None:
         self.name = name
         self.models = models
         self.config = Mock()

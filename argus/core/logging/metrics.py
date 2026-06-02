@@ -156,8 +156,8 @@ class LoggingMetrics:
             "average_processing_time": self.average_processing_time,
             "max_processing_time": self.max_processing_time,
             "min_processing_time": (
-                self.min_processing_time 
-                if self.min_processing_time != float("inf") 
+                self.min_processing_time
+                if self.min_processing_time != float("inf")
                 else 0.0
             ),
             "formatting_errors": self.formatting_errors,

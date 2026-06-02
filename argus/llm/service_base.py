@@ -321,7 +321,6 @@ class BaseLLMService(ABC):
 
 # Additional classes needed for service management
 from enum import Enum
-from typing import Optional
 
 
 class ServiceStatus(Enum):
@@ -348,8 +347,8 @@ class ServiceHealth:
     status: ServiceStatus
     score: float
     message: str
-    last_check: Optional[float] = None
-    details: Optional[dict] = None
+    last_check: float | None = None
+    details: dict | None = None
 
 
 # Type alias for backward compatibility

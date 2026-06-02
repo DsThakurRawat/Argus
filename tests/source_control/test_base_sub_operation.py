@@ -26,7 +26,7 @@ import logging
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from typing import Optional
+
 from argus.source_control.providers.base_sub_operation import (
     BaseSubOperation,
 )
@@ -41,8 +41,8 @@ class MockSubOperation(BaseSubOperation):
     def __init__(
         self,
         logger: str,
-        error_handling_components: Optional[str] = None,
-        config: Optional[str] = None,
+        error_handling_components: str | None = None,
+        config: str | None = None,
     ) -> None:
         super().__init__(
             logger=logger,

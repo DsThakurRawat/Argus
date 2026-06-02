@@ -240,7 +240,7 @@ class TestAWSCloudWatchAdapter:
         assert "last_check_time" in metrics
         assert "region" in metrics
         assert "log_group_name" in metrics
-        
+
     def test_get_config(self, adapter: str, config: str) -> None:
         """Test getting configuration."""
         returned_config = adapter.get_config()

@@ -180,7 +180,7 @@ class LogManager:
                 # For file system sources, wait a bit before checking again
                 try:
                     source_config = source.get_config()
-                    if (hasattr(source_config, "source_type") and 
+                    if (hasattr(source_config, "source_type") and
                         source_config.source_type.value == "file_system"):
                         await asyncio.sleep(1)
                 except Exception:

@@ -76,8 +76,8 @@ class QualityReportGenerator:
         self.logger = get_logger(__name__)
 
     def generate_report(
-        self, 
-        results: list[QualityGateResult], 
+        self,
+        results: list[QualityGateResult],
         duration: float = 0.0
     ) -> QualityReport:
         """Generate a comprehensive quality report.
@@ -398,9 +398,9 @@ class QualityReportFormatter:
         return "\n".join(output)
 
     def save_report(
-        self, 
-        report: QualityReport, 
-        file_path: Path, 
+        self,
+        report: QualityReport,
+        file_path: Path,
         format_type: ReportFormat
     ) -> None:
         """Save a quality report to a file.

@@ -22,7 +22,7 @@ interface specifically for GitHub repositories.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from github import Github
 from github.Repository import Repository
@@ -52,7 +52,7 @@ from .github_utils import GitHubUtils
 class GitHubProvider(BaseSourceControlProvider):
     """GitHub implementation of the SourceControlProvider interface."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize the GitHub provider with configuration."""
         super().__init__(config)
         # Convert config dict back to GitHubRepositoryConfig for type safety
@@ -61,17 +61,17 @@ class GitHubProvider(BaseSourceControlProvider):
             None  # Will be set later when credential management is integrated
         )
         self.logger = logging.getLogger("GitHubProvider")
-        self.client: Optional[Github] = None
-        self.repo: Optional[Repository] = None
+        self.client: Github | None = None
+        self.repo: Repository | None = None
 
         # Initialize component modules
-        self.operations: Optional[GitHubOperations] = None
-        self.pull_requests: Optional[GitHubPullRequests] = None
-        self.utils: Optional[GitHubUtils] = None
+        self.operations: GitHubOperations | None = None
+        self.pull_requests: GitHubPullRequests | None = None
+        self.utils: GitHubUtils | None = None
 
         # Initialize error handling system
         self.error_handling_factory = ErrorHandlingFactory()
-        self.error_handling_components: Optional[Dict[str, Any]] = None
+        self.error_handling_components: dict[str, Any] | None = None
 
     async def _setup_client(self) -> None:
         """Set up GitHub client and repository."""
@@ -133,7 +133,7 @@ class GitHubProvider(BaseSourceControlProvider):
         return await self.utils._with_retry(operation_func, *args, **kwargs)
 
     # Delegate operations to component modules
-    async def get_file_content(self, path: str, ref: Optional[str] = None) -> str:
+    async def get_file_content(self, path: str, ref: str | None = None) -> str:
         """Get file content from GitHub repository."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -146,7 +146,7 @@ class GitHubProvider(BaseSourceControlProvider):
         path: str,
         content: str,
         message: str,
-        branch: Optional[str] = None,
+        branch: str | None = None,
     ) -> RemediationResult:
         """Apply a remediation to a file."""
         if not self.operations:
@@ -160,7 +160,7 @@ class GitHubProvider(BaseSourceControlProvider):
             branch,
         )
 
-    async def create_branch(self, name: str, base_ref: Optional[str] = None) -> bool:
+    async def create_branch(self, name: str, base_ref: str | None = None) -> bool:
         """Create a new branch."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -176,7 +176,7 @@ class GitHubProvider(BaseSourceControlProvider):
             "delete_branch", self.operations.delete_branch, name
         )
 
-    async def list_branches(self) -> List[BranchInfo]:
+    async def list_branches(self) -> list[BranchInfo]:
         """List all branches in the repository."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -189,7 +189,7 @@ class GitHubProvider(BaseSourceControlProvider):
         return await self.operations.get_repository_info()
 
     async def check_conflicts(
-        self, path: str, content: str, branch: Optional[str] = None
+        self, path: str, content: str, branch: str | None = None
     ) -> bool:
         """Check for merge conflicts between branches."""
         if not self.operations:
@@ -217,8 +217,8 @@ class GitHubProvider(BaseSourceControlProvider):
         return await self.operations.resolve_conflicts(path, content, strategy)
 
     async def batch_operations(
-        self, operations: List[BatchOperation]
-    ) -> List[OperationResult]:
+        self, operations: list[BatchOperation]
+    ) -> list[OperationResult]:
         """Execute multiple operations in batch."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -333,19 +333,19 @@ class GitHubProvider(BaseSourceControlProvider):
                 additional_info={},
             )
 
-    async def file_exists(self, path: str, ref: Optional[str] = None) -> bool:
+    async def file_exists(self, path: str, ref: str | None = None) -> bool:
         """Check if a file exists in the repository."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
         return await self.operations.file_exists(path, ref)
 
-    async def get_branch_info(self, name: str) -> Optional[BranchInfo]:
+    async def get_branch_info(self, name: str) -> BranchInfo | None:
         """Get information about a specific branch."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
         return await self.operations.get_branch_info(name)
 
-    async def get_file_info(self, path: str, ref: Optional[str] = None) -> FileInfo:
+    async def get_file_info(self, path: str, ref: str | None = None) -> FileInfo:
         """Get detailed information about a file with error handling."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -413,8 +413,8 @@ class GitHubProvider(BaseSourceControlProvider):
         return await self.utils.get_health_status()
 
     async def list_files(
-        self, path: str = "", recursive: bool = True, ref: Optional[str] = None
-    ) -> List[FileInfo]:
+        self, path: str = "", recursive: bool = True, ref: str | None = None
+    ) -> list[FileInfo]:
         """List files in the repository."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -439,14 +439,14 @@ class GitHubProvider(BaseSourceControlProvider):
         file_path: str,
         content: str,
         message: str,
-        branch: Optional[str] = None,
-    ) -> Optional[str]:
+        branch: str | None = None,
+    ) -> str | None:
         """Commit changes to a file."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
         return await self.operations.commit_changes(file_path, content, message, branch)
 
-    async def get_file_history(self, path: str, limit: int = 10) -> List[CommitInfo]:
+    async def get_file_history(self, path: str, limit: int = 10) -> list[CommitInfo]:
         """Get commit history for a file."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -464,19 +464,19 @@ class GitHubProvider(BaseSourceControlProvider):
             raise RuntimeError("GitHub operations not initialized")
         return await self.operations.get_current_branch()
 
-    async def get_status(self) -> Dict[str, Any]:
+    async def get_status(self) -> dict[str, Any]:
         """Get current status of the GitHub provider."""
         if not self.utils:
             return {"error": "GitHub utils not initialized"}
         return await self.utils.get_status()
 
-    async def execute_git_command(self, command: str, **kwargs) -> Dict[str, Any]:
+    async def execute_git_command(self, command: str, **kwargs) -> dict[str, Any]:
         """Execute a git command (placeholder for GitHub API operations)."""
         if not self.utils:
             return {"error": "GitHub utils not initialized"}
         return await self.utils.execute_git_command(command, **kwargs)
 
-    async def get_conflict_info(self, path: str) -> Optional[ConflictInfo]:
+    async def get_conflict_info(self, path: str) -> ConflictInfo | None:
         """Get conflict information for a file."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")

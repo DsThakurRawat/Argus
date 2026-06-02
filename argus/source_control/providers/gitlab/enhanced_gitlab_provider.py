@@ -22,7 +22,7 @@ system including circuit breakers, retry mechanisms, error classification, grace
 degradation, health checks, and metrics collection.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import gitlab
 
@@ -48,19 +48,19 @@ from .gitlab_models import GitLabCredentials
 class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
     """Enhanced GitLab provider with comprehensive error handling."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize the enhanced GitLab provider."""
         super().__init__(config)
 
         self.repo_config = GitLabRepositoryConfig(**config)
-        self.credentials: Optional[GitLabCredentials] = None
-        self.gl: Optional[gitlab.Gitlab] = None
-        self.project: Optional[Any] = None
+        self.credentials: GitLabCredentials | None = None
+        self.gl: gitlab.Gitlab | None = None
+        self.project: Any | None = None
 
         # Initialize sub-modules (will be set after initialization)
-        self.file_ops: Optional[GitLabFileOperations] = None
-        self.branch_ops: Optional[GitLabBranchOperations] = None
-        self.mr_ops: Optional[GitLabMergeRequestOperations] = None
+        self.file_ops: GitLabFileOperations | None = None
+        self.branch_ops: GitLabBranchOperations | None = None
+        self.mr_ops: GitLabMergeRequestOperations | None = None
 
     async def initialize(self) -> None:
         """Initialize the GitLab provider with error handling."""
@@ -168,7 +168,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
         return await self.mr_ops.get_capabilities()
 
     # File operations with error handling
-    async def get_file_content(self, path: str, ref: Optional[str] = None) -> str:
+    async def get_file_content(self, path: str, ref: str | None = None) -> str:
         """Get file content with error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -178,7 +178,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
         )
 
     async def apply_remediation(
-        self, path: str, content: str, message: str, branch: Optional[str] = None
+        self, path: str, content: str, message: str, branch: str | None = None
     ) -> RemediationResult:
         """Apply remediation with error handling."""
         if not self.file_ops:
@@ -193,7 +193,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
             branch,
         )
 
-    async def file_exists(self, path: str, ref: Optional[str] = None) -> bool:
+    async def file_exists(self, path: str, ref: str | None = None) -> bool:
         """Check if file exists with error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -202,7 +202,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
             "file_exists", self.file_ops.file_exists, path, ref
         )
 
-    async def get_file_info(self, path: str, ref: Optional[str] = None) -> FileInfo:
+    async def get_file_info(self, path: str, ref: str | None = None) -> FileInfo:
         """Get file information with error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -212,8 +212,8 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
         )
 
     async def list_files(
-        self, path: str = "", ref: Optional[str] = None
-    ) -> List[FileInfo]:
+        self, path: str = "", ref: str | None = None
+    ) -> list[FileInfo]:
         """List files with error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -241,8 +241,8 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
         )
 
     async def commit_changes(
-        self, file_path: str, content: str, message: str, branch: Optional[str] = None
-    ) -> Optional[str]:
+        self, file_path: str, content: str, message: str, branch: str | None = None
+    ) -> str | None:
         """Commit changes with error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -257,7 +257,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
         )
 
     # Branch operations with error handling
-    async def create_branch(self, name: str, base_ref: Optional[str] = None) -> bool:
+    async def create_branch(self, name: str, base_ref: str | None = None) -> bool:
         """Create branch with error handling."""
         if not self.branch_ops:
             raise RuntimeError("Provider not initialized")
@@ -275,7 +275,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
             "delete_branch", self.branch_ops.delete_branch, name
         )
 
-    async def list_branches(self) -> List[BranchInfo]:
+    async def list_branches(self) -> list[BranchInfo]:
         """List branches with error handling."""
         if not self.branch_ops:
             raise RuntimeError("Provider not initialized")
@@ -284,7 +284,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
             "list_branches", self.branch_ops.list_branches
         )
 
-    async def get_branch_info(self, name: str) -> Optional[BranchInfo]:
+    async def get_branch_info(self, name: str) -> BranchInfo | None:
         """Get branch info with error handling."""
         if not self.branch_ops:
             raise RuntimeError("Provider not initialized")
@@ -312,7 +312,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
         )
 
     async def check_conflicts(
-        self, path: str, content: str, branch: Optional[str] = None
+        self, path: str, content: str, branch: str | None = None
     ) -> bool:
         """Check conflicts with error handling."""
         if not self.branch_ops:
@@ -338,7 +338,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
         )
 
     # Git operations with error handling
-    async def get_file_history(self, path: str, limit: int = 10) -> List[CommitInfo]:
+    async def get_file_history(self, path: str, limit: int = 10) -> list[CommitInfo]:
         """Get file history with error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -418,8 +418,8 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
 
     # Enhanced batch operations with error handling
     async def batch_operations(
-        self, operations: List[BatchOperation]
-    ) -> List[OperationResult]:
+        self, operations: list[BatchOperation]
+    ) -> list[OperationResult]:
         """Execute batch operations with comprehensive error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")

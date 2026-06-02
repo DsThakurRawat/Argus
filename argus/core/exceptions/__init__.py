@@ -35,8 +35,8 @@ from .agent import (
 from .agent import AgentError as AgentSpecificError
 from .base import (
     AgentError,
-    ConfigurationError,
     ArgusAgentError,
+    ConfigurationError,
     LLMError,
     MonitoringError,
     ProcessingError,

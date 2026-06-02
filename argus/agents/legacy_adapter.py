@@ -24,13 +24,13 @@ to use the enhanced multi-provider LLM system without any code modifications.
 import logging
 from typing import Any
 
-from ..llm.config import LLMConfig
-from ..triage_agent import TriageAgent
 from ..analysis_agent import AnalysisAgent
+from ..llm.config import LLMConfig
 from ..remediation_agent import RemediationAgent
-from .enhanced_triage_agent import EnhancedTriageAgent
+from ..triage_agent import TriageAgent
 from .enhanced_analysis_agent import EnhancedAnalysisAgent
 from .enhanced_remediation_agent import EnhancedRemediationAgent
+from .enhanced_triage_agent import EnhancedTriageAgent
 
 logger = logging.getLogger(__name__)
 

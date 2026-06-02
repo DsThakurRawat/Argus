@@ -20,7 +20,7 @@ instantiation, and cleanup of various LLM providers based on configuration.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from .base import LLMProvider
 from .config import LLMConfig, LLMProviderConfig
@@ -43,7 +43,7 @@ class LLMProviderFactory:
     cached instances to ensure efficient resource reuse. Supports both
     class-level logic and instance-level logic for backward compatibility.
     """
-    
+
     _providers_registry = {
         "gemini": GeminiProvider,
         "openai": OpenAIProvider,
@@ -78,10 +78,10 @@ class LLMProviderFactory:
         provider_type = config.provider
         if provider_type not in self._provider_types:
             raise ValueError(f"Unsupported provider type: {provider_type}")
-        
+
         if not force_recreate and provider_type in self._providers:
             return self._providers[provider_type]
-            
+
         provider_class = self._provider_types[provider_type]
         try:
             provider = provider_class(config)
@@ -101,7 +101,7 @@ class LLMProviderFactory:
         except Exception as e:
             raise RuntimeError(f"Provider creation failed: {e}")
 
-    def get_provider(self, name: Union[str, LLMProviderConfig]) -> Any:
+    def get_provider(self, name: str | LLMProviderConfig) -> Any:
         """Hybrid get_provider: supports both string name and config object."""
         if isinstance(name, str):
             return self._providers.get(name)

@@ -101,12 +101,11 @@ class TestRepositoryAccessSecurity:
             assert token == "valid_token"
 
             # Test that invalid credentials are rejected
-            with patch.dict("os.environ", {}, clear=True):
-                with pytest.raises(
-                    ValueError,
-                    match="At least one authentication method must be provided",
-                ):
-                    CredentialConfig()
+            with patch.dict("os.environ", {}, clear=True), pytest.raises(
+                ValueError,
+                match="At least one authentication method must be provided",
+            ):
+                CredentialConfig()
 
     def test_repository_url_security_validation(
         self, mock_github_provider: str
@@ -224,9 +223,8 @@ class TestRepositoryAccessSecurity:
             mock_github_provider,
             "test_connection",
             side_effect=Exception("Access denied"),
-        ):
-            with pytest.raises(Exception, match="Access denied"):
-                await mock_github_provider.test_connection()
+        ), pytest.raises(Exception, match="Access denied"):
+            await mock_github_provider.test_connection()
 
     def test_repository_access_timeout_handling(
         self, mock_github_provider: str

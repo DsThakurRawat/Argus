@@ -22,7 +22,7 @@ comprehensive error handling system into source control providers.
 """
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
 from .core import (
     CircuitBreakerConfig,
@@ -40,15 +40,15 @@ from .validation import ErrorHandlingConfigValidator
 class ErrorHandlingFactory:
     """Factory for creating error handling components."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         """Initialize the factory with configuration."""
         self.config = config or {}
         self.validator = ErrorHandlingConfigValidator()
         self.logger = logging.getLogger("ErrorHandlingFactory")
 
     def create_error_handling_system(
-        self, provider_name: str, config: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, provider_name: str, config: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """
         Create a complete error handling system for a provider.
 
@@ -112,7 +112,7 @@ class ErrorHandlingFactory:
         return components
 
     def _create_circuit_breaker_config(
-        self, config: Dict[str, Any]
+        self, config: dict[str, Any]
     ) -> CircuitBreakerConfig:
         """Create circuit breaker configuration."""
         circuit_config = config.get("circuit_breaker", {})
@@ -124,12 +124,12 @@ class ErrorHandlingFactory:
         )
 
     def _create_operation_circuit_breaker_config(
-        self, config: Dict[str, Any]
+        self, config: dict[str, Any]
     ) -> OperationCircuitBreakerConfig:
         """Create operation-specific circuit breaker configuration."""
         return OperationCircuitBreakerConfig()
 
-    def _create_retry_config(self, config: Dict[str, Any]) -> RetryConfig:
+    def _create_retry_config(self, config: dict[str, Any]) -> RetryConfig:
         """Create retry configuration."""
         retry_config = config.get("retry", {})
         return RetryConfig(
@@ -140,25 +140,25 @@ class ErrorHandlingFactory:
             jitter=retry_config.get("jitter", True),
         )
 
-    def get_default_config(self) -> Dict[str, Any]:
+    def get_default_config(self) -> dict[str, Any]:
         """Get default error handling configuration."""
         return self.validator.get_default_config()
 
-    def validate_config(self, config: Dict[str, Any]) -> tuple[bool, list[str]]:
+    def validate_config(self, config: dict[str, Any]) -> tuple[bool, list[str]]:
         """Validate error handling configuration."""
         return self.validator.validate_error_handling_config(config)
 
 
 def create_error_handling_factory(
-    config: Optional[Dict[str, Any]] = None,
+    config: dict[str, Any] | None = None,
 ) -> ErrorHandlingFactory:
     """Create an error handling factory with the given configuration."""
     return ErrorHandlingFactory(config)
 
 
 def create_provider_error_handling(
-    provider_name: str, config: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    provider_name: str, config: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """
     Create error handling components for a specific provider.
 
@@ -280,14 +280,14 @@ PROVIDER_CONFIGS = {
 }
 
 
-def get_provider_config(provider_name: str) -> Dict[str, Any]:
+def get_provider_config(provider_name: str) -> dict[str, Any]:
     """Get provider-specific error handling configuration."""
     return PROVIDER_CONFIGS.get(provider_name, PROVIDER_CONFIGS["github"])
 
 
 def create_provider_error_handling_with_preset(
-    provider_name: str, custom_config: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    provider_name: str, custom_config: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """
     Create error handling components using provider-specific presets.
 

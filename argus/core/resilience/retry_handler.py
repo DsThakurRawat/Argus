@@ -192,8 +192,8 @@ class RetryHandler:
             "success": success,
             "error": error,
             "delay": (
-                self._calculate_delay() 
-                if not success and self._attempt_count < self._config.max_attempts 
+                self._calculate_delay()
+                if not success and self._attempt_count < self._config.max_attempts
                 else 0.0
             )
         }
@@ -216,7 +216,7 @@ class RetryHandler:
             failed_attempts = total_attempts - successful_attempts
 
             success_rate = (
-                (successful_attempts / total_attempts * 100) 
+                (successful_attempts / total_attempts * 100)
                 if total_attempts > 0 else 0.0
             )
 

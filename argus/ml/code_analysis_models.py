@@ -16,10 +16,10 @@
 Data models representing configuration and metrics for codebase analysis.
 """
 
-import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+import os
+from typing import Any
 
 
 @dataclass
@@ -50,7 +50,7 @@ class CodeChange:
     timestamp: datetime
     author: str
     message: str
-    files_changed: List[str]
+    files_changed: list[str]
     lines_added: int
     lines_deleted: int
     is_rollback: bool = False
@@ -86,9 +86,9 @@ class StaticAnalysisResult:
     """Findings from static analysis tools."""
 
     tool_name: str
-    findings: List[Dict[str, Any]]
+    findings: list[dict[str, Any]]
     scan_duration_seconds: float
-    files_analyzed: List[str]
+    files_analyzed: list[str]
     error_count: int = 0
     warning_count: int = 0
     info_count: int = 0
@@ -103,7 +103,7 @@ class StaticAnalysisResult:
         """Returns True if error count is greater than zero."""
         return self.error_count > 0
 
-    def get_findings_by_severity(self, severity: str) -> List[Dict[str, Any]]:
+    def get_findings_by_severity(self, severity: str) -> list[dict[str, Any]]:
         """Filters findings case-insensitively by severity value."""
         return [
             f
@@ -163,8 +163,8 @@ class DependencyVulnerability:
     vulnerability_id: str
     severity: str
     description: str
-    fixed_version: Optional[str] = None
-    cve_id: Optional[str] = None
+    fixed_version: str | None = None
+    cve_id: str | None = None
 
     def __post_init__(self) -> None:
         if self.severity.upper() not in ("CRITICAL", "HIGH", "MEDIUM", "LOW"):

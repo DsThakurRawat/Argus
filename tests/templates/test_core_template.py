@@ -14,8 +14,8 @@
 
 """Core module tests."""
 
+
 from argus.core.exceptions import *
-from typing import Optional
 from argus.core.interfaces import *
 from argus.core.types import *
 

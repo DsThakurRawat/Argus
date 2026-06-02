@@ -221,7 +221,7 @@ class TimeoutManager:
             failed_operations = total_operations - successful_operations
 
             success_rate = (
-                (successful_operations / total_operations * 100) 
+                (successful_operations / total_operations * 100)
                 if total_operations > 0 else 0.0
             )
 
@@ -231,11 +231,11 @@ class TimeoutManager:
 
             # Calculate timeout rate
             timeout_operations = sum(
-                1 for op in self._timeout_history 
+                1 for op in self._timeout_history
                 if not op["success"] and "timeout" in (op["error"] or "").lower()
             )
             timeout_rate = (
-                (timeout_operations / total_operations * 100) 
+                (timeout_operations / total_operations * 100)
                 if total_operations > 0 else 0.0
             )
 

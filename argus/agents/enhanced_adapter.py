@@ -15,7 +15,7 @@
 """Enhanced Agent Adapters and Migration Helpers."""
 
 import logging
-from typing import Any, cast
+from typing import Any
 
 from ..llm.config import LLMConfig
 from .enhanced_specialized import (

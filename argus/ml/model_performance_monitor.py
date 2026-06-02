@@ -18,7 +18,7 @@ Model performance monitor class tracking accuracy, latency, confidence, and patt
 
 from collections import defaultdict
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .drift_detector import DriftDetector, MetricsCalculator
 from .performance_config import DriftAlert, PerformanceConfig, PerformanceMetrics
@@ -27,18 +27,18 @@ from .performance_config import DriftAlert, PerformanceConfig, PerformanceMetric
 class ModelPerformanceMonitor:
     """Monitors model prediction accuracy, confidence, and latency over time to detect drift."""
 
-    def __init__(self, config: Optional[PerformanceConfig] = None) -> None:
+    def __init__(self, config: PerformanceConfig | None = None) -> None:
         self.config = config or PerformanceConfig()
-        self.accuracy_history: List[float] = []
-        self.confidence_history: List[float] = []
-        self.latency_history: List[float] = []
-        self.pattern_type_accuracy: Dict[str, List[float]] = defaultdict(list)
+        self.accuracy_history: list[float] = []
+        self.confidence_history: list[float] = []
+        self.latency_history: list[float] = []
+        self.pattern_type_accuracy: dict[str, list[float]] = defaultdict(list)
 
-        self.baseline_accuracy: Optional[float] = None
-        self.baseline_confidence: Optional[float] = None
-        self.baseline_latency: Optional[float] = None
+        self.baseline_accuracy: float | None = None
+        self.baseline_confidence: float | None = None
+        self.baseline_latency: float | None = None
 
-        self.drift_alerts: List[DriftAlert] = []
+        self.drift_alerts: list[DriftAlert] = []
         self.drift_detector = DriftDetector(self.config)
         self.last_drift_check = datetime.now()
 
@@ -48,7 +48,7 @@ class ModelPerformanceMonitor:
             self.pattern_type_accuracy[pattern], self.config.max_pattern_history
         )
 
-    def _calculate_pattern_accuracy(self) -> Dict[str, Dict[str, Any]]:
+    def _calculate_pattern_accuracy(self) -> dict[str, dict[str, Any]]:
         """Calculates accuracy summary for all tracked pattern types."""
         result = {}
         for pattern, accuracies in self.pattern_type_accuracy.items():
@@ -134,7 +134,7 @@ class ModelPerformanceMonitor:
 
             self.last_drift_check = datetime.now()
 
-    def get_performance_metrics(self) -> Dict[str, Any]:
+    def get_performance_metrics(self) -> dict[str, Any]:
         """Returns current performance metrics dashboard dict."""
         if not self.accuracy_history:
             return PerformanceMetrics.empty_metrics()
@@ -153,7 +153,7 @@ class ModelPerformanceMonitor:
             "pattern_accuracy": self._calculate_pattern_accuracy(),
         }
 
-    def get_drift_summary(self) -> Dict[str, Any]:
+    def get_drift_summary(self) -> dict[str, Any]:
         """Returns summarized drift statistics and severity counts."""
         return MetricsCalculator.analyze_drift_alerts(self.drift_alerts)
 

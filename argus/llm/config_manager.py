@@ -21,12 +21,12 @@ This module provides a comprehensive configuration system that supports
 multiple LLM providers, models, resilience patterns, and cost management.
 """
 
+from dataclasses import dataclass, field
 import json
 import logging
 import os
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import yaml
 
@@ -45,9 +45,9 @@ class ConfigSource:
     """Represents a configuration source with metadata."""
 
     source_type: str  # 'env', 'file', 'programmatic'
-    path: Optional[str] = None
+    path: str | None = None
     priority: int = 0  # Higher number = higher priority
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class ConfigManager:
@@ -58,7 +58,7 @@ class ConfigManager:
     from multiple sources with proper precedence rules.
     """
 
-    def __init__(self, config_path: Optional[Union[str, Path]] = None) -> None:
+    def __init__(self, config_path: str | Path | None = None) -> None:
         """
         Initialize the configuration manager.
 
@@ -66,10 +66,10 @@ class ConfigManager:
             config_path: Optional path to configuration file
         """
         self.config_path = Path(config_path) if config_path else None
-        self._config: Optional[LLMConfig] = None
-        self._sources: List[ConfigSource] = []
-        self._watchers: List[Any] = []  # File watchers for hot-reload
-        self._callbacks: List[Any] = []
+        self._config: LLMConfig | None = None
+        self._sources: list[ConfigSource] = []
+        self._watchers: list[Any] = []  # File watchers for hot-reload
+        self._callbacks: list[Any] = []
 
         # Load initial configuration
         self._load_configuration()
@@ -120,10 +120,10 @@ class ConfigManager:
                 agents={},
             )
 
-    def _load_from_file(self, path: Path) -> Dict[str, Any]:
+    def _load_from_file(self, path: Path) -> dict[str, Any]:
         """Load configuration from a file (YAML or JSON)."""
         try:
-            with open(path, "r") as f:
+            with open(path) as f:
                 if path.suffix.lower() in [".yaml", ".yml"]:
                     return yaml.safe_load(f) or {}
                 elif path.suffix.lower() == ".json":
@@ -135,7 +135,7 @@ class ConfigManager:
             logger.error(f"Failed to load configuration from {path}: {e}")
             return {}
 
-    def _load_from_environment(self) -> Dict[str, Any]:
+    def _load_from_environment(self) -> dict[str, Any]:
         """Load configuration from environment variables."""
         config_data = {}
 
@@ -184,17 +184,17 @@ class ConfigManager:
         assert self._config is not None
         return self._config
 
-    def get_provider_config(self, provider_name: str) -> Optional[LLMProviderConfig]:
+    def get_provider_config(self, provider_name: str) -> LLMProviderConfig | None:
         """Get configuration for a specific provider."""
         config = self.get_config()
         return config.providers.get(provider_name)
 
-    def get_agent_config(self, agent_name: str) -> Optional[AgentLLMConfig]:
+    def get_agent_config(self, agent_name: str) -> AgentLLMConfig | None:
         """Get configuration for a specific agent."""
         config = self.get_config()
         return config.agents.get(agent_name)
 
-    def update_config(self, updates: Dict[str, Any]) -> None:
+    def update_config(self, updates: dict[str, Any]) -> None:
         """Update configuration programmatically."""
         try:
             current_config = self.get_config()
@@ -216,7 +216,7 @@ class ConfigManager:
             logger.error(f"Failed to update configuration: {e}")
             raise
 
-    def _deep_merge(self, base: Dict[str, Any], updates: Dict[str, Any]) -> None:
+    def _deep_merge(self, base: dict[str, Any], updates: dict[str, Any]) -> None:
         """Deep merge updates into base dictionary."""
         for key, value in updates.items():
             if key in base and isinstance(base[key], dict) and isinstance(value, dict):
@@ -241,7 +241,7 @@ class ConfigManager:
             except Exception as e:
                 logger.error(f"Error in configuration change callback: {e}")
 
-    def validate_config(self) -> List[str]:
+    def validate_config(self) -> list[str]:
         """Validate the current configuration and return any errors."""
         errors = []
 
@@ -292,7 +292,7 @@ class ConfigManager:
 
         return errors
 
-    def get_config_summary(self) -> Dict[str, Any]:
+    def get_config_summary(self) -> dict[str, Any]:
         """Get a summary of the current configuration."""
         config = self.get_config()
 
@@ -319,7 +319,7 @@ class ConfigManager:
             ],
         }
 
-    def export_config(self, path: Union[str, Path], format: str = "yaml") -> None:
+    def export_config(self, path: str | Path, format: str = "yaml") -> None:
         """Export current configuration to a file."""
         config = self.get_config()
         config_dict = config.model_dump()
@@ -343,7 +343,7 @@ class ConfigManager:
 
 
 # Global configuration manager instance
-_config_manager: Optional[ConfigManager] = None
+_config_manager: ConfigManager | None = None
 
 
 def get_config_manager() -> ConfigManager:
@@ -354,7 +354,7 @@ def get_config_manager() -> ConfigManager:
     return _config_manager
 
 
-def initialize_config(config_path: Optional[Union[str, Path]] = None) -> ConfigManager:
+def initialize_config(config_path: str | Path | None = None) -> ConfigManager:
     """Initialize the global configuration manager."""
     global _config_manager
     _config_manager = ConfigManager(config_path)

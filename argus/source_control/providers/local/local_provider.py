@@ -17,7 +17,7 @@
 """Local filesystem provider with Git integration and patch generation capabilities."""
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from argus.config.source_control_repositories import LocalRepositoryConfig
 from argus.source_control.base_implementation import (
@@ -45,7 +45,7 @@ from .local_git_operations import LocalGitOperations
 class LocalProvider(BaseSourceControlProvider):
     """Provider for local filesystem operations with Git integration and patch generation capabilities."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize the local provider with configuration."""
         super().__init__(config)
         # Convert config dict back to LocalRepositoryConfig for type safety
@@ -139,7 +139,7 @@ class LocalProvider(BaseSourceControlProvider):
             )
 
     # File operations - delegate to file_ops
-    async def get_file_content(self, path: str, ref: Optional[str] = None) -> str:
+    async def get_file_content(self, path: str, ref: str | None = None) -> str:
         """Get file content from local filesystem with error handling."""
         # Use error handling if available
         if self._error_handling_components:
@@ -164,7 +164,7 @@ class LocalProvider(BaseSourceControlProvider):
         path: str,
         content: str,
         message: str,
-        branch: Optional[str] = None,
+        branch: str | None = None,
     ) -> RemediationResult:
         """Apply remediation to a file with error handling."""
         # Use error handling if available
@@ -198,17 +198,17 @@ class LocalProvider(BaseSourceControlProvider):
         else:
             return await self.file_ops.apply_remediation(path, content, message)
 
-    async def file_exists(self, path: str, ref: Optional[str] = None) -> bool:
+    async def file_exists(self, path: str, ref: str | None = None) -> bool:
         """Check if a file exists."""
         return await self.file_ops.file_exists(path)
 
-    async def get_file_info(self, path: str, ref: Optional[str] = None) -> FileInfo:
+    async def get_file_info(self, path: str, ref: str | None = None) -> FileInfo:
         """Get file information."""
         return await self.file_ops.get_file_info(path)
 
     async def list_files(
-        self, path: str = "", ref: Optional[str] = None
-    ) -> List[FileInfo]:
+        self, path: str = "", ref: str | None = None
+    ) -> list[FileInfo]:
         """List files in a directory."""
         return await self.file_ops.list_files(path)
 
@@ -225,14 +225,14 @@ class LocalProvider(BaseSourceControlProvider):
         file_path: str,
         content: str,
         message: str,
-        branch: Optional[str] = None,
-    ) -> Optional[str]:
+        branch: str | None = None,
+    ) -> str | None:
         """Commit changes to a file."""
         success = await self.file_ops.commit_changes(file_path, content, message)
         return "local_commit" if success else None
 
     # Branch operations - delegate to git_ops
-    async def create_branch(self, name: str, base_ref: Optional[str] = None) -> bool:
+    async def create_branch(self, name: str, base_ref: str | None = None) -> bool:
         """Create a new branch."""
         return await self.git_ops.create_branch(name, base_ref)
 
@@ -240,11 +240,11 @@ class LocalProvider(BaseSourceControlProvider):
         """Delete a branch."""
         return await self.git_ops.delete_branch(name)
 
-    async def list_branches(self) -> List[BranchInfo]:
+    async def list_branches(self) -> list[BranchInfo]:
         """List all branches."""
         return await self.git_ops.list_branches()
 
-    async def get_branch_info(self, name: str) -> Optional[BranchInfo]:
+    async def get_branch_info(self, name: str) -> BranchInfo | None:
         """Get information about a specific branch."""
         return await self.git_ops.get_branch_info(name)
 
@@ -260,7 +260,7 @@ class LocalProvider(BaseSourceControlProvider):
         self,
         path: str,
         content: str,
-        branch: Optional[str] = None,
+        branch: str | None = None,
     ) -> bool:
         """Check for conflicts between branches."""
         # Use the default branch if no branch is specified
@@ -286,7 +286,7 @@ class LocalProvider(BaseSourceControlProvider):
         return await self.git_ops.resolve_conflicts(path, content, strategy)
 
     # Git operations - delegate to git_ops
-    async def get_file_history(self, path: str, limit: int = 10) -> List[CommitInfo]:
+    async def get_file_history(self, path: str, limit: int = 10) -> list[CommitInfo]:
         """Get file commit history."""
         return await self.git_ops.get_file_history(path, limit)
 
@@ -294,14 +294,14 @@ class LocalProvider(BaseSourceControlProvider):
         """Get diff between two commits."""
         return await self.git_ops.diff_between_commits(base_sha, head_sha)
 
-    async def execute_git_command(self, command: List[str]) -> str:
+    async def execute_git_command(self, command: list[str]) -> str:
         """Execute a Git command and return output."""
         return await self.git_ops.execute_git_command(command)
 
     # Batch operations - delegate to batch_ops
     async def batch_operations(
-        self, operations: List[BatchOperation]
-    ) -> List[OperationResult]:
+        self, operations: list[BatchOperation]
+    ) -> list[OperationResult]:
         """Execute multiple operations in batch."""
         return await self.batch_ops.batch_operations(operations)
 

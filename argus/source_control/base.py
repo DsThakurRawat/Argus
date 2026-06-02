@@ -18,11 +18,11 @@
 Abstract base class for source control providers with async context manager support.
 """
 
-import asyncio
-import logging
 from abc import ABC, abstractmethod
+import asyncio
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+import logging
+from typing import Any
 
 from .models import (
     BatchOperation,
@@ -40,7 +40,7 @@ from .models import (
 class SourceControlProvider(ABC):
     """Abstract base class defining the interface for source control providers."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize with configuration."""
         self.config = config
         self._initialized = False
@@ -80,23 +80,23 @@ class SourceControlProvider(ABC):
 
     # File operations
     @abstractmethod
-    async def get_file_content(self, path: str, ref: Optional[str] = None) -> str:
+    async def get_file_content(self, path: str, ref: str | None = None) -> str:
         """Retrieve content of a file at a specific path and reference."""
         pass
 
     @abstractmethod
-    async def get_file_info(self, path: str, ref: Optional[str] = None) -> FileInfo:
+    async def get_file_info(self, path: str, ref: str | None = None) -> FileInfo:
         """Get information about a file."""
         pass
 
     @abstractmethod
-    async def file_exists(self, path: str, ref: Optional[str] = None) -> bool:
+    async def file_exists(self, path: str, ref: str | None = None) -> bool:
         """Check if a file exists at the given path."""
         pass
 
     # Branch operations
     @abstractmethod
-    async def create_branch(self, name: str, base_ref: Optional[str] = None) -> bool:
+    async def create_branch(self, name: str, base_ref: str | None = None) -> bool:
         """Create a new branch from the specified reference."""
         pass
 
@@ -106,19 +106,19 @@ class SourceControlProvider(ABC):
         pass
 
     @abstractmethod
-    async def list_branches(self) -> List[BranchInfo]:
+    async def list_branches(self) -> list[BranchInfo]:
         """List all branches in the repository."""
         pass
 
     @abstractmethod
-    async def get_branch_info(self, name: str) -> Optional[BranchInfo]:
+    async def get_branch_info(self, name: str) -> BranchInfo | None:
         """Get information about a specific branch."""
         pass
 
     # Remediation operations
     @abstractmethod
     async def apply_remediation(
-        self, path: str, content: str, message: str, branch: Optional[str] = None
+        self, path: str, content: str, message: str, branch: str | None = None
     ) -> RemediationResult:
         """Apply a remediation to a file and commit the changes."""
         pass
@@ -140,7 +140,7 @@ class SourceControlProvider(ABC):
     # Conflict resolution
     @abstractmethod
     async def check_conflicts(
-        self, path: str, content: str, branch: Optional[str] = None
+        self, path: str, content: str, branch: str | None = None
     ) -> bool:
         """Check if applying content to a file would cause conflicts."""
         pass
@@ -153,15 +153,15 @@ class SourceControlProvider(ABC):
         pass
 
     @abstractmethod
-    async def get_conflict_info(self, path: str) -> Optional[ConflictInfo]:
+    async def get_conflict_info(self, path: str) -> ConflictInfo | None:
         """Get detailed information about conflicts in a file."""
         pass
 
     # Batch operations
     @abstractmethod
     async def batch_operations(
-        self, operations: List[BatchOperation]
-    ) -> List[OperationResult]:
+        self, operations: list[BatchOperation]
+    ) -> list[OperationResult]:
         """Execute multiple operations as a batch."""
         pass
 
@@ -230,7 +230,7 @@ class SourceControlProvider(ABC):
         """Get a configuration value with optional default."""
         return self.config.get(key, default)
 
-    def update_config(self, updates: Dict[str, Any]) -> None:
+    def update_config(self, updates: dict[str, Any]) -> None:
         """Update configuration values."""
         self.config.update(updates)
 
