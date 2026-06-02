@@ -50,6 +50,7 @@ dependencies = [
   "structlog>=25.4.0",
   "rich>=13.0.0",
   "typer>=0.17.4",
+  "questionary>=2.1.1",
 ]
 
 [tool.pytest.ini_options]

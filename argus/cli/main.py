@@ -53,7 +53,33 @@ def run(
 ):
     """Start the Argus SRE daemon."""
     print_banner()
-    console.print(f"[bold cyan]Starting Argus Daemon...[/bold cyan]")
+
+    import questionary
+    
+    if not framework:
+        framework = questionary.select(
+            "Which SRE framework profile do you want to run?",
+            choices=["opensre", "agentic-sre", "atomic-sre", "argus-native"]
+        ).ask()
+        if not framework:
+            raise typer.Exit()
+            
+    if not provider:
+        provider = questionary.select(
+            "Which LLM Provider should power the agents?",
+            choices=["gemini", "openai", "anthropic", "ollama", "groq"]
+        ).ask()
+        if not provider:
+            raise typer.Exit()
+            
+    if not log_file:
+        log_file = questionary.path(
+            "Enter the path to the log file to monitor:"
+        ).ask()
+        if not log_file:
+            raise typer.Exit()
+
+    console.print(f"\n[bold cyan]Starting Argus Daemon...[/bold cyan]")
     if framework:
         console.print(f"Using Framework Profile: [bold yellow]{framework}[/bold yellow]")
     if provider:
