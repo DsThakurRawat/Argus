@@ -498,7 +498,6 @@ async def main():
 
         # Log final metrics
         # Shutdown providers to close connections
-        from argus.llm.factory import LLMProviderFactory
         await LLMProviderFactory.shutdown()
 
         if agents.get("metrics_collector"):
