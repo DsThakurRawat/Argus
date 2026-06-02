@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-HEADER = """# Copyright 2026 divyanshrawat
+HEADER = """# Copyright 2026 Divyansh Rawat
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ def update_headers():
                     content = f.read()
                 
                 # Skip if header already exists
-                if "Copyright 2026 divyanshrawat" in content:
+                if "Copyright 2026 Divyansh Rawat" in content:
                     continue
                 
                 # Remove old headers if they exist (simple check for "Copyright")
