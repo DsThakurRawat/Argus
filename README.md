@@ -44,21 +44,21 @@ Argus employs a modular, event-driven design to ensure high availability and red
 
 ```mermaid
 graph TD
-    subgraph 📥 Log Ingestion
-    A[AWS CloudWatch] --> D[Ingestion Manager]
-    B[GCP Pub/Sub] --> D
-    C[Kubernetes] --> D
+    subgraph Ingestion ["📥 Log Ingestion"]
+    A["AWS CloudWatch"] --> D["Ingestion Manager"]
+    B["GCP Pub/Sub"] --> D
+    C["Kubernetes"] --> D
     end
-    subgraph 🧠 AI Core
-    D --> E[Triage & Pattern Detection]
-    E --> F{Multi-Provider LLM Router}
-    F --> |Analysis| G[Root Cause Analyzer]
-    F --> |Fixes| H[Code Generator]
+    subgraph Core ["🧠 AI Core"]
+    D --> E["Triage & Pattern Detection"]
+    E --> F{"Multi-Provider LLM Router"}
+    F --> |Analysis| G["Root Cause Analyzer"]
+    F --> |Fixes| H["Code Generator"]
     end
-    subgraph 🛠️ Remediation
-    G --> I[Automated PR Builder]
+    subgraph Remediation ["🛠️ Remediation"]
+    G --> I["Automated PR Builder"]
     H --> I
-    I --> J[GitHub / GitLab]
+    I --> J["GitHub / GitLab"]
     end
 ```
 
