@@ -177,7 +177,7 @@ class TestAWSCloudWatchAdapter:
 
     @pytest.mark.asyncio
     @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
-    async def test_health_check_healthy(self, mock_boto3, adapter):
+    async def test_health_check_healthy(self, _mock_boto3, adapter):
         """Test health check when adapter is healthy."""
         await adapter.start()
 
@@ -228,7 +228,7 @@ class TestAWSCloudWatchAdapter:
 
     @pytest.mark.asyncio
     @patch("argus.ingestion.adapters.aws_cloudwatch.boto3")
-    async def test_get_health_metrics(self, mock_boto3, adapter):
+    async def test_get_health_metrics(self, _mock_boto3, adapter):
         """Test getting health metrics."""
         await adapter.start()
 
