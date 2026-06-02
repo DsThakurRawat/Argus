@@ -29,7 +29,7 @@ if [ -d "$INSTALL_DIR" ]; then
     git pull
 else
     echo "Cloning Argus repository..."
-    git clone -b feature/cli-refactor https://github.com/DsThakurRawat/Argus.git "$INSTALL_DIR"
+    git clone https://github.com/DsThakurRawat/Argus.git "$INSTALL_DIR"
     cd "$INSTALL_DIR"
 fi
 
