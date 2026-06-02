@@ -26,29 +26,29 @@ import sys
 import tempfile
 from typing import Any
 
-from gemini_sre_agent.agents.enhanced_specialized import (
+from argus.agents.enhanced_specialized import (
     EnhancedAnalysisAgent,
     EnhancedRemediationAgentV2,
     EnhancedTriageAgent,
 )
-from gemini_sre_agent.agents.response_models import RemediationPlan
+from argus.agents.response_models import RemediationPlan
 
 # New ingestion system imports
-from gemini_sre_agent.config.ingestion_config import (
+from argus.config.ingestion_config import (
     FileSystemConfig,
     IngestionConfigManager,
 )
-from gemini_sre_agent.ingestion.adapters.file_system import FileSystemAdapter
-from gemini_sre_agent.ingestion.interfaces.core import LogEntry, LogSeverity
-from gemini_sre_agent.ingestion.manager.log_manager import LogManager
-from gemini_sre_agent.llm.capabilities.discovery import CapabilityDiscovery
-from gemini_sre_agent.llm.config_manager import ConfigManager
-from gemini_sre_agent.llm.factory import LLMProviderFactory
-from gemini_sre_agent.llm.monitoring.llm_metrics import get_llm_metrics_collector
-from gemini_sre_agent.llm.strategy_manager import OptimizationGoal
-from gemini_sre_agent.local_patch_manager import LocalPatchManager
-from gemini_sre_agent.logger import setup_logging
-from gemini_sre_agent.triage_agent import TriagePacket  # Used for mock TriagePacket
+from argus.ingestion.adapters.file_system import FileSystemAdapter
+from argus.ingestion.interfaces.core import LogEntry, LogSeverity
+from argus.ingestion.manager.log_manager import LogManager
+from argus.llm.capabilities.discovery import CapabilityDiscovery
+from argus.llm.config_manager import ConfigManager
+from argus.llm.factory import LLMProviderFactory
+from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
+from argus.llm.strategy_manager import OptimizationGoal
+from argus.local_patch_manager import LocalPatchManager
+from argus.logger import setup_logging
+from argus.triage_agent import TriagePacket  # Used for mock TriagePacket
 
 # Legacy adapter functions are now integrated directly into the enhanced agents
 
@@ -498,7 +498,7 @@ async def main():
 
         # Log final metrics
         # Shutdown providers to close connections
-        from gemini_sre_agent.llm.factory import LLMProviderFactory
+        from argus.llm.factory import LLMProviderFactory
         await LLMProviderFactory.shutdown()
 
         if agents.get("metrics_collector"):
