@@ -1,4 +1,5 @@
-from typing import Optional, Any, Dict, List, Union, Callable, Awaitable, TypeVar, Tuple
+from typing import Any, TypeVar
+
 # Copyright 2026 Divyansh Rawat
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +24,8 @@ allowing components to be compatible based on their interface
 rather than inheritance hierarchy.
 """
 
-from typing import Any, AsyncIterator, Dict, List, Protocol, TypeVar
+from collections.abc import AsyncIterator
+from typing import Protocol
 
 from ..types import (
     AgentContext,
@@ -114,7 +116,7 @@ class Stateful(Protocol):
     """Protocol for objects that maintain state."""
 
     @property
-    def state(self) -> Dict[str, Any]:
+    def state(self) -> dict[str, Any]:
         """Get current state."""
         ...
 
@@ -122,7 +124,7 @@ class Stateful(Protocol):
         """Set new state value."""
         ...
 
-    def get_state(self, key: str, default: Optional[Any] = None) -> Any:
+    def get_state(self, key: str, default: Any | None = None) -> Any:
         """Get state value by key."""
         ...
 
@@ -142,7 +144,7 @@ class Validatable(Protocol):
         """Validate the object."""
         ...
 
-    def get_validation_errors(self) -> List[str]:
+    def get_validation_errors(self) -> list[str]:
         """Get validation errors if any."""
         ...
 
@@ -154,7 +156,7 @@ class HealthCheckable(Protocol):
         """Check if the object is healthy."""
         ...
 
-    def get_health_status(self) -> Dict[str, Any]:
+    def get_health_status(self) -> dict[str, Any]:
         """Get detailed health status."""
         ...
 
@@ -162,11 +164,11 @@ class HealthCheckable(Protocol):
 class MetricsCollector(Protocol):
     """Protocol for objects that collect metrics."""
 
-    def collect_metrics(self) -> Dict[str, Any]:
+    def collect_metrics(self) -> dict[str, Any]:
         """Collect current metrics."""
         ...
 
-    def get_metrics_summary(self) -> Dict[str, Any]:
+    def get_metrics_summary(self) -> dict[str, Any]:
         """Get metrics summary."""
         ...
 
@@ -174,7 +176,7 @@ class MetricsCollector(Protocol):
 class Alertable(Protocol):
     """Protocol for objects that can generate alerts."""
 
-    def check_alerts(self) -> List[Dict[str, Any]]:
+    def check_alerts(self) -> list[dict[str, Any]]:
         """Check for alerts."""
         ...
 
@@ -240,7 +242,7 @@ class RateLimited(Protocol):
         """Check if currently rate limited."""
         ...
 
-    def get_rate_limit_info(self) -> Dict[str, Any]:
+    def get_rate_limit_info(self) -> dict[str, Any]:
         """Get rate limit information."""
         ...
 
@@ -300,7 +302,7 @@ class ProviderLike(Protocol):
         """Get provider name."""
         ...
 
-    def get_models(self) -> List[Any]:
+    def get_models(self) -> list[Any]:
         """Get available models."""
         ...
 
@@ -364,7 +366,7 @@ class WorkflowStep(Protocol):
         """Get step name."""
         ...
 
-    def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    def execute(self, context: dict[str, Any]) -> dict[str, Any]:
         """Execute the workflow step."""
         ...
 
@@ -376,7 +378,7 @@ class WorkflowOrchestrator(Protocol):
         """Add a workflow step."""
         ...
 
-    def execute_workflow(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+    def execute_workflow(self, initial_context: dict[str, Any]) -> dict[str, Any]:
         """Execute the complete workflow."""
         ...
 
@@ -405,7 +407,7 @@ class ResourceManager(Protocol):
     """Protocol for resource managers."""
 
     def allocate_resource(
-        self, resource_type: str, requirements: Dict[str, Any]
+        self, resource_type: str, requirements: dict[str, Any]
     ) -> str:
         """Allocate a resource."""
         ...
@@ -414,7 +416,7 @@ class ResourceManager(Protocol):
         """Deallocate a resource."""
         ...
 
-    def get_resource_status(self, resource_id: str) -> Dict[str, Any]:
+    def get_resource_status(self, resource_id: str) -> dict[str, Any]:
         """Get resource status."""
         ...
 
@@ -422,7 +424,7 @@ class ResourceManager(Protocol):
 class LoadBalancer(Protocol):
     """Protocol for load balancers."""
 
-    def select_target(self, targets: List[Any], context: Dict[str, Any]) -> Any:
+    def select_target(self, targets: list[Any], context: dict[str, Any]) -> Any:
         """Select a target for load balancing."""
         ...
 
@@ -466,7 +468,7 @@ class FallbackProvider(Protocol):
 class BatchProcessor(Protocol[T, R]):
     """Protocol for batch processors."""
 
-    def process_batch(self, items: List[T]) -> List[R]:
+    def process_batch(self, items: list[T]) -> list[R]:
         """Process a batch of items."""
         ...
 
@@ -478,7 +480,7 @@ class BatchProcessor(Protocol[T, R]):
 class AsyncBatchProcessor(Protocol[T, R]):
     """Protocol for async batch processors."""
 
-    async def process_batch_async(self, items: List[T]) -> List[R]:
+    async def process_batch_async(self, items: list[T]) -> list[R]:
         """Process a batch of items asynchronously."""
         ...
 
@@ -510,7 +512,7 @@ class Transformer(Protocol[T, R]):
 class Filter(Protocol[T]):
     """Protocol for data filters."""
 
-    def filter(self, items: List[T]) -> List[T]:
+    def filter(self, items: list[T]) -> list[T]:
         """Filter items."""
         ...
 
@@ -522,7 +524,7 @@ class Filter(Protocol[T]):
 class Aggregator(Protocol[T, R]):
     """Protocol for data aggregators."""
 
-    def aggregate(self, items: List[T]) -> R:
+    def aggregate(self, items: list[T]) -> R:
         """Aggregate items."""
         ...
 
@@ -599,7 +601,7 @@ def implements_protocol(obj: Any, protocol: type) -> bool:
         return False
 
 
-def get_protocol_methods(protocol: type) -> List[str]:
+def get_protocol_methods(protocol: type) -> list[str]:
     """
     Get method names from a protocol.
 
@@ -618,7 +620,7 @@ def get_protocol_methods(protocol: type) -> List[str]:
     return methods
 
 
-def validate_protocol_implementation(obj: Any, protocol: type) -> List[str]:
+def validate_protocol_implementation(obj: Any, protocol: type) -> list[str]:
     """
     Validate that an object implements a protocol.
 

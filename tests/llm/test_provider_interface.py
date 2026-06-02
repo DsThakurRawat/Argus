@@ -19,7 +19,7 @@ Unit tests for the LLM Provider interface.
 from unittest.mock import MagicMock, patch
 
 from pydantic import BaseModel
-from typing import Optional
+
 # Mock the dependencies before importing the provider
 mock_prompt_class = MagicMock()
 with patch.dict(
@@ -59,7 +59,7 @@ class MockLLMProvider(LLMProvider):
         return response_model(message="Test", confidence=0.95)
 
     def generate_stream(
-        self, prompt: str, model: Optional[str] = None, **kwargs: str
+        self, prompt: str, model: str | None = None, **kwargs: str
     ) -> None:
         """
         Generate Stream.

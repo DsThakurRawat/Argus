@@ -21,10 +21,10 @@ This module handles validation operations within the workflow, including
 code validation, prompt validation, and solution validation.
 """
 
+from dataclasses import dataclass
 import logging
 import time
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
@@ -49,18 +49,18 @@ class ValidationResult:
 
     # Validation results
     is_valid: bool
-    errors: List[Dict[str, Any]]
-    warnings: List[Dict[str, Any]]
-    recommendations: List[str]
+    errors: list[dict[str, Any]]
+    warnings: list[dict[str, Any]]
+    recommendations: list[str]
     confidence_score: float
 
     # Performance metrics
     validation_duration: float
     items_validated: int
     success: bool
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert validation result to dictionary."""
         return {
             "validation_id": self.validation_id,
@@ -79,7 +79,7 @@ class ValidationResult:
         }
 
 
-class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationResult]):
+class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationResult]):
     """
     Validation engine for workflow operations.
 
@@ -91,7 +91,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
         self,
         component_id: str = "workflow_validation_engine",
         name: str = "Workflow Validation Engine",
-        config: Optional[ConfigDict] = None,
+        config: ConfigDict | None = None,
     ) -> None:
         """
         Initialize the workflow validation engine.
@@ -201,7 +201,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
         except Exception as e:
             validation_duration = time.time() - start_time
-            error_msg = f"Code validation failed: {str(e)}"
+            error_msg = f"Code validation failed: {e!s}"
 
             logger.error(f"Code validation {validation_id} failed: {error_msg}")
 
@@ -230,7 +230,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
     async def validate_prompts(
         self,
-        prompts: List[str],
+        prompts: list[str],
         workflow_id: str,
         validation_type: str = "completeness",
     ) -> ValidationResult:
@@ -314,7 +314,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
         except Exception as e:
             validation_duration = time.time() - start_time
-            error_msg = f"Prompt validation failed: {str(e)}"
+            error_msg = f"Prompt validation failed: {e!s}"
 
             logger.error(f"Prompt validation {validation_id} failed: {error_msg}")
 
@@ -341,7 +341,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
             return result
 
-    def process(self, input_data: Dict[str, Any]) -> ValidationResult:
+    def process(self, input_data: dict[str, Any]) -> ValidationResult:
         """
         Process validation request (synchronous wrapper).
 
@@ -410,7 +410,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
         """
         return self._state.get(key, default)
 
-    def clear_state(self, key: Optional[str] = None) -> None:
+    def clear_state(self, key: str | None = None) -> None:
         """
         Clear state values.
 
@@ -422,7 +422,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
         else:
             self._state.pop(key, None)
 
-    def collect_metrics(self) -> Dict[str, Any]:
+    def collect_metrics(self) -> dict[str, Any]:
         """
         Collect component metrics.
 
@@ -431,7 +431,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
         """
         return self.get_validation_metrics()
 
-    def _initialize_validation_rules(self) -> Dict[str, Any]:
+    def _initialize_validation_rules(self) -> dict[str, Any]:
         """
         Initialize validation rules for different types of content.
 
@@ -473,7 +473,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
     def _validate_syntax(
         self, code_content: str, file_path: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Validate code syntax.
 
@@ -539,7 +539,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
     def _validate_style(
         self, code_content: str, file_path: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Validate code style.
 
@@ -570,7 +570,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
     def _validate_best_practices(
         self, code_content: str, file_path: str
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Validate code best practices.
 
@@ -631,7 +631,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
     def _validate_prompt_completeness(
         self, prompt: str, index: int
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Validate prompt completeness.
 
@@ -657,7 +657,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
         return errors
 
-    def _validate_prompt_quality(self, prompt: str, index: int) -> List[Dict[str, Any]]:
+    def _validate_prompt_quality(self, prompt: str, index: int) -> list[dict[str, Any]]:
         """
         Validate prompt quality.
 
@@ -684,7 +684,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
         return warnings
 
-    def _validate_prompt_clarity(self, prompt: str, index: int) -> List[Dict[str, Any]]:
+    def _validate_prompt_clarity(self, prompt: str, index: int) -> list[dict[str, Any]]:
         """
         Validate prompt clarity.
 
@@ -716,9 +716,9 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
     def _generate_recommendations(
         self,
         code_content: str,
-        errors: List[Dict[str, Any]],
-        warnings: List[Dict[str, Any]],
-    ) -> List[str]:
+        errors: list[dict[str, Any]],
+        warnings: list[dict[str, Any]],
+    ) -> list[str]:
         """
         Generate recommendations based on validation results.
 
@@ -747,10 +747,10 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
     def _generate_prompt_recommendations(
         self,
-        prompts: List[str],
-        errors: List[Dict[str, Any]],
-        warnings: List[Dict[str, Any]],
-    ) -> List[str]:
+        prompts: list[str],
+        errors: list[dict[str, Any]],
+        warnings: list[dict[str, Any]],
+    ) -> list[str]:
         """
         Generate recommendations for prompts based on validation results.
 
@@ -776,7 +776,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
         return recommendations
 
     def _calculate_confidence(
-        self, errors: List[Dict[str, Any]], warnings: List[Dict[str, Any]]
+        self, errors: list[dict[str, Any]], warnings: list[dict[str, Any]]
     ) -> float:
         """
         Calculate confidence score based on validation results.
@@ -796,7 +796,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
 
         return 1.0
 
-    def get_validation_metrics(self) -> Dict[str, Any]:
+    def get_validation_metrics(self) -> dict[str, Any]:
         """
         Get validation performance metrics.
 
@@ -820,7 +820,7 @@ class WorkflowValidationEngine(ProcessableComponent[Dict[str, Any], ValidationRe
             ),
         }
 
-    def get_health_status(self) -> Dict[str, Any]:
+    def get_health_status(self) -> dict[str, Any]:
         """
         Get the component's health status.
 

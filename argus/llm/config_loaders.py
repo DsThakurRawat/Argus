@@ -21,12 +21,13 @@ This module provides specialized loaders for different configuration sources
 including environment variables, files, and programmatic sources.
 """
 
+from collections.abc import Callable
+from dataclasses import dataclass
 import json
 import logging
 import os
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Union
+from typing import Any
 
 import yaml
 
@@ -37,10 +38,10 @@ logger = logging.getLogger(__name__)
 class LoaderResult:
     """Result from a configuration loader."""
 
-    data: Dict[str, Any]
+    data: dict[str, Any]
     source: str
-    metadata: Dict[str, Any]
-    errors: List[str]
+    metadata: dict[str, Any]
+    errors: list[str]
 
 
 class BaseConfigLoader:
@@ -56,13 +57,13 @@ class BaseConfigLoader:
         """
         self.source = source
         self.priority = priority
-        self._validators: List[Callable[[Dict[str, Any]], List[str]]] = []
+        self._validators: list[Callable[[dict[str, Any]], list[str]]] = []
 
-    def add_validator(self, validator: Callable[[Dict[str, Any]], List[str]]) -> None:
+    def add_validator(self, validator: Callable[[dict[str, Any]], list[str]]) -> None:
         """Add a validation function."""
         self._validators.append(validator)
 
-    def validate(self, data: Dict[str, Any]) -> List[str]:
+    def validate(self, data: dict[str, Any]) -> list[str]:
         """Validate configuration data."""
         errors = []
         for validator in self._validators:
@@ -145,7 +146,7 @@ class EnvironmentConfigLoader(BaseConfigLoader):
             )
 
     def _set_nested_value(
-        self, data: Dict[str, Any], key_path: str, value: Any
+        self, data: dict[str, Any], key_path: str, value: Any
     ) -> None:
         """Set a nested value in the data dictionary."""
         keys = key_path.split(".")
@@ -185,7 +186,7 @@ class EnvironmentConfigLoader(BaseConfigLoader):
         else:
             current[keys[-1]] = value
 
-    def _load_provider_env_vars(self) -> Dict[str, Any]:
+    def _load_provider_env_vars(self) -> dict[str, Any]:
         """Load provider-specific environment variables."""
         providers = {}
 
@@ -233,7 +234,7 @@ class EnvironmentConfigLoader(BaseConfigLoader):
 
         return providers
 
-    def _load_agent_env_vars(self) -> Dict[str, Any]:
+    def _load_agent_env_vars(self) -> dict[str, Any]:
         """Load agent-specific environment variables."""
         agents = {}
 
@@ -264,7 +265,7 @@ class EnvironmentConfigLoader(BaseConfigLoader):
 class FileConfigLoader(BaseConfigLoader):
     """Loader for file-based configuration (YAML/JSON)."""
 
-    def __init__(self, file_path: Union[str, Path], priority: int = 1) -> None:
+    def __init__(self, file_path: str | Path, priority: int = 1) -> None:
         """
         Initialize file loader.
 
@@ -290,7 +291,7 @@ class FileConfigLoader(BaseConfigLoader):
                     errors=errors,
                 )
 
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 if self.file_path.suffix.lower() in [".yaml", ".yml"]:
                     data = yaml.safe_load(f) or {}
                 elif self.file_path.suffix.lower() == ".json":
@@ -337,7 +338,7 @@ class FileConfigLoader(BaseConfigLoader):
 class ProgrammaticConfigLoader(BaseConfigLoader):
     """Loader for programmatically provided configuration."""
 
-    def __init__(self, config_data: Dict[str, Any], priority: int = 3) -> None:
+    def __init__(self, config_data: dict[str, Any], priority: int = 3) -> None:
         """
         Initialize programmatic loader.
 
@@ -374,14 +375,14 @@ class ConfigLoaderManager:
 
     def __init__(self) -> None:
         """Initialize the loader manager."""
-        self.loaders: List[BaseConfigLoader] = []
-        self._results: List[LoaderResult] = []
+        self.loaders: list[BaseConfigLoader] = []
+        self._results: list[LoaderResult] = []
 
     def add_loader(self, loader: BaseConfigLoader) -> None:
         """Add a configuration loader."""
         self.loaders.append(loader)
 
-    def load_all(self) -> Dict[str, Any]:
+    def load_all(self) -> dict[str, Any]:
         """Load configuration from all loaders and merge results."""
         self._results = []
         merged_data = {}
@@ -413,8 +414,8 @@ class ConfigLoaderManager:
         return merged_data
 
     def _merge_config_data(
-        self, base: Dict[str, Any], updates: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, base: dict[str, Any], updates: dict[str, Any]
+    ) -> dict[str, Any]:
         """Deep merge configuration data."""
         result = base.copy()
 
@@ -430,18 +431,18 @@ class ConfigLoaderManager:
 
         return result
 
-    def get_loader_results(self) -> List[LoaderResult]:
+    def get_loader_results(self) -> list[LoaderResult]:
         """Get results from all loaders."""
         return self._results.copy()
 
-    def get_all_errors(self) -> List[str]:
+    def get_all_errors(self) -> list[str]:
         """Get all errors from all loaders."""
         errors = []
         for result in self._results:
             errors.extend(result.errors)
         return errors
 
-    def get_loader_summary(self) -> Dict[str, Any]:
+    def get_loader_summary(self) -> dict[str, Any]:
         """Get a summary of loader results."""
         return {
             "total_loaders": len(self.loaders),

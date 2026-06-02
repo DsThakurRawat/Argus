@@ -58,8 +58,8 @@ def cli(ctx, verbose: bool, config: str | None):
 @click.option("--coverage/--no-coverage", default=True, help="Enable/disable coverage checks")
 @click.option("--security/--no-security", default=True, help="Enable/disable security checks")
 @click.option(
-    "--performance/--no-performance", 
-    default=True, 
+    "--performance/--no-performance",
+    default=True,
     help="Enable/disable performance checks"
 )
 @click.option("--docs/--no-docs", default=True, help="Enable/disable documentation checks")
@@ -71,10 +71,10 @@ def cli(ctx, verbose: bool, config: str | None):
 @click.option("--timeout", default=300, help="Timeout in seconds")
 @click.option("--output", "-o", type=click.Path(), help="Output file for report")
 @click.option(
-    "--format", 
-    "output_format", 
+    "--format",
+    "output_format",
     type=click.Choice(["json", "html", "markdown", "console"]),
-    default="console", 
+    default="console",
     help="Output format"
 )
 @click.option("--gates", help="Comma-separated list of gates to run (default: all)")
@@ -165,7 +165,7 @@ async def _run_quality_gates(
         if gates:
             gate_names = [name.strip() for name in gates.split(",")]
             manager.gates = {
-                name: manager.gates[name] 
+                name: manager.gates[name]
                 for name in gate_names if name in manager.gates
             }
 
@@ -268,10 +268,10 @@ timeout_seconds = {config.timeout_seconds}
 
 @cli.command()
 @click.option(
-    "--format", 
-    "output_format", 
+    "--format",
+    "output_format",
     type=click.Choice(["json", "html", "markdown", "console"]),
-    default="console", 
+    default="console",
     help="Output format"
 )
 def list_gates(output_format: str):

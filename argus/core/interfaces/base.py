@@ -21,9 +21,9 @@ This module defines abstract base classes that form the foundation
 for all major components in the system.
 """
 
-import time
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+import time
+from typing import Any, Generic, TypeVar
 
 from ..types import (
     ConfigDict,
@@ -97,7 +97,7 @@ class BaseComponent(ABC):
         pass
 
     @abstractmethod
-    def get_health_status(self) -> Dict[str, Any]:
+    def get_health_status(self) -> dict[str, Any]:
         """
         Get the component's health status.
 
@@ -130,7 +130,7 @@ class ConfigurableComponent(BaseComponent):
     """
 
     def __init__(
-        self, component_id: str, name: str, config: Optional[ConfigDict] = None
+        self, component_id: str, name: str, config: ConfigDict | None = None
     ) -> None:
         """
         Initialize the configurable component.
@@ -195,7 +195,7 @@ class StatefulComponent(ConfigurableComponent):
     """
 
     def __init__(
-        self, component_id: str, name: str, config: Optional[ConfigDict] = None
+        self, component_id: str, name: str, config: ConfigDict | None = None
     ) -> None:
         """
         Initialize the stateful component.
@@ -210,7 +210,7 @@ class StatefulComponent(ConfigurableComponent):
         self._state_history = []
 
     @property
-    def state(self) -> Dict[str, Any]:
+    def state(self) -> dict[str, Any]:
         """Get the current state."""
         return self._state.copy()
 
@@ -226,7 +226,7 @@ class StatefulComponent(ConfigurableComponent):
         pass
 
     @abstractmethod
-    def get_state(self, key: str, default: Optional[Any] = None) -> Any:
+    def get_state(self, key: str, default: Any | None = None) -> Any:
         """
         Get a state value.
 
@@ -240,7 +240,7 @@ class StatefulComponent(ConfigurableComponent):
         pass
 
     @abstractmethod
-    def clear_state(self, key: Optional[str] = None) -> None:
+    def clear_state(self, key: str | None = None) -> None:
         """
         Clear state values.
 
@@ -249,7 +249,7 @@ class StatefulComponent(ConfigurableComponent):
         """
         pass
 
-    def get_state_snapshot(self) -> Dict[str, Any]:
+    def get_state_snapshot(self) -> dict[str, Any]:
         """
         Get a complete state snapshot.
 
@@ -274,7 +274,7 @@ class ProcessableComponent(StatefulComponent, Generic[T, R]):
     """
 
     def __init__(
-        self, component_id: str, name: str, config: Optional[ConfigDict] = None
+        self, component_id: str, name: str, config: ConfigDict | None = None
     ) -> None:
         """
         Initialize the processable component.
@@ -286,7 +286,7 @@ class ProcessableComponent(StatefulComponent, Generic[T, R]):
         """
         super().__init__(component_id, name, config)
         self._processing_count = 0
-        self._last_processed_at: Optional[Timestamp] = None
+        self._last_processed_at: Timestamp | None = None
 
     @property
     def processing_count(self) -> int:
@@ -294,7 +294,7 @@ class ProcessableComponent(StatefulComponent, Generic[T, R]):
         return self._processing_count
 
     @property
-    def last_processed_at(self) -> Optional[Timestamp]:
+    def last_processed_at(self) -> Timestamp | None:
         """Get the timestamp of the last processed item."""
         return self._last_processed_at
 
@@ -343,7 +343,7 @@ class MonitorableComponent(ProcessableComponent[T, R]):
     """
 
     def __init__(
-        self, component_id: str, name: str, config: Optional[ConfigDict] = None
+        self, component_id: str, name: str, config: ConfigDict | None = None
     ) -> None:
         """
         Initialize the monitorable component.
@@ -358,17 +358,17 @@ class MonitorableComponent(ProcessableComponent[T, R]):
         self._alerts = []
 
     @property
-    def metrics(self) -> Dict[str, Any]:
+    def metrics(self) -> dict[str, Any]:
         """Get current metrics."""
         return self._metrics.copy()
 
     @property
-    def alerts(self) -> List[Dict[str, Any]]:
+    def alerts(self) -> list[dict[str, Any]]:
         """Get current alerts."""
         return self._alerts.copy()
 
     @abstractmethod
-    def collect_metrics(self) -> Dict[str, Any]:
+    def collect_metrics(self) -> dict[str, Any]:
         """
         Collect component metrics.
 
@@ -415,7 +415,7 @@ class MonitorableComponent(ProcessableComponent[T, R]):
         """Clear all alerts."""
         self._alerts.clear()
 
-    def get_health_status(self) -> Dict[str, Any]:
+    def get_health_status(self) -> dict[str, Any]:
         """
         Get comprehensive health status.
 

@@ -21,10 +21,10 @@ This module handles analysis operations within the workflow, including
 issue analysis, pattern detection, and context analysis.
 """
 
+from dataclasses import dataclass
 import logging
 import time
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
@@ -52,18 +52,18 @@ class AnalysisResult:
     timestamp: Timestamp
 
     # Analysis results
-    detected_patterns: List[Dict[str, Any]]
-    insights: List[str]
-    recommendations: List[str]
+    detected_patterns: list[dict[str, Any]]
+    insights: list[str]
+    recommendations: list[str]
     confidence_score: float
 
     # Performance metrics
     analysis_duration: float
     patterns_analyzed: int
     success: bool
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert analysis result to dictionary."""
         return {
             "analysis_id": self.analysis_id,
@@ -81,7 +81,7 @@ class AnalysisResult:
         }
 
 
-class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult]):
+class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult]):
     """
     Analysis engine for workflow operations.
 
@@ -93,7 +93,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
         self,
         component_id: str = "workflow_analysis_engine",
         name: str = "Workflow Analysis Engine",
-        config: Optional[ConfigDict] = None,
+        config: ConfigDict | None = None,
     ) -> None:
         """
         Initialize the workflow analysis engine.
@@ -207,7 +207,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
 
         except Exception as e:
             analysis_duration = time.time() - start_time
-            error_msg = f"Analysis failed: {str(e)}"
+            error_msg = f"Analysis failed: {e!s}"
 
             logger.error(f"Analysis {analysis_id} failed: {error_msg}")
 
@@ -235,9 +235,9 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
 
     async def analyze_patterns(
         self,
-        patterns: List[Dict[str, Any]],
+        patterns: list[dict[str, Any]],
         workflow_id: str,
-        context: Optional[Dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> AnalysisResult:
         """
         Analyze patterns for insights and recommendations.
@@ -311,7 +311,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
 
         except Exception as e:
             analysis_duration = time.time() - start_time
-            error_msg = f"Pattern analysis failed: {str(e)}"
+            error_msg = f"Pattern analysis failed: {e!s}"
 
             logger.error(f"Pattern analysis {analysis_id} failed: {error_msg}")
 
@@ -337,7 +337,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
 
             return result
 
-    def process(self, input_data: Dict[str, Any]) -> AnalysisResult:
+    def process(self, input_data: dict[str, Any]) -> AnalysisResult:
         """
         Process analysis request (synchronous wrapper).
 
@@ -406,7 +406,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
         """
         return self._state.get(key, default)
 
-    def clear_state(self, key: Optional[str] = None) -> None:
+    def clear_state(self, key: str | None = None) -> None:
         """
         Clear state values.
 
@@ -418,7 +418,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
         else:
             self._state.pop(key, None)
 
-    def collect_metrics(self) -> Dict[str, Any]:
+    def collect_metrics(self) -> dict[str, Any]:
         """
         Collect component metrics.
 
@@ -427,7 +427,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
         """
         return self.get_analysis_metrics()
 
-    def _extract_patterns(self, analysis_response: Any) -> List[Dict[str, Any]]:
+    def _extract_patterns(self, analysis_response: Any) -> list[dict[str, Any]]:
         """
         Extract patterns from analysis response.
 
@@ -452,7 +452,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
             logger.warning(f"Failed to extract patterns: {e}")
             return []
 
-    def _extract_insights(self, analysis_response: Any) -> List[str]:
+    def _extract_insights(self, analysis_response: Any) -> list[str]:
         """
         Extract insights from analysis response.
 
@@ -477,7 +477,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
             logger.warning(f"Failed to extract insights: {e}")
             return []
 
-    def _extract_recommendations(self, analysis_response: Any) -> List[str]:
+    def _extract_recommendations(self, analysis_response: Any) -> list[str]:
         """
         Extract recommendations from analysis response.
 
@@ -529,7 +529,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
             logger.warning(f"Failed to calculate confidence: {e}")
             return 0.5
 
-    def get_analysis_metrics(self) -> Dict[str, Any]:
+    def get_analysis_metrics(self) -> dict[str, Any]:
         """
         Get analysis performance metrics.
 
@@ -553,7 +553,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[Dict[str, Any], AnalysisResult
             ),
         }
 
-    def get_health_status(self) -> Dict[str, Any]:
+    def get_health_status(self) -> dict[str, Any]:
         """
         Get the component's health status.
 

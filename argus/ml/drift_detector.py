@@ -17,7 +17,7 @@ Drift detector and metric calculation helper utilities.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .performance_config import DriftAlert, PerformanceConfig, PerformanceMetrics
 
@@ -26,7 +26,7 @@ class MetricsCalculator:
     """Helper class for calculations on rolling performance history windows."""
 
     @staticmethod
-    def calculate_recent_metrics(history: List[float], window: int) -> float:
+    def calculate_recent_metrics(history: list[float], window: int) -> float:
         """Returns the mean value of the last window items in history."""
         if not history:
             return 0.0
@@ -35,8 +35,8 @@ class MetricsCalculator:
 
     @staticmethod
     def calculate_pattern_accuracy(
-        accuracies: List[float], recent_samples: int
-    ) -> Dict[str, Any]:
+        accuracies: list[float], recent_samples: int
+    ) -> dict[str, Any]:
         """Calculates accuracy metric summary for specific pattern histories."""
         total_samples = len(accuracies)
         if not accuracies:
@@ -50,12 +50,12 @@ class MetricsCalculator:
         }
 
     @staticmethod
-    def trim_history(history: List[Any], max_size: int) -> List[Any]:
+    def trim_history(history: list[Any], max_size: int) -> list[Any]:
         """Trims history list to keep only the last max_size items."""
         return history[-max_size:]
 
     @staticmethod
-    def analyze_drift_alerts(alerts: List[DriftAlert]) -> Dict[str, Any]:
+    def analyze_drift_alerts(alerts: list[DriftAlert]) -> dict[str, Any]:
         """Summarizes severity counts and presence of drift alerts."""
         if not alerts:
             return {
@@ -95,7 +95,7 @@ class DriftDetector:
         return PerformanceMetrics.categorize_drift_severity(drift_amount, high_threshold)
 
     async def check_accuracy_drift(
-        self, current: float, baseline: Optional[float], alerts: List[DriftAlert]
+        self, current: float, baseline: float | None, alerts: list[DriftAlert]
     ) -> None:
         """Checks accuracy metrics against baseline and generates DriftAlert if drift exceeds threshold."""
         if baseline is None:
@@ -120,7 +120,7 @@ class DriftDetector:
             )
 
     async def check_confidence_drift(
-        self, current: float, baseline: Optional[float], alerts: List[DriftAlert]
+        self, current: float, baseline: float | None, alerts: list[DriftAlert]
     ) -> None:
         """Checks confidence metrics against baseline and generates DriftAlert if drift exceeds threshold."""
         if baseline is None:
@@ -145,7 +145,7 @@ class DriftDetector:
             )
 
     async def check_latency_drift(
-        self, current: float, baseline: Optional[float], alerts: List[DriftAlert]
+        self, current: float, baseline: float | None, alerts: list[DriftAlert]
     ) -> None:
         """Checks latency metrics against baseline and generates DriftAlert if latency degrades beyond multiplier."""
         if baseline is None:

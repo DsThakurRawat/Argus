@@ -29,7 +29,6 @@ from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator
-from argus.core.types.agent import AnalysisResponse, RemediationResponse
 
 # ============================================================================
 # Common Enums and Base Models

@@ -21,13 +21,14 @@ This module provides advanced monitoring capabilities including metrics collecti
 health checks, performance monitoring, and alerting for source control operations.
 """
 
-import logging
-import time
 from collections import defaultdict, deque
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Awaitable, Callable, Dict, List, Optional
+import logging
+import time
+from typing import Any
 
 from .base import SourceControlProvider
 
@@ -58,8 +59,8 @@ class Metric:
     value: float
     metric_type: MetricType
     timestamp: datetime
-    tags: Dict[str, str] = field(default_factory=dict)
-    unit: Optional[str] = None
+    tags: dict[str, str] = field(default_factory=dict)
+    unit: str | None = None
 
 
 @dataclass
@@ -71,7 +72,7 @@ class HealthCheck:
     message: str
     timestamp: datetime
     duration_ms: float
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -83,8 +84,8 @@ class Alert:
     message: str
     timestamp: datetime
     resolved: bool = False
-    resolved_at: Optional[datetime] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    resolved_at: datetime | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class MetricsCollector:
@@ -92,10 +93,10 @@ class MetricsCollector:
 
     def __init__(self, max_metrics: int = 10000) -> None:
         self.metrics: deque = deque(maxlen=max_metrics)
-        self.counters: Dict[str, float] = defaultdict(float)
-        self.gauges: Dict[str, float] = defaultdict(float)
-        self.histograms: Dict[str, List[float]] = defaultdict(list)
-        self.timers: Dict[str, List[float]] = defaultdict(list)
+        self.counters: dict[str, float] = defaultdict(float)
+        self.gauges: dict[str, float] = defaultdict(float)
+        self.histograms: dict[str, list[float]] = defaultdict(list)
+        self.timers: dict[str, list[float]] = defaultdict(list)
         self.logger = logging.getLogger("MetricsCollector")
 
     def record_metric(self, metric: Metric) -> None:
@@ -119,7 +120,7 @@ class MetricsCollector:
         """Get current gauge value."""
         return self.gauges.get(name, 0.0)
 
-    def get_histogram_stats(self, name: str) -> Dict[str, float]:
+    def get_histogram_stats(self, name: str) -> dict[str, float]:
         """Get histogram statistics."""
         values = self.histograms.get(name, [])
         if not values:
@@ -136,11 +137,11 @@ class MetricsCollector:
             "p99": sorted_values[int(count * 0.99)] if count > 0 else 0,
         }
 
-    def get_timer_stats(self, name: str) -> Dict[str, float]:
+    def get_timer_stats(self, name: str) -> dict[str, float]:
         """Get timer statistics."""
         return self.get_histogram_stats(name)
 
-    def get_metrics_summary(self) -> Dict[str, Any]:
+    def get_metrics_summary(self) -> dict[str, Any]:
         """Get a summary of all metrics."""
         return {
             "counters": dict(self.counters),
@@ -157,7 +158,7 @@ class HealthChecker:
     """Performs comprehensive health checks on source control providers."""
 
     def __init__(self) -> None:
-        self.health_checks: Dict[
+        self.health_checks: dict[
             str, Callable[[SourceControlProvider], Awaitable[HealthCheck]]
         ] = {}
         self.logger = logging.getLogger("HealthChecker")
@@ -172,7 +173,7 @@ class HealthChecker:
 
     async def run_health_checks(
         self, provider: SourceControlProvider
-    ) -> List[HealthCheck]:
+    ) -> list[HealthCheck]:
         """Run all registered health checks on a provider."""
         results = []
 
@@ -304,12 +305,12 @@ class AlertManager:
     """Manages alerts and notifications."""
 
     def __init__(self) -> None:
-        self.alerts: List[Alert] = []
-        self.alert_rules: Dict[str, Callable[[Dict[str, Any]], bool]] = {}
-        self.notification_handlers: List[Callable[[Alert], None]] = []
+        self.alerts: list[Alert] = []
+        self.alert_rules: dict[str, Callable[[dict[str, Any]], bool]] = {}
+        self.notification_handlers: list[Callable[[Alert], None]] = []
         self.logger = logging.getLogger("AlertManager")
 
-    def add_alert_rule(self, name: str, rule_func: Callable[[Dict[str, Any]], bool]) -> None:
+    def add_alert_rule(self, name: str, rule_func: Callable[[dict[str, Any]], bool]) -> None:
         """Add an alert rule."""
         self.alert_rules[name] = rule_func
 
@@ -317,7 +318,7 @@ class AlertManager:
         """Add a notification handler."""
         self.notification_handlers.append(handler)
 
-    def check_alerts(self, metrics: Dict[str, Any]) -> List[Alert]:
+    def check_alerts(self, metrics: dict[str, Any]) -> list[Alert]:
         """Check for alert conditions based on metrics."""
         new_alerts = []
 
@@ -346,7 +347,7 @@ class AlertManager:
 
         return new_alerts
 
-    def resolve_alert(self, alert_name: str, resolved_at: Optional[datetime] = None) -> None:
+    def resolve_alert(self, alert_name: str, resolved_at: datetime | None = None) -> None:
         """Mark an alert as resolved."""
         for alert in self.alerts:
             if alert.name == alert_name and not alert.resolved:
@@ -354,7 +355,7 @@ class AlertManager:
                 alert.resolved_at = resolved_at or datetime.now()
                 break
 
-    def get_active_alerts(self) -> List[Alert]:
+    def get_active_alerts(self) -> list[Alert]:
         """Get all active (unresolved) alerts."""
         return [alert for alert in self.alerts if not alert.resolved]
 
@@ -403,7 +404,7 @@ class MonitoringManager:
         operation_name: str,
         operation_func: Callable[[], Awaitable[Any]],
         provider_name: str,
-        tags: Optional[Dict[str, str]] = None,
+        tags: dict[str, str] | None = None,
     ) -> Any:
         """Monitor a source control operation."""
         if not self.metrics_collector:
@@ -465,8 +466,8 @@ class MonitoringManager:
                 )
 
     async def run_health_checks(
-        self, providers: List[SourceControlProvider]
-    ) -> Dict[str, List[HealthCheck]]:
+        self, providers: list[SourceControlProvider]
+    ) -> dict[str, list[HealthCheck]]:
         """Run health checks on multiple providers."""
         if not self.health_checker:
             return {}
@@ -491,7 +492,7 @@ class MonitoringManager:
 
         return results
 
-    async def check_alerts(self) -> List[Alert]:
+    async def check_alerts(self) -> list[Alert]:
         """Check for alert conditions."""
         if not self.alert_manager or not self.metrics_collector:
             return []
@@ -505,8 +506,8 @@ class MonitoringManager:
         return self.alert_manager.check_alerts(derived_metrics)
 
     def _calculate_derived_metrics(
-        self, metrics_summary: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, metrics_summary: dict[str, Any]
+    ) -> dict[str, Any]:
         """Calculate derived metrics from raw metrics."""
         derived = {}
 
@@ -535,7 +536,7 @@ class MonitoringManager:
 
         return derived
 
-    def get_monitoring_summary(self) -> Dict[str, Any]:
+    def get_monitoring_summary(self) -> dict[str, Any]:
         """Get a comprehensive monitoring summary."""
         summary = {
             "timestamp": datetime.now().isoformat(),

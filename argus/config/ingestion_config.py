@@ -21,12 +21,12 @@ This module provides configuration classes and validation for the new
 pluggable log ingestion architecture.
 """
 
-import json
-import logging
 from dataclasses import dataclass, field
 from enum import Enum
+import json
+import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import yaml
 
@@ -75,15 +75,15 @@ class SourceConfig:
     retry_delay: float = 1.0
     timeout: float = 30.0
     circuit_breaker_enabled: bool = True
-    rate_limit_per_second: Optional[int] = None
-    config: Dict[str, Any] = field(default_factory=dict)
+    rate_limit_per_second: int | None = None
+    config: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class GCPPubSubConfig(SourceConfig):
     """Configuration for GCP Pub/Sub source."""
 
-    credentials_path: Optional[str] = None
+    credentials_path: str | None = None
     max_messages: int = 100
     ack_deadline_seconds: int = 60
     flow_control_max_messages: int = 1000
@@ -109,7 +109,7 @@ class GCPLoggingConfig(SourceConfig):
     """Configuration for GCP Logging source."""
 
     log_filter: str = "severity>=ERROR"
-    credentials_path: Optional[str] = None
+    credentials_path: str | None = None
     poll_interval: int = 30
     max_results: int = 1000
     project_id: str = ""
@@ -153,9 +153,9 @@ class FileSystemConfig(SourceConfig):
 class AWSCloudWatchConfig(SourceConfig):
     """Configuration for AWS CloudWatch source."""
 
-    log_stream_name: Optional[str] = None
+    log_stream_name: str | None = None
     region: str = "us-east-1"
-    credentials_profile: Optional[str] = None
+    credentials_profile: str | None = None
     poll_interval: int = 30
     max_events: int = 1000
     log_group_name: str = ""
@@ -176,10 +176,10 @@ class AWSCloudWatchConfig(SourceConfig):
 class KubernetesConfig(SourceConfig):
     """Configuration for Kubernetes source."""
 
-    namespace: Optional[str] = None
-    label_selector: Optional[str] = None
-    container_name: Optional[str] = None
-    kubeconfig_path: Optional[str] = None
+    namespace: str | None = None
+    label_selector: str | None = None
+    container_name: str | None = None
+    kubeconfig_path: str | None = None
     poll_interval: int = 30
     max_logs: int = 1000
     max_pods: int = 100
@@ -243,11 +243,11 @@ class GlobalConfig:
 class IngestionConfig:
     """Complete configuration for the log ingestion system."""
 
-    sources: List[SourceConfig] = field(default_factory=list)
+    sources: list[SourceConfig] = field(default_factory=list)
     global_config: GlobalConfig = field(default_factory=GlobalConfig)
     schema_version: str = "1.0.0"
 
-    def validate(self) -> List[str]:
+    def validate(self) -> list[str]:
         """Validate the configuration and return any errors."""
         errors = []
 
@@ -303,14 +303,14 @@ class IngestionConfig:
 
         return errors
 
-    def get_source_by_name(self, name: str) -> Optional[SourceConfig]:
+    def get_source_by_name(self, name: str) -> SourceConfig | None:
         """Get a source configuration by name."""
         for source in self.sources:
             if source.name == name:
                 return source
         return None
 
-    def get_enabled_sources(self) -> List[SourceConfig]:
+    def get_enabled_sources(self) -> list[SourceConfig]:
         """Get all enabled sources sorted by priority."""
         enabled = [source for source in self.sources if source.enabled]
         return sorted(enabled, key=lambda x: x.priority)
@@ -319,13 +319,13 @@ class IngestionConfig:
 class IngestionConfigManager:
     """Manager for ingestion configuration loading and validation."""
 
-    def __init__(self, config_path: Optional[Union[str, Path]] = None) -> None:
+    def __init__(self, config_path: str | Path | None = None) -> None:
         """Initialize the config manager."""
         self.config_path = Path(config_path) if config_path else None
-        self._config: Optional[IngestionConfig] = None
+        self._config: IngestionConfig | None = None
 
     def load_config(
-        self, config_path: Optional[Union[str, Path]] = None
+        self, config_path: str | Path | None = None
     ) -> IngestionConfig:
         """Load configuration from file."""
         if config_path:
@@ -335,7 +335,7 @@ class IngestionConfigManager:
             raise ConfigError(f"Configuration file not found: {self.config_path}")
 
         try:
-            with open(self.config_path, "r") as f:
+            with open(self.config_path) as f:
                 if self.config_path.suffix.lower() in [".yaml", ".yml"]:
                     data = yaml.safe_load(f)
                 elif self.config_path.suffix.lower() == ".json":
@@ -351,7 +351,7 @@ class IngestionConfigManager:
         except Exception as e:
             raise ConfigError(f"Failed to load configuration: {e}") from e
 
-    def _parse_config(self, data: Dict[str, Any]) -> IngestionConfig:
+    def _parse_config(self, data: dict[str, Any]) -> IngestionConfig:
         """Parse configuration data into IngestionConfig object."""
         # Parse global config
         global_data = data.get("global_config", {})
@@ -513,14 +513,14 @@ class IngestionConfigManager:
             schema_version=data.get("schema_version", "1.0.0"),
         )
 
-    def validate_config(self) -> List[str]:
+    def validate_config(self) -> list[str]:
         """Validate the current configuration."""
         if not self._config:
             return ["No configuration loaded"]
         return self._config.validate()
 
     def save_config(
-        self, config: IngestionConfig, output_path: Union[str, Path]
+        self, config: IngestionConfig, output_path: str | Path
     ) -> None:
         """Save configuration to file."""
         output_path = Path(output_path)
@@ -571,6 +571,6 @@ class IngestionConfigManager:
             else:
                 raise ConfigError(f"Unsupported output format: {output_path.suffix}")
 
-    def get_config(self) -> Optional[IngestionConfig]:
+    def get_config(self) -> IngestionConfig | None:
         """Get the current configuration."""
         return self._config

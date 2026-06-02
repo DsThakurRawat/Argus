@@ -17,7 +17,7 @@
 """GitLab provider implementation for source control operations."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import gitlab
 
@@ -46,23 +46,23 @@ from .gitlab_models import GitLabCredentials
 class GitLabProvider(BaseSourceControlProvider):
     """GitLab provider implementation."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize the GitLab provider."""
         super().__init__(config)
         self.repo_config = GitLabRepositoryConfig(**config)
-        self.credentials: Optional[GitLabCredentials] = None
-        self.gl: Optional[gitlab.Gitlab] = None
-        self.project: Optional[Any] = None
+        self.credentials: GitLabCredentials | None = None
+        self.gl: gitlab.Gitlab | None = None
+        self.project: Any | None = None
         self.logger = logging.getLogger(__name__)
 
         # Initialize sub-modules (will be set after initialization)
-        self.file_ops: Optional[GitLabFileOperations] = None
-        self.branch_ops: Optional[GitLabBranchOperations] = None
-        self.mr_ops: Optional[GitLabMergeRequestOperations] = None
+        self.file_ops: GitLabFileOperations | None = None
+        self.branch_ops: GitLabBranchOperations | None = None
+        self.mr_ops: GitLabMergeRequestOperations | None = None
 
         # Initialize error handling system
         self.error_handling_factory = ErrorHandlingFactory()
-        self.error_handling_components: Optional[Dict[str, Any]] = None
+        self.error_handling_components: dict[str, Any] | None = None
 
     async def __aenter__(self):
         """Async context manager entry."""
@@ -177,7 +177,7 @@ class GitLabProvider(BaseSourceControlProvider):
             )
 
     # File operations - delegate to file_ops
-    async def get_file_content(self, path: str, ref: Optional[str] = None) -> str:
+    async def get_file_content(self, path: str, ref: str | None = None) -> str:
         """Get file content from GitLab repository."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -190,7 +190,7 @@ class GitLabProvider(BaseSourceControlProvider):
         path: str,
         content: str,
         message: str,
-        branch: Optional[str] = None,
+        branch: str | None = None,
     ) -> RemediationResult:
         """Apply remediation to a file."""
         if not self.file_ops:
@@ -204,21 +204,21 @@ class GitLabProvider(BaseSourceControlProvider):
             branch,
         )
 
-    async def file_exists(self, path: str, ref: Optional[str] = None) -> bool:
+    async def file_exists(self, path: str, ref: str | None = None) -> bool:
         """Check if a file exists in the repository."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
         return await self.file_ops.file_exists(path, ref)
 
-    async def get_file_info(self, path: str, ref: Optional[str] = None) -> FileInfo:
+    async def get_file_info(self, path: str, ref: str | None = None) -> FileInfo:
         """Get file information."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
         return await self.file_ops.get_file_info(path, ref)
 
     async def list_files(
-        self, path: str = "", ref: Optional[str] = None
-    ) -> List[FileInfo]:
+        self, path: str = "", ref: str | None = None
+    ) -> list[FileInfo]:
         """List files in a directory."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -241,15 +241,15 @@ class GitLabProvider(BaseSourceControlProvider):
         file_path: str,
         content: str,
         message: str,
-        branch: Optional[str] = None,
-    ) -> Optional[str]:
+        branch: str | None = None,
+    ) -> str | None:
         """Commit changes to a file."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
         return await self.file_ops.commit_changes(file_path, content, message, branch)
 
     # Branch operations - delegate to branch_ops
-    async def create_branch(self, name: str, base_ref: Optional[str] = None) -> bool:
+    async def create_branch(self, name: str, base_ref: str | None = None) -> bool:
         """Create a new branch."""
         if not self.branch_ops:
             raise RuntimeError("Provider not initialized")
@@ -261,13 +261,13 @@ class GitLabProvider(BaseSourceControlProvider):
             raise RuntimeError("Provider not initialized")
         return await self.branch_ops.delete_branch(name)
 
-    async def list_branches(self) -> List[BranchInfo]:
+    async def list_branches(self) -> list[BranchInfo]:
         """List all branches."""
         if not self.branch_ops:
             raise RuntimeError("Provider not initialized")
         return await self.branch_ops.list_branches()
 
-    async def get_branch_info(self, name: str) -> Optional[BranchInfo]:
+    async def get_branch_info(self, name: str) -> BranchInfo | None:
         """Get information about a specific branch."""
         if not self.branch_ops:
             raise RuntimeError("Provider not initialized")
@@ -289,7 +289,7 @@ class GitLabProvider(BaseSourceControlProvider):
         self,
         path: str,
         content: str,
-        branch: Optional[str] = None,
+        branch: str | None = None,
     ) -> bool:
         """Check for conflicts between branches."""
         if not self.branch_ops:
@@ -319,7 +319,7 @@ class GitLabProvider(BaseSourceControlProvider):
         return await self.branch_ops.resolve_conflicts(path, content, strategy)
 
     # Git operations - delegate to file_ops
-    async def get_file_history(self, path: str, limit: int = 10) -> List[CommitInfo]:
+    async def get_file_history(self, path: str, limit: int = 10) -> list[CommitInfo]:
         """Get file commit history."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -383,8 +383,8 @@ class GitLabProvider(BaseSourceControlProvider):
 
     # Batch operations (simplified implementation)
     async def batch_operations(
-        self, operations: List[BatchOperation]
-    ) -> List[OperationResult]:
+        self, operations: list[BatchOperation]
+    ) -> list[OperationResult]:
         """Execute multiple operations in batch."""
         results = []
         for operation in operations:

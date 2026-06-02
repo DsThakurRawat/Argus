@@ -21,10 +21,10 @@ This module handles generation operations within the workflow, including
 code generation, prompt generation, and solution generation.
 """
 
+from dataclasses import dataclass
 import logging
 import time
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
@@ -53,18 +53,18 @@ class GenerationResult:
 
     # Generation results
     generated_content: str
-    code_patches: List[Dict[str, Any]]
-    prompts: List[str]
-    solutions: List[str]
+    code_patches: list[dict[str, Any]]
+    prompts: list[str]
+    solutions: list[str]
     confidence_score: float
 
     # Performance metrics
     generation_duration: float
     content_length: int
     success: bool
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert generation result to dictionary."""
         return {
             "generation_id": self.generation_id,
@@ -83,7 +83,7 @@ class GenerationResult:
         }
 
 
-class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationResult]):
+class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationResult]):
     """
     Generation engine for workflow operations.
 
@@ -95,7 +95,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
         self,
         component_id: str = "workflow_generation_engine",
         name: str = "Workflow Generation Engine",
-        config: Optional[ConfigDict] = None,
+        config: ConfigDict | None = None,
     ) -> None:
         """
         Initialize the workflow generation engine.
@@ -215,7 +215,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
 
         except Exception as e:
             generation_duration = time.time() - start_time
-            error_msg = f"Code generation failed: {str(e)}"
+            error_msg = f"Code generation failed: {e!s}"
 
             logger.error(f"Code generation {generation_id} failed: {error_msg}")
 
@@ -243,7 +243,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
             return result
 
     async def generate_prompts(
-        self, context: Dict[str, Any], workflow_id: str, prompt_type: str = "analysis"
+        self, context: dict[str, Any], workflow_id: str, prompt_type: str = "analysis"
     ) -> GenerationResult:
         """
         Generate prompts for analysis or other operations.
@@ -321,7 +321,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
 
         except Exception as e:
             generation_duration = time.time() - start_time
-            error_msg = f"Prompt generation failed: {str(e)}"
+            error_msg = f"Prompt generation failed: {e!s}"
 
             logger.error(f"Prompt generation {generation_id} failed: {error_msg}")
 
@@ -348,7 +348,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
 
             return result
 
-    def process(self, input_data: Dict[str, Any]) -> GenerationResult:
+    def process(self, input_data: dict[str, Any]) -> GenerationResult:
         """
         Process generation request (synchronous wrapper).
 
@@ -417,7 +417,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
         """
         return self._state.get(key, default)
 
-    def clear_state(self, key: Optional[str] = None) -> None:
+    def clear_state(self, key: str | None = None) -> None:
         """
         Clear state values.
 
@@ -429,7 +429,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
         else:
             self._state.pop(key, None)
 
-    def collect_metrics(self) -> Dict[str, Any]:
+    def collect_metrics(self) -> dict[str, Any]:
         """
         Collect component metrics.
 
@@ -466,7 +466,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
             logger.warning(f"Failed to extract generated content: {e}")
             return ""
 
-    def _extract_code_patches(self, remediation_response: Any) -> List[Dict[str, Any]]:
+    def _extract_code_patches(self, remediation_response: Any) -> list[dict[str, Any]]:
         """
         Extract code patches from remediation response.
 
@@ -492,7 +492,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
             logger.warning(f"Failed to extract code patches: {e}")
             return []
 
-    def _extract_prompts(self, remediation_response: Any) -> List[str]:
+    def _extract_prompts(self, remediation_response: Any) -> list[str]:
         """
         Extract prompts from remediation response.
 
@@ -518,7 +518,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
             logger.warning(f"Failed to extract prompts: {e}")
             return []
 
-    def _extract_solutions(self, remediation_response: Any) -> List[str]:
+    def _extract_solutions(self, remediation_response: Any) -> list[str]:
         """
         Extract solutions from remediation response.
 
@@ -570,7 +570,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
             logger.warning(f"Failed to calculate confidence: {e}")
             return 0.5
 
-    def get_generation_metrics(self) -> Dict[str, Any]:
+    def get_generation_metrics(self) -> dict[str, Any]:
         """
         Get generation performance metrics.
 
@@ -594,7 +594,7 @@ class WorkflowGenerationEngine(ProcessableComponent[Dict[str, Any], GenerationRe
             ),
         }
 
-    def get_health_status(self) -> Dict[str, Any]:
+    def get_health_status(self) -> dict[str, Any]:
         """
         Get the component's health status.
 

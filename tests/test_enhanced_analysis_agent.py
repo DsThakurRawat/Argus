@@ -85,31 +85,27 @@ class TestEnhancedAnalysisAgent:
     @pytest.fixture
     def agent(self, config: str) -> None:
         """Create test agent with mocked dependencies."""
-        with patch("argus.ml.enhanced_analysis_agent.GenerativeModel"):
-            with patch(
-                "argus.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
-            ):
-                with patch(
-                    "argus.ml.enhanced_analysis_agent.MetaPromptGenerator"
-                ):
-                    return EnhancedAnalysisAgent(config)
+        with patch("argus.ml.enhanced_analysis_agent.GenerativeModel"), patch(
+            "argus.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
+        ), patch(
+            "argus.ml.enhanced_analysis_agent.MetaPromptGenerator"
+        ):
+            return EnhancedAnalysisAgent(config)
 
     def test_agent_initialization(self, config: str) -> None:
         """Test agent initialization."""
-        with patch("argus.ml.enhanced_analysis_agent.GenerativeModel"):
-            with patch(
-                "argus.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
-            ):
-                with patch(
-                    "argus.ml.enhanced_analysis_agent.MetaPromptGenerator"
-                ):
-                    agent = EnhancedAnalysisAgent(config)
+        with patch("argus.ml.enhanced_analysis_agent.GenerativeModel"), patch(
+            "argus.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
+        ), patch(
+            "argus.ml.enhanced_analysis_agent.MetaPromptGenerator"
+        ):
+            agent = EnhancedAnalysisAgent(config)
 
-                    assert agent.config == config
-                    assert agent.main_model is not None
-                    assert agent.meta_model is not None
-                    assert agent.adaptive_strategy is not None
-                    assert agent.meta_prompt_generator is not None
+            assert agent.config == config
+            assert agent.main_model is not None
+            assert agent.meta_model is not None
+            assert agent.adaptive_strategy is not None
+            assert agent.meta_prompt_generator is not None
 
     def test_classify_issue_type_database(self, agent: str) -> None:
         """Test issue type classification for database errors."""

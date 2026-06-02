@@ -19,7 +19,7 @@ Unit tests for the core LLM Provider Factory functionality.
 from unittest.mock import MagicMock, patch
 
 import pytest
-from typing import Optional
+
 # Mock the dependencies before importing the factory
 with patch.dict(
     "sys.modules",
@@ -48,7 +48,7 @@ class MockProvider(LLMProvider):
         return response_model()
 
     def generate_stream(
-        self, prompt: str, model: Optional[str] = None, **kwargs: str
+        self, prompt: str, model: str | None = None, **kwargs: str
     ) -> None:
         """
         Generate Stream.
@@ -74,7 +74,7 @@ class MockProvider(LLMProvider):
         """
         return ["mock-model"]
 
-    def estimate_cost(self, prompt: str, model: Optional[str] = None) -> None:
+    def estimate_cost(self, prompt: str, model: str | None = None) -> None:
         """
         Estimate Cost.
 

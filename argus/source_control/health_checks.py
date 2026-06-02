@@ -22,10 +22,11 @@ to monitor the health and performance of source control providers.
 """
 
 import asyncio
+from collections.abc import Awaitable, Callable
+from datetime import datetime
 import logging
 import time
-from datetime import datetime
-from typing import Any, Awaitable, Callable, Dict, List, Optional
+from typing import Any
 
 from .base import SourceControlProvider
 from .monitoring import HealthCheck, HealthStatus
@@ -35,7 +36,7 @@ class HealthCheckRegistry:
     """Registry for health check implementations."""
 
     def __init__(self) -> None:
-        self.checks: Dict[
+        self.checks: dict[
             str, Callable[[SourceControlProvider], Awaitable[HealthCheck]]
         ] = {}
         self.logger = logging.getLogger("HealthCheckRegistry")
@@ -51,11 +52,11 @@ class HealthCheckRegistry:
 
     def get_check(
         self, name: str
-    ) -> Optional[Callable[[SourceControlProvider], Awaitable[HealthCheck]]]:
+    ) -> Callable[[SourceControlProvider], Awaitable[HealthCheck]] | None:
         """Get a health check function by name."""
         return self.checks.get(name)
 
-    def list_checks(self) -> List[str]:
+    def list_checks(self) -> list[str]:
         """List all registered health check names."""
         return list(self.checks.keys())
 
@@ -396,7 +397,7 @@ class ComprehensiveHealthChecker:
 
     async def run_all_checks(
         self, provider: SourceControlProvider
-    ) -> List[HealthCheck]:
+    ) -> list[HealthCheck]:
         """Run all registered health checks on a provider."""
         checks = []
         check_names = self.registry.list_checks()
@@ -430,8 +431,8 @@ class ComprehensiveHealthChecker:
         return checks
 
     async def run_specific_checks(
-        self, provider: SourceControlProvider, check_names: List[str]
-    ) -> List[HealthCheck]:
+        self, provider: SourceControlProvider, check_names: list[str]
+    ) -> list[HealthCheck]:
         """Run specific health checks on a provider."""
         checks = []
 
@@ -467,11 +468,11 @@ class ComprehensiveHealthChecker:
 
         return checks
 
-    def get_available_checks(self) -> List[str]:
+    def get_available_checks(self) -> list[str]:
         """Get list of available health check names."""
         return self.registry.list_checks()
 
-    def get_check_summary(self, checks: List[HealthCheck]) -> Dict[str, Any]:
+    def get_check_summary(self, checks: list[HealthCheck]) -> dict[str, Any]:
         """Get a summary of health check results."""
         if not checks:
             return {
@@ -482,7 +483,7 @@ class ComprehensiveHealthChecker:
                 "unknown": 0,
             }
 
-        summary: Dict[str, Any] = {
+        summary: dict[str, Any] = {
             "total": len(checks),
             "healthy": sum(1 for c in checks if c.status == HealthStatus.HEALTHY),
             "degraded": sum(1 for c in checks if c.status == HealthStatus.DEGRADED),

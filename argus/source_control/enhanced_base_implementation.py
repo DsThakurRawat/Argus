@@ -22,8 +22,9 @@ system including circuit breakers, retry mechanisms, error classification, grace
 health checks, and metrics collection.
 """
 
+from collections.abc import Callable
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 from .base import SourceControlProvider
 from .error_handling import (
@@ -49,7 +50,7 @@ from .monitoring import MonitoringManager
 class EnhancedBaseSourceControlProvider(SourceControlProvider):
     """Enhanced base implementation with comprehensive error handling."""
 
-    def __init__(self, config: Dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any]) -> None:
         """Initialize with enhanced error handling configuration."""
         super().__init__(config)
         self._client = None
@@ -62,7 +63,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         # Initialize monitoring
         self._initialize_monitoring(config)
 
-    def _initialize_error_handling(self, config: Dict[str, Any]) -> None:
+    def _initialize_error_handling(self, config: dict[str, Any]) -> None:
         """Initialize the comprehensive error handling system."""
         # Get error handling configuration
         error_handling_config = self.get_config_value("error_handling", {})
@@ -104,7 +105,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         )
 
     def _create_circuit_breaker_config(
-        self, error_handling_config: Dict[str, Any]
+        self, error_handling_config: dict[str, Any]
     ) -> CircuitBreakerConfig:
         """Create circuit breaker configuration from config."""
         circuit_config = error_handling_config.get("circuit_breaker", {})
@@ -116,13 +117,13 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         )
 
     def _create_operation_circuit_breaker_config(
-        self, error_handling_config: Dict[str, Any]
+        self, error_handling_config: dict[str, Any]
     ) -> OperationCircuitBreakerConfig:
         """Create operation-specific circuit breaker configuration."""
         return OperationCircuitBreakerConfig()
 
     def _create_retry_config(
-        self, error_handling_config: Dict[str, Any]
+        self, error_handling_config: dict[str, Any]
     ) -> RetryConfig:
         """Create retry configuration from config."""
         retry_config = error_handling_config.get("retry", {})
@@ -134,7 +135,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
             jitter=retry_config.get("jitter", True),
         )
 
-    def _initialize_monitoring(self, config: Dict[str, Any]) -> None:
+    def _initialize_monitoring(self, config: dict[str, Any]) -> None:
         """Initialize monitoring components."""
         enable_monitoring = self.get_config_value("monitoring", {}).get("enabled", True)
         if enable_monitoring:
@@ -260,7 +261,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         except Exception as e:
             return ProviderHealth(
                 status="unhealthy",
-                message=f"Health check failed: {str(e)}",
+                message=f"Health check failed: {e!s}",
                 additional_info={"error": str(e)},
             )
 
@@ -272,7 +273,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
 
     async def handle_operation_failure(self, operation: str, error: Exception) -> bool:
         """Enhanced operation failure handling with error classification."""
-        self.logger.error(f"Operation {operation} failed: {str(error)}")
+        self.logger.error(f"Operation {operation} failed: {error!s}")
 
         # Classify the error
         error_classification = self.error_classifier.classify_error(error)
@@ -296,8 +297,8 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         return False
 
     async def batch_operations(
-        self, operations: List[BatchOperation]
-    ) -> List[OperationResult]:
+        self, operations: list[BatchOperation]
+    ) -> list[OperationResult]:
         """Enhanced batch operations with comprehensive error handling."""
         results = []
 
@@ -337,7 +338,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
                     OperationResult(
                         operation_id=f"batch_{i}",
                         success=False,
-                        message=f"Operation failed: {str(e)}",
+                        message=f"Operation failed: {e!s}",
                         file_path=operation.file_path,
                         error_details=str(e),
                         additional_info={
@@ -403,25 +404,25 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         """Get provider capabilities. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement get_capabilities")
 
-    async def get_file_content(self, path: str, ref: Optional[str] = None) -> str:
+    async def get_file_content(self, path: str, ref: str | None = None) -> str:
         """Get file content. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement get_file_content")
 
     async def apply_remediation(
-        self, path: str, content: str, message: str, branch: Optional[str] = None
+        self, path: str, content: str, message: str, branch: str | None = None
     ) -> RemediationResult:
         """Apply remediation. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement apply_remediation")
 
-    async def file_exists(self, path: str, ref: Optional[str] = None) -> bool:
+    async def file_exists(self, path: str, ref: str | None = None) -> bool:
         """Check if file exists. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement file_exists")
 
-    async def get_file_info(self, path: str, ref: Optional[str] = None) -> Any:
+    async def get_file_info(self, path: str, ref: str | None = None) -> Any:
         """Get file information. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement get_file_info")
 
-    async def list_files(self, path: str = "", ref: Optional[str] = None) -> List[Any]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[Any]:
         """List files. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement list_files")
 
@@ -434,12 +435,12 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         raise NotImplementedError("Subclasses must implement apply_patch")
 
     async def commit_changes(
-        self, file_path: str, content: str, message: str, branch: Optional[str] = None
-    ) -> Optional[str]:
+        self, file_path: str, content: str, message: str, branch: str | None = None
+    ) -> str | None:
         """Commit changes. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement commit_changes")
 
-    async def create_branch(self, name: str, base_ref: Optional[str] = None) -> bool:
+    async def create_branch(self, name: str, base_ref: str | None = None) -> bool:
         """Create branch. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement create_branch")
 
@@ -447,11 +448,11 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         """Delete branch. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement delete_branch")
 
-    async def list_branches(self) -> List[Any]:
+    async def list_branches(self) -> list[Any]:
         """List branches. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement list_branches")
 
-    async def get_branch_info(self, name: str) -> Optional[Any]:
+    async def get_branch_info(self, name: str) -> Any | None:
         """Get branch info. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement get_branch_info")
 
@@ -464,7 +465,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         raise NotImplementedError("Subclasses must implement get_repository_info")
 
     async def check_conflicts(
-        self, path: str, content: str, branch: Optional[str] = None
+        self, path: str, content: str, branch: str | None = None
     ) -> bool:
         """Check conflicts. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement check_conflicts")
@@ -475,7 +476,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         """Resolve conflicts. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement resolve_conflicts")
 
-    async def get_file_history(self, path: str, limit: int = 10) -> List[Any]:
+    async def get_file_history(self, path: str, limit: int = 10) -> list[Any]:
         """Get file history. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement get_file_history")
 
