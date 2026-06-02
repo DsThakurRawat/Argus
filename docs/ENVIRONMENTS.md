@@ -8,7 +8,7 @@ This guide outlines strategies for managing the Argus across different environme
 
 *   **Purpose:** Local development, feature testing, and rapid iteration.
 *   **Configuration:** Typically uses `DEBUG` level logging, local or test GCP projects, and potentially mocked external services (e.g., GitHub).
-*   **Deployment:** Local execution (`python main.py`) or deployment to a personal Cloud Run instance.
+*   **Deployment:** Local execution (`argus run`) or deployment to a personal Cloud Run instance.
 *   **Key Considerations:** Focus on developer productivity, quick feedback loops, and isolated testing.
 
 ### Staging Environment

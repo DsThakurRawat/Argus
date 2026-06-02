@@ -16,7 +16,7 @@ Assuming you have completed the [Setup and Installation Guide](SETUP_INSTALLATIO
 To run the agent in your local development environment:
 
 ```bash
-python main.py
+uv run argus run
 ```
 
 This will start the agent, which will attempt to load configurations from `config/config.yaml` and set up log monitoring for the defined services. Ensure your cloud platform credentials and GitHub token are correctly configured as per the [Setup and Installation Guide](SETUP_INSTALLATION.md).

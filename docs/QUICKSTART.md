@@ -11,18 +11,15 @@ Ensure you have the following installed:
 *   **Cloud CLI tools** (authenticated to your cloud platform, e.g., `gcloud`, `aws`, `az`)
 *   **GitHub Personal Access Token (PAT)** with `repo` scope
 
-## 2. Clone the Repository
+## 2. Installation (Global CLI)
+
+Install Argus as a standalone global terminal command via our secure setup script:
 
 ```bash
-git clone https://github.com/avivl/argus.git
-cd argus
+curl -sSL https://raw.githubusercontent.com/DsThakurRawat/Argus/main/install.sh | bash
 ```
 
-## 3. Install Dependencies
-
-```bash
-uv sync
-```
+*Note: For local development, you can still clone the repository and run `uv sync`.*
 
 ## 4. Prepare Configuration
 
@@ -73,11 +70,13 @@ Use the provided cloud setup scripts to quickly provision the necessary cloud pl
 
 ## 7. Run the Agent Locally
 
+Start the Argus daemon using the new interactive terminal UI:
+
 ```bash
-python main.py
+argus run
 ```
 
-The agent will start listening for logs. To test it, generate some `ERROR` level logs in your configured cloud platform project (e.g., from a cloud function or a simple logging command).
+The interactive wizard will prompt you to select your cloud platform, AI provider, and notification bots. Once configured, it will start listening for logs. To test it, generate some `ERROR` level logs in your configured cloud platform project.
 
 ```bash
 gcloud logging write --severity=ERROR --project=YOUR_PROJECT_ID --payload-type=json quickstart-log '{"message": "This is a test error from quickstart!"}'

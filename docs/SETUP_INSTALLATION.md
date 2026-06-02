@@ -46,25 +46,34 @@ Before running the agent, you need to set up the necessary cloud infrastructure 
 *   **Microsoft Azure:** [Azure Infrastructure Setup Guide](AZURE_SETUP.md) (coming soon)
 *   **Kubernetes:** [Kubernetes Setup Guide](K8S_SETUP.md) (coming soon)
 
-## Local Setup
+## Installation
 
-Follow these steps to set up the Argus on your local machine:
+There are two ways to install Argus depending on whether you want to use it globally or develop it locally.
+
+### 1. Global Installation (Recommended)
+
+To install Argus as a standalone terminal command on your system, use the setup script:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/DsThakurRawat/Argus/main/install.sh | bash
+```
+
+Once installed, you can simply type `argus run` from anywhere.
+
+### 2. Local Development Setup
+
+If you wish to modify the code or contribute to Argus:
 
 1.  **Clone the repository:**
-    Begin by cloning the project repository to your local machine:
     ```bash
-    git clone https://github.com/avivl/argus.git
-    cd argus
+    git clone https://github.com/DsThakurRawat/Argus.git
+    cd Argus
     ```
 
 2.  **Install dependencies:**
-    It is highly recommended to use `uv` for faster and more reliable dependency management. Navigate to the project root and run:
+    It is highly recommended to use `uv` for fast dependency management:
     ```bash
     uv sync
-    ```
-    If you prefer using `pip`, you can install dependencies from `requirements.txt` (which can be generated from `pyproject.toml`):
-    ```bash
-    pip install -r requirements.txt
     ```
 
 3.  **Authenticate with GCP:**

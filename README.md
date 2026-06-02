@@ -19,16 +19,19 @@
 
 **Argus** is an advanced, autonomous multi-provider SRE (Site Reliability Engineering) agent designed to act as your always-on infrastructure watchdog. By leveraging the power of **100+ AI providers** (including OpenAI, Anthropic, Google Gemini, Ollama, and more), Argus continuously monitors your cloud logs, detects anomalies, and actively remediates issues without human intervention.
 
-When critical events strike, Argus doesn't just send an alert—it creates a structured diagnosis, generates code fixes using a unified system, and proposes concrete remediation steps via automated **GitHub Pull Requests**.
+When critical events strike, Argus doesn't just send an alert—it instantly triages the error via **Discord/Slack/Telegram**, creates a structured diagnosis, generates code fixes using a unified system, and proposes concrete remediation steps via automated **GitHub Pull Requests**.
 
 ## Key Features
 
 - **Multi-Provider AI LLM Architecture**
   - Seamlessly switch between OpenAI, Anthropic, Gemini, Grok, and local models.
   - Built-in circuit breakers, cost-aware routing, and automatic fallback mechanisms.
-- **Enterprise Log Ingestion**
-  - Pluggable adapters for **GCP Pub/Sub**, **AWS CloudWatch**, **Kubernetes**, and local files.
-  - Robust backpressure handling, retry logic, and built-in rate limiting.
+- **Enterprise & Modern PaaS Log Ingestion**
+  - Pluggable adapters for **GCP Pub/Sub**, **AWS CloudWatch**, **Azure**, and local files.
+  - Native HTTP Webhook Log Drains for **Vercel, Render, Railway, and Cloudflare**.
+- **Interactive Terminal UI**
+  - Fully interactive CLI wizard for configuration. No more editing YAML files manually.
+  - Arrow-key menus for selecting AI providers, Cloud environments, and Notification Bots.
 - **4-Layer Pattern Detection**
   - Identifies cascade failures, resource exhaustion, and service degradations.
   - Utilizes sliding window logic and ML-based similarity caching for minimal latency.
@@ -78,42 +81,37 @@ Dive deeper into Argus's internal engines and subsystems:
 
 *Looking for operations and deployment? Check out our [Quickstart](docs/QUICKSTART.md), [Setup Guide](docs/SETUP_INSTALLATION.md), and [Deployment Guide](docs/DEPLOYMENT.md).*
 
-## Quick Start
+## Quick Start (New CLI!)
 
-Get Argus up and running in your environment in under 15 minutes.
+Get Argus up and running in your environment in **under 60 seconds** without touching a single YAML file.
 
-### 1. Prerequisites
-- Python 3.12+
-- `uv` package manager
-
-### 2. Installation
+### 1. Global Installation (Recommended)
+You can install Argus as a standalone global terminal command via our secure setup script:
 ```bash
-# Clone the repository
+curl -sSL https://raw.githubusercontent.com/DsThakurRawat/Argus/main/install.sh | bash
+```
+
+### 2. Interactive Setup
+Run the Argus interactive dashboard from anywhere:
+```bash
+argus run
+```
+You will be greeted by our retro terminal UI. Just use your arrow keys to select:
+1. **Your Cloud Platform** (AWS, GCP, Vercel, Render, etc.)
+2. **Your LLM Provider** (OpenAI, Gemini, Anthropic, Groq, Ollama)
+3. **Your Notification Channels** (Slack, Discord, Telegram)
+
+Argus will automatically mask and store your API keys locally and instantly start monitoring your logs!
+
+---
+
+### Manual Installation (For Development)
+If you wish to develop or modify Argus:
+```bash
 git clone https://github.com/DsThakurRawat/Argus.git
 cd Argus
-
-# Install dependencies using uv
 uv sync
-```
-
-### 3. Configuration & Auth
-```bash
-# Authenticate with your Cloud Provider (e.g., GCP)
-gcloud auth application-default login
-
-# Export your GitHub token for PR automation
-export GITHUB_TOKEN="your_github_token_here"
-
-# Enable core Argus engines
-export USE_LOG_INGESTION_SYSTEM=true
-export ENABLE_MONITORING=true
-export ENABLE_LEGACY_FALLBACK=true
-```
-
-### 4. Run Argus
-Configure your monitored services in `config/config.yaml` and launch the orchestrator:
-```bash
-python main.py
+uv run argus run
 ```
 
 ## Contributing
