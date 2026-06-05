@@ -113,6 +113,8 @@ class LoggingMetrics:
         Args:
             handler_name: Name of the handler.
         """
+        if not hasattr(self, "handler_errors") or not isinstance(self.handler_errors, dict):
+            self.handler_errors = {}
         self.handler_errors[handler_name] = self.handler_errors.get(handler_name, 0) + 1
         self.total_handler_errors += 1
 

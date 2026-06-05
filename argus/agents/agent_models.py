@@ -120,7 +120,6 @@ from .state_models import (
     PersistentAgentData,
     StateManager,
     StateSnapshot,
-    StateTransition,  # State models
     StateTransitionEnum,  # State enums
     WorkflowContext,
     WorkflowState,
@@ -237,7 +236,6 @@ __all__ = [
     "AgentState",
     "WorkflowState",
     "StateSnapshot",
-    "StateTransition",
     "StateTransitionEnum",
     "AgentExecutionContext",
     "AgentExecutionMetrics",

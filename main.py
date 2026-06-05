@@ -141,7 +141,7 @@ async def initialize_enhanced_agents(
         analysis_agent = EnhancedAnalysisAgent(
             llm_config=llm_config,
             optimization_goal=analysis_optimization,
-            min_performance=None,
+            min_quality=None,
             max_cost=None,
             collect_stats=True,
         )
@@ -149,7 +149,7 @@ async def initialize_enhanced_agents(
         remediation_agent = EnhancedRemediationAgentV2(
             llm_config=llm_config,
             optimization_goal=remediation_optimization,
-            min_performance=None,
+            min_quality=None,
             max_cost=None,
             collect_stats=True,
         )

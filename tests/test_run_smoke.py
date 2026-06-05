@@ -55,15 +55,18 @@ async def test_smoke_pipeline():
         next_steps=["mock step"],
     )
     mock_remed = RemediationPlan(
-        root_cause_analysis="mock cause",
-        proposed_fix="mock fix",
-        code_patch="mock patch",
-        priority="high",
-        estimated_effort="low",
         plan_name="mock plan",
         issue_description="mock issue",
-        steps=[RemediationStep(step_number=1, action="mock action", description="mock desc", rollback_procedure="mock rollback", order=1, title="mock title", action_type="immediate", risk_level="low")],
-        success_criteria=[],
+        priority="high",
+        steps=[RemediationStep(
+            order=1, 
+            title="mock title", 
+            description="mock desc", 
+            action_type="immediate", 
+            risk_level="low",
+            commands=["mock command"]
+        )],
+        success_criteria=["mock criteria"],
         risk_assessment="mock risk",
     )
 

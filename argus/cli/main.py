@@ -152,7 +152,7 @@ def run(
         # run_pipeline can just run the initialization and process one mock log,
         # or we can pass a mock_packet to the Notifier directly.
         
-        mock_packet = await run_pipeline(provider=provider)
+        mock_packet = await run_pipeline(provider_override=provider)
         
         if bot_tokens and mock_packet:
             console.print("[dim]Sending notifications...[/dim]")
