@@ -151,8 +151,7 @@ class LoggingMetrics:
             "configuration_errors": self.configuration_errors,
             "memory_usage": self.memory_usage,
             "peak_memory_usage": self.peak_memory_usage,
-            "handler_calls": dict(self.handler_calls),
-            "handler_errors": dict(self.handler_errors)
+            "handler_calls": dict(self.handler_calls)
         }
 
 

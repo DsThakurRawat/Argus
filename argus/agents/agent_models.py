@@ -235,7 +235,6 @@ __all__ = [
     # State models
     "AgentState",
     "WorkflowState",
-    "StateTransitionEnum",
     "StateSnapshot",
     "StateTransition",
     "AgentExecutionContext",

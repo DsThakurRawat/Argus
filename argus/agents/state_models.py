@@ -46,7 +46,7 @@ class WorkflowState(str, Enum):
     ROLLED_BACK = "rolled_back"
 
 
-class StateTransition(str, Enum):
+class StateTransitionEnum(str, Enum):
     """Valid state transitions."""
 
     # Agent state transitions

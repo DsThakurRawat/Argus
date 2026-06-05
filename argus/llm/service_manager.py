@@ -300,9 +300,6 @@ class ServiceManager:
             return
 
         try:
-            # Register default services
-            # await self._register_default_services()
-
             # Start health monitoring
             await self.health_checker.start_health_monitoring(self.registry)
 
@@ -328,75 +325,7 @@ class ServiceManager:
         except Exception as e:
             self.logger.error(f"Error during service manager shutdown: {e}")
 
-    async def _register_default_services(self) -> None:
-        """Register default service implementations."""
-        # Model Service
-        model_config = ServiceConfig(
-            service_id="model_service",
-            max_connections=100,
-            timeout_seconds=30,
-            retry_attempts=3,
-        )
-        model_service = ModelService(model_config)
-        await model_service.initialize()
-        self.registry.register_service(
-            "model_service", model_service, model_config, ServiceType.MODEL
-        )
 
-        # Context Service
-        context_config = ServiceConfig(
-            service_id="context_service",
-            max_connections=50,
-            timeout_seconds=15,
-            retry_attempts=2,
-        )
-        context_service = ContextService(context_config)
-        await context_service.initialize()
-        self.registry.register_service(
-            "context_service", context_service, context_config, ServiceType.CONTEXT
-        )
-
-        # Validation Service
-        validation_config = ServiceConfig(
-            service_id="validation_service",
-            max_connections=75,
-            timeout_seconds=20,
-            retry_attempts=2,
-        )
-        validation_service = ValidationService(validation_config)
-        await validation_service.initialize()
-        self.registry.register_service(
-            "validation_service",
-            validation_service,
-            validation_config,
-            ServiceType.VALIDATION,
-        )
-
-        # Metrics Service
-        metrics_config = ServiceConfig(
-            service_id="metrics_service",
-            max_connections=25,
-            timeout_seconds=10,
-            retry_attempts=1,
-        )
-        metrics_service = MetricsService(metrics_config)
-        await metrics_service.initialize()
-        self.registry.register_service(
-            "metrics_service", metrics_service, metrics_config, ServiceType.METRICS
-        )
-
-        # Cache Service
-        cache_config = ServiceConfig(
-            service_id="cache_service",
-            max_connections=200,
-            timeout_seconds=5,
-            retry_attempts=1,
-        )
-        cache_service = CacheService(cache_config)
-        await cache_service.initialize()
-        self.registry.register_service(
-            "cache_service", cache_service, cache_config, ServiceType.CACHE
-        )
 
     async def get_service(
         self, service_type: ServiceType, service_id: str | None = None
