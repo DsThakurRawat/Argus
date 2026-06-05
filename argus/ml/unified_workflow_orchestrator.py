@@ -16,7 +16,7 @@ import time
 from typing import Any
 
 from .caching import ContextCache
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
+from argus.agents.enhanced_specialized import EnhancedAnalysisAgent
 from .performance import PerformanceConfig, record_performance
 from .workflow_analysis_engine import WorkflowAnalysisEngine
 from .workflow_code_generator import WorkflowCodeGenerator

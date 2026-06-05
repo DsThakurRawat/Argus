@@ -10,7 +10,7 @@ coordination for the unified workflow orchestrator.
 import logging
 from typing import Any
 
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
+from argus.agents.enhanced_specialized import EnhancedAnalysisAgent
 from .prompt_context_models import IssueType, PromptContext
 
 

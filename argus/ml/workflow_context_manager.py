@@ -11,7 +11,7 @@ import logging
 from typing import Any
 
 from .caching import IssuePatternCache, RepositoryContextCache
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
+from argus.agents.enhanced_specialized import EnhancedAnalysisAgent
 from .performance import AsyncTask, PerformanceRepositoryAnalyzer, get_async_optimizer
 from .prompt_context_models import (
     IssueContext,

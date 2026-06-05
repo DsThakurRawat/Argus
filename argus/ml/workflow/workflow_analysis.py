@@ -16,7 +16,7 @@ from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
 from ...llm.base import ModelType
 from ...llm.config import LLMConfig
-from ..enhanced_analysis_agent import EnhancedAnalysisAgent
+from argus.agents.enhanced_specialized import EnhancedAnalysisAgent
 from ..prompt_context_models import IssueContext, RepositoryContext
 
 logger = logging.getLogger(__name__)
