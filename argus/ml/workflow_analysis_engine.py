@@ -11,7 +11,7 @@ import logging
 from typing import Any
 
 from .caching import ContextCache
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
+from .ml_analysis_agent import MLAnalysisAgent
 from .performance import PerformanceConfig
 from .prompt_context_models import IssueContext, PromptContext
 
@@ -29,7 +29,7 @@ class WorkflowAnalysisEngine:
 
     def __init__(
         self,
-        enhanced_agent: EnhancedAnalysisAgent,
+        enhanced_agent: MLAnalysisAgent,
         cache: ContextCache,
         performance_config: PerformanceConfig,
     ):

@@ -10,7 +10,7 @@ coordination for the unified workflow orchestrator.
 import logging
 from typing import Any
 
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
+from .ml_analysis_agent import MLAnalysisAgent
 from .prompt_context_models import IssueType, PromptContext
 
 
@@ -25,7 +25,7 @@ class WorkflowCodeGenerator:
     - Generator type determination and coordination
     """
 
-    def __init__(self, enhanced_agent: EnhancedAnalysisAgent) -> None:
+    def __init__(self, enhanced_agent: MLAnalysisAgent) -> None:
         """
         Initialize the code generator.
 

@@ -17,7 +17,7 @@ from argus.agents.enhanced_specialized import (
     EnhancedRemediationAgentV2,
     EnhancedTriageAgent,
 )
-from argus.agents.response_models import RemediationPlan
+from argus.agents.response_models import RemediationPlan, RemediationStep
 
 # New ingestion system imports
 from argus.config.ingestion_config import (
@@ -133,24 +133,24 @@ async def initialize_enhanced_agents(
         triage_agent = EnhancedTriageAgent(
             llm_config=llm_config,
             optimization_goal=triage_optimization,
-            max_cost=0.01,  # Cost limit per 1k tokens
-            min_performance=0.7,
+            min_performance=None,
+            max_cost=None,
             collect_stats=True,
         )
 
         analysis_agent = EnhancedAnalysisAgent(
             llm_config=llm_config,
             optimization_goal=analysis_optimization,
-            max_cost=0.02,  # Higher cost limit for analysis
-            min_quality=0.8,
+            min_performance=None,
+            max_cost=None,
             collect_stats=True,
         )
 
         remediation_agent = EnhancedRemediationAgentV2(
             llm_config=llm_config,
             optimization_goal=remediation_optimization,
-            max_cost=0.03,  # Highest cost limit for remediation
-            min_quality=0.7,  # Lower quality requirement to match available models
+            min_performance=None,
+            max_cost=None,
             collect_stats=True,
         )
 
@@ -293,11 +293,20 @@ async def process_log_with_enhanced_pipeline(
         else:
             # Legacy adapter - create a simple remediation plan
             remediation_response = RemediationPlan(
-                root_cause_analysis=f"Enhanced analysis for issue {flow_id}",
-                proposed_fix=f"Enhanced fix for issue {flow_id}",
-                code_patch=f'# FILE: enhanced_service/app.py\n# Enhanced fix for {flow_id}\nprint("Fixed issue")',
+                plan_name=f"Enhanced fix for {flow_id}",
+                issue_description=f"Enhanced analysis for issue {flow_id}",
                 priority="medium",
-                estimated_effort="2 hours",
+                steps=[
+                    RemediationStep(
+                        order=1,
+                        title="Fix issue",
+                        description="Apply fix",
+                        action_type="immediate",
+                        risk_level="low",
+                        commands=[f'# FILE: enhanced_service/app.py\n# Enhanced fix for {flow_id}\nprint("Fixed issue")']
+                    )
+                ],
+                success_criteria=["Issue fixed"],
             )
 
         # Create local patch using the LocalPatchManager
@@ -312,8 +321,8 @@ async def process_log_with_enhanced_pipeline(
         patch_manager.create_patch(
             issue_id=issue_id,
             file_path="enhanced_service/app.py",
-            patch_content=remediation_response.code_patch,
-            description=remediation_response.proposed_fix,
+            patch_content=remediation_response.steps[0].commands[0] if remediation_response.steps and remediation_response.steps[0].commands else "",
+            description=remediation_response.plan_name,
             severity=remediation_response.priority,
         )
 
@@ -335,6 +344,8 @@ async def process_log_with_enhanced_pipeline(
                 cost=0.001,  # Placeholder
             )
 
+        return triage_packet
+
     except Exception as e:
         flow_id = getattr(log_entry, "id", "unknown")
         logger.error(
@@ -342,7 +353,7 @@ async def process_log_with_enhanced_pipeline(
         )
 
 
-async def main():
+async def run_pipeline(provider_override: str = None, mock_log_entry: LogEntry = None):
     # Validate environment variables before proceeding
     validate_environment()
 
@@ -466,6 +477,12 @@ async def main():
         logger.error("[STARTUP] No services could be initialized. Exiting.")
         return
 
+    if mock_log_entry:
+        logger.info("[STARTUP] Processing mock log entry...")
+        packet = await process_log_with_enhanced_pipeline(mock_log_entry, agents, patch_manager, logger)
+        await LLMProviderFactory.shutdown()
+        return packet
+
     # Run all services concurrently with proper cancellation handling
     try:
         await asyncio.gather(*tasks, return_exceptions=True)
@@ -494,4 +511,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(run_pipeline())

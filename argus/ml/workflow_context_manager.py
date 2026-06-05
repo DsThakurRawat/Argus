@@ -11,7 +11,7 @@ import logging
 from typing import Any
 
 from .caching import IssuePatternCache, RepositoryContextCache
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
+from .ml_analysis_agent import MLAnalysisAgent
 from .performance import AsyncTask, PerformanceRepositoryAnalyzer, get_async_optimizer
 from .prompt_context_models import (
     IssueContext,
@@ -34,7 +34,7 @@ class WorkflowContextManager:
 
     def __init__(
         self,
-        enhanced_agent: EnhancedAnalysisAgent,
+        enhanced_agent: MLAnalysisAgent,
         repo_path: str = ".",
         repo_cache: RepositoryContextCache | None = None,
         pattern_cache: IssuePatternCache | None = None,

@@ -31,7 +31,7 @@ class LoggingMetrics:
 
     # Error metrics
     formatting_errors: int = 0
-    handler_errors: int = 0
+    total_handler_errors: int = 0
     configuration_errors: int = 0
 
     # Memory metrics
@@ -57,7 +57,7 @@ class LoggingMetrics:
         self.min_processing_time = float("inf")
 
         self.formatting_errors = 0
-        self.handler_errors = 0
+        self.total_handler_errors = 0
         self.configuration_errors = 0
 
         self.memory_usage = 0
@@ -114,7 +114,7 @@ class LoggingMetrics:
             handler_name: Name of the handler.
         """
         self.handler_errors[handler_name] = self.handler_errors.get(handler_name, 0) + 1
-        self.handler_errors += 1
+        self.total_handler_errors += 1
 
     def update_memory_usage(self, memory_usage: int) -> None:
         """Update memory usage metrics.
@@ -147,12 +147,11 @@ class LoggingMetrics:
                 else 0.0
             ),
             "formatting_errors": self.formatting_errors,
-            "handler_errors": self.handler_errors,
+            "total_handler_errors": self.total_handler_errors,
             "configuration_errors": self.configuration_errors,
             "memory_usage": self.memory_usage,
             "peak_memory_usage": self.peak_memory_usage,
-            "handler_calls": dict(self.handler_calls),
-            "handler_errors": dict(self.handler_errors)
+            "handler_calls": dict(self.handler_calls)
         }
 
 

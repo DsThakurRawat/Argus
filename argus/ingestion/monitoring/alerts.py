@@ -601,3 +601,4 @@ async def create_error_alert(
         metadata={"error_type": type(error).__name__, "error_details": str(error)},
         tags=["error", component],
     )
+

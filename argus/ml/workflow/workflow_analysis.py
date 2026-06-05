@@ -16,7 +16,7 @@ from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
 from ...llm.base import ModelType
 from ...llm.config import LLMConfig
-from ..enhanced_analysis_agent import EnhancedAnalysisAgent
+from ..ml_analysis_agent import MLAnalysisAgent
 from ..prompt_context_models import IssueContext, RepositoryContext
 
 logger = logging.getLogger(__name__)
@@ -98,7 +98,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
             enable_fallback=True,
             enable_monitoring=True,
         )
-        self.analysis_agent = EnhancedAnalysisAgent(
+        self.analysis_agent = MLAnalysisAgent(
             llm_config=llm_config, agent_name="workflow_analysis_agent"
         )
 

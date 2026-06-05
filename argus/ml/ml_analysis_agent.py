@@ -42,7 +42,7 @@ class EnhancedAnalysisConfig:
     timeout_seconds: int = 30
 
 
-class EnhancedAnalysisAgent:
+class MLAnalysisAgent:
     """
     Enhanced analysis agent with dynamic prompt generation and specialized code generation.
 

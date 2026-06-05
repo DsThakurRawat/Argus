@@ -11,7 +11,10 @@ import asyncio
 import logging
 from typing import Any
 
-import ollama
+try:
+    import ollama
+except ImportError:
+    ollama = None
 
 from ..base import LLMProvider, LLMRequest, LLMResponse, ModelType
 from ..capabilities.models import ModelCapability

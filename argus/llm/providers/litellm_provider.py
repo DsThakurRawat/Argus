@@ -9,7 +9,10 @@ from collections.abc import AsyncGenerator
 import logging
 from typing import Any
 
-import litellm
+try:
+    import litellm
+except ImportError:
+    litellm = None
 
 from ..base import LLMProvider, LLMRequest, LLMResponse, ModelType
 from ..capabilities.models import ModelCapability

@@ -4,7 +4,10 @@ import json
 import logging
 from typing import Any
 
-from google.cloud import aiplatform
+try:
+    from google.cloud import aiplatform
+except ImportError:
+    aiplatform = None
 from pydantic import BaseModel, ValidationError
 from tenacity import (
     retry,
@@ -12,7 +15,10 @@ from tenacity import (
     stop_after_attempt,
     wait_exponential,
 )
-from vertexai.preview.generative_models import GenerativeModel
+try:
+    from vertexai.preview.generative_models import GenerativeModel
+except ImportError:
+    GenerativeModel = None
 
 logger = logging.getLogger(__name__)
 
