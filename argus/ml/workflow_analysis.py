@@ -11,7 +11,7 @@ import logging
 from typing import Any
 
 from .caching import ContextCache
-from argus.agents.enhanced_specialized import EnhancedAnalysisAgent
+from .ml_analysis_agent import MLAnalysisAgent
 from .performance import PerformanceConfig
 from .prompt_context_models import IssueContext, PromptContext
 
@@ -36,10 +36,10 @@ class WorkflowAnalysisEngine:
         self.logger = logging.getLogger(__name__)
 
         # Initialize enhanced agent (will be injected)
-        self.enhanced_agent: EnhancedAnalysisAgent | None = None
+        self.enhanced_agent: MLAnalysisAgent | None = None
         self.cache: ContextCache | None = None
 
-    def set_enhanced_agent(self, enhanced_agent: EnhancedAnalysisAgent) -> None:
+    def set_enhanced_agent(self, enhanced_agent: MLAnalysisAgent) -> None:
         """Set the enhanced analysis agent."""
         self.enhanced_agent = enhanced_agent
 

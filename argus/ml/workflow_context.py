@@ -11,7 +11,7 @@ import logging
 from typing import Any
 
 from .caching import ContextCache, IssuePatternCache, RepositoryContextCache
-from argus.agents.enhanced_specialized import EnhancedAnalysisAgent
+from .ml_analysis_agent import MLAnalysisAgent
 from .performance import (
     AsyncTask,
     PerformanceConfig,
@@ -66,9 +66,9 @@ class WorkflowContextManager:
         self.async_optimizer = get_async_optimizer()
 
         # Initialize enhanced agent (will be injected)
-        self.enhanced_agent: EnhancedAnalysisAgent | None = None
+        self.enhanced_agent: MLAnalysisAgent | None = None
 
-    def set_enhanced_agent(self, enhanced_agent: EnhancedAnalysisAgent) -> None:
+    def set_enhanced_agent(self, enhanced_agent: MLAnalysisAgent) -> None:
         """Set the enhanced analysis agent."""
         self.enhanced_agent = enhanced_agent
 

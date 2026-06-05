@@ -63,7 +63,7 @@ class BasePatternMatcher(ABC):
     """Base class for pattern matchers."""
 
     def __init__(
-        self, config: PatternMatcherConfig, confidence_scorer: str | None = None
+        self, config: PatternMatcherConfig, confidence_scorer: Any | None = None
     ) -> None:
         self.config = config
         self.confidence_scorer = confidence_scorer
