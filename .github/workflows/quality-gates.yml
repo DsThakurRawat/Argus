@@ -55,7 +55,7 @@ jobs:
 
     - name: Run Quality Gates
       run: |
-        python -m argus.core.quality.cli run \
+        uv run python -m argus.core.quality.cli run \
           --output=quality-report.json \
           --format=json \
           --fail-on-warning
@@ -127,7 +127,7 @@ jobs:
 
     - name: Run Performance Gates
       run: |
-        python -m argus.core.quality.cli run \
+        uv run python -m argus.core.quality.cli run \
           --gates=performance \
           --output=performance-report.json \
           --format=json
