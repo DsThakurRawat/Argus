@@ -184,6 +184,13 @@ def run(
         if result.success:
             console.print("[bold green]Workflow Success![/bold green]")
             console.print(f"Generated fix:\n{result.generated_code}")
+            
+            # Send Notifications
+            if bot_tokens:
+                console.print("[dim]Sending notifications...[/dim]")
+                from argus.ingestion.monitoring.alerts import notify
+                await notify(mock_triage_packet, {"bots": bot_tokens})
+                console.print("[bold green]Notifications sent![/bold green]")
         else:
             console.print(f"[bold red]Workflow Failed: {result.error_message}[/bold red]")
 
