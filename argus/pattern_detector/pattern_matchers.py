@@ -12,7 +12,7 @@ PatternMatch objects.
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 
 from ..logger import setup_logging
 from .models import (
