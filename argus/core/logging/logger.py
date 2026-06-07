@@ -153,22 +153,15 @@ class Logger:
         """
         try:
             filter_type = config.get("type")
-
-            if filter_type == "level":
-                return LevelFilter(config)
-            elif filter_type == "regex":
-                return RegexFilter(config)
-            elif filter_type == "tag":
-                return TagFilter(config)
-            elif filter_type == "context":
-                return ContextFilter(config)
-            elif filter_type == "sampling":
-                return SamplingFilter(config)
-            elif filter_type == "rate_limit":
-                return RateLimitFilter(config)
-            else:
-                self._logger.warning(f"Unknown filter type: {filter_type}")
+            if not filter_type:
+                self._logger.warning("Filter configuration missing 'type'")
                 return None
+                
+            # Remove 'type' from kwargs
+            kwargs = {k: v for k, v in config.items() if k != "type"}
+            
+            from .filters import create_filter
+            return create_filter(filter_type, **kwargs)
 
         except Exception as e:
             self._logger.error(f"Failed to create filter: {e}")

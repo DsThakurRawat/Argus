@@ -23,14 +23,7 @@ from typing import Any
 # ============================================================================
 
 
-class StatusCode(str, Enum):
-    """Standard status codes for agent responses."""
 
-    SUCCESS = "success"
-    ERROR = "error"
-    WARNING = "warning"
-    PENDING = "pending"
-    PARTIAL = "partial"
 
 
 class SeverityLevel(str, Enum):
@@ -89,6 +82,7 @@ class ActionType(str, Enum):
 # Base models; Response models; Supporting models; Factory functions; Registry and utilities
 from .response_models import (
     AGENT_RESPONSE_MODELS,
+    StatusCode,
     AnalysisFinding,
     AnalysisResult,
     BaseAgentResponse,

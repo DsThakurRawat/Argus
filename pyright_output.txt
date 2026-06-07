@@ -1,0 +1,32 @@
+/home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:54:7 - warning: Type variable "T" used in generic Protocol "Deserializable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:178:7 - warning: Type variable "T" used in generic Protocol "Processable" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:178:7 - warning: Type variable "R" used in generic Protocol "Processable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:186:7 - warning: Type variable "T" used in generic Protocol "AsyncProcessable" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:186:7 - warning: Type variable "R" used in generic Protocol "AsyncProcessable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:194:7 - warning: Type variable "T" used in generic Protocol "Streamable" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:194:7 - warning: Type variable "R" used in generic Protocol "Streamable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:202:7 - warning: Type variable "T" used in generic Protocol "Cacheable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:476:7 - warning: Type variable "T" used in generic Protocol "Pipeline" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:476:7 - warning: Type variable "R" used in generic Protocol "Pipeline" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:488:7 - warning: Type variable "T" used in generic Protocol "Transformer" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:488:7 - warning: Type variable "R" used in generic Protocol "Transformer" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:512:7 - warning: Type variable "R" used in generic Protocol "Aggregator" should be covariant (reportInvalidTypeVarUse)
+/home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:135:17 - error: No parameter named "prompt_tokens" (reportCallIssue)
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:136:17 - error: No parameter named "completion_tokens" (reportCallIssue)
+/home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:60:29 - error: "chat" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:112:29 - error: "chat" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:140:49 - error: "list" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:179:29 - error: "embeddings" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:193:36 - error: "chat" is not a known attribute of "None" (reportOptionalMemberAccess)
+/home/divyansh-rawat/Argus/argus/ml/gemini_pattern_classifier.py
+  /home/divyansh-rawat/Argus/argus/ml/gemini_pattern_classifier.py:167:23 - error: Cannot access attribute "parsed_json" for class "GeminiResponse"
+    Attribute "parsed_json" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/gemini_pattern_classifier.py:194:41 - error: Cannot access attribute "parsed_json" for class "GeminiResponse"
+    Attribute "parsed_json" is unknown (reportAttributeAccessIssue)
+9 errors, 13 warnings, 0 informations
+WARNING: there is a new pyright version available (v1.1.405 -> v1.1.410).
+Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`
+

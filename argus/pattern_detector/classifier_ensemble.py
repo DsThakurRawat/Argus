@@ -432,7 +432,7 @@ class PatternEnsemble:
     def __init__(
         self,
         config: EnsembleConfig | None = None,
-        confidence_scorer: str | None = None,
+        confidence_scorer: Any | None = None,
     ) -> None:
         self.config = config or EnsembleConfig()
         self.confidence_scorer = confidence_scorer

@@ -220,6 +220,28 @@ class EnhancedAnalysisAgent(EnhancedBaseAgent[AnalysisResult]):
         logger.info(
             "EnhancedAnalysisAgent initialized with quality-focused optimization"
         )
+        self.code_generator_factory: Any = None
+
+    def _determine_generator_type(self, issue_context: Any) -> str:
+        """Determine the type of generator needed."""
+        if hasattr(issue_context, "issue_type"):
+            return str(issue_context.issue_type)
+        return "UNKNOWN"
+
+    def _extract_issue_context(self, triage_packet: dict[str, Any]) -> Any:
+        """Extract issue context from triage packet."""
+        from argus.ml.prompt_context_models import IssueContext, IssueType
+        return IssueContext(
+            issue_type=IssueType(triage_packet.get("issue_type", "UNKNOWN")),
+            affected_files=triage_packet.get("affected_files", []),
+            error_patterns=triage_packet.get("error_patterns", []),
+            severity_level=triage_packet.get("severity_level", 0),
+            impact_analysis=triage_packet.get("impact_analysis", {}),
+            related_services=triage_packet.get("related_services", []),
+            temporal_context=triage_packet.get("temporal_context", {}),
+            user_impact=triage_packet.get("user_impact", ""),
+            business_impact=triage_packet.get("business_impact", "")
+        )
 
     async def analyze(
         self,
@@ -582,13 +604,13 @@ class EnhancedTriageAgent(EnhancedBaseAgent[TriageResult]):
         if hasattr(result, "category") and hasattr(result, "description"):
             from .response_models import AnalysisResult
 
-            return AnalysisResult(
-                agent_id="analysis-agent-1",
-                agent_type="analysis",
-                status="success",
-                analysis_type="error_analysis",
-                summary=result.description,
-                key_findings=[
+            return AnalysisResult(**{
+                "agent_id": "analysis-agent-1",
+                "agent_type": "analysis",
+                "status": "success",
+                "analysis_type": "error_analysis",
+                "summary": result.description,
+                "key_findings": [
                     {
                         "title": "Error Analysis",
                         "description": result.description,
@@ -598,31 +620,36 @@ class EnhancedTriageAgent(EnhancedBaseAgent[TriageResult]):
                         "recommendations": ["Investigate the issue further"]
                     }
                 ],
-                overall_severity="medium",
-                overall_confidence=0.8,
-                root_cause="Analysis pending",
-                impact_assessment="Impact assessment pending",
-                risk_assessment="Risk assessment pending",
-                business_impact="Business impact pending",
-                recommendations=[
+                "overall_severity": "medium",
+                "overall_confidence": 0.8,
+                "root_cause_analysis": None,
+                "risk_assessment": "Risk assessment pending",
+                "business_impact": "Business impact pending",
+                "recommendations": [
                     "Investigate the issue further",
                     "Monitor for similar patterns",
                 ],
-                next_steps=["Investigate further"]
-            )
+                "next_steps": ["Investigate further"],
+                "execution_time_ms": None,
+                "model_used": None,
+                "provider_used": None,
+                "cost_usd": None,
+                "technical_debt_score": None,
+                "requires_follow_up": False
+            })
         # If result is already an AnalysisResult, return it
         if hasattr(result, "summary") and hasattr(result, "key_findings"):
             return result  # type: ignore
         # Fallback: create a basic AnalysisResult
         from .response_models import AnalysisResult
 
-        return AnalysisResult(
-            agent_id="analysis-agent-1",
-            agent_type="analysis",
-            status="success",
-            analysis_type="error_analysis",
-            summary=str(result),
-            key_findings=[
+        return AnalysisResult(**{
+            "agent_id": "analysis-agent-1",
+            "agent_type": "analysis",
+            "status": "success",
+            "analysis_type": "error_analysis",
+            "summary": str(result),
+            "key_findings": [
                 {
                     "title": "Unknown Issue",
                     "description": "Unknown issue type",
@@ -632,15 +659,20 @@ class EnhancedTriageAgent(EnhancedBaseAgent[TriageResult]):
                     "recommendations": ["Manual investigation required"]
                 }
             ],
-            overall_severity="medium",
-            overall_confidence=0.5,
-            root_cause="Analysis pending",
-            impact_assessment="Impact assessment pending",
-            risk_assessment="Risk assessment pending",
-            business_impact="Business impact pending",
-            recommendations=["Manual investigation required"],
-            next_steps=["Investigate further"]
-        )
+            "overall_severity": "medium",
+            "overall_confidence": 0.5,
+            "root_cause_analysis": None,
+            "risk_assessment": "Risk assessment pending",
+            "business_impact": "Business impact pending",
+            "recommendations": ["Manual investigation required"],
+            "next_steps": ["Investigate further"],
+            "execution_time_ms": None,
+            "model_used": None,
+            "provider_used": None,
+            "cost_usd": None,
+            "technical_debt_score": None,
+            "requires_follow_up": False
+        })
 
 
 class EnhancedRemediationAgent(EnhancedBaseAgent[AnalysisResult]):

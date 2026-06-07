@@ -134,7 +134,7 @@ class PerformanceMonitor:
             raise PerformanceMonitoringError(
                 f"Failed to record metric: {e!s}",
                 metric_name=name,
-                metric_value=value,
+                context={"metric_value": value},
             ) from e
 
     def record_timing(

@@ -50,7 +50,7 @@ class AsyncCircuitBreaker:
         else:
             self.circuit_breaker = None
 
-    def __call__(self, func: str) -> None:
+    def __call__(self, func: Any) -> Any:
         if self.circuit_breaker:
             # For async functions, we need to handle them differently
             if asyncio.iscoroutinefunction(func):
@@ -109,7 +109,7 @@ class AsyncRetry:
         else:
             self.retry = None
 
-    def __call__(self, func: str) -> None:
+    def __call__(self, func: Any) -> Any:
         if self.retry:
             return self.retry(func)
         return func

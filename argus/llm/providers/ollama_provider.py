@@ -32,7 +32,7 @@ class OllamaProvider(LLMProvider):
         self.timeout = config.timeout or 30
 
         # Configure Ollama client
-        self.client = ollama.Client(host=self.base_url)
+        self.client = ollama.Client(host=self.base_url) if ollama else None # type: ignore
 
         # Get model from provider_specific config
         provider_specific = config.provider_specific or {}
@@ -57,7 +57,7 @@ class OllamaProvider(LLMProvider):
 
             # Make the API call
             response = await asyncio.to_thread(
-                self.client.chat, model=self.model, messages=messages, options=options
+                self.client.chat, model=self.model, messages=messages, options=options # type: ignore
             )
 
             # Debug logging
@@ -78,7 +78,7 @@ class OllamaProvider(LLMProvider):
             logger.debug(f"Extracted content: '{content}'")
 
             return LLMResponse(
-                content=content,
+                content=str(content or ""),
                 model=self.model,
                 provider=self.provider_name,
                 usage=usage,
@@ -109,7 +109,7 @@ class OllamaProvider(LLMProvider):
 
             # Make the streaming API call
             stream = await asyncio.to_thread(
-                self.client.chat,
+                self.client.chat, # type: ignore
                 model=self.model,
                 messages=messages,
                 options=options,
@@ -137,7 +137,7 @@ class OllamaProvider(LLMProvider):
             logger.debug("Performing Ollama health check")
 
             # Try to list models to check if Ollama is accessible
-            await asyncio.to_thread(self.client.list)
+            await asyncio.to_thread(self.client.list) # type: ignore
             return True
 
         except Exception as e:
@@ -176,7 +176,7 @@ class OllamaProvider(LLMProvider):
 
             # Use the embeddings endpoint
             response = await asyncio.to_thread(
-                self.client.embeddings, model=self.model, prompt=text
+                self.client.embeddings, model=self.model, prompt=text # type: ignore
             )
 
             return response["embedding"]
@@ -190,7 +190,7 @@ class OllamaProvider(LLMProvider):
         """Count tokens in the given text."""
         try:
             # Use Ollama's token counting endpoint
-            response = self.client.chat(
+            response = self.client.chat( # type: ignore
                 model=self.model,
                 messages=[{"role": "user", "content": text}],
                 options={"num_predict": 0},  # Don't generate, just count tokens
@@ -258,19 +258,22 @@ class OllamaProvider(LLMProvider):
                 name="local_inference",
                 description="Local model inference without external API calls",
                 parameters={"offline": True, "privacy": "high"},
-                performance_score=0.8
+                performance_score=0.8,
+                cost_efficiency=1.0
             ),
             ModelCapability(
                 name="custom_models",
                 description="Support for custom Ollama models",
                 parameters={"model_management": True, "custom_training": False},
-                performance_score=0.7
+                performance_score=0.7,
+                cost_efficiency=1.0
             ),
             ModelCapability(
                 name="streaming",
                 description="Real-time streaming responses",
                 parameters={"stream": True, "chunk_size": "variable"},
-                performance_score=0.9
+                performance_score=0.9,
+                cost_efficiency=1.0
             )
         ]
 

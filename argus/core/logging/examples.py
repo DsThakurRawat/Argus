@@ -90,7 +90,10 @@ def performance_monitoring_example():
 
     # Export metrics
     metrics = logger.export_metrics("stats")
-    print(f"Available metrics: {list(metrics.keys())}")
+    if isinstance(metrics, dict):
+        print(f"Available metrics: {list(metrics.keys())}")
+    else:
+        print(f"Recorded metrics: {len(metrics)} items")
 
 
 def alerting_example():
@@ -222,7 +225,10 @@ def comprehensive_example():
         print(f"Flow completed: {flow['operation']} in {flow['duration']:.2f}s")
 
     metrics = logger.export_metrics("stats")
-    print(f"Recorded metrics: {list(metrics.keys())}")
+    if isinstance(metrics, dict):
+        print(f"Recorded metrics: {list(metrics.keys())}")
+    else:
+        print(f"Recorded metrics: {len(metrics)} items")
 
     alerts = logger.get_alerts()
     print(f"Generated alerts: {len(alerts)}")

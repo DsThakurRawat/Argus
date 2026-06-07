@@ -1,0 +1,238 @@
+/home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:54:7 - warning: Type variable "T" used in generic Protocol "Deserializable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:178:7 - warning: Type variable "T" used in generic Protocol "Processable" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:178:7 - warning: Type variable "R" used in generic Protocol "Processable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:186:7 - warning: Type variable "T" used in generic Protocol "AsyncProcessable" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:186:7 - warning: Type variable "R" used in generic Protocol "AsyncProcessable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:194:7 - warning: Type variable "T" used in generic Protocol "Streamable" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:194:7 - warning: Type variable "R" used in generic Protocol "Streamable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:202:7 - warning: Type variable "T" used in generic Protocol "Cacheable" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:476:7 - warning: Type variable "T" used in generic Protocol "Pipeline" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:476:7 - warning: Type variable "R" used in generic Protocol "Pipeline" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:488:7 - warning: Type variable "T" used in generic Protocol "Transformer" should be contravariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:488:7 - warning: Type variable "R" used in generic Protocol "Transformer" should be covariant (reportInvalidTypeVarUse)
+  /home/divyansh-rawat/Argus/argus/core/interfaces/protocols.py:512:7 - warning: Type variable "R" used in generic Protocol "Aggregator" should be covariant (reportInvalidTypeVarUse)
+/home/divyansh-rawat/Argus/argus/core/resilience/fault_tolerance.py
+  /home/divyansh-rawat/Argus/argus/core/resilience/fault_tolerance.py:391:13 - error: No parameter named "delay" (reportCallIssue)
+  /home/divyansh-rawat/Argus/argus/core/resilience/fault_tolerance.py:392:13 - error: No parameter named "backoff_multiplier" (reportCallIssue)
+  /home/divyansh-rawat/Argus/argus/core/resilience/fault_tolerance.py:437:38 - error: No parameter named "timeout" (reportCallIssue)
+/home/divyansh-rawat/Argus/argus/core/resilience/health_checker.py
+  /home/divyansh-rawat/Argus/argus/core/resilience/health_checker.py:164:38 - error: "start_time" is possibly unbound (reportPossiblyUnboundVariable)
+/home/divyansh-rawat/Argus/argus/ingestion/interfaces/resilience.py
+  /home/divyansh-rawat/Argus/argus/ingestion/interfaces/resilience.py:63:24 - error: Type "(...) -> CoroutineType[Any, Any, AsyncGenerator[Unknown, Any] | CoroutineType[Any, Any, Unknown] | Generator[Unknown, Unknown, None] | Unknown | Any]" is not assignable to return type "None"
+    "FunctionType" is not assignable to "None" (reportReturnType)
+  /home/divyansh-rawat/Argus/argus/ingestion/interfaces/resilience.py:65:24 - error: Type "_Wrapped[..., Unknown, ..., AsyncGenerator[Unknown, Any]] | _Wrapped[..., Unknown, ..., CoroutineType[Any, Any, Unknown]] | _Wrapped[..., Unknown, ..., Generator[Unknown, Unknown, None]] | _Wrapped[..., Unknown, ..., Unknown]" is not assignable to return type "None"
+    Type "_Wrapped[..., Unknown, ..., AsyncGenerator[Unknown, Any]] | _Wrapped[..., Unknown, ..., CoroutineType[Any, Any, Unknown]] | _Wrapped[..., Unknown, ..., Generator[Unknown, Unknown, None]] | _Wrapped[..., Unknown, ..., Unknown]" is not assignable to type "None"
+      "_Wrapped[..., Unknown, ..., AsyncGenerator[Unknown, Any]]" is not assignable to "None" (reportReturnType)
+  /home/divyansh-rawat/Argus/argus/ingestion/interfaces/resilience.py:66:16 - error: Type "str" is not assignable to return type "None"
+    "str" is not assignable to "None" (reportReturnType)
+  /home/divyansh-rawat/Argus/argus/ingestion/interfaces/resilience.py:114:31 - error: Argument of type "str" cannot be assigned to parameter of type "WrappedFn@retry"
+    Type "str" is not assignable to type "(...) -> Any"
+      Type "str" is not assignable to type "(...) -> Any" (reportArgumentType)
+  /home/divyansh-rawat/Argus/argus/ingestion/interfaces/resilience.py:115:16 - error: Type "str" is not assignable to return type "None"
+    "str" is not assignable to "None" (reportReturnType)
+/home/divyansh-rawat/Argus/argus/ingestion/manager/log_manager.py
+  /home/divyansh-rawat/Argus/argus/ingestion/manager/log_manager.py:139:40 - error: "CoroutineType[Any, Any, AsyncIterator[LogEntry]]" is not iterable
+    "__aiter__" method not defined (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/ingestion/monitoring/performance.py
+  /home/divyansh-rawat/Argus/argus/ingestion/monitoring/performance.py:436:12 - error: Type "OperationTimer" is not assignable to return type "None"
+    "OperationTimer" is not assignable to "None" (reportReturnType)
+  /home/divyansh-rawat/Argus/argus/ingestion/monitoring/performance.py:450:16 - error: Type "Self@OperationTimer" is not assignable to return type "None"
+    "OperationTimer*" is not assignable to "None" (reportReturnType)
+/home/divyansh-rawat/Argus/argus/llm/capabilities/database.py
+  /home/divyansh-rawat/Argus/argus/llm/capabilities/database.py:16:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/llm/config.py
+  /home/divyansh-rawat/Argus/argus/llm/config.py:201:39 - error: Arguments missing for parameters "cost_per_1k_tokens", "max_tokens", "performance_score", "reliability_score" (reportCallIssue)
+/home/divyansh-rawat/Argus/argus/llm/config_loaders.py
+  /home/divyansh-rawat/Argus/argus/llm/config_loaders.py:362:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/llm/factory.py
+  /home/divyansh-rawat/Argus/argus/llm/factory.py:151:69 - error: Cannot access attribute "client" for class "LLMProvider"
+    Attribute "client" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/factory.py:152:36 - error: Cannot access attribute "client" for class "LLMProvider"
+    Attribute "client" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/factory.py:154:36 - error: Cannot access attribute "__aexit__" for class "LLMProvider"
+    Attribute "__aexit__" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/llm/mirascope_client.py
+  /home/divyansh-rawat/Argus/argus/llm/mirascope_client.py:341:38 - error: Cannot access attribute "get_config" for class "str"
+    Attribute "get_config" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/mirascope_client.py:358:38 - error: Cannot access attribute "get_config" for class "str"
+    Attribute "get_config" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/llm/mirascope_facade.py
+  /home/divyansh-rawat/Argus/argus/llm/mirascope_facade.py:87:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/llm/mirascope_integration.py
+  /home/divyansh-rawat/Argus/argus/llm/mirascope_integration.py:429:57 - error: Cannot access attribute "generate_text" for class "str"
+    Attribute "generate_text" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/llm/mixing/mixing_strategies.py
+  /home/divyansh-rawat/Argus/argus/llm/mixing/mixing_strategies.py:403:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/llm/monitoring/health_checks.py
+  /home/divyansh-rawat/Argus/argus/llm/monitoring/health_checks.py:119:43 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/monitoring/health_checks.py:605:51 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/monitoring/health_checks.py:624:51 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/llm/provider_framework/auto_registry.py
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/auto_registry.py:33:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/auto_registry.py:169:36 - error: Cannot access attribute "register_provider" for class "type[LLMProviderFactory]"
+    Attribute "register_provider" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/auto_registry.py:233:32 - error: Cannot access attribute "unregister_provider" for class "type[LLMProviderFactory]"
+    Attribute "unregister_provider" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/auto_registry.py:237:32 - error: Cannot access attribute "register_provider" for class "type[LLMProviderFactory]"
+    Attribute "register_provider" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/llm/provider_framework/capability_discovery.py
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/capability_discovery.py:48:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/llm/provider_framework/plugin_loader.py
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/plugin_loader.py:35:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/plugin_loader.py:109:36 - error: Cannot access attribute "register_provider" for class "type[LLMProviderFactory]"
+    Attribute "register_provider" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/plugin_loader.py:179:40 - error: Cannot access attribute "register_provider" for class "type[LLMProviderFactory]"
+    Attribute "register_provider" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/provider_framework/plugin_loader.py:386:36 - error: Cannot access attribute "unregister_provider" for class "type[LLMProviderFactory]"
+    Attribute "unregister_provider" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:119:34 - error: "aembedding" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:128:24 - error: "token_counter" is not exported from module "litellm" (reportPrivateImportUsage)
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:128:24 - error: "token_counter" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:133:28 - error: "completion_cost" is not exported from module "litellm" (reportPrivateImportUsage)
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:133:28 - error: "completion_cost" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:135:17 - error: No parameter named "prompt_tokens" (reportCallIssue)
+  /home/divyansh-rawat/Argus/argus/llm/providers/litellm_provider.py:136:17 - error: No parameter named "completion_tokens" (reportCallIssue)
+/home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:35:30 - error: "Client" is not a known attribute of "None" (reportOptionalMemberAccess)
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:81:25 - error: Argument of type "Any | str | None" cannot be assigned to parameter "content" of type "str" in function "__init__"
+    Type "Any | str | None" is not assignable to type "str"
+      "None" is not assignable to "str" (reportArgumentType)
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:257:13 - error: Argument missing for parameter "cost_efficiency" (reportCallIssue)
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:263:13 - error: Argument missing for parameter "cost_efficiency" (reportCallIssue)
+  /home/divyansh-rawat/Argus/argus/llm/providers/ollama_provider.py:269:13 - error: Argument missing for parameter "cost_efficiency" (reportCallIssue)
+/home/divyansh-rawat/Argus/argus/llm/service_metrics.py
+  /home/divyansh-rawat/Argus/argus/llm/service_metrics.py:286:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/llm/strategy_metrics.py
+  /home/divyansh-rawat/Argus/argus/llm/strategy_metrics.py:64:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/llm/testing/benchmark_monitors.py
+  /home/divyansh-rawat/Argus/argus/llm/testing/benchmark_monitors.py:24:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/llm/testing/framework.py
+  /home/divyansh-rawat/Argus/argus/llm/testing/framework.py:283:47 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/testing/framework.py:312:47 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/testing/framework.py:321:47 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/testing/framework.py:358:47 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/llm/testing/performance_benchmark_refactored.py
+  /home/divyansh-rawat/Argus/argus/llm/testing/performance_benchmark_refactored.py:58:61 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/testing/performance_benchmark_refactored.py:126:61 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/testing/performance_benchmark_refactored.py:194:61 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/llm/testing/performance_benchmark_refactored.py:262:61 - error: Cannot access attribute "list_providers" for class "LLMProviderFactory"
+    Attribute "list_providers" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/ml/adaptive_rate_limiter.py
+  /home/divyansh-rawat/Argus/argus/ml/adaptive_rate_limiter.py:251:34 - error: Cannot assign to attribute "circuit_opened_at" for class "AdaptiveRateLimiter*"
+    "None" is not assignable to "str" (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/adaptive_rate_limiter.py:253:37 - error: Cannot assign to attribute "last_rate_limit_time" for class "AdaptiveRateLimiter*"
+    "None" is not assignable to "str" (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/adaptive_rate_limiter.py:418:48 - error: Cannot access attribute "timestamp" for class "str"
+    Attribute "timestamp" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/adaptive_rate_limiter.py:433:45 - error: Cannot access attribute "timestamp" for class "str"
+    Attribute "timestamp" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/ml/base_code_generator.py
+  /home/divyansh-rawat/Argus/argus/ml/base_code_generator.py:23:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+  /home/divyansh-rawat/Argus/argus/ml/base_code_generator.py:136:29 - error: Cannot access attribute "warning" for class "None"
+    Attribute "warning" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/base_code_generator.py:144:25 - error: Cannot access attribute "error" for class "None"
+    Attribute "error" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/base_code_generator.py:170:25 - error: Cannot access attribute "error" for class "None"
+    Attribute "error" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/base_code_generator.py:178:16 - error: Type "Logger" is not assignable to return type "None"
+    "Logger" is not assignable to "None" (reportReturnType)
+/home/divyansh-rawat/Argus/argus/ml/code_context_extractor.py
+  /home/divyansh-rawat/Argus/argus/ml/code_context_extractor.py:201:39 - error: Cannot access attribute "get" for class "BaseException"
+    Attribute "get" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/code_context_extractor.py:202:38 - error: Cannot access attribute "get" for class "BaseException"
+    Attribute "get" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/ml/gemini_pattern_classifier.py
+  /home/divyansh-rawat/Argus/argus/ml/gemini_pattern_classifier.py:158:41 - error: Cannot access attribute "generate_response" for class "GeminiAPIClient"
+    Attribute "generate_response" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/gemini_pattern_classifier.py:172:52 - error: Argument of type "Unknown | Any | None" cannot be assigned to parameter "pattern_str" of type "str" in function "_map_pattern_type"
+    Type "Unknown | Any | None" is not assignable to type "str"
+      "None" is not assignable to "str" (reportArgumentType)
+  /home/divyansh-rawat/Argus/argus/ml/gemini_pattern_classifier.py:182:50 - error: Cannot access attribute "generate_response" for class "GeminiAPIClient"
+    Attribute "generate_response" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/ml/gemini_response_cache.py
+  /home/divyansh-rawat/Argus/argus/ml/gemini_response_cache.py:13:30 - error: "PatternContext" is unknown import symbol (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/ml/log_quality_validator.py
+  /home/divyansh-rawat/Argus/argus/ml/log_quality_validator.py:61:51 - error: Argument of type "str | None" cannot be assigned to parameter "message" of type "str" in function "_extract_message_pattern"
+    Type "str | None" is not assignable to type "str"
+      "None" is not assignable to "str" (reportArgumentType)
+/home/divyansh-rawat/Argus/argus/ml/performance/async_optimizer.py
+  /home/divyansh-rawat/Argus/argus/ml/performance/async_optimizer.py:45:20 - error: Type "_NotImplementedType" is not assignable to return type "None"
+    "_NotImplementedType" is not assignable to "None" (reportReturnType)
+  /home/divyansh-rawat/Argus/argus/ml/performance/async_optimizer.py:47:16 - error: Type "bool" is not assignable to return type "None"
+    "bool" is not assignable to "None" (reportReturnType)
+/home/divyansh-rawat/Argus/argus/ml/unified_workflow_orchestrator.py
+  /home/divyansh-rawat/Argus/argus/ml/unified_workflow_orchestrator.py:90:55 - error: Argument of type "EnhancedAnalysisAgent" cannot be assigned to parameter "enhanced_agent" of type "MLAnalysisAgent" in function "__init__"
+    "EnhancedAnalysisAgent" is not assignable to "MLAnalysisAgent" (reportArgumentType)
+  /home/divyansh-rawat/Argus/argus/ml/unified_workflow_orchestrator.py:92:13 - error: Argument of type "EnhancedAnalysisAgent" cannot be assigned to parameter "enhanced_agent" of type "MLAnalysisAgent" in function "__init__"
+    "EnhancedAnalysisAgent" is not assignable to "MLAnalysisAgent" (reportArgumentType)
+  /home/divyansh-rawat/Argus/argus/ml/unified_workflow_orchestrator.py:94:53 - error: Argument of type "EnhancedAnalysisAgent" cannot be assigned to parameter "enhanced_agent" of type "MLAnalysisAgent" in function "__init__"
+    "EnhancedAnalysisAgent" is not assignable to "MLAnalysisAgent" (reportArgumentType)
+/home/divyansh-rawat/Argus/argus/ml/validation/code_validation_pipeline.py
+  /home/divyansh-rawat/Argus/argus/ml/validation/code_validation_pipeline.py:27:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/ml/workflow/workflow_generation.py
+  /home/divyansh-rawat/Argus/argus/ml/workflow/workflow_generation.py:19:6 - error: Import "..enhanced_remediation_agent" could not be resolved (reportMissingImports)
+/home/divyansh-rawat/Argus/argus/ml/workflow_generation.py
+  /home/divyansh-rawat/Argus/argus/ml/workflow_generation.py:112:50 - error: Cannot access attribute "_determine_generator_type" for class "EnhancedAnalysisAgent"
+    Attribute "_determine_generator_type" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/workflow_generation.py:120:40 - error: Cannot access attribute "code_generator_factory" for class "EnhancedAnalysisAgent"
+    Attribute "code_generator_factory" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/workflow_generation.py:129:49 - error: Cannot access attribute "code_generator_factory" for class "EnhancedAnalysisAgent"
+    Attribute "code_generator_factory" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/workflow_generation.py:134:49 - error: Cannot access attribute "code_generator_factory" for class "EnhancedAnalysisAgent"
+    Attribute "code_generator_factory" is unknown (reportAttributeAccessIssue)
+  /home/divyansh-rawat/Argus/argus/ml/workflow_generation.py:269:45 - error: Cannot access attribute "code_generator_factory" for class "EnhancedAnalysisAgent"
+    Attribute "code_generator_factory" is unknown (reportAttributeAccessIssue)
+/home/divyansh-rawat/Argus/argus/ml/workflow_validation_engine.py
+  /home/divyansh-rawat/Argus/argus/ml/workflow_validation_engine.py:28:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/pattern_detector/confidence_calculators.py
+  /home/divyansh-rawat/Argus/argus/pattern_detector/confidence_calculators.py:38:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/pattern_detector/pattern_classifier.py
+  /home/divyansh-rawat/Argus/argus/pattern_detector/pattern_classifier.py:36:60 - error: Argument of type "ConfidenceScorer" cannot be assigned to parameter "confidence_scorer" of type "str | None" in function "__init__"
+    Type "ConfidenceScorer" is not assignable to type "str | None"
+      "ConfidenceScorer" is not assignable to "str"
+      "ConfidenceScorer" is not assignable to "None" (reportArgumentType)
+  /home/divyansh-rawat/Argus/argus/pattern_detector/pattern_classifier.py:76:46 - error: Argument of type "ConfidenceScorer" cannot be assigned to parameter "confidence_scorer" of type "str | None" in function "__init__"
+    Type "ConfidenceScorer" is not assignable to type "str | None"
+      "ConfidenceScorer" is not assignable to "str"
+      "ConfidenceScorer" is not assignable to "None" (reportArgumentType)
+/home/divyansh-rawat/Argus/argus/pattern_detector/time_window_accumulator.py
+  /home/divyansh-rawat/Argus/argus/pattern_detector/time_window_accumulator.py:66:77 - error: Argument of type "dict[str, Any]" cannot be assigned to parameter "raw_data" of type "str" in function "__init__"
+    "dict[str, Any]" is not assignable to "str" (reportArgumentType)
+/home/divyansh-rawat/Argus/argus/resilience/error_classifier.py
+  /home/divyansh-rawat/Argus/argus/resilience/error_classifier.py:28:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/security/access_control.py
+  /home/divyansh-rawat/Argus/argus/security/access_control.py:93:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/source_control/error_handling/classification_algorithms.py
+  /home/divyansh-rawat/Argus/argus/source_control/error_handling/classification_algorithms.py:148:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/source_control/error_handling/custom_fallback_strategies.py
+  /home/divyansh-rawat/Argus/argus/source_control/error_handling/custom_fallback_strategies.py:107:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/source_control/error_handling/error_types.py
+  /home/divyansh-rawat/Argus/argus/source_control/error_handling/error_types.py:190:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/source_control/health_checks.py
+  /home/divyansh-rawat/Argus/argus/source_control/health_checks.py:24:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+  /home/divyansh-rawat/Argus/argus/source_control/health_checks.py:380:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/argus/source_control/monitoring.py
+  /home/divyansh-rawat/Argus/argus/source_control/monitoring.py:146:27 - error: Return type of "__init__" must be None (reportGeneralTypeIssues)
+/home/divyansh-rawat/Argus/main.py
+  /home/divyansh-rawat/Argus/main.py:295:36 - error: Arguments missing for parameters "agent_id", "agent_type", "status", "execution_time_ms", "model_used", "provider_used", "cost_usd", "estimated_total_duration", "estimated_total_effort", "risk_assessment", "rollback_strategy", "approval_required", "automated_steps", "manual_steps" (reportCallIssue)
+  /home/divyansh-rawat/Argus/main.py:300:21 - error: Arguments missing for parameters "estimated_duration", "estimated_effort", "rollback_plan", "requires_approval", "automated" (reportCallIssue)
+  /home/divyansh-rawat/Argus/main.py:356:49 - error: Expression of type "None" cannot be assigned to parameter of type "str"
+    "None" is not assignable to "str" (reportArgumentType)
+  /home/divyansh-rawat/Argus/main.py:356:82 - error: Expression of type "None" cannot be assigned to parameter of type "LogEntry"
+    "None" is not assignable to "LogEntry" (reportArgumentType)
+103 errors, 13 warnings, 0 informations
+WARNING: there is a new pyright version available (v1.1.405 -> v1.1.410).
+Please install the new version or set PYRIGHT_PYTHON_FORCE_VERSION to `latest`
+

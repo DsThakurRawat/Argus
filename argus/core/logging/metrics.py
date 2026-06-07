@@ -352,7 +352,7 @@ class MetricsCollector:
 
         total_errors = (
             self.current_metrics.formatting_errors +
-            self.current_metrics.handler_errors +
+            sum(self.current_metrics.handler_errors.values()) +
             self.current_metrics.configuration_errors
         )
 
@@ -361,7 +361,7 @@ class MetricsCollector:
                 self.current_metrics.formatting_errors / self.current_metrics.total_logs
             ),
             "handler_error_rate": (
-                self.current_metrics.handler_errors / self.current_metrics.total_logs
+                sum(self.current_metrics.handler_errors.values()) / self.current_metrics.total_logs
             ),
             "configuration_error_rate": (
                 self.current_metrics.configuration_errors / self.current_metrics.total_logs

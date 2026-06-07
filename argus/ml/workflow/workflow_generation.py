@@ -16,7 +16,7 @@ from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
 from ...llm.base import ModelType
 from ...llm.config import LLMConfig
-from ..enhanced_remediation_agent import EnhancedRemediationAgentV2
+from argus.agents.enhanced_specialized import EnhancedRemediationAgentV2
 from ..prompt_context_models import IssueContext, RepositoryContext
 
 logger = logging.getLogger(__name__)
@@ -158,7 +158,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
             }
 
             # Perform code generation using the enhanced remediation agent
-            remediation_response = await self.remediation_agent.generate_remediation(
+            remediation_response = await self.remediation_agent.generate_remediation( # type: ignore
                 triage_data=triage_data,
                 historical_logs=historical_logs,
                 configs=configs,
@@ -264,7 +264,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
             configs = {}
 
             # Perform prompt generation using the enhanced remediation agent
-            remediation_response = await self.remediation_agent.generate_remediation(
+            remediation_response = await self.remediation_agent.generate_remediation( # type: ignore
                 triage_data=triage_data,
                 historical_logs=historical_logs,
                 configs=configs,

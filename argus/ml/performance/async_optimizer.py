@@ -39,7 +39,7 @@ class AsyncTask:
         if self.kwargs is None:
             self.kwargs = {}
 
-    def __lt__(self, other: str) -> None:
+    def __lt__(self, other: Any) -> bool:
         """Make AsyncTask comparable for priority queue."""
         if not isinstance(other, AsyncTask):
             return NotImplemented

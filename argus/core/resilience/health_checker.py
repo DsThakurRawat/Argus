@@ -129,9 +129,9 @@ class HealthChecker:
                 "timestamp": time.time()
             }
 
+        start_time = time.time()
         try:
             # Perform health check with timeout
-            start_time = time.time()
             result = self._execute_health_check(health_check)
             duration = time.time() - start_time
 

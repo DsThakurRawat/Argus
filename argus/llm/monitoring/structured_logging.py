@@ -89,19 +89,19 @@ class StructuredLogger:
             log_message = f"{message} | Context: {context}"
             getattr(logger, level)(log_message)
 
-    def info(self, message: str, **kwargs: str) -> None:
+    def info(self, message: str, **kwargs: Any) -> None:
         """Log info message with context."""
         self._log_with_context("info", message, **kwargs)
 
-    def warning(self, message: str, **kwargs: str) -> None:
+    def warning(self, message: str, **kwargs: Any) -> None:
         """Log warning message with context."""
         self._log_with_context("warning", message, **kwargs)
 
-    def error(self, message: str, **kwargs: str) -> None:
+    def error(self, message: str, **kwargs: Any) -> None:
         """Log error message with context."""
         self._log_with_context("error", message, **kwargs)
 
-    def debug(self, message: str, **kwargs: str) -> None:
+    def debug(self, message: str, **kwargs: Any) -> None:
         """Log debug message with context."""
         self._log_with_context("debug", message, **kwargs)
 

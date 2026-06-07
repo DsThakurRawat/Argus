@@ -437,10 +437,10 @@ class PerformanceOptimizer:
 
 
 # Performance decorators and utilities
-def cached_model_selection(ttl_seconds: float = 60.0) -> None:
+def cached_model_selection(ttl_seconds: float = 60.0) -> Any:
     """Decorator for caching model selection results."""
 
-    def decorator(func: str) -> None:
+    def decorator(func: Any) -> Any:
         """
         Decorator.
 
@@ -490,7 +490,7 @@ def get_provider_type_enum(provider_str: str) -> ProviderType:
 class LazyLoader:
     """Lazy loading utility for expensive operations."""
 
-    def __init__(self, loader_func: str, *args: str, **kwargs: str) -> None:
+    def __init__(self, loader_func: Any, *args: Any, **kwargs: Any) -> None:
         self.loader_func = loader_func
         self.args = args
         self.kwargs = kwargs

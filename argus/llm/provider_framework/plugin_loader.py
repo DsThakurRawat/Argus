@@ -32,7 +32,7 @@ class ProviderPluginLoader:
     - Remote URLs (with caching)
     """
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.loaded_plugins: dict[str, dict[str, Any]] = {}
         self.plugin_paths: list[str] = []
         self._plugin_cache: dict[str, Any] = {}

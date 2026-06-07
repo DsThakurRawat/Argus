@@ -112,7 +112,7 @@ class LogIngestionInterface(ABC):
     @abstractmethod
     async def get_logs(self) -> AsyncIterator[LogEntry]:
         """Get logs from the source as an async iterator."""
-        pass
+        yield  # type: ignore
 
     @abstractmethod
     def get_config(self) -> SourceConfig:

@@ -93,6 +93,20 @@ class RateLimiter:
             self._record_completion(request_time, False, str(e))
             raise
 
+    def acquire(self) -> None:
+        """Acquire a rate limit slot.
+        
+        Raises:
+            RateLimitExceededError: If rate limit is exceeded
+        """
+        if not self._check_rate_limit():
+            raise RateLimitExceededError(
+                self._config.name,
+                self._config.limit,
+                self._config.window_seconds,
+                len(self._requests)
+            )
+            
     def _check_rate_limit(self) -> bool:
         """Check if request is within rate limit.
         

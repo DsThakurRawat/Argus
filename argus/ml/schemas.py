@@ -53,3 +53,12 @@ class UsageSchema(BaseSchema):
     output_tokens: int
     cost_usd: float
     timestamp: str
+
+
+@dataclass
+class PatternContext(BaseSchema):
+    """Schema for pattern detection context."""
+
+    primary_service: str | None = None
+    affected_services: list[str] | None = None
+    error_patterns: dict[str, Any] | None = None

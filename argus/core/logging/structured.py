@@ -10,6 +10,7 @@ from dataclasses import asdict, dataclass, field
 from enum import Enum
 import json
 import logging
+import os
 import sys
 import threading
 import time
@@ -149,11 +150,13 @@ class StructuredLogger:
 
         # Set level
         if isinstance(level, LogLevel):
-            level = level.value
+            level_val = getattr(logging, level.value.upper(), logging.INFO)
         elif isinstance(level, str):
-            level = getattr(logging, level.upper(), logging.INFO)
+            level_val = getattr(logging, level.upper(), logging.INFO)
+        else:
+            level_val = level
 
-        self.logger.setLevel(level)
+        self.logger.setLevel(level_val)
 
         # Set formatter
         self.formatter = formatter or LogFormat()
@@ -217,7 +220,7 @@ class StructuredLogger:
 
         # Add process/thread information
         if self.formatter.process_id:
-            log_entry["process_id"] = sys.getpid()
+            log_entry["process_id"] = os.getpid()
 
         if self.formatter.thread_id:
             log_entry["thread_id"] = threading.get_ident()
@@ -398,7 +401,8 @@ class StructuredLogger:
         del self._start_times[operation]
 
         log_message = message or f"Operation '{operation}' completed"
-        self.info(log_message, **{f"{operation}_duration": duration})
+        kwargs: dict[str, Any] = {f"{operation}_duration": duration}
+        self.info(log_message, **kwargs)
 
     def measure_time(self, operation: str):
         """Context manager for measuring operation time.
@@ -418,11 +422,13 @@ class StructuredLogger:
             level: Log level.
         """
         if isinstance(level, LogLevel):
-            level = level.value
+            level_val = getattr(logging, level.value.upper(), logging.INFO)
         elif isinstance(level, str):
-            level = getattr(logging, level.upper(), logging.INFO)
+            level_val = getattr(logging, level.upper(), logging.INFO)
+        else:
+            level_val = level
 
-        self.logger.setLevel(level)
+        self.logger.setLevel(level_val)
 
     def add_handler(self, handler: logging.Handler) -> None:
         """Add a handler to the logger.

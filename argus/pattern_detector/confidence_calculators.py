@@ -35,7 +35,7 @@ class ConfidenceCalculator(Protocol):
 class BaseConfidenceCalculator(ABC):
     """Base class for confidence calculators."""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.logger = None  # Will be set by the parent scorer
 
     @abstractmethod

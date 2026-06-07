@@ -424,7 +424,7 @@ def record_bytes_processed(component: str, operation: str, bytes_count: int) -> 
     )
 
 
-def time_operation(component: str, operation: str) -> None:
+def time_operation(component: str, operation: str) -> Any:
     """
     Context manager for timing operations.
 
@@ -445,7 +445,7 @@ class OperationTimer:
         self.start_time = None
         self.success = True
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> Any:
         self.start_time = time.time()
         return self
 

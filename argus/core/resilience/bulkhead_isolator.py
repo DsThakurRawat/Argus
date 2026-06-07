@@ -111,6 +111,23 @@ class BulkheadIsolator:
             with self._lock:
                 self._active_operations.pop(operation_id, None)
 
+    def acquire(self) -> None:
+        """Acquire a bulkhead slot.
+        
+        Raises:
+            ResourceExhaustedError: If resources are exhausted
+        """
+        if not self._semaphore.acquire(timeout=self._config.timeout):
+            raise ResourceExhaustedError(
+                self._config.name,
+                self._config.max_concurrency,
+                self._config.max_concurrency
+            )
+
+    def release(self) -> None:
+        """Release a bulkhead slot."""
+        self._semaphore.release()
+
     def _record_operation(
         self,
         operation_id: str,

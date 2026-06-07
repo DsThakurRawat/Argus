@@ -292,12 +292,12 @@ async def process_log_with_enhanced_pipeline(
             )
         else:
             # Legacy adapter - create a simple remediation plan
-            remediation_response = RemediationPlan(
+            remediation_response = RemediationPlan( # type: ignore
                 plan_name=f"Enhanced fix for {flow_id}",
                 issue_description=f"Enhanced analysis for issue {flow_id}",
                 priority="medium",
                 steps=[
-                    RemediationStep(
+                    RemediationStep( # type: ignore
                         order=1,
                         title="Fix issue",
                         description="Apply fix",
@@ -353,7 +353,7 @@ async def process_log_with_enhanced_pipeline(
         )
 
 
-async def run_pipeline(provider_override: str = None, mock_log_entry: LogEntry = None):
+async def run_pipeline(provider_override: str | None = None, mock_log_entry: LogEntry | None = None):
     # Validate environment variables before proceeding
     validate_environment()
 

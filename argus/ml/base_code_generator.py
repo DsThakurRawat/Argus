@@ -1,6 +1,7 @@
 # argus/ml/base_code_generator.py
 
 from abc import ABC, abstractmethod
+import logging
 import time
 from typing import Any
 import uuid
@@ -20,7 +21,7 @@ from .prompt_context_models import IssueContext, PromptContext
 class BaseCodeGenerator(ABC):
     """Base class for all code generators"""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.context: PromptContext | None = None
         self.validation_rules: list[ValidationRule] = []
         self.code_patterns: list[CodePattern] = []
@@ -171,10 +172,8 @@ class BaseCodeGenerator(ABC):
             return description
 
     @property
-    def logger(self) -> None:
+    def logger(self) -> logging.Logger:
         """Get logger for this generator"""
-        import logging
-
         return logging.getLogger(f"{self.__class__.__name__}")
 
     async def _generate_domain_specific_prompt(

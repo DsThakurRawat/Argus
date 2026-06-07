@@ -129,6 +129,19 @@ class LLMProviderFactory:
         return cls._instances[instance_key]
 
     @classmethod
+    def list_providers(cls) -> list[str]:
+        return list(cls._providers_registry.keys())
+
+    @classmethod
+    def register_provider(cls, name: str, provider_class: type) -> None:
+        cls._providers_registry[name] = provider_class
+
+    @classmethod
+    def unregister_provider(cls, name: str) -> None:
+        if name in cls._providers_registry:
+            del cls._providers_registry[name]
+
+    @classmethod
     def create_providers_from_config(cls, config: LLMConfig) -> dict[str, LLMProvider]:
         """
         Instantiate all providers defined in the global configuration.
@@ -148,10 +161,10 @@ class LLMProviderFactory:
         """
         for name, instance in list(cls._instances.items()):
             try:
-                if hasattr(instance, "client") and hasattr(instance.client, "aclose"):
-                    await instance.client.aclose()
+                if hasattr(instance, "client") and hasattr(instance.client, "aclose"):  # type: ignore
+                    await instance.client.aclose()  # type: ignore
                 elif hasattr(instance, "__aexit__"):
-                    await instance.__aexit__(None, None, None)
+                    await instance.__aexit__(None, None, None)  # type: ignore
                 logger.info(f"Successfully shut down provider: {name}")
             except Exception as e:
                 logger.error(f"Error shutting down provider {name}: {e}")

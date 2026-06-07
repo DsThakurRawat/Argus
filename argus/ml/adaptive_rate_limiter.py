@@ -410,7 +410,7 @@ class AdaptiveRateLimiter:
         return self._last_rate_limit_time
 
     @last_rate_limit_time.setter
-    def last_rate_limit_time(self, value: str) -> None:
+    def last_rate_limit_time(self, value: Any) -> None:
         """Set last rate limit time, accepting datetime or float."""
         if value is None:
             self._last_rate_limit_time = None
@@ -425,7 +425,7 @@ class AdaptiveRateLimiter:
         return self._circuit_opened_at
 
     @circuit_opened_at.setter
-    def circuit_opened_at(self, value: str) -> None:
+    def circuit_opened_at(self, value: Any) -> None:
         """Set circuit opened time, accepting datetime or float."""
         if value is None:
             self._circuit_opened_at = None

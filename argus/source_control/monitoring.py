@@ -143,7 +143,7 @@ class MetricsCollector:
 class HealthChecker:
     """Performs comprehensive health checks on source control providers."""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.health_checks: dict[
             str, Callable[[SourceControlProvider], Awaitable[HealthCheck]]
         ] = {}

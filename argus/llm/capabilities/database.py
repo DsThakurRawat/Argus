@@ -13,7 +13,7 @@ class CapabilityDatabase:
     A database for storing and querying model capabilities.
     """
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self._capabilities: dict[str, ModelCapabilities] = {}
 
     def add_capabilities(self, model_capabilities: ModelCapabilities) -> None:

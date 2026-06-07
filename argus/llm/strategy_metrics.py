@@ -61,7 +61,7 @@ class PerformanceSnapshot:
 class StrategyMetricsCollector:
     """Collects and analyzes strategy performance metrics."""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         """Initialize the metrics collector."""
         self._metrics: dict[str, StrategyMetrics] = {}
         self._performance_history: list[PerformanceSnapshot] = []

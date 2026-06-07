@@ -323,7 +323,7 @@ class ClientFactory:
 class MirascopeClientManager:
     """Manages multiple provider clients with fallback and load balancing."""
 
-    def __init__(self, config_manager: str | None = None) -> None:
+    def __init__(self, config_manager: Any | None = None) -> None:
         """Initialize client manager."""
         if config_manager is None:
             from .mirascope_config import get_config_manager

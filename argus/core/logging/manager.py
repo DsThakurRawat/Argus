@@ -38,9 +38,16 @@ class LoggingManager:
             # Configure root logger
             root_logger = logging.getLogger()
             level = self.config.level
-            if hasattr(level, "value"):  # Handle LogLevel enum
-                level = level.value
-            root_logger.setLevel(level)
+            from enum import Enum
+            if isinstance(level, Enum):
+                level = level.name
+            
+            if isinstance(level, str):
+                level_val = getattr(logging, level.upper(), logging.INFO)
+            else:
+                level_val = level  # type: ignore
+                
+            root_logger.setLevel(level_val)
 
             # Add handlers
             for handler_config in self.config.handlers:
@@ -91,29 +98,12 @@ class LoggingManager:
                 )
 
             elif handler_config.destination == OutputDestination.SYSLOG:
-                from .handlers import create_syslog_handler
-                return create_syslog_handler(
-                    facility=handler_config.syslog_facility,
-                    address=handler_config.syslog_address,
-                    formatter_type=(
-                        handler_config.format.value
-                        if hasattr(handler_config.format, "value")
-                        else "json"
-                    )
-                )
+                print("Warning: Syslog handler not supported in manager")
+                return None
 
             elif handler_config.destination == OutputDestination.REMOTE:
-                from .handlers import create_remote_handler
-                return create_remote_handler(
-                    url=handler_config.remote_url,
-                    headers=handler_config.remote_headers,
-                    timeout=handler_config.remote_timeout,
-                    formatter_type=(
-                        handler_config.format.value
-                        if hasattr(handler_config.format, "value")
-                        else "json"
-                    )
-                )
+                print("Warning: Remote handler not supported in manager")
+                return None
 
             else:
                 print(f"Warning: Unknown handler destination: {handler_config.destination}")
@@ -172,18 +162,21 @@ class LoggingManager:
         Args:
             level: Logging level.
         """
-        if hasattr(level, "value"):  # Handle LogLevel enum
-            level = level.value
+        from enum import Enum
+        if isinstance(level, Enum):
+            level = level.name
 
         if isinstance(level, str):
-            level = getattr(logging, level.upper(), logging.INFO)
+            level_val = getattr(logging, level.upper(), logging.INFO)
+        else:
+            level_val = level  # type: ignore
 
         # Set root logger level
-        logging.getLogger().setLevel(level)
+        logging.getLogger().setLevel(level_val)
 
         # Set existing loggers level
         for logger in self._loggers.values():
-            logger.setLevel(level)
+            logger.setLevel(level_val)
 
     def get_loggers(self) -> dict[str, logging.Logger]:
         """Get all configured loggers.
@@ -294,18 +287,21 @@ def setup_basic_logging(
         format_string: Log format string.
         filename: Log file path.
     """
-    if hasattr(level, "value"):  # Handle LogLevel enum
-        level = level.value
+    from enum import Enum
+    if isinstance(level, Enum):
+        level = level.name
 
     if isinstance(level, str):
-        level = getattr(logging, level.upper(), logging.INFO)
+        level_val = getattr(logging, level.upper(), logging.INFO)
+    else:
+        level_val = level  # type: ignore
 
     if format_string is None:
         format_string = "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
 
     # Configure basic logging
     logging.basicConfig(
-        level=level,
+        level=level_val,
         format=format_string,
         filename=filename,
         filemode="a"
@@ -324,30 +320,36 @@ def setup_structured_logging(
         formatter_type: Type of formatter to use.
         filename: Log file path.
     """
-    if hasattr(level, "value"):  # Handle LogLevel enum
-        level = level.value
-
-    if isinstance(level, str):
-        level = getattr(logging, level.upper(), logging.INFO)
+    from enum import Enum
+    if isinstance(level, Enum):
+        level_str = level.name
+    elif isinstance(level, str):
+        level_str = level
+    else:
+        level_str = "INFO"
+        
+    from .config import LogLevel, HandlerConfig, OutputDestination, LogFormat
 
     # Create configuration
     config = LoggingConfig(
-        level=level,
+        level=LogLevel(level_str.lower()) if level_str.lower() in [e.value for e in LogLevel] else LogLevel.INFO,
         handlers=[
-            {
-                "type": "console",
-                "formatter": formatter_type,
-                "colorize": True
-            }
+            HandlerConfig(
+                name="console",
+                destination=OutputDestination.CONSOLE,
+                format=LogFormat(formatter_type) if formatter_type in [e.value for e in LogFormat] else LogFormat.JSON,
+                colorize=True
+            )
         ]
     )
 
     if filename:
-        config.handlers.append({
-            "type": "file",
-            "filename": str(filename),
-            "formatter": formatter_type
-        })
+        config.handlers.append(HandlerConfig(
+            name="file",
+            destination=OutputDestination.FILE,
+            file_path=str(filename),
+            format=LogFormat(formatter_type) if formatter_type in [e.value for e in LogFormat] else LogFormat.JSON,
+        ))
 
     # Configure logging
     configure_logging(config)

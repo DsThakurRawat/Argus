@@ -157,21 +157,21 @@ class AgentExecutionMetrics(BaseModel):
         default_factory=lambda: datetime.now(UTC),
         description="Execution start time",
     )
-    end_time: datetime | None = Field(None, description="Execution end time")
+    end_time: datetime | None = Field(default=None, description="Execution end time")
     duration_ms: float | None = Field(
-        None, description="Execution duration in milliseconds"
+        default=None, description="Execution duration in milliseconds"
     )
-    tokens_used: int = Field(0, ge=0, description="Number of tokens used")
-    cost_usd: float | None = Field(None, ge=0.0, description="Cost in USD")
+    tokens_used: int = Field(default=0, ge=0, description="Number of tokens used")
+    cost_usd: float | None = Field(default=None, ge=0.0, description="Cost in USD")
     memory_usage_mb: float | None = Field(
-        None, ge=0.0, description="Memory usage in MB"
+        default=None, ge=0.0, description="Memory usage in MB"
     )
     cpu_usage_percent: float | None = Field(
-        None, ge=0.0, le=100.0, description="CPU usage percentage"
+        default=None, ge=0.0, le=100.0, description="CPU usage percentage"
     )
-    api_calls_made: int = Field(0, ge=0, description="Number of API calls made")
-    errors_encountered: int = Field(0, ge=0, description="Number of errors encountered")
-    warnings_generated: int = Field(0, ge=0, description="Number of warnings generated")
+    api_calls_made: int = Field(default=0, ge=0, description="Number of API calls made")
+    errors_encountered: int = Field(default=0, ge=0, description="Number of errors encountered")
+    warnings_generated: int = Field(default=0, ge=0, description="Number of warnings generated")
 
     @field_validator("duration_ms", mode="before")
     @classmethod

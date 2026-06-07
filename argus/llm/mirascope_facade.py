@@ -84,7 +84,7 @@ class RequestContext:
 class AnalyticsCollector:
     """Collects and analyzes integration metrics."""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.metrics = IntegrationMetrics()
         self.request_history: list[dict[str, Any]] = []
         self.logger = logging.getLogger(__name__)

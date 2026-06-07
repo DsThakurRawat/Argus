@@ -63,7 +63,7 @@ class EnhancedCodeGenerationLearning:
             self.generation_history = self.generation_history[-1000:]
 
     def update_learning_data(
-        self, issue_context: str, code_generation_result: str
+        self, issue_context: Any, code_generation_result: dict[str, Any]
     ) -> None:
         """Update learning data based on generation results"""
         domain = issue_context.issue_type.value.split("_")[0]

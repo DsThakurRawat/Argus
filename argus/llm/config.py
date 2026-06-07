@@ -198,7 +198,16 @@ class LLMProviderConfig(BaseModel):
         # Validate that at least one model is configured
         if not self.models:
             from argus.llm.common.enums import ModelType
-            self.models = {"default": ModelConfig(name="default", model_type=ModelType.FAST)}
+            self.models = {
+                "default": ModelConfig(
+                    name="default",
+                    model_type=ModelType.FAST,
+                    cost_per_1k_tokens=0.0,
+                    max_tokens=4000,
+                    performance_score=0.5,
+                    reliability_score=0.5
+                )
+            }
 
         # Validate that models have reasonable cost configurations
         for model_name, model_config in self.models.items():

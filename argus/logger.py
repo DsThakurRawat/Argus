@@ -12,7 +12,7 @@ class JsonFormatter(logging.Formatter):
     Includes standard log record attributes and any extra attributes passed.
     """
 
-    def format(self, record: str) -> None:
+    def format(self, record: logging.LogRecord) -> str:
         """
         Format.
 

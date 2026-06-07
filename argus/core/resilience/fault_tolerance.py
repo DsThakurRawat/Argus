@@ -16,6 +16,7 @@ from .health_checker import HealthCheck, HealthChecker
 from .rate_limiter import RateLimitConfig, RateLimiter
 from .retry_handler import RetryConfig, RetryHandler
 from .timeout_manager import TimeoutConfig, TimeoutManager
+from typing import Any, Generic, TypeVar
 
 T = TypeVar("T")
 
@@ -35,7 +36,7 @@ class FaultToleranceStrategy(Enum):
 
 
 @dataclass
-class FaultToleranceConfig:
+class FaultToleranceConfig(Generic[T]):
     """Fault tolerance configuration.
     
     Attributes:
@@ -63,14 +64,14 @@ class FaultToleranceConfig:
     enable_logging: bool = True
 
 
-class FaultToleranceManager:
+class FaultToleranceManager(Generic[T]):
     """Fault tolerance manager for resilience patterns.
     
     Provides a unified interface for applying multiple
     resilience patterns to operations.
     """
 
-    def __init__(self, config: FaultToleranceConfig):
+    def __init__(self, config: FaultToleranceConfig[T]):
         """Initialize the fault tolerance manager.
         
         Args:
@@ -174,17 +175,19 @@ class FaultToleranceManager:
 
         # Apply rate limiting
         if self._rate_limiter:
-            await self._rate_limiter.acquire()
+            self._rate_limiter.acquire()
 
         # Apply bulkhead isolation
         if self._bulkhead_isolator:
-            await self._bulkhead_isolator.acquire()
+            self._bulkhead_isolator.acquire()
 
         try:
             # Apply timeout
             if self._timeout_manager:
                 result = await self._timeout_manager.execute_with_timeout(
                     self._execute_with_retry_and_circuit_breaker,
+                    None,
+                    None,
                     func,
                     *args,
                     **kwargs
@@ -241,7 +244,7 @@ class FaultToleranceManager:
 
         # Execute with retry if configured
         if self._retry_handler:
-            return await self._retry_handler.execute_with_retry(
+            return await self._retry_handler.execute(
                 self._execute_with_circuit_breaker,
                 func,
                 *args,
@@ -267,7 +270,7 @@ class FaultToleranceManager:
             Function result
         """
         if self._circuit_breaker:
-            return await self._circuit_breaker.execute(func, *args, **kwargs)
+            return await self._circuit_breaker.call(func, *args, **kwargs)
         else:
             if asyncio.iscoroutinefunction(func):
                 return await func(*args, **kwargs)
@@ -333,9 +336,9 @@ def fault_tolerance(
         manager = FaultToleranceManager(config)
 
         if asyncio.iscoroutinefunction(func):
-            async def async_wrapper(*args, **kwargs) -> T:
+            async def async_wrapper(*args, **kwargs) -> Any:
                 return await manager.execute_with_fault_tolerance(func, *args, **kwargs)
-            return async_wrapper
+            return async_wrapper  # type: ignore
         else:
             def sync_wrapper(*args, **kwargs) -> T:
                 # For sync functions, we need to run in event loop
@@ -385,8 +388,8 @@ def with_retry(
         strategy=FaultToleranceStrategy.RETRY_ONLY,
         retry_config=RetryConfig(
             max_attempts=max_attempts,
-            delay=delay,
-            backoff_multiplier=backoff_multiplier,
+            base_delay=delay,
+            exponential_base=backoff_multiplier,
             max_delay=max_delay,
             jitter=jitter
         )
@@ -431,6 +434,6 @@ def with_timeout(timeout: float) -> Callable[[Callable[..., T]], Callable[..., T
     """
     config = FaultToleranceConfig(
         strategy=FaultToleranceStrategy.TIMEOUT_ONLY,
-        timeout_config=TimeoutConfig(timeout=timeout)
+        timeout_config=TimeoutConfig(default_timeout=timeout)
     )
     return fault_tolerance(config)

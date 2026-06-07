@@ -7,7 +7,7 @@ test coverage, security, performance, documentation, and style.
 """
 
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
 from pathlib import Path
 from typing import Any
@@ -24,14 +24,8 @@ class ValidationResult:
     success: bool
     message: str
     details: dict[str, Any]
-    errors: list[str] = None
-    warnings: list[str] = None
-
-    def __post_init__(self):
-        if self.errors is None:
-            self.errors = []
-        if self.warnings is None:
-            self.warnings = []
+    errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
 
 class StaticAnalysisValidator:

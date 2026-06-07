@@ -87,7 +87,7 @@ class ModelManager:
         provider_factory: LLMProviderFactory,
         model_registry: ModelRegistry,
         max_concurrent_requests: int = 10,
-    ):
+    ) -> None:
         """
         Initialize the model manager.
 

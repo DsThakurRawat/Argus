@@ -21,7 +21,7 @@ from .monitoring import HealthCheck, HealthStatus
 class HealthCheckRegistry:
     """Registry for health check implementations."""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.checks: dict[
             str, Callable[[SourceControlProvider], Awaitable[HealthCheck]]
         ] = {}
@@ -377,7 +377,7 @@ async def check_rate_limit_status(provider: SourceControlProvider) -> HealthChec
 class ComprehensiveHealthChecker:
     """Comprehensive health checker that runs all registered checks."""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         self.registry = health_check_registry
         self.logger = logging.getLogger("ComprehensiveHealthChecker")
 

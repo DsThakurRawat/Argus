@@ -21,7 +21,7 @@ class LogQualityValidator:
     def __init__(self, thresholds: QualityThresholds | None = None) -> None:
         self.thresholds = thresholds or QualityThresholds()
 
-    def _extract_message_pattern(self, message: str) -> str:
+    def _extract_message_pattern(self, message: str | None) -> str:
         """Extracts and normalizes a log message into a general pattern."""
         if not message:
             return ""

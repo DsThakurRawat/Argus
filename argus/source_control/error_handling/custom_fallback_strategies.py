@@ -104,7 +104,7 @@ class CachedResponseStrategy(FallbackStrategyBase):
 class SimplifiedOperationStrategy(FallbackStrategyBase):
     """Fallback to simplified versions of operations."""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         super().__init__("simplified_operation", priority=2)
 
     async def can_handle(

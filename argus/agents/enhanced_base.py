@@ -305,12 +305,12 @@ class EnhancedBaseAgent(Generic[T]):
 
             # Create strategy context
             strategy_context = StrategyContext(
-                task_type=self.model_type_preference,
+                task_type=self.model_type_preference.value if self.model_type_preference else "smart",
                 max_cost=self.max_cost,
                 min_performance=self.min_performance,
                 min_quality=self.min_quality,
                 business_hours_only=self.business_hours_only,
-                provider_preference=self.provider_preference,
+                provider_preference=[p.value for p in self.provider_preference] if self.provider_preference else None,
             )
 
             # Select model using strategy manager

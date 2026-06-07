@@ -113,7 +113,7 @@ class PerformanceRepositoryAnalyzer:
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
             # Process results and handle exceptions
-            def safe_result(result: str, default: str) -> None:
+            def safe_result(result: Any, default: Any) -> Any:
                 """
                 Safe Result.
 

@@ -390,7 +390,7 @@ class PromptOptimizer:
     """Prompt optimization capabilities."""
 
     def __init__(
-        self, prompt_manager: PromptManager, llm_service: str | None = None
+        self, prompt_manager: PromptManager, llm_service: Any | None = None
     ) -> None:
         self.prompt_manager = prompt_manager
         self.llm_service = llm_service

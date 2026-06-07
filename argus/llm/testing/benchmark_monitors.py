@@ -21,7 +21,7 @@ except ImportError:
 class BaseMonitor:
     """Base class for system monitors."""
 
-    def __init__(self) -> Any:
+    def __init__(self) -> None:
         """Initialize the monitor."""
         self.monitoring = False
 

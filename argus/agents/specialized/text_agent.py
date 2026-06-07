@@ -15,7 +15,7 @@ from ...llm.common.enums import ProviderType
 from ...llm.config import LLMConfig
 from ...llm.strategy_manager import OptimizationGoal
 from ..enhanced_base import EnhancedBaseAgent
-from ..response_models import TextResponse
+from ..response_models import TextResponse, StatusCode
 
 logger = logging.getLogger(__name__)
 
@@ -174,6 +174,18 @@ Guidelines:
             return TextResponse(
                 text="",
                 confidence=0.0,
+                agent_id="text-agent-1",
+                agent_type="text_generation",
+                status=StatusCode.ERROR,
+                execution_time_ms=None,
+                model_used=None,
+                provider_used=None,
+                cost_usd=None,
+                word_count=0,
+                character_count=0,
+                language=None,
+                sentiment=None,
+                quality_score=0.0,
             )
 
     async def generate_summary(

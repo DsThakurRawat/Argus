@@ -234,7 +234,7 @@ class ModelMixer:
         model_registry: ModelRegistry,
         cost_manager: IntegratedCostManager | None = None,
         max_concurrent_requests: int = MAX_CONCURRENT_REQUESTS,
-    ):
+    ) -> None:
         """Initialize the model mixer."""
         self.provider_factory = provider_factory
         self.model_registry = model_registry

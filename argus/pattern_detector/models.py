@@ -22,7 +22,7 @@ class LogEntry(BaseModel):
     error_message: str | None = None
     raw_data: dict[str, Any]
 
-    def __init__(self, **data: str) -> None:
+    def __init__(self, **data: Any) -> None:
         data = self._process_timestamp(data)
         data = self._process_severity(data)
         data = self._process_service_name(data)

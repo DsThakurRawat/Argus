@@ -16,7 +16,7 @@ from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
 from ...llm.base import ModelType
 from ...llm.config import LLMConfig
-from ..ml_analysis_agent import MLAnalysisAgent
+from ..ml_analysis_agent import MLAnalysisAgent, EnhancedAnalysisConfig
 from ..prompt_context_models import IssueContext, RepositoryContext
 
 logger = logging.getLogger(__name__)
@@ -92,14 +92,13 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
         super().__init__(component_id, name, config)
 
         # Initialize analysis agent with default config
-        llm_config = LLMConfig(
-            default_provider="gemini",
-            default_model_type=ModelType.SMART,
-            enable_fallback=True,
-            enable_monitoring=True,
-        )
         self.analysis_agent = MLAnalysisAgent(
-            llm_config=llm_config, agent_name="workflow_analysis_agent"
+            config=EnhancedAnalysisConfig(
+                project_id="argus",
+                location="global",
+                main_model="gemini-1.5-pro-001",
+                meta_model="gemini-1.5-flash-001"
+            )
         )
 
         # Analysis tracking
@@ -155,7 +154,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
 
             # Perform analysis using the enhanced analysis agent
             analysis_response = await self.analysis_agent.analyze_issue(
-                triage_data=triage_data,
+                triage_packet=triage_data,
                 historical_logs=historical_logs,
                 configs=configs,
                 flow_id=workflow_id,
@@ -257,7 +256,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
 
             # Perform pattern analysis using the enhanced analysis agent
             analysis_response = await self.analysis_agent.analyze_issue(
-                triage_data=triage_data,
+                triage_packet=triage_data,
                 historical_logs=historical_logs,
                 configs=configs,
                 flow_id=workflow_id,

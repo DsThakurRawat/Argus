@@ -15,7 +15,17 @@ import logging
 from typing import Any
 
 from ..core.exceptions import ServiceError
-from .service_base import BaseService, ServiceConfig, ServiceHealth, ServiceStatus
+from .service_base import ServiceConfig, ServiceHealth, ServiceStatus
+from typing import Protocol
+
+class ManagedService(Protocol):
+    service_id: str
+    async def initialize(self) -> None: ...
+    async def shutdown(self) -> None: ...
+    async def check_health(self) -> ServiceHealth: ...
+    async def process_request(self, request: Any, context: Any = None) -> Any: ...
+
+BaseService = ManagedService  # Alias to minimize changes
 
 # from .service_implementations import (
 #     CacheService,
