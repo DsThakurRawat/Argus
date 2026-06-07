@@ -240,7 +240,7 @@ class RateLimiter:
         """
         return self.get_current_requests() < self._config.limit
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset the rate limiter.
         
         Clears all history and requests.

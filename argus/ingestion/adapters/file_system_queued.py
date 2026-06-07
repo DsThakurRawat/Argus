@@ -74,7 +74,7 @@ class QueuedFileSystemAdapter(LogIngestionInterface):
         self._file_watcher_task: asyncio.Task | None = None
         self._queue_processor_task: asyncio.Task | None = None
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the file system adapter and memory queue."""
         try:
             # Validate file path

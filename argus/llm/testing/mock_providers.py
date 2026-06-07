@@ -151,7 +151,7 @@ class MockLLMProvider(LLMProvider):
             ),
         }
 
-    def reset_stats(self) -> None:
+    def reset_stats(self) -> Any:
         """Reset provider statistics."""
         self.request_count = 0
         self.total_tokens = 0

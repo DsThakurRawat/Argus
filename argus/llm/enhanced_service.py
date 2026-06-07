@@ -1054,7 +1054,7 @@ IMPORTANT:
 
     # Service Manager Integration Methods
 
-    async def initialize_services(self) -> None:
+    async def initialize_services(self) -> Any:
         """Initialize the service manager and all services."""
         await self.service_manager.initialize()
         self.logger.info("All services initialized successfully")

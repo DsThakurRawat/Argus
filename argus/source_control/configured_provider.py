@@ -8,6 +8,8 @@ from typing import Any
 
 from ..config.source_control_global import SourceControlGlobalConfig
 from ..config.source_control_repositories import RepositoryConfig
+from ..config.source_control_credentials import CredentialConfig
+from ..config.source_control_remediation import RemediationStrategyConfig
 from .base_implementation import BaseSourceControlProvider
 
 

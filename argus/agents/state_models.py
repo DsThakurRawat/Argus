@@ -90,7 +90,7 @@ class StateSnapshot(BaseModel, Generic[T]):
     )
     state_type: str = Field(..., description="Type of state being captured")
     data: T = Field(..., description="State data")
-    version: str = Field("1.0", description="State schema version")
+    version: str = Field(default="1.0", description="State schema version")
     metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
     )
@@ -175,7 +175,7 @@ class AgentExecutionMetrics(BaseModel):
 
     @field_validator("duration_ms", mode="before")
     @classmethod
-    def calculate_duration(cls: str, v: str, info: str) -> None:
+    def calculate_duration(cls: Any, v: Any, info: Any) -> Any:
         """Calculate duration from start and end times."""
         if hasattr(info, "data"):
             data = info.data
@@ -198,7 +198,7 @@ class AgentExecutionState(BaseModel):
     )
     context: AgentExecutionContext = Field(..., description="Execution context")
     metrics: AgentExecutionMetrics = Field(
-        default_factory=AgentExecutionMetrics, description="Execution metrics"
+        default_factory=lambda: AgentExecutionMetrics(), description="Execution metrics"
     )
     state_history: list[StateTransition] = Field(
         default_factory=list, description="History of state transitions"
@@ -560,6 +560,13 @@ class StateManager(BaseModel):
         to_state: AgentState | WorkflowState,
     ) -> bool:
         """Validate if a state transition is allowed."""
+        if isinstance(to_state, AgentState):
+            if to_state in (AgentState.CANCELLED, AgentState.PAUSED):
+                return True
+        elif isinstance(to_state, WorkflowState):
+            if to_state == WorkflowState.CANCELLED:
+                return True
+
         # Define valid transitions
         valid_transitions = {
             # Agent state transitions
@@ -569,8 +576,6 @@ class StateManager(BaseModel):
             (AgentState.WAITING, AgentState.PROCESSING),
             (AgentState.PROCESSING, AgentState.COMPLETED),
             (AgentState.PROCESSING, AgentState.FAILED),
-            (AgentState.ANY, AgentState.CANCELLED),
-            (AgentState.ANY, AgentState.PAUSED),
             (AgentState.PAUSED, AgentState.PROCESSING),
             # Workflow state transitions
             (WorkflowState.CREATED, WorkflowState.STARTED),
@@ -579,7 +584,6 @@ class StateManager(BaseModel):
             (WorkflowState.PAUSED, WorkflowState.RUNNING),
             (WorkflowState.RUNNING, WorkflowState.COMPLETED),
             (WorkflowState.RUNNING, WorkflowState.FAILED),
-            (WorkflowState.ANY, WorkflowState.CANCELLED),
             (WorkflowState.FAILED, WorkflowState.ROLLED_BACK),
         }
 

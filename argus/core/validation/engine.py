@@ -173,7 +173,7 @@ class ValidationEngine:
         # Run validation
         return self.validate(data, field_context)
 
-    def clear_cache(self) -> None:
+    def clear_cache(self) -> Any:
         """Clear the validation cache."""
         with self._cache_lock:
             self._cache.clear()

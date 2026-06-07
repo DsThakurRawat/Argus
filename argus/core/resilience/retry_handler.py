@@ -240,7 +240,7 @@ class RetryHandler:
                 return self._retry_history.copy()
             return self._retry_history[-limit:]
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset the retry handler.
         
         Clears all counters and history.

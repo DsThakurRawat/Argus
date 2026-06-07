@@ -131,7 +131,7 @@ class CircuitBreaker:
 
         return time.time() - self._last_failure_time >= self.recovery_timeout
 
-    def _open_circuit(self) -> None:
+    def _open_circuit(self) -> Any:
         """Open the circuit breaker."""
         self._state = CircuitState.OPEN
         self._last_failure_time = time.time()

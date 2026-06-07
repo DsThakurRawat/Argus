@@ -76,7 +76,7 @@ class ServiceResult:
     error_message: str | None = None
     metadata: dict[str, Any] | None = None
 
-    def __post_init__(self) -> None:
+    def __post_init__(self) -> Any:
         if self.metadata is None:
             self.metadata = {}
 

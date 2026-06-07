@@ -86,7 +86,7 @@ class FaultToleranceManager:
         self._metrics: dict[str, Any] = {}
         self._setup_resilience_patterns()
 
-    def _setup_resilience_patterns(self) -> None:
+    def _setup_resilience_patterns(self) -> Any:
         """Setup resilience patterns based on configuration."""
         if self._config.strategy == FaultToleranceStrategy.NONE:
             return
@@ -293,7 +293,7 @@ class FaultToleranceManager:
         """
         return self._metrics.copy()
 
-    def reset_metrics(self) -> None:
+    def reset_metrics(self) -> Any:
         """Reset metrics."""
         self._metrics.clear()
 

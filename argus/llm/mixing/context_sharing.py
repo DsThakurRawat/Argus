@@ -232,7 +232,7 @@ class ContextManager:
 
         return base_prompt
 
-    def cleanup_expired_contexts(self) -> None:
+    def cleanup_expired_contexts(self) -> Any:
         """Remove expired context sessions."""
         cutoff_time = datetime.now() - self.max_context_age
         expired_sessions = []

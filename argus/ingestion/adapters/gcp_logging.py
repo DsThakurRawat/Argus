@@ -56,7 +56,7 @@ class GCPLoggingAdapter(LogIngestionInterface):
         self._total_logs_processed = 0
         self._total_logs_failed = 0
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the Cloud Logging consumer."""
         if self._is_running:
             return

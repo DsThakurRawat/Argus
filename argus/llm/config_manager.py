@@ -60,7 +60,7 @@ class ConfigManager:
         # Load initial configuration
         self._load_configuration()
 
-    def _load_configuration(self) -> None:
+    def _load_configuration(self) -> Any:
         """Load configuration from all available sources."""
         try:
             # Start with default configuration

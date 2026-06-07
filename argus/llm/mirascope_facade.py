@@ -84,7 +84,7 @@ class RequestContext:
 class AnalyticsCollector:
     """Collects and analyzes integration metrics."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         self.metrics = IntegrationMetrics()
         self.request_history: list[dict[str, Any]] = []
         self.logger = logging.getLogger(__name__)
@@ -256,7 +256,7 @@ class MirascopeIntegrationFacade:
         self.status = IntegrationStatus.INITIALIZING
         self._initialize()
 
-    def _initialize(self) -> None:
+    def _initialize(self) -> Any:
         """Initialize the integration."""
         try:
             # Validate configuration

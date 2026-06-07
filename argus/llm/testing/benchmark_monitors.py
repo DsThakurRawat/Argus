@@ -1,3 +1,4 @@
+from typing import Any
 # argus/llm/testing/benchmark_monitors.py
 
 """
@@ -20,7 +21,7 @@ except ImportError:
 class BaseMonitor:
     """Base class for system monitors."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         """Initialize the monitor."""
         self.monitoring = False
 

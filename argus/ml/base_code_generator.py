@@ -20,7 +20,7 @@ from .prompt_context_models import IssueContext, PromptContext
 class BaseCodeGenerator(ABC):
     """Base class for all code generators"""
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         self.context: PromptContext | None = None
         self.validation_rules: list[ValidationRule] = []
         self.code_patterns: list[CodePattern] = []

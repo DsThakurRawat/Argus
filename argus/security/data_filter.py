@@ -58,7 +58,7 @@ class DataFilter:
         self._compiled_patterns: dict[str, re.Pattern] = {}
         self._compile_patterns()
 
-    def _initialize_default_rules(self) -> None:
+    def _initialize_default_rules(self) -> Any:
         """Initialize default filtering rules."""
         default_rules = [
             # API Keys

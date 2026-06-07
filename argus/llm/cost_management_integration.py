@@ -292,7 +292,7 @@ class IntegratedCostManager:
             for alert in alerts
         ]
 
-    async def refresh_pricing_data(self) -> None:
+    async def refresh_pricing_data(self) -> Any:
         """Refresh pricing data from all providers."""
         if self.cost_manager:
             await self.cost_manager._refresh_pricing()

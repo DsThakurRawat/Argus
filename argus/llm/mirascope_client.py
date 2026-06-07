@@ -91,7 +91,7 @@ class ClientResponse:
     cost_usd: float | None = None
     metadata: dict[str, Any] | None = None
 
-    def __post_init__(self) -> None:
+    def __post_init__(self) -> Any:
         if self.metadata is None:
             self.metadata = {}
 
@@ -145,7 +145,7 @@ class BaseProviderClient(ABC):
 class AnthropicClient(BaseProviderClient):
     """Client for Anthropic provider."""
 
-    def _initialize_client(self) -> None:
+    def _initialize_client(self) -> Any:
         """Initialize Anthropic client."""
         if not MIRASCOPE_AVAILABLE:
             self.logger.warning("Mirascope not available, using fallback")

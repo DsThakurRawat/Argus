@@ -69,7 +69,7 @@ class BudgetManager:
         # Initialize current period
         self._initialize_period()
 
-    def _initialize_period(self) -> None:
+    def _initialize_period(self) -> Any:
         """Initialize the current budget period."""
         now = datetime.now()
 
@@ -121,7 +121,7 @@ class BudgetManager:
         now = datetime.now()
         return self.period_end is not None and now >= self.period_end
 
-    def _reset_period(self) -> None:
+    def _reset_period(self) -> Any:
         """Reset the budget period."""
         if self.config.rollover_unused:
             current_spend = self.get_current_spend()

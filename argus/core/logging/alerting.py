@@ -128,7 +128,7 @@ class AlertManager:
                 self._rules[rule.name] = rule
         except Exception as e:
             raise AlertingError(
-                f"Failed to add alert rule: {e!s}", rule_name=rule.name
+                f"Failed to add alert rule: {e!s}", alert_name=rule.name
             ) from e
 
     def remove_rule(self, rule_name: str) -> None:
@@ -386,7 +386,7 @@ class AlertManager:
         except ValueError:
             pass  # Handler not found
 
-    def enable(self) -> None:
+    def enable(self) -> Any:
         """Enable alerting."""
         self._enabled = True
 

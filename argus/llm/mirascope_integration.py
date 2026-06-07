@@ -275,7 +275,7 @@ class PromptManager:
 
         return list(self.prompts[prompt_id].versions.keys())
 
-    def _load_prompts(self) -> None:
+    def _load_prompts(self) -> Any:
         """Load prompts from storage."""
         prompts_file = self.storage_path / "prompts.json"
         if prompts_file.exists():

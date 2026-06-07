@@ -1,3 +1,4 @@
+from typing import Any
 # argus/ingestion/queues/memory_queue.py
 
 """
@@ -58,7 +59,7 @@ class MemoryQueue:
         self._flush_task: asyncio.Task | None = None
         self._metrics_task: asyncio.Task | None = None
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the queue and background tasks."""
         if self._flush_task is None:
             self._flush_task = asyncio.create_task(self._flush_loop())

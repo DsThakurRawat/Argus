@@ -1,3 +1,4 @@
+from typing import Any
 # argus/config/app_config.py
 
 """
@@ -25,7 +26,7 @@ class ServiceConfig(BaseConfig):
 
     @field_validator("project_id")
     @classmethod
-    def validate_project_id(cls: str, v: str) -> None:
+    def validate_project_id(cls: Any, v: Any) -> Any:
         """
         Validate Project Id.
 
@@ -40,7 +41,7 @@ class ServiceConfig(BaseConfig):
 
     @field_validator("subscription_id")
     @classmethod
-    def validate_subscription_id(cls: str, v: str) -> None:
+    def validate_subscription_id(cls: Any, v: Any) -> Any:
         """
         Validate Subscription Id.
 
@@ -167,7 +168,7 @@ class AppConfig(BaseConfig):
 
     @field_validator("services")
     @classmethod
-    def validate_services(cls: str, v: str) -> None:
+    def validate_services(cls: Any, v: Any) -> Any:
         """Validate service configurations."""
         if not v:
             raise ValueError("At least one service must be configured")
@@ -180,7 +181,7 @@ class AppConfig(BaseConfig):
 
     @field_validator("services")
     @classmethod
-    def validate_services_with_source_control(cls: str, v: str) -> None:
+    def validate_services_with_source_control(cls: Any, v: Any) -> Any:
         """Validate service configurations and source control settings."""
         for service in v:
             if service.source_control and service.source_control.repositories:

@@ -43,7 +43,7 @@ class CapabilityConfig:
 
         self._load_config()
 
-    def _load_config(self) -> None:
+    def _load_config(self) -> Any:
         """Load capability definitions from the configuration file."""
         try:
             if not self.config_path.exists():

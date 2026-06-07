@@ -460,7 +460,7 @@ Focus on providing actionable, specific solutions with actual code when applicab
         """Get the current conversation context."""
         return self._conversation_context.copy()
 
-    def clear_conversation_context(self) -> None:
+    def clear_conversation_context(self) -> Any:
         """Clear the conversation context."""
         self._conversation_context.clear()
 

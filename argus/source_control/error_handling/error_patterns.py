@@ -52,7 +52,7 @@ class PatternMatcher(Protocol):
         """Match patterns against text."""
         ...
 
-    def compile_patterns(self) -> None:
+    def compile_patterns(self) -> Any:
         """Compile patterns for performance."""
         ...
 

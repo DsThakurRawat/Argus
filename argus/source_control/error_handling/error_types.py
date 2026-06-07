@@ -1,3 +1,4 @@
+from typing import Any
 # argus/source_control/error_handling/error_types.py
 
 """
@@ -186,7 +187,7 @@ class UnknownErrors(Enum):
 class ErrorTypeRegistry:
     """Registry for managing error type metadata and classification."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         self._metadata: dict[str, ErrorTypeMetadata] = {}
         self._category_mappings: dict[ErrorCategory, set[str]] = {
             category: set() for category in ErrorCategory

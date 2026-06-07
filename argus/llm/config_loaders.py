@@ -359,7 +359,7 @@ class ProgrammaticConfigLoader(BaseConfigLoader):
 class ConfigLoaderManager:
     """Manager for multiple configuration loaders."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         """Initialize the loader manager."""
         self.loaders: list[BaseConfigLoader] = []
         self._results: list[LoaderResult] = []

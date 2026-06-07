@@ -113,7 +113,7 @@ class ModelManager:
 
         logger.info("ModelManager initialized with specialized configurations")
 
-    def _initialize_specialized_configs(self) -> None:
+    def _initialize_specialized_configs(self) -> Any:
         """Initialize specialized model configurations for different task types."""
         self.specialized_configs = {
             TaskType.CODE_GENERATION: self._create_code_generation_configs(),

@@ -42,7 +42,7 @@ class LoggingMetrics:
     handler_calls: dict[str, int] = field(default_factory=dict)
     handler_errors: dict[str, int] = field(default_factory=dict)
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset all metrics to zero."""
         self.total_logs = 0
         self.debug_logs = 0

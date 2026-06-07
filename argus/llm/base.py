@@ -88,7 +88,7 @@ class CircuitBreaker:
         self.last_failure_time = None
         self.state = "closed"  # closed, open, half-open
 
-    def call_succeeded(self) -> None:
+    def call_succeeded(self) -> Any:
         """Record a successful call."""
         self.failure_count = 0
         self.state = "closed"

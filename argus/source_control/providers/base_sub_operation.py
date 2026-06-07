@@ -59,7 +59,7 @@ class BaseSubOperation(ABC):
         self._error_count = 0
         self._total_duration = 0.0
 
-    def _setup_logging(self) -> None:
+    def _setup_logging(self) -> Any:
         """Setup operation-specific logging."""
         if self.config.log_level:
             level = getattr(logging, self.config.log_level.upper(), logging.INFO)

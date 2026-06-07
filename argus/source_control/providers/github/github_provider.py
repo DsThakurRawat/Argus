@@ -59,7 +59,7 @@ class GitHubProvider(BaseSourceControlProvider):
         self.error_handling_factory = ErrorHandlingFactory()
         self.error_handling_components: dict[str, Any] | None = None
 
-    async def _setup_client(self) -> None:
+    async def _setup_client(self) -> Any:
         """Set up GitHub client and repository."""
         try:
             # Initialize GitHub client

@@ -356,7 +356,7 @@ class PerformanceMonitor:
             else:
                 self._metrics.clear()
 
-    def enable(self) -> None:
+    def enable(self) -> Any:
         """Enable performance monitoring."""
         self._enabled = True
 

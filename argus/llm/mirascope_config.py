@@ -177,7 +177,7 @@ class ConfigurationManager:
         self.logger = logging.getLogger(__name__)
         self._load_config()
 
-    def _load_config(self) -> None:
+    def _load_config(self) -> Any:
         """Load configuration from file or create default."""
         if self.config_path.exists():
             try:

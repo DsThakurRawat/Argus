@@ -48,7 +48,7 @@ class KubernetesAdapter(LogIngestionInterface):
         self._last_error = None
         self._watched_pods = set()
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the Kubernetes adapter."""
         if not KUBERNETES_AVAILABLE or config is None or client is None:
             raise SourceConnectionError("Kubernetes client not available")

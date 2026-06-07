@@ -1,3 +1,4 @@
+from typing import Any
 # argus/config/base.py
 
 """
@@ -54,7 +55,7 @@ class BaseConfig(BaseSettings):
 
     @field_validator("schema_version")
     @classmethod
-    def validate_schema_version(cls: str, v: str) -> None:
+    def validate_schema_version(cls: Any, v: Any) -> Any:
         """Validate configuration schema version."""
         supported_versions = ["1.0.0"]
         if v not in supported_versions:
@@ -65,7 +66,7 @@ class BaseConfig(BaseSettings):
 
     @field_validator("log_level")
     @classmethod
-    def validate_log_level(cls: str, v: str) -> None:
+    def validate_log_level(cls: Any, v: Any) -> Any:
         """Validate log level."""
         valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         if v.upper() not in valid_levels:

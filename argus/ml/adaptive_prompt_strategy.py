@@ -73,7 +73,7 @@ class PromptCache:
 
         return (time.time() - entry["timestamp"]) < self.ttl_seconds
 
-    def clear(self) -> None:
+    def clear(self) -> Any:
         """Clear all cached prompts."""
         self.cache.clear()
         self.logger.info("[CACHE] Cleared all cached prompts")

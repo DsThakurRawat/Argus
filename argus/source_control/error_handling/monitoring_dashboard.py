@@ -52,7 +52,7 @@ class MonitoringDashboard:
         self.self_healing_manager = self_healing_manager
         self.logger.info("Registered self-healing manager")
 
-    async def refresh_dashboard_data(self) -> None:
+    async def refresh_dashboard_data(self) -> Any:
         """Refresh all dashboard data."""
         self.logger.info("Refreshing dashboard data")
 

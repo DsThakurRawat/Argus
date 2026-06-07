@@ -151,7 +151,7 @@ class WorkflowMetricsCollector:
             self.logger.error(f"Failed to get workflow history: {e}")
             return []
 
-    async def clear_workflow_history(self) -> None:
+    async def clear_workflow_history(self) -> Any:
         """Clear workflow execution history."""
         try:
             self.workflow_history.clear()

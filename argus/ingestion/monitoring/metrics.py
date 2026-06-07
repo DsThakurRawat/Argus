@@ -85,7 +85,7 @@ class MetricsCollector:
 
         logger.info("MetricsCollector initialized")
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the metrics collector and background tasks."""
         if self._running:
             return

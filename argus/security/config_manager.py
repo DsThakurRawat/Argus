@@ -89,7 +89,7 @@ class SecureConfigManager:
         """Create a secure hash of the API key."""
         return hashlib.sha256(key.encode()).hexdigest()
 
-    async def _load_keys(self) -> None:
+    async def _load_keys(self) -> Any:
         """Load API keys from storage."""
         try:
             if self._secrets_client and self.secrets_manager_secret_name:

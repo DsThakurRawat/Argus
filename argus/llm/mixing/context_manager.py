@@ -38,7 +38,7 @@ class ContextData:
             return False
         return time.time() > self.expires_at
 
-    def touch(self) -> None:
+    def touch(self) -> Any:
         """Update access information."""
         self.access_count += 1
         self.last_accessed = time.time()

@@ -85,7 +85,7 @@ class HealthChecker:
 
         logger.info("HealthChecker initialized")
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the health checker."""
         if self._running:
             return

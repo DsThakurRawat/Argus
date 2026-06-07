@@ -66,7 +66,7 @@ class AsyncCircuitBreaker:
         return func
 
     @property
-    def state(self) -> None:
+    def state(self) -> Any:
         """
         State.
 
@@ -76,7 +76,7 @@ class AsyncCircuitBreaker:
         return "closed"
 
     @property
-    def failure_count(self) -> None:
+    def failure_count(self) -> Any:
         """
         Failure Count.
 

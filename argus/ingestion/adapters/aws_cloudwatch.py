@@ -47,7 +47,7 @@ class AWSCloudWatchAdapter(LogIngestionInterface):
         self._error_count = 0
         self._last_error = None
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the AWS CloudWatch adapter."""
         try:
             # Initialize AWS client

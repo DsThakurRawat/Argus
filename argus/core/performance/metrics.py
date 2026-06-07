@@ -154,7 +154,7 @@ class MetricsCollector:
         self._cleanup_task: asyncio.Task | None = None
         self._start_cleanup_task()
 
-    def _start_cleanup_task(self) -> None:
+    def _start_cleanup_task(self) -> Any:
         """Start the background cleanup task."""
         if self._cleanup_task is None or self._cleanup_task.done():
             self._cleanup_task = asyncio.create_task(self._cleanup_old_metrics())

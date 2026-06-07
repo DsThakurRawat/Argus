@@ -95,7 +95,7 @@ class CacheEntry:
         """Check if cache entry has expired."""
         return time.time() - self.created_at > self.ttl
 
-    def touch(self) -> None:
+    def touch(self) -> Any:
         """Update access information."""
         self.accessed_at = time.time()
         self.access_count += 1
@@ -616,7 +616,7 @@ class PerformanceOptimizer:
             ],
         }
 
-    def reset_performance_metrics(self) -> None:
+    def reset_performance_metrics(self) -> Any:
         """Reset all performance metrics."""
         self.global_metrics = PerformanceMetrics()
         self.load_balancer = LoadBalancer()

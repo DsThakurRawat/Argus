@@ -263,7 +263,7 @@ class HealthChecker:
             if len(self._health_history) > self._max_history:
                 self._health_history = self._health_history[-self._max_history:]
 
-    def start_monitoring(self) -> None:
+    def start_monitoring(self) -> Any:
         """Start background health monitoring."""
         if self._monitoring_thread and self._monitoring_thread.is_alive():
             return
@@ -385,7 +385,7 @@ class HealthChecker:
         else:
             return self._get_overall_status() == HealthStatus.HEALTHY
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset the health checker.
         
         Clears all history and resets status.

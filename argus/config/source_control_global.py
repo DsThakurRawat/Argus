@@ -1,3 +1,4 @@
+from typing import Any
 # argus/config/source_control_global.py
 
 """
@@ -119,7 +120,7 @@ class SourceControlGlobalConfig(BaseConfig):
 
     @field_validator("default_provider")
     @classmethod
-    def validate_default_provider(cls: str, v: str) -> None:
+    def validate_default_provider(cls: Any, v: Any) -> Any:
         """Validate default provider type."""
         valid_providers = ["github", "gitlab", "local"]
         if v not in valid_providers:
@@ -128,7 +129,7 @@ class SourceControlGlobalConfig(BaseConfig):
 
     @field_validator("max_concurrent_operations")
     @classmethod
-    def validate_max_concurrent_operations(cls: str, v: str) -> None:
+    def validate_max_concurrent_operations(cls: Any, v: Any) -> Any:
         """Validate maximum concurrent operations."""
         if v < 1:
             raise ValueError("Maximum concurrent operations must be at least 1")
@@ -138,7 +139,7 @@ class SourceControlGlobalConfig(BaseConfig):
 
     @field_validator("rate_limit_requests_per_minute")
     @classmethod
-    def validate_rate_limit(cls: str, v: str) -> None:
+    def validate_rate_limit(cls: Any, v: Any) -> Any:
         """Validate rate limit settings."""
         if v < 1:
             raise ValueError("Rate limit must be at least 1 request per minute")
@@ -148,7 +149,7 @@ class SourceControlGlobalConfig(BaseConfig):
 
     @field_validator("rate_limit_burst_size")
     @classmethod
-    def validate_burst_size(cls: str, v: str) -> None:
+    def validate_burst_size(cls: Any, v: Any) -> Any:
         """Validate burst size."""
         if v < 1:
             raise ValueError("Burst size must be at least 1")
@@ -157,7 +158,7 @@ class SourceControlGlobalConfig(BaseConfig):
         return v
 
     @model_validator(mode="after")
-    def validate_rate_limiting_config(self) -> None:
+    def validate_rate_limiting_config(self) -> Any:
         """Validate rate limiting configuration."""
         if self.enable_rate_limiting:
             if self.rate_limit_burst_size > self.rate_limit_requests_per_minute:
@@ -200,7 +201,7 @@ class SourceControlConfig(BaseConfig):
 
     @field_validator("repositories")
     @classmethod
-    def validate_repository_names(cls: str, v: str) -> None:
+    def validate_repository_names(cls: Any, v: Any) -> Any:
         """Validate that repository names are unique within a service."""
         if not v:
             return v
@@ -212,7 +213,7 @@ class SourceControlConfig(BaseConfig):
         return v
 
     @model_validator(mode="after")
-    def validate_repositories(self) -> None:
+    def validate_repositories(self) -> Any:
         """Validate repository configurations."""
         if not self.repositories:
             raise ValueError("At least one repository must be configured")

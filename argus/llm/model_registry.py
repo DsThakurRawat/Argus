@@ -153,7 +153,7 @@ class ModelRegistry:
             provider_specific=data.get("provider_specific", {}),
         )
 
-    def _build_indexes(self) -> None:
+    def _build_indexes(self) -> Any:
         """Build internal indexes for efficient querying."""
         self._semantic_mappings.clear()
         self._provider_models.clear()

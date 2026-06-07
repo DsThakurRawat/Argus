@@ -54,7 +54,7 @@ class CapabilityDiscovery:
         """Update the cache timestamp for a model."""
         self._cache_timestamps[model_id] = time.time()
 
-    def clear_cache(self) -> None:
+    def clear_cache(self) -> Any:
         """Clear all cached capabilities and timestamps."""
         self.model_capabilities.clear()
         self._cache_timestamps.clear()
@@ -368,7 +368,7 @@ class CapabilityDiscovery:
             "average_discovery_time": self._metrics["average_discovery_time"]
         }
 
-    def reset_metrics(self) -> None:
+    def reset_metrics(self) -> Any:
         """Reset all metrics to initial state."""
         self._metrics = {
             "discovery_attempts": 0,

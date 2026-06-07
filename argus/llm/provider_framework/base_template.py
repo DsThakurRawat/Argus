@@ -46,7 +46,7 @@ class BaseProviderTemplate(LLMProvider):
         """Get the default base URL for this provider. Override in subclasses."""
         return "https://api.example.com/v1"
 
-    def _initialize_provider(self) -> None:
+    def _initialize_provider(self) -> Any:
         """Initialize provider-specific components. Override in subclasses."""
         pass
 

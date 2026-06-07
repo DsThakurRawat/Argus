@@ -87,7 +87,7 @@ class MonitoringManager:
 
         logger.info("MonitoringManager initialized")
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start all monitoring components."""
         if self._running:
             return

@@ -228,7 +228,7 @@ class BulkheadIsolator:
         """
         return self.get_available_capacity() > 0
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset the bulkhead isolator.
         
         Clears all history and active operations.

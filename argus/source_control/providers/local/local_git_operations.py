@@ -58,7 +58,7 @@ class LocalGitOperations:
         # Fall back to direct execution
         return await func(*args, **kwargs)
 
-    def _initialize_git(self) -> None:
+    def _initialize_git(self) -> Any:
         """Initialize Git repository if enabled."""
         if not self.git_enabled:
             return

@@ -243,7 +243,7 @@ class AdaptiveRateLimiter:
             "daily_cost": self.daily_cost,
         }
 
-    def reset_stats(self) -> None:
+    def reset_stats(self) -> Any:
         """Reset all statistics and state."""
         self.consecutive_errors = 0
         self.current_backoff_seconds = self.config.base_backoff_seconds

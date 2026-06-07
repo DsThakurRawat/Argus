@@ -280,7 +280,7 @@ class TimeoutManager:
                 return True
             return False
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset the timeout manager.
         
         Clears all history and active timeouts.

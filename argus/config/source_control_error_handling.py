@@ -176,7 +176,7 @@ class ErrorHandlingConfig(BaseConfig):
 
     @field_validator("provider_overrides")
     @classmethod
-    def validate_provider_overrides(cls: str, v: str) -> None:
+    def validate_provider_overrides(cls: Any, v: Any) -> Any:
         """Validate provider-specific overrides."""
         if not isinstance(v, dict):
             raise ValueError("Provider overrides must be a dictionary")

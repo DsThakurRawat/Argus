@@ -341,7 +341,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
         # In practice, this would be called from an async context
         raise NotImplementedError("Use async methods for validation operations")
 
-    def initialize(self) -> None:
+    def initialize(self) -> Any:
         """Initialize the component."""
         self._status = "initialized"
         logger.info(f"Initialized {self.name}")

@@ -146,7 +146,7 @@ class WorkflowMetricsCollector:
         """Get workflow execution history."""
         return self.workflow_history.copy()
 
-    def reset_workflow_history(self) -> None:
+    def reset_workflow_history(self) -> Any:
         """Reset workflow execution history."""
         self.workflow_history.clear()
         self.logger.info("Workflow history reset")

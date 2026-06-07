@@ -146,7 +146,7 @@ class ServiceHealthChecker:
             )
             self.health_checks[service_id] = task
 
-    async def stop_health_monitoring(self) -> None:
+    async def stop_health_monitoring(self) -> Any:
         """Stop all health monitoring tasks."""
         for task in self.health_checks.values():
             task.cancel()
@@ -294,7 +294,7 @@ class ServiceManager:
         self.logger = logging.getLogger(__name__)
         self._initialized = False
 
-    async def initialize(self) -> None:
+    async def initialize(self) -> Any:
         """Initialize the service manager and start health monitoring."""
         if self._initialized:
             return

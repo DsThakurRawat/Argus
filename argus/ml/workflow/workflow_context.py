@@ -64,7 +64,7 @@ class WorkflowContext:
         self.warnings.append(warning)
         logger.warning(f"Workflow warning: {warning}")
 
-    def increment_error(self) -> None:
+    def increment_error(self) -> Any:
         """Increment error count."""
         self.error_count += 1
 
@@ -384,7 +384,7 @@ class WorkflowContextManager(StatefulComponent):
             return 0.0
         return self.total_build_time / self.context_build_count
 
-    async def clear_caches(self) -> None:
+    async def clear_caches(self) -> Any:
         """Clear all caches."""
         if hasattr(self.context_cache, "clear"):
             await self.context_cache.clear()

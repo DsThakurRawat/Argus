@@ -134,7 +134,7 @@ class BaseAgent(MonitorableComponent[RequestT, ResponseT]):
         self._current_request_id = request_id
         self._current_user_id = user_id
 
-    def clear_current_request(self) -> None:
+    def clear_current_request(self) -> Any:
         """Clear the current request."""
         self._current_request_id = None
         self._current_user_id = None

@@ -35,7 +35,7 @@ class AsyncTask:
     retry_count: int = 0
     max_retries: int = 3
 
-    def __post_init__(self) -> None:
+    def __post_init__(self) -> Any:
         if self.kwargs is None:
             self.kwargs = {}
 

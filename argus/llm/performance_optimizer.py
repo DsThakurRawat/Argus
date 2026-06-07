@@ -63,7 +63,7 @@ class PerformanceCache:
             self._cache[key] = (value, time.time())
             self._access_times[key] = time.time()
 
-    async def _evict_oldest(self) -> None:
+    async def _evict_oldest(self) -> Any:
         """Evict the least recently accessed entry."""
         if not self._access_times:
             return

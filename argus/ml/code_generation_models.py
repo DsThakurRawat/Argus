@@ -94,7 +94,7 @@ class CodeFix:
     iteration_count: int = 0
     quality_score: float = 0.0
 
-    def __post_init__(self) -> None:
+    def __post_init__(self) -> Any:
         """Post-initialization hook to set quality score if validation results are provided"""
         if self.validation_results:
             self.quality_score = self.validation_results.quality_score

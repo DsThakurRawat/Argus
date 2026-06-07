@@ -6,8 +6,8 @@ import time
 from typing import Any
 
 from .alerting import AlertRule, AlertSeverity, get_alert_manager
-from .config import LoggingConfig
-from .context import LoggingContext
+from .config import LoggingConfig, HandlerConfig
+from .context import context_manager
 from .filters import (
     ContextFilter,
     LevelFilter,
@@ -50,13 +50,13 @@ class Logger:
         """
         self._config = config or LoggingConfig()
         self._logger = logging.getLogger(self._config.name)
-        self._logger.setLevel(self._config.level)
+        self._logger.setLevel(self._config.level.value)
 
         # Clear existing handlers
         self._logger.handlers.clear()
 
         # Initialize components
-        self._context = LoggingContext(self._config.context)
+        self._context = context_manager
         self._flow_tracker = get_flow_tracker()
         self._performance_monitor = get_performance_monitor()
         self._alert_manager = get_alert_manager()
@@ -70,14 +70,14 @@ class Logger:
         # Setup alerting
         self._setup_alerting()
 
-    def _setup_handlers(self) -> None:
+    def _setup_handlers(self) -> Any:
         """Setup log handlers based on configuration."""
         for handler_config in self._config.handlers:
             handler = self._create_handler(handler_config)
             if handler:
                 self._logger.addHandler(handler)
 
-    def _create_handler(self, config: dict[str, Any]) -> logging.Handler | None:
+    def _create_handler(self, config: HandlerConfig) -> logging.Handler | None:
         """Create a handler from configuration.
 
         Args:
@@ -87,22 +87,46 @@ class Logger:
             Created handler or None if creation fails
         """
         try:
-            handler_type = config.get("type")
+            handler_type = config.destination.value
+            formatter_type = config.format.value
 
             if handler_type == "console":
-                return ConsoleHandler(config)
+                return ConsoleHandler(
+                    formatter_type=formatter_type,
+                    colorize=config.colorize
+                )
             elif handler_type == "file":
-                return FileHandler(config)
-            elif handler_type == "rotating_file":
-                return RotatingFileHandler(config)
+                if not config.file_path:
+                    self._logger.error("File handler requires file_path")
+                    return None
+                if config.max_file_size_mb and config.backup_count:
+                    return RotatingFileHandler(
+                        filename=config.file_path,
+                        maxBytes=config.max_file_size_mb * 1024 * 1024,
+                        backupCount=config.backup_count,
+                        encoding=config.encoding,
+                        formatter_type=formatter_type
+                    )
+                else:
+                    return FileHandler(
+                        filename=config.file_path,
+                        encoding=config.encoding,
+                        formatter_type=formatter_type
+                    )
             elif handler_type == "syslog":
-                return SyslogHandler(config)
-            elif handler_type == "http":
-                return HTTPHandler(config)
-            elif handler_type == "database":
-                return DatabaseHandler(config)
-            elif handler_type == "queue":
-                return QueueHandler(config)
+                # Assuming DatabaseHandler as SyslogHandler was a mistake, but keeping the signature
+                # In handlers.py, SyslogHandler doesn't exist, it's aliased from DatabaseHandler
+                self._logger.warning("Syslog handler not fully implemented, falling back to None")
+                return None
+            elif handler_type == "remote":
+                if not config.remote_url:
+                    self._logger.error("Remote handler requires remote_url")
+                    return None
+                return HTTPHandler(
+                    host=config.remote_url.split('/')[2] if '//' in config.remote_url else config.remote_url,
+                    url=config.remote_url,
+                    formatter_type=formatter_type
+                )
             else:
                 self._logger.warning(f"Unknown handler type: {handler_type}")
                 return None
@@ -194,7 +218,7 @@ class Logger:
                 "flow_id": flow_id,
                 "tags": tags or [],
                 "timestamp": time.time(),
-                "context": self._context.get_context(),
+                "context": self._context.get_context().to_dict(),
             }
 
             if extra:
@@ -351,7 +375,7 @@ class Logger:
             key: Context key
             value: Context value
         """
-        self._context.add_context(key, value)
+        self._context.update_context(**{key: value})
 
     def remove_context(self, key: str) -> None:
         """Remove context data.
@@ -359,7 +383,8 @@ class Logger:
         Args:
             key: Context key to remove
         """
-        self._context.remove_context(key)
+        # We can't easily remove a single key, so we'll just set it to None
+        self._context.update_context(**{key: None})
 
     def clear_context(self) -> None:
         """Clear all context data."""
@@ -371,7 +396,7 @@ class Logger:
         Returns:
             Current context data
         """
-        return self._context.get_context()
+        return self._context.get_context().to_dict()
 
     def start_flow(
         self,
@@ -607,7 +632,7 @@ class Logger:
             config: New logging configuration
         """
         self._config = config
-        self._logger.setLevel(config.level)
+        self._logger.setLevel(config.level.value)
 
         # Clear existing handlers and filters
         self._logger.handlers.clear()

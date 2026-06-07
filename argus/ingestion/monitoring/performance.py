@@ -105,7 +105,7 @@ class PerformanceMonitor:
 
         logger.info("PerformanceMonitor initialized")
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the performance monitor."""
         if self._running:
             return
@@ -363,7 +363,7 @@ class PerformanceMonitor:
             consecutive_failures=0,  # TODO: Track consecutive failures
         )
 
-    async def _update_metrics_periodically(self) -> None:
+    async def _update_metrics_periodically(self) -> Any:
         """Background task to update metrics periodically."""
         while self._running:
             try:

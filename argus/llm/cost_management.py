@@ -130,7 +130,7 @@ class DynamicCostManager:
         # Initialize with default pricing
         self._initialize_default_pricing()
 
-    def _initialize_default_pricing(self) -> None:
+    def _initialize_default_pricing(self) -> Any:
         """Initialize with default pricing for known providers."""
         default_pricing = {
             ProviderType.OPENAI: {

@@ -152,7 +152,7 @@ class CircuitBreaker:
                 self._on_failure(e)
                 raise
 
-    def _on_success(self) -> None:
+    def _on_success(self) -> Any:
         """Handle successful call.
         
         Updates circuit state based on success.

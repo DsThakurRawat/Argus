@@ -1,3 +1,4 @@
+from typing import Any
 # argus/ingestion/queues/file_queue.py
 
 """
@@ -48,7 +49,7 @@ class FileSystemQueue:
         self._sync_task: asyncio.Task | None = None
         self._cleanup_task: asyncio.Task | None = None
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the file queue and background tasks."""
         if self._sync_task is None:
             self._sync_task = asyncio.create_task(self._sync_loop())

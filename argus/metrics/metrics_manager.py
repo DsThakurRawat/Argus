@@ -27,7 +27,7 @@ class MetricsManager:
         self.history: dict[str, Any] = {}
         self._setup_metrics_storage()
 
-    def _setup_metrics_storage(self) -> None:
+    def _setup_metrics_storage(self) -> Any:
         """
         Set up metrics storage and load alert thresholds from config.
         """

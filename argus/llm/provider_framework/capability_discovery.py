@@ -45,7 +45,7 @@ class ProviderCapabilityDiscovery:
     a registry of capabilities for intelligent provider selection.
     """
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         self.capability_registry: dict[str, dict[str, ProviderCapability]] = {}
         self.capability_tests: dict[str, Any] = {
             "streaming": self._test_streaming_capability,

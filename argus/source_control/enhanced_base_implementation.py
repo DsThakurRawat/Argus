@@ -141,7 +141,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
             self.monitoring_manager = None
             self.operation_metrics = None
 
-    async def _setup_client(self) -> None:
+    async def _setup_client(self) -> Any:
         """Set up the client for the source control system."""
         # To be implemented by subclasses
         pass

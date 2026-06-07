@@ -389,7 +389,7 @@ class ErrorClassifier:
             return self.metrics_collector.generate_classification_report()
         return None
 
-    def reset_metrics(self) -> None:
+    def reset_metrics(self) -> Any:
         """Reset metrics if metrics collection is enabled."""
         if self.metrics_collector:
             self.metrics_collector.reset_metrics()

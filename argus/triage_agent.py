@@ -54,8 +54,14 @@ class TriageAgent:
         self.project_id: str = project_id
         self.location: str = location
         self.triage_model: str = triage_model
+        
+        if aiplatform is None:
+            raise ImportError("google.cloud.aiplatform is not installed")
+        if GenerativeModel is None:
+            raise ImportError("vertexai.preview.generative_models is not installed")
+            
         aiplatform.init(project=project_id, location=location)
-        self.model: GenerativeModel = GenerativeModel(triage_model)
+        self.model: Any = GenerativeModel(triage_model)
         logger.info(
             f"[TRIAGE] TriageAgent initialized with model: {triage_model} in {location} for project: {project_id}"
         )

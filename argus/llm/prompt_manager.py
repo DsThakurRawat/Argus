@@ -1,3 +1,4 @@
+from typing import Any
 # argus/llm/prompt_manager.py
 
 """
@@ -36,7 +37,7 @@ class PromptManager:
         self.logger = logging.getLogger(__name__)
         self._load_prompts()
 
-    def _load_prompts(self) -> None:
+    def _load_prompts(self) -> Any:
         """Load prompts from the prompt directory."""
         if not os.path.exists(self.prompt_directory):
             os.makedirs(self.prompt_directory, exist_ok=True)

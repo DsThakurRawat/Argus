@@ -32,7 +32,7 @@ class EnhancedAgentAdapter:
         if self.enable_enhancements:
             self._init_enhanced_agent()
 
-    def _init_enhanced_agent(self) -> None:
+    def _init_enhanced_agent(self) -> Any:
         legacy_class_name = self.legacy_agent.__class__.__name__
         primary_model = getattr(self.legacy_agent, "primary_model", None)
         fallback_model = getattr(self.legacy_agent, "fallback_model", None)

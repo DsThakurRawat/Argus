@@ -318,7 +318,7 @@ class PerformanceCache:
         ranked_models = sorted(model_scores.items(), key=lambda x: x[1], reverse=True)
         return ranked_models
 
-    def _cleanup_expired_metrics(self) -> None:
+    def _cleanup_expired_metrics(self) -> Any:
         """Remove expired metrics and update indexes."""
         current_time = time.time()
         expired_indices = set()

@@ -1,3 +1,4 @@
+from typing import Any
 # argus/config/source_control_credentials.py
 
 """
@@ -73,7 +74,7 @@ class CredentialConfig(BaseConfig):
 
     @field_validator("ssh_key_path")
     @classmethod
-    def validate_ssh_key_path(cls: str, v: str) -> None:
+    def validate_ssh_key_path(cls: Any, v: Any) -> Any:
         """Validate SSH key path exists if provided."""
         if v is not None:
             key_path = Path(v)
@@ -85,7 +86,7 @@ class CredentialConfig(BaseConfig):
 
     @field_validator("service_account_key_file")
     @classmethod
-    def validate_service_account_key_file(cls: str, v: str) -> None:
+    def validate_service_account_key_file(cls: Any, v: Any) -> Any:
         """Validate service account key file exists if provided."""
         if v is not None:
             key_path = Path(v)
@@ -96,7 +97,7 @@ class CredentialConfig(BaseConfig):
         return v
 
     @model_validator(mode="after")
-    def check_auth_method(self) -> None:
+    def check_auth_method(self) -> Any:
         """Ensure at least one authentication method is provided."""
         auth_methods = [
             self.token_env,

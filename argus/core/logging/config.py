@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, field
 from enum import Enum
+import json
 from pathlib import Path
 from typing import Any
 
@@ -103,12 +104,17 @@ class LoggingConfig:
     """Main configuration for the logging system."""
 
     # Basic settings
+    name: str = "argus"
     level: LogLevel = LogLevel.INFO
     format: LogFormat = LogFormat.STRUCTURED
     environment: str = "development"
 
-    # Handlers
+    # Handlers and Filters
     handlers: list[HandlerConfig] = field(default_factory=list)
+    filters: list[dict[str, Any]] = field(default_factory=list)
+    
+    # Alerting
+    alerting: list[dict[str, Any]] = field(default_factory=list)
 
     # Flow tracking
     flow_tracking: FlowTrackingConfig = field(default_factory=FlowTrackingConfig)
@@ -134,7 +140,7 @@ class LoggingConfig:
     include_function: bool = True
     include_line_number: bool = True
 
-    def validate(self) -> None:
+    def validate(self) -> Any:
         """Validate the logging configuration.
 
         Raises:
@@ -436,8 +442,6 @@ class LoggingConfigManager:
             )
 
         try:
-            import json
-
             with open(file_path, encoding="utf-8") as f:
                 config_dict = json.load(f)
 
@@ -468,8 +472,6 @@ class LoggingConfigManager:
         file_path = Path(file_path)
 
         try:
-            import json
-
             config_dict = self._config.to_dict()
 
             with open(file_path, "w", encoding="utf-8") as f:

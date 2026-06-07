@@ -283,7 +283,7 @@ class MetricsCollector:
 class AlertManager:
     """Manages alerts and notifications for service metrics."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         self.alerts: dict[str, list[ServiceAlert]] = defaultdict(list)
         self.active_alerts: dict[str, ServiceAlert] = {}
         self.logger = logging.getLogger(__name__)

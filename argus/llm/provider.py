@@ -29,7 +29,7 @@ class LLMProvider(ABC):
         self._initialized = False
 
     @abstractmethod
-    async def initialize(self) -> None:
+    async def initialize(self) -> Any:
         """Initialize the provider with LiteLLM configuration."""
         pass
 

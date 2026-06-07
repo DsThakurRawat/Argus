@@ -1,3 +1,4 @@
+from typing import Any
 # argus/config/source_control_remediation.py
 
 """
@@ -108,7 +109,7 @@ class RemediationStrategyConfig(BaseConfig):
 
     @field_validator("labels")
     @classmethod
-    def validate_labels(cls: str, v: str) -> None:
+    def validate_labels(cls: Any, v: Any) -> Any:
         """Validate label format."""
         for label in v:
             if not label or not label.strip():
@@ -123,7 +124,7 @@ class RemediationStrategyConfig(BaseConfig):
 
     @field_validator("assignees", "reviewers")
     @classmethod
-    def validate_users(cls: str, v: str) -> None:
+    def validate_users(cls: Any, v: Any) -> Any:
         """Validate user format."""
         for user in v:
             if not user or not user.strip():
@@ -134,7 +135,7 @@ class RemediationStrategyConfig(BaseConfig):
 
     @field_validator("commit_message_template")
     @classmethod
-    def validate_commit_template(cls: str, v: str) -> None:
+    def validate_commit_template(cls: Any, v: Any) -> Any:
         """Validate commit message template."""
         if v is not None:
             if not v.strip():
@@ -154,7 +155,7 @@ class RemediationStrategyConfig(BaseConfig):
 
     @field_validator("output_path")
     @classmethod
-    def validate_output_path(cls: str, v: str) -> None:
+    def validate_output_path(cls: Any, v: Any) -> Any:
         """Validate output path for patches."""
         if v is not None:
             if not v.strip():
@@ -165,7 +166,7 @@ class RemediationStrategyConfig(BaseConfig):
 
     @field_validator("branch_prefix", "branch_suffix")
     @classmethod
-    def validate_branch_components(cls: str, v: str) -> None:
+    def validate_branch_components(cls: Any, v: Any) -> Any:
         """Validate branch prefix and suffix."""
         if v is not None:
             if not v.strip():

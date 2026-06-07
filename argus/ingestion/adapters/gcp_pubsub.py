@@ -59,7 +59,7 @@ class GCPPubSubAdapter(LogIngestionInterface):
         self._total_messages_processed = 0
         self._total_messages_failed = 0
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the Pub/Sub consumer."""
         if self._is_running:
             return

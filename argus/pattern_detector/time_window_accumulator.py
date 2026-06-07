@@ -35,7 +35,7 @@ class LogAccumulator:
             f"window_duration={window_duration_minutes}min, max_windows={max_windows}"
         )
 
-    def start(self) -> None:
+    def start(self) -> Any:
         """Start the background cleanup task."""
         if self._cleanup_task is None:
             self._cleanup_task = asyncio.create_task(self._cleanup_expired_windows())

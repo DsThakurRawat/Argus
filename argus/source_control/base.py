@@ -172,7 +172,7 @@ class SourceControlProvider(ABC):
         """Clean up resources when exiting the context."""
         await self.cleanup()
 
-    async def initialize(self) -> None:
+    async def initialize(self) -> Any:
         """Initialize resources needed by the provider."""
         if self._initialized:
             return
@@ -207,7 +207,7 @@ class SourceControlProvider(ABC):
         """Check if the provider is initialized."""
         return self._initialized
 
-    async def ensure_initialized(self) -> None:
+    async def ensure_initialized(self) -> Any:
         """Ensure the provider is initialized."""
         if not self._initialized:
             await self.initialize()

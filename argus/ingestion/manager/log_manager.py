@@ -67,7 +67,7 @@ class LogManager:
 
         logger.info(f"Removed source '{source_name}'")
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start all enabled log sources."""
         if self.running:
             raise SourceAlreadyRunningError("LogManager is already running")

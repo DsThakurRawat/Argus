@@ -1,3 +1,4 @@
+from typing import Any
 # argus/core/logging/manager.py
 """
 Logging manager for centralized logging configuration.
@@ -28,7 +29,7 @@ class LoggingManager:
         self._configured = False
         self._loggers: dict[str, logging.Logger] = {}
 
-    def configure(self) -> None:
+    def configure(self) -> Any:
         """Configure the logging system."""
         try:
             # Clear existing configuration

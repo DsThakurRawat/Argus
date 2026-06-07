@@ -73,7 +73,7 @@ class BaseComponent(ABC):
         self._status = status
 
     @abstractmethod
-    def initialize(self) -> None:
+    def initialize(self) -> Any:
         """Initialize the component."""
         pass
 
@@ -244,7 +244,7 @@ class StatefulComponent(ConfigurableComponent):
         """
         return self._state.copy()
 
-    def save_state_history(self) -> None:
+    def save_state_history(self) -> Any:
         """Save current state to history."""
         self._state_history.append(
             {"timestamp": time.time(), "state": self._state.copy()}

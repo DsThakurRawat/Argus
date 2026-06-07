@@ -242,7 +242,7 @@ class TenacityRetryHandler:
         # Configure tenacity retry strategy
         self._setup_retry_strategy()
 
-    def _setup_retry_strategy(self) -> None:
+    def _setup_retry_strategy(self) -> Any:
         """Setup the tenacity retry strategy."""
         # Base retry configuration
         retry_config = [

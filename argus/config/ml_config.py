@@ -1,3 +1,4 @@
+from typing import Any
 # argus/config/ml_config.py
 
 """
@@ -36,7 +37,7 @@ class ModelConfig(BaseConfig):
 
     @field_validator("name")
     @classmethod
-    def validate_model_name(cls: str, v: str) -> None:
+    def validate_model_name(cls: Any, v: Any) -> Any:
         """
         Validate Model Name.
 
@@ -128,7 +129,7 @@ class MLConfig(BaseConfig):
 
     @field_validator("models")
     @classmethod
-    def validate_required_models(cls: str, v: str) -> None:
+    def validate_required_models(cls: Any, v: Any) -> Any:
         """Validate that required models are configured."""
         required_models = [
             ModelType.TRIAGE,

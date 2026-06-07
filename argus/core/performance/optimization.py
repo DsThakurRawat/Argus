@@ -344,7 +344,7 @@ class OptimizationEngine:
         self._analysis_task: asyncio.Task | None = None
         self._start_analysis_task()
 
-    def _start_analysis_task(self) -> None:
+    def _start_analysis_task(self) -> Any:
         """Start the background analysis task."""
         if self._config.enable_auto_analysis and self._analysis_task is None:
             self._analysis_task = asyncio.create_task(self._continuous_analysis())

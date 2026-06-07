@@ -145,7 +145,7 @@ class BaseErrorClassifierImpl(ABC):
 class RuleBasedClassifier(BaseErrorClassifierImpl):
     """Rule-based error classifier using predefined classification rules."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         super().__init__(ClassificationStrategy.RULE_BASED)
         self.classification_rules = self._initialize_rules()
 

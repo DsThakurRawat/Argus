@@ -5,6 +5,7 @@ import time
 from typing import Any
 
 from .alerting import AlertRule, AlertSeverity, get_alert_manager
+from .config import HandlerConfig, LogFormat, LogLevel, OutputDestination
 from .flow_tracker import get_flow_tracker
 from .logger import LoggingConfig, get_logger
 
@@ -165,10 +166,15 @@ def comprehensive_example():
 
     # Configure logging
     config = LoggingConfig(
-        name="comprehensive_example",
-        level=20,  # INFO
-        handlers=[{"type": "console", "level": 20, "formatter": "json"}],
-        formatters={"json": {"type": "json", "include_extra": True}},
+        level=LogLevel.INFO,
+        handlers=[
+            HandlerConfig(
+                name="console",
+                destination=OutputDestination.CONSOLE,
+                level=LogLevel.INFO,
+                format=LogFormat.JSON,
+            )
+        ],
     )
 
     logger = get_logger(config)

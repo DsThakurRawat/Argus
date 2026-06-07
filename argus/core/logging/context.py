@@ -99,7 +99,7 @@ class LoggingContext:
         """
         self.metadata[key] = value
 
-    def finish(self) -> None:
+    def finish(self) -> Any:
         """Mark the context as finished and calculate duration."""
         self.end_time = datetime.now()
         if self.start_time:

@@ -77,7 +77,7 @@ class GCPPubSubConfig(SourceConfig):
     project_id: str = ""
     subscription_id: str = ""
 
-    def __post_init__(self) -> None:
+    def __post_init__(self) -> Any:
         self.type = SourceType.GCP_PUBSUB
         self.config = {
             "project_id": self.project_id,

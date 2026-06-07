@@ -30,7 +30,7 @@ class ProviderAutoRegistry:
     supporting both built-in and external providers.
     """
 
-    def __init__(self) -> None:
+    def __init__(self) -> Any:
         self.discovered_providers: dict[str, type[LLMProvider]] = {}
         self.external_providers: dict[str, str] = {}  # name -> module_path
         self._initialized = False

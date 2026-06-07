@@ -23,7 +23,7 @@ class RepositoryManager:
         self.logger = logging.getLogger(__name__)
         self._exit_stack = AsyncExitStack()
 
-    async def initialize(self) -> None:
+    async def initialize(self) -> Any:
         """Initialize all repositories defined in the configuration."""
         # For now, this is a placeholder implementation
         # The actual implementation will depend on how repositories are configured

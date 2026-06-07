@@ -58,7 +58,7 @@ class ComplianceReporter:
         self._compliance_rules: dict[ComplianceStandard, list[dict[str, Any]]] = {}
         self._initialize_default_rules()
 
-    def _initialize_default_rules(self) -> None:
+    def _initialize_default_rules(self) -> Any:
         """Initialize default compliance rules."""
         # SOC2 Type II rules
         self._compliance_rules[ComplianceStandard.SOC2] = [

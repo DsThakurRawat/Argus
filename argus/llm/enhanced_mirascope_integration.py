@@ -677,7 +677,7 @@ class EnhancedPromptManager:
 
         return test_record
 
-    def _load_prompts(self) -> None:
+    def _load_prompts(self) -> Any:
         """Load prompts from storage."""
         prompts_file = self.storage_path / "enhanced_prompts.json"
         if prompts_file.exists():

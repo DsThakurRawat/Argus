@@ -177,7 +177,7 @@ class DIContainer(ServiceRegistry):
 
         return self._scopes[current_thread].get_service(service_type)
 
-    def dispose(self) -> None:
+    def dispose(self) -> Any:
         """Dispose of the container and all its services."""
         with self._lock:
             # Dispose of all scopes
