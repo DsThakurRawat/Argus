@@ -103,7 +103,7 @@ class RetryManager:
         if self.config.jitter:
             import random
 
-            jitter_factor = random.uniform(0.5, 1.5)
+            jitter_factor = random.uniform(0.5, 1.5)  # nosec B311
             delay *= jitter_factor
 
         return delay

@@ -308,7 +308,7 @@ class PerformanceRepositoryAnalyzer:
                     for pattern in error_patterns:
                         if pattern in content:
                             patterns.append(f"{pattern} in {file_path.name}")
-                except Exception:
+                except Exception:  # nosec B112
                     continue
 
             return list(set(patterns))  # Remove duplicates
@@ -346,7 +346,7 @@ class PerformanceRepositoryAnalyzer:
                     for pattern in test_patterns:
                         if pattern in content:
                             patterns.append(f"{pattern} in {file_path.name}")
-                except Exception:
+                except Exception:  # nosec B112
                     continue
 
             return list(set(patterns))
@@ -411,7 +411,7 @@ class PerformanceRepositoryAnalyzer:
                             "modified": stat.st_mtime,
                             "is_file": True,
                         }
-                    except Exception:
+                    except Exception:  # nosec B112
                         continue
 
         except Exception as e:

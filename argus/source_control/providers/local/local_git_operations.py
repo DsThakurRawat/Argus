@@ -9,7 +9,7 @@ This module handles Git-specific operations for the local provider.
 import logging
 from pathlib import Path
 import shlex
-import subprocess
+import subprocess  # nosec B404
 from typing import Any
 
 from git import GitCommandError, InvalidGitRepositoryError, Repo
@@ -426,7 +426,7 @@ class LocalGitOperations:
                 # Use shell=False and proper argument list for security
                 # Escape arguments to prevent command injection
                 safe_command = ["git"] + [shlex.quote(arg) for arg in command]
-                result = subprocess.run(
+                result = subprocess.run(  # nosec B603
                     safe_command,
                     cwd=str(self.root_path),  # Convert Path to string
                     capture_output=True,

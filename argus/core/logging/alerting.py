@@ -220,7 +220,7 @@ class AlertManager:
                             with contextlib.suppress(Exception):
                                 handler(alert)
 
-                except Exception:
+                except Exception:  # nosec B112
                     # Log error but continue with other rules
                     continue
 

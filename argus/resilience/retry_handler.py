@@ -183,7 +183,7 @@ class RetryHandler:
         # Add jitter if enabled
         if self.jitter:
             jitter_amount = base_delay * self.jitter_range
-            jitter = random.uniform(-jitter_amount, jitter_amount)
+            jitter = random.uniform(-jitter_amount, jitter_amount)  # nosec B311
             delay = max(0.1, base_delay + jitter)  # Minimum 0.1s delay
         else:
             delay = base_delay
@@ -280,7 +280,7 @@ class TenacityRetryHandler:
                 if attempt < self.max_attempts - 1:
                     delay = self.base_delay * (2**attempt)
                     if self.jitter:
-                        delay += random.uniform(0, delay * 0.1)
+                        delay += random.uniform(0, delay * 0.1)  # nosec B311
                     delay = min(delay, self.max_delay)
                     await asyncio.sleep(delay)
                 else:

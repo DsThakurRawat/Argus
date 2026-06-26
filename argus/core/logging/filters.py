@@ -220,7 +220,7 @@ class SamplingFilter(logging.Filter):
         try:
             import random
 
-            return random.random() < self.sample_rate
+            return random.random() < self.sample_rate  # nosec B311
         except Exception as e:
             raise FilterError(
                 f"Failed to filter log record by sampling: {e!s}",

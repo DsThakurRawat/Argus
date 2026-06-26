@@ -285,7 +285,7 @@ class LoadBalancer:
         if total_weight == 0:
             return None
 
-        random_value = random.uniform(0, total_weight)
+        random_value = random.uniform(0, total_weight)  # nosec B311
         current_weight = 0
 
         for model_key, weight in self.model_weights.items():

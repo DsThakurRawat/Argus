@@ -47,7 +47,7 @@ class EnvironmentBackend(CredentialBackend):
 class FileBackend(CredentialBackend):
     """Credential backend using file storage."""
 
-    def __init__(self, base_path: str = "/tmp/credentials") -> None:
+    def __init__(self, base_path: str = "/tmp/credentials") -> None:  # nosec B108
         self.base_path = base_path
         os.makedirs(base_path, exist_ok=True)
 

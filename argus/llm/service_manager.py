@@ -254,7 +254,7 @@ class LoadBalancer:
         # Simple weighted selection
         import random
 
-        rand = random.uniform(0, total_weight)
+        rand = random.uniform(0, total_weight)  # nosec B311
         cumulative = 0
         for i, weight in enumerate(weights):
             cumulative += weight
@@ -266,7 +266,7 @@ class LoadBalancer:
         """Select service randomly."""
         import random
 
-        return random.choice(services)
+        return random.choice(services)  # nosec B311
 
     def _health_based_selection(
         self, services: list[BaseService], registry: ServiceRegistry

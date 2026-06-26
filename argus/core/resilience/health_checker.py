@@ -294,7 +294,7 @@ class HealthChecker:
                 # Sleep for a short interval
                 time.sleep(1.0)
 
-            except Exception:
+            except Exception:  # nosec B110
                 # Continue monitoring even if individual checks fail
                 pass
 

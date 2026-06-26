@@ -21,9 +21,9 @@ class SensitiveDataType(str, Enum):
     SSN = "ssn"
     CREDIT_CARD = "credit_card"
     IP_ADDRESS = "ip_address"
-    PASSWORD = "password"
-    TOKEN = "token"
-    SECRET = "secret"
+    PASSWORD = "password"  # nosec B105
+    TOKEN = "token"  # nosec B105
+    SECRET = "secret"  # nosec B105
     CUSTOM = "custom"
 
 

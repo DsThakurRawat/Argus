@@ -20,7 +20,7 @@ class LocalPatchManager:
     Manages local patch files when GitHub integration is not available.
     """
 
-    def __init__(self, patch_dir: str = "/tmp/real_patches") -> None:
+    def __init__(self, patch_dir: str = "/tmp/real_patches") -> None:  # nosec B108
         """
         Initialize the LocalPatchManager.
 

@@ -424,7 +424,7 @@ class DocumentationValidator:
                                     if next_line.startswith('"""') or next_line.startswith("'''"):
                                         documented_functions += 1
                                     break
-                except Exception:
+                except Exception:  # nosec B112
                     continue
 
             if total_functions == 0:
@@ -498,7 +498,7 @@ class StyleValidator:
                         for line_num, line in enumerate(f, 1):
                             if len(line.rstrip()) > config.max_line_length:
                                 long_lines.append(f"{file_path}:{line_num}")
-                except Exception:
+                except Exception:  # nosec B112
                     continue
 
             if not long_lines:

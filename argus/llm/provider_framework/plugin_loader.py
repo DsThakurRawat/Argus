@@ -279,9 +279,12 @@ class ProviderPluginLoader:
                 logger.debug(f"Loading plugin from cache: {plugin_name}")
                 return self._plugin_cache[cache_key]
 
-            # Download the plugin file
+            # Download the plugin file (restrict to http(s) to avoid file:// and
+            # other unexpected schemes being opened by urlopen).
+            if not url.lower().startswith(("http://", "https://")):
+                raise ValueError(f"Unsupported plugin URL scheme (only http/https allowed): {url}")
             with tempfile.NamedTemporaryFile(mode="w+b", suffix=".py", delete=False) as temp_file:
-                with urllib.request.urlopen(url) as response:
+                with urllib.request.urlopen(url) as response:  # nosec B310 - scheme restricted above
                     temp_file.write(response.read())
                 temp_file_path = temp_file.name
 

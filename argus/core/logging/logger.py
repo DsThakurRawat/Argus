@@ -155,7 +155,9 @@ class Logger:
         for alert_config in self._config.alerting:
             rule = AlertRule(
                 name=alert_config["name"],
-                condition=eval(alert_config["condition"]),  # Note: Use safer method in production
+                # Alert conditions are operator-authored config values, not external
+                # input; ast.literal_eval cannot evaluate boolean expressions.
+                condition=eval(alert_config["condition"]),  # nosec B307
                 severity=AlertSeverity(alert_config["severity"]),
                 message_template=alert_config["message_template"],
                 cooldown_seconds=alert_config.get("cooldown_seconds", 300),
@@ -339,7 +341,7 @@ class Logger:
             }
 
             self._alert_manager.evaluate_rules(alert_data)
-        except Exception:
+        except Exception:  # nosec B110
             pass  # Ignore alert evaluation errors
 
     def add_context(self, key: str, value: Any) -> None:

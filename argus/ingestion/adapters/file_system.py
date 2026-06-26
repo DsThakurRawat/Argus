@@ -286,7 +286,7 @@ class FileSystemAdapter(LogIngestionInterface):
                     # Not valid JSON, skip
                     continue
 
-        except Exception:
+        except Exception:  # nosec B110
             # Fall back to line-by-line parsing
             pass
 
@@ -305,7 +305,7 @@ class FileSystemAdapter(LogIngestionInterface):
                     if log_entry:
                         log_entries.append(log_entry)
 
-                except Exception:
+                except Exception:  # nosec B112
                     # Skip malformed lines but continue processing
                     continue
 
@@ -340,7 +340,7 @@ class FileSystemAdapter(LogIngestionInterface):
                                 break
                             except ValueError:
                                 continue
-                    except Exception:
+                    except Exception:  # nosec B110
                         pass
 
             # Simple severity detection
@@ -390,7 +390,7 @@ class FileSystemAdapter(LogIngestionInterface):
             for file_path in files:
                 if os.path.exists(file_path) and os.access(file_path, os.R_OK):
                     files_accessible += 1
-        except Exception:
+        except Exception:  # nosec B110
             pass
 
         # Determine health status

@@ -124,7 +124,7 @@ class AsyncProfiler:
         """
         import random
 
-        return random.random() < self._config.sampling_rate
+        return random.random() < self._config.sampling_rate  # nosec B311
 
     def _get_memory_usage(self) -> int:
         """Get current memory usage.

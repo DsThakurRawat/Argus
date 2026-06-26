@@ -32,7 +32,7 @@ class RemediationAgent:
         github_token: str,
         repo_name: str,
         use_local_patches: bool = False,
-        patch_dir: str = "/tmp/real_patches",
+        patch_dir: str = "/tmp/real_patches",  # nosec B108
     ) -> None:
         # Type annotations for attributes
         self.github: GitHubClient | None = None
@@ -50,7 +50,7 @@ class RemediationAgent:
         self.use_local_patches = use_local_patches
         self.repo_name = repo_name
 
-        if use_local_patches or not github_token or github_token == "dummy_token":
+        if use_local_patches or not github_token or github_token == "dummy_token":  # nosec B105
             # Already initialized to None above
             self.local_patch_manager = LocalPatchManager(patch_dir)
             logger.info(

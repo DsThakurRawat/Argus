@@ -105,7 +105,7 @@ class LLMPromptService:
 
                 metrics = {
                     "duration_seconds": duration,
-                    "token_count": 0,
+                    "token_count": 0,  # nosec B105
                     "model_used": getattr(self.llm_service, "last_model_used", "unknown"),
                     "success": False,
                     "error": str(e),
@@ -171,7 +171,7 @@ class LLMPromptService:
 
                 metrics = {
                     "duration_seconds": duration,
-                    "token_count": 0,
+                    "token_count": 0,  # nosec B105
                     "model_used": getattr(self.llm_service, "last_model_used", "unknown"),
                     "success": False,
                     "error": str(e),

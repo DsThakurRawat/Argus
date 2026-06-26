@@ -229,7 +229,7 @@ monitoring:
                 new_config["github"] = {
                     "repository": github_config.get("repository", "owner/repo"),
                     "base_branch": github_config.get("base_branch", "main"),
-                    "token": None,
+                    "token": None,  # nosec B105
                 }
 
             # Migrate logging configuration

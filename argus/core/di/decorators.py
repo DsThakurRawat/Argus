@@ -73,7 +73,7 @@ def inject(
                 elif service_type is None and param_type != inspect.Parameter.empty:
                     try:
                         resolved_kwargs[param_name] = container.get_service(param_type)
-                    except Exception:
+                    except Exception:  # nosec B112
                         continue  # Skip if not registered
 
             # Call the function with resolved dependencies
@@ -111,7 +111,7 @@ def auto_inject(func: Callable[..., Any]) -> Callable[..., Any]:
             if param_type != inspect.Parameter.empty:
                 try:
                     resolved_kwargs[param_name] = container.get_service(param_type)
-                except Exception:
+                except Exception:  # nosec B112
                     continue  # Skip if not registered
 
         # Call the function with resolved dependencies

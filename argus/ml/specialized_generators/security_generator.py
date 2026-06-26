@@ -194,7 +194,7 @@ def decrypt_sensitive_data(encrypted_data: str, key: str) -> None:
                 rule_type="authentication",
                 severity=ValidationSeverity.CRITICAL,
                 validation_function="validate_authentication_security",
-                parameters={"check_password_hash": True, "check_session": True},
+                parameters={"check_password_hash": True, "check_session": True},  # nosec B105
             ),
             ValidationRule(
                 rule_id="security_authorization",

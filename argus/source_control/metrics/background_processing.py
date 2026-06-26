@@ -175,7 +175,7 @@ class BackgroundProcessor:
                     try:
                         while not self._metric_queue.empty():
                             self._metric_queue.task_done()
-                    except Exception:
+                    except Exception:  # nosec B110
                         pass
 
     async def _process_metric_batch(self, batch: list[dict[str, Any]]):

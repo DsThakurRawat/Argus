@@ -66,8 +66,8 @@ class AuthenticationErrors(Enum):
     """Authentication-related error types."""
 
     AUTHENTICATION_ERROR = "authentication_error"
-    INVALID_TOKEN_ERROR = "invalid_token_error"
-    TOKEN_EXPIRED_ERROR = "token_expired_error"
+    INVALID_TOKEN_ERROR = "invalid_token_error"  # nosec B105
+    TOKEN_EXPIRED_ERROR = "token_expired_error"  # nosec B105
     CREDENTIALS_INVALID_ERROR = "credentials_invalid_error"
     TWO_FACTOR_AUTH_ERROR = "two_factor_auth_error"
 

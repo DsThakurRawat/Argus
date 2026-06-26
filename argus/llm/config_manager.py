@@ -163,7 +163,7 @@ class ConfigManager:
         """Get the current configuration."""
         if self._config is None:
             self._load_configuration()
-        assert self._config is not None
+        assert self._config is not None  # nosec B101
         return self._config
 
     def get_provider_config(self, provider_name: str) -> LLMProviderConfig | None:

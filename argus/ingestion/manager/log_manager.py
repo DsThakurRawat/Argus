@@ -167,7 +167,7 @@ class LogManager:
                         and source_config.source_type.value == "file_system"
                     ):
                         await asyncio.sleep(1)
-                except Exception:
+                except Exception:  # nosec B110
                     # If we can't get config, continue without the sleep
                     pass
 

@@ -196,15 +196,17 @@ def comprehensive_example():
                 logger.info(f"Executing {step} step", flow_id=flow_id)
 
                 # Simulate work
-                time.sleep(random.uniform(0.01, 0.05))
+                time.sleep(random.uniform(0.01, 0.05))  # nosec B311
 
                 # Record metrics
                 logger.record_metric(
-                    "processing_records", random.randint(100, 1000), tags={"step": step}
+                    "processing_records",
+                    random.randint(100, 1000),  # nosec B311
+                    tags={"step": step},  # nosec B311
                 )
 
                 # Simulate occasional errors
-                if random.random() < 0.1:  # 10% chance of error
+                if random.random() < 0.1:  # 10% chance of error  # nosec B311
                     logger.error(
                         f"Error in {step} step",
                         extra={"error_code": f"E_{step.upper()}"},

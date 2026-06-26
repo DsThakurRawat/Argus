@@ -16,7 +16,7 @@ from typing import Any
 class GitHubAuthType(str, Enum):
     """GitHub authentication types."""
 
-    TOKEN = "token"
+    TOKEN = "token"  # nosec B105
     APP = "app"
 
 

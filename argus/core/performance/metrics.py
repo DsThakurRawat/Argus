@@ -226,7 +226,7 @@ class MetricsCollector:
         """
         import random
 
-        return random.random() < self._config.sampling_rate
+        return random.random() < self._config.sampling_rate  # nosec B311
 
     def _update_aggregation(self, key: str, metric: MetricValue) -> None:
         """Update metric aggregation for a key.

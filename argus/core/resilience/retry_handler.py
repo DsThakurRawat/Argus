@@ -158,7 +158,7 @@ class RetryHandler:
         # Apply jitter if enabled
         if self._config.jitter and delay > 0:
             jitter_amount = delay * self._config.jitter_range
-            jitter = random.uniform(-jitter_amount, jitter_amount)
+            jitter = random.uniform(-jitter_amount, jitter_amount)  # nosec B311
             delay = max(0, delay + jitter)
 
         return delay
