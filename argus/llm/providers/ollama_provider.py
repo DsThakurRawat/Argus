@@ -57,7 +57,7 @@ class OllamaProvider(LLMProvider):
 
             # Make the API call
             response = await asyncio.to_thread(
-                self.client.chat,
+                self.client.chat,  # type: ignore
                 model=self.model,
                 messages=messages,
                 options=options,  # type: ignore
@@ -179,7 +179,7 @@ class OllamaProvider(LLMProvider):
 
             # Use the embeddings endpoint
             response = await asyncio.to_thread(
-                self.client.embeddings,
+                self.client.embeddings,  # type: ignore
                 model=self.model,
                 prompt=text,  # type: ignore
             )

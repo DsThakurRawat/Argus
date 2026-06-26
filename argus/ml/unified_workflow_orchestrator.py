@@ -90,7 +90,7 @@ class UnifiedWorkflowOrchestrator:
         # Initialize modular components
         self.context_manager = WorkflowContextManager(enhanced_agent, repo_path)  # type: ignore
         self.analysis_engine = WorkflowAnalysisEngine(
-            enhanced_agent,
+            enhanced_agent,  # type: ignore
             cache,
             performance_config,  # type: ignore
         )

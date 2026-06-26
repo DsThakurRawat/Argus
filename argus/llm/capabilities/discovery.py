@@ -239,7 +239,7 @@ class CapabilityDiscovery:
                 result = capability_method()
                 # If it returns a coroutine, await it
                 if hasattr(result, "__await__"):
-                    return await result
+                    return await result  # type: ignore
                 # Otherwise it's synchronous
                 return bool(result)
             return False
