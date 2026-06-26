@@ -29,7 +29,7 @@ class MockMetricsCollector:
         value: float,
         metric_type: MetricType,
         tags: dict[str, str],
-        unit: str = None,
+        unit: str | None = None,
     ):
         """Simulate metrics recording with realistic timing."""
         start_time = time.time()
@@ -85,9 +85,9 @@ class TestMetricsPerformance:
         total_time = end_time - start_time
 
         # Should complete in under 10ms (including 1ms mock processing)
-        assert (
-            total_time < 0.01
-        ), f"Single metric recording took {total_time:.4f}s, expected < 0.01s"
+        assert total_time < 0.01, (
+            f"Single metric recording took {total_time:.4f}s, expected < 0.01s"
+        )
 
         # Verify metrics were recorded
         assert mock_collector.record_calls == 1
@@ -116,9 +116,7 @@ class TestMetricsPerformance:
         total_time = end_time - start_time
 
         # Should complete in under 1 second for 100 metrics
-        assert (
-            total_time < 1.0
-        ), f"Batch metrics recording took {total_time:.4f}s, expected < 1.0s"
+        assert total_time < 1.0, f"Batch metrics recording took {total_time:.4f}s, expected < 1.0s"
 
         # Verify all metrics were recorded
         assert mock_collector.record_calls == num_metrics
@@ -129,9 +127,9 @@ class TestMetricsPerformance:
         print(f"Average time per metric: {avg_time_per_metric:.6f}s")
 
         # Should be under 5ms per metric on average
-        assert (
-            avg_time_per_metric < 0.005
-        ), f"Average time per metric {avg_time_per_metric:.6f}s, expected < 0.005s"
+        assert avg_time_per_metric < 0.005, (
+            f"Average time per metric {avg_time_per_metric:.6f}s, expected < 0.005s"
+        )
 
     @pytest.mark.asyncio
     async def test_high_frequency_metrics_performance(self, metrics, mock_collector):
@@ -152,9 +150,7 @@ class TestMetricsPerformance:
         total_time = end_time - start_time
 
         # Should complete in under 5 seconds for 1000 metrics
-        assert (
-            total_time < 5.0
-        ), f"High frequency metrics took {total_time:.4f}s, expected < 5.0s"
+        assert total_time < 5.0, f"High frequency metrics took {total_time:.4f}s, expected < 5.0s"
 
         # Verify all metrics were recorded
         assert mock_collector.record_calls == num_metrics
@@ -165,9 +161,9 @@ class TestMetricsPerformance:
         print(f"Metrics per second: {metrics_per_second:.2f}")
 
         # Should handle at least 200 metrics per second
-        assert (
-            metrics_per_second > 200
-        ), f"Metrics per second {metrics_per_second:.2f}, expected > 200"
+        assert metrics_per_second > 200, (
+            f"Metrics per second {metrics_per_second:.2f}, expected > 200"
+        )
 
     @pytest.mark.asyncio
     async def test_complex_metrics_performance(self, metrics, mock_collector):
@@ -216,9 +212,7 @@ class TestMetricsPerformance:
         total_time = end_time - start_time
 
         # Should complete in under 10 seconds for 100 complex operations
-        assert (
-            total_time < 10.0
-        ), f"Complex metrics took {total_time:.4f}s, expected < 10.0s"
+        assert total_time < 10.0, f"Complex metrics took {total_time:.4f}s, expected < 10.0s"
 
         # Each operation records 10 metrics:
         # - record_error: 3 metrics (error count + retry count + error details)
@@ -234,9 +228,9 @@ class TestMetricsPerformance:
         print(f"Average time per complex operation: {avg_time_per_operation:.6f}s")
 
         # Should be under 50ms per operation on average
-        assert (
-            avg_time_per_operation < 0.05
-        ), f"Average time per operation {avg_time_per_operation:.6f}s, expected < 0.05s"
+        assert avg_time_per_operation < 0.05, (
+            f"Average time per operation {avg_time_per_operation:.6f}s, expected < 0.05s"
+        )
 
     @pytest.mark.asyncio
     async def test_metrics_memory_usage(self, metrics, mock_collector):
@@ -266,18 +260,16 @@ class TestMetricsPerformance:
         print(f"Memory increase for {num_metrics} metrics: {memory_increase:.2f} MB")
 
         # Memory increase should be reasonable (less than 100MB for 10k metrics)
-        assert (
-            memory_increase < 100
-        ), f"Memory increase {memory_increase:.2f} MB, expected < 100 MB"
+        assert memory_increase < 100, f"Memory increase {memory_increase:.2f} MB, expected < 100 MB"
 
         # Calculate memory per metric
         memory_per_metric = memory_increase / num_metrics * 1024  # KB
         print(f"Memory per metric: {memory_per_metric:.2f} KB")
 
         # Should be under 10KB per metric
-        assert (
-            memory_per_metric < 10
-        ), f"Memory per metric {memory_per_metric:.2f} KB, expected < 10 KB"
+        assert memory_per_metric < 10, (
+            f"Memory per metric {memory_per_metric:.2f} KB, expected < 10 KB"
+        )
 
     @pytest.mark.asyncio
     async def test_concurrent_metrics_performance(self, metrics, mock_collector):
@@ -305,9 +297,7 @@ class TestMetricsPerformance:
         total_time = end_time - start_time
 
         # Should complete in under 5 seconds
-        assert (
-            total_time < 5.0
-        ), f"Concurrent metrics took {total_time:.4f}s, expected < 5.0s"
+        assert total_time < 5.0, f"Concurrent metrics took {total_time:.4f}s, expected < 5.0s"
 
         # Verify all metrics were recorded
         expected_metrics = num_concurrent_operations * metrics_per_operation
@@ -319,9 +309,7 @@ class TestMetricsPerformance:
         print(f"Concurrent metrics throughput: {throughput:.2f} metrics/second")
 
         # Should handle at least 100 metrics per second under concurrency
-        assert (
-            throughput > 100
-        ), f"Throughput {throughput:.2f} metrics/second, expected > 100"
+        assert throughput > 100, f"Throughput {throughput:.2f} metrics/second, expected > 100"
 
     @pytest.mark.asyncio
     async def test_metrics_error_handling_performance(self, mock_collector):
@@ -339,7 +327,7 @@ class TestMetricsPerformance:
                 value: float,
                 metric_type: MetricType,
                 tags: dict[str, str],
-                unit: str = None,
+                unit: str | None = None,
             ):
                 self.call_count += 1
                 # Fail every 10th call
@@ -368,19 +356,15 @@ class TestMetricsPerformance:
         total_time = end_time - start_time
 
         # Should complete in reasonable time even with errors
-        assert (
-            total_time < 2.0
-        ), f"Metrics with errors took {total_time:.4f}s, expected < 2.0s"
+        assert total_time < 2.0, f"Metrics with errors took {total_time:.4f}s, expected < 2.0s"
 
         # Should have some successful recordings
-        assert (
-            failing_collector.success_count > 0
-        ), "No metrics were successfully recorded"
+        assert failing_collector.success_count > 0, "No metrics were successfully recorded"
 
         # Should have some failed recordings
-        assert (
-            failing_collector.call_count > failing_collector.success_count
-        ), "No metrics failed as expected"
+        assert failing_collector.call_count > failing_collector.success_count, (
+            "No metrics failed as expected"
+        )
 
         print(
             f"Successful metrics: {failing_collector.success_count}/{failing_collector.call_count}"
@@ -412,9 +396,9 @@ class TestMetricsPerformance:
         print(f"Mock collector overhead per call: {avg_time_per_call:.6f}s")
 
         # Should be under 2ms per call
-        assert (
-            avg_time_per_call < 0.002
-        ), f"Mock collector overhead {avg_time_per_call:.6f}s, expected < 0.002s"
+        assert avg_time_per_call < 0.002, (
+            f"Mock collector overhead {avg_time_per_call:.6f}s, expected < 0.002s"
+        )
 
         # Verify calls were recorded
         assert mock_collector.record_calls == 1000

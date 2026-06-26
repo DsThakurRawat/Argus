@@ -289,9 +289,7 @@ class TestKubernetesAdapter:
         # Mock Kubernetes API error
         from kubernetes.client.rest import ApiException
 
-        mock_client.list_namespace.side_effect = ApiException(
-            status=403, reason="Forbidden"
-        )
+        mock_client.list_namespace.side_effect = ApiException(status=403, reason="Forbidden")
 
         with pytest.raises(SourceConnectionError):
             await adapter.start()

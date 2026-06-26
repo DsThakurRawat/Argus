@@ -136,9 +136,7 @@ class MockLLMProvider(LLMProvider):
         elif "explain" in prompt_lower:
             return "I'll explain this concept using the mock provider's knowledge base. This is a simulated explanation for testing purposes."
         else:
-            return (
-                f"Mock response to: {prompt[:100]}{'...' if len(prompt) > 100 else ''}"
-            )
+            return f"Mock response to: {prompt[:100]}{'...' if len(prompt) > 100 else ''}"
 
     def get_stats(self) -> dict[str, Any]:
         """Get provider statistics."""
@@ -429,11 +427,7 @@ class MockModelRegistry(ModelRegistry):
 
     def get_models_by_type(self, semantic_type: str) -> list[dict[str, Any]]:
         """Get models by semantic type."""
-        return [
-            model
-            for model in self.models.values()
-            if model["semantic_type"] == semantic_type
-        ]
+        return [model for model in self.models.values() if model["semantic_type"] == semantic_type]
 
 
 class MockCostManager:

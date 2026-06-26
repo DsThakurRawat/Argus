@@ -72,9 +72,7 @@ class MetricSeries:
         cutoff_time = datetime.now() - window
 
         # Filter points within the time window
-        recent_points = [
-            point for point in self.points if point.timestamp >= cutoff_time
-        ]
+        recent_points = [point for point in self.points if point.timestamp >= cutoff_time]
 
         if not recent_points:
             return None
@@ -145,9 +143,7 @@ class ServicePerformanceMetrics:
         self.last_request_time = timestamp
 
         # Calculate derived metrics
-        self.error_rate = (
-            self.error_count / self.request_count if self.request_count > 0 else 0.0
-        )
+        self.error_rate = self.error_count / self.request_count if self.request_count > 0 else 0.0
 
         # Calculate throughput (requests per second over last minute)
         if self.first_request_time:
@@ -157,16 +153,12 @@ class ServicePerformanceMetrics:
 
         # Calculate availability
         self.availability = (
-            (self.success_count / self.request_count * 100)
-            if self.request_count > 0
-            else 100.0
+            (self.success_count / self.request_count * 100) if self.request_count > 0 else 100.0
         )
 
         # Calculate health score (0-1, higher is better)
         error_penalty = self.error_rate * 0.5
-        response_penalty = min(
-            0.3, self.avg_response_time / 10000.0
-        )  # Penalty for slow responses
+        response_penalty = min(0.3, self.avg_response_time / 10000.0)  # Penalty for slow responses
         self.health_score = max(0.0, 1.0 - error_penalty - response_penalty)
 
     def get_percentile_response_time(self, percentile: float) -> float:
@@ -241,9 +233,7 @@ class MetricsCollector:
             f"{service_id}.response_time", response_time, {"success": str(success)}
         )
 
-        self._record_metric_point(
-            f"{service_id}.request_count", 1, {"success": str(success)}
-        )
+        self._record_metric_point(f"{service_id}.request_count", 1, {"success": str(success)})
 
     def _record_metric_point(
         self, metric_name: str, value: float, tags: dict[str, str] | None = None
@@ -256,9 +246,7 @@ class MetricsCollector:
 
         self.metric_series[metric_name].add_point(value, tags)
 
-    def get_service_metrics(
-        self, service_id: str
-    ) -> ServicePerformanceMetrics | None:
+    def get_service_metrics(self, service_id: str) -> ServicePerformanceMetrics | None:
         """Get metrics for a specific service."""
         return self.metrics.get(service_id)
 
@@ -392,14 +380,10 @@ class MetricsReporter:
             },
             "timeline": {
                 "first_request": (
-                    metrics.first_request_time.isoformat()
-                    if metrics.first_request_time
-                    else None
+                    metrics.first_request_time.isoformat() if metrics.first_request_time else None
                 ),
                 "last_request": (
-                    metrics.last_request_time.isoformat()
-                    if metrics.last_request_time
-                    else None
+                    metrics.last_request_time.isoformat() if metrics.last_request_time else None
                 ),
             },
         }
@@ -420,9 +404,7 @@ class MetricsReporter:
                 "total_services": len(all_metrics),
                 "total_requests": total_requests,
                 "overall_success_rate": (
-                    f"{(total_success / total_requests * 100):.2f}%"
-                    if total_requests > 0
-                    else "0%"
+                    f"{(total_success / total_requests * 100):.2f}%" if total_requests > 0 else "0%"
                 ),
                 "average_health_score": f"{avg_health_score:.2f}",
             },
@@ -499,17 +481,13 @@ class ServiceMetricsManager:
         if metrics:
             triggered_alerts = self.alert_manager.check_alerts(service_id, metrics)
             if triggered_alerts:
-                self.logger.warning(
-                    f"Triggered {len(triggered_alerts)} alerts for {service_id}"
-                )
+                self.logger.warning(f"Triggered {len(triggered_alerts)} alerts for {service_id}")
 
     def add_alert(self, alert: ServiceAlert) -> None:
         """Add a new alert configuration."""
         self.alert_manager.add_alert(alert)
 
-    def get_service_metrics(
-        self, service_id: str
-    ) -> ServicePerformanceMetrics | None:
+    def get_service_metrics(self, service_id: str) -> ServicePerformanceMetrics | None:
         """Get metrics for a specific service."""
         return self.collector.get_service_metrics(service_id)
 

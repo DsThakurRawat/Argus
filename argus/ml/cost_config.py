@@ -56,9 +56,7 @@ class BudgetConfig:
             return False
         if not 0 <= self.alert_threshold_percent <= 100:
             return False
-        if self.warn_threshold_percent >= self.alert_threshold_percent:
-            return False
-        return True
+        return not self.warn_threshold_percent >= self.alert_threshold_percent
 
 
 class UsageRecord:

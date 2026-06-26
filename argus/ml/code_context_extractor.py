@@ -61,9 +61,7 @@ class CodeContextExtractor:
             time_window, "end_time", time_window.start_time + timedelta(minutes=duration)
         )
 
-        window_commits = [
-            c for c in commits if time_window.start_time <= c.timestamp <= end_time
-        ]
+        window_commits = [c for c in commits if time_window.start_time <= c.timestamp <= end_time]
         rollbacks = sum(1 for c in window_commits if c.is_rollback)
         return (
             f"{len(window_commits)} commits during incident window. "
@@ -87,8 +85,11 @@ class CodeContextExtractor:
             # Bypass Python 3.11/3.12 AsyncMock limitation with raw coroutine side_effects
             import inspect
             from unittest.mock import Mock
+
             communicate_callable = process.communicate
-            if isinstance(communicate_callable, Mock) and getattr(communicate_callable, "side_effect", None):
+            if isinstance(communicate_callable, Mock) and getattr(
+                communicate_callable, "side_effect", None
+            ):
                 se = communicate_callable.side_effect
                 if inspect.iscoroutine(se):
                     await se

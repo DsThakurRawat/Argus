@@ -99,9 +99,7 @@ class TestLogEntry:
 
         log_entry = LogEntry(insert_id="test-123", raw_data=raw_data)
 
-        assert (
-            log_entry.error_message == "Database connection failed: timeout after 30s"
-        )
+        assert log_entry.error_message == "Database connection failed: timeout after 30s"
 
     def test_log_entry_invalid_timestamp_fallback(self) -> None:
         """Test fallback to current time for invalid timestamps."""
@@ -204,12 +202,8 @@ class TestTimeWindow:
         window = TimeWindow(start_time=start_time, duration_minutes=5)
 
         logs = [
-            LogEntry(
-                insert_id="info", timestamp=start_time, severity="INFO", raw_data={}
-            ),
-            LogEntry(
-                insert_id="error", timestamp=start_time, severity="ERROR", raw_data={}
-            ),
+            LogEntry(insert_id="info", timestamp=start_time, severity="INFO", raw_data={}),
+            LogEntry(insert_id="error", timestamp=start_time, severity="ERROR", raw_data={}),
             LogEntry(
                 insert_id="critical",
                 timestamp=start_time,
@@ -296,9 +290,7 @@ class TestThresholdConfig:
 
     def test_threshold_config_defaults(self) -> None:
         """Test ThresholdConfig default values."""
-        config = ThresholdConfig(
-            threshold_type=ThresholdType.ERROR_RATE, min_value=15.0
-        )
+        config = ThresholdConfig(threshold_type=ThresholdType.ERROR_RATE, min_value=15.0)
 
         assert config.min_error_count == 3
         assert config.min_rate_increase == 10.0
@@ -401,9 +393,7 @@ class TestConfidenceRule:
 
     def test_confidence_rule_defaults(self) -> None:
         """Test ConfidenceRule default values."""
-        rule = ConfidenceRule(
-            factor_type=ConfidenceFactors.TIME_CONCENTRATION, weight=0.5
-        )
+        rule = ConfidenceRule(factor_type=ConfidenceFactors.TIME_CONCENTRATION, weight=0.5)
 
         assert rule.threshold is None
         assert rule.max_contribution == 1.0

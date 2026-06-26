@@ -12,6 +12,7 @@ This module provides optimizations for async processing including:
 
 import asyncio
 from collections.abc import Callable
+import contextlib
 from dataclasses import dataclass
 import logging
 import time
@@ -193,9 +194,7 @@ class AsyncOptimizer:
                 chunk = batch_tasks[i : i + chunk_size]
 
                 # Execute chunk concurrently
-                chunk_results = await self.execute_concurrent_tasks(
-                    chunk, wait_for_all=True
-                )
+                chunk_results = await self.execute_concurrent_tasks(chunk, wait_for_all=True)
 
                 # Categorize results
                 for task_id, result in chunk_results.items():
@@ -226,8 +225,7 @@ class AsyncOptimizer:
                 await record_performance(
                     "batch_processing",
                     duration_ms,
-                    success=success_rate
-                    > 0.8,  # Consider successful if >80% success rate
+                    success=success_rate > 0.8,  # Consider successful if >80% success rate
                     metadata={
                         "batch_id": batch_id,
                         "batch_size": len(batch_tasks),
@@ -250,9 +248,7 @@ class AsyncOptimizer:
             self.logger.error(f"Batch processing failed: {e}")
             raise
 
-    async def execute_with_retry(
-        self, task: AsyncTask, max_retries: int | None = None
-    ) -> Any:
+    async def execute_with_retry(self, task: AsyncTask, max_retries: int | None = None) -> Any:
         """
         Execute a task with automatic retry on failure.
 
@@ -334,7 +330,7 @@ class AsyncOptimizer:
         while not self.task_queue.empty():
             try:
                 # Get next task (priority queue returns lowest priority first)
-                priority, task = await self.task_queue.get()
+                _priority, task = await self.task_queue.get()
 
                 # Acquire semaphore
                 async with self.semaphore:
@@ -355,9 +351,7 @@ class AsyncOptimizer:
                 self.logger.error(f"Error processing task queue: {e}")
                 break
 
-    async def optimize_context_building(
-        self, context_tasks: list[AsyncTask]
-    ) -> dict[str, Any]:
+    async def optimize_context_building(self, context_tasks: list[AsyncTask]) -> dict[str, Any]:
         """
         Optimize context building operations with specialized batching.
 
@@ -388,9 +382,7 @@ class AsyncOptimizer:
                     # Issue patterns can be processed concurrently
                     concurrent_result = await self.execute_concurrent_tasks(tasks)
                     results[task_type] = [
-                        r
-                        for r in concurrent_result.values()
-                        if not isinstance(r, Exception)
+                        r for r in concurrent_result.values() if not isinstance(r, Exception)
                     ]
 
                 else:
@@ -430,9 +422,7 @@ class AsyncOptimizer:
             self.logger.error(f"Optimized context building failed: {e}")
             raise
 
-    def _group_tasks_by_type(
-        self, tasks: list[AsyncTask]
-    ) -> dict[str, list[AsyncTask]]:
+    def _group_tasks_by_type(self, tasks: list[AsyncTask]) -> dict[str, list[AsyncTask]]:
         """Group tasks by their type for optimal processing."""
         grouped = {}
 
@@ -486,10 +476,8 @@ class AsyncOptimizer:
         for _task_id, task in self.running_tasks.items():
             if not task.done():
                 task.cancel()
-                try:
+                with contextlib.suppress(asyncio.CancelledError):
                     await task
-                except asyncio.CancelledError:
-                    pass
 
         # Clear the task queue
         while not self.task_queue.empty():

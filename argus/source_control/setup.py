@@ -46,9 +46,7 @@ def create_default_config() -> SourceControlConfig:
 
     return SourceControlConfig(
         repositories=[
-            GitHubRepositoryConfig(
-                name="test-github-repo", url="https://github.com/test/repo"
-            ),
+            GitHubRepositoryConfig(name="test-github-repo", url="https://github.com/test/repo"),
             LocalRepositoryConfig(name="test-local-repo", path="/tmp/test-repo"),
             GitLabRepositoryConfig(
                 name="test-gitlab-repo",

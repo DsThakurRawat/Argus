@@ -171,13 +171,15 @@ class SecurityConfig:
         if self.rate_limit_per_minute <= 0:
             raise ValueError("rate_limit_per_minute must be positive")
 
-        if self.allowed_prompt_patterns is not None:
-            if not isinstance(self.allowed_prompt_patterns, list):
-                raise ValueError("allowed_prompt_patterns must be a list")
+        if self.allowed_prompt_patterns is not None and not isinstance(
+            self.allowed_prompt_patterns, list
+        ):
+            raise ValueError("allowed_prompt_patterns must be a list")
 
-        if self.blocked_prompt_patterns is not None:
-            if not isinstance(self.blocked_prompt_patterns, list):
-                raise ValueError("blocked_prompt_patterns must be a list")
+        if self.blocked_prompt_patterns is not None and not isinstance(
+            self.blocked_prompt_patterns, list
+        ):
+            raise ValueError("blocked_prompt_patterns must be a list")
 
 
 @dataclass

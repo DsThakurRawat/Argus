@@ -83,10 +83,7 @@ class FallbackManager:
 
         for provider in providers_to_try:
             # Skip unhealthy providers (unless they're the only ones available)
-            if (
-                not self._provider_health.get(provider, True)
-                and len(providers_to_try) > 1
-            ):
+            if not self._provider_health.get(provider, True) and len(providers_to_try) > 1:
                 logger.debug(f"Skipping unhealthy provider: {provider}")
                 continue
 
@@ -95,9 +92,7 @@ class FallbackManager:
 
                 # Execute with timeout
                 result = await asyncio.wait_for(
-                    self._execute_provider_function(
-                        provider_funcs[provider], *args, **kwargs
-                    ),
+                    self._execute_provider_function(provider_funcs[provider], *args, **kwargs),
                     timeout=self.fallback_timeout,
                 )
 
@@ -108,9 +103,7 @@ class FallbackManager:
                 return result, provider
 
             except TimeoutError:
-                logger.warning(
-                    f"Provider {provider} timed out after {self.fallback_timeout}s"
-                )
+                logger.warning(f"Provider {provider} timed out after {self.fallback_timeout}s")
                 self._on_provider_failure(provider, "timeout")
                 last_exception = Exception(f"Provider {provider} timed out")
 
@@ -209,9 +202,7 @@ class FallbackManager:
             "usage": usage,
             "total_requests": self._total_requests,
             "total_successes": total_successes,
-            "success_rate": (
-                (total_successes / max(1, usage)) * 100 if usage > 0 else 0.0
-            ),
+            "success_rate": ((total_successes / max(1, usage)) * 100 if usage > 0 else 0.0),
             "average_response_time": 0.0,  # Not implemented in this version
             "last_failure": self._provider_last_failure.get(provider),
         }
@@ -230,8 +221,7 @@ class FallbackManager:
                 else 0
             ),
             "providers": {
-                provider: self.get_provider_stats(provider)
-                for provider in self.providers
+                provider: self.get_provider_stats(provider) for provider in self.providers
             },
             "healthy_providers": len(self._get_healthy_providers()),
             "total_providers": len(self.providers),

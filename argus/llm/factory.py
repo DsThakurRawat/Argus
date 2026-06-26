@@ -21,6 +21,7 @@ from .providers import (
 
 logger = logging.getLogger(__name__)
 
+
 class LLMProviderFactory:
     """
     Registry and factory for LLM provider implementations.
@@ -59,7 +60,9 @@ class LLMProviderFactory:
         self._provider_types[provider_type] = provider_class
         self.__class__._providers_registry[provider_type] = provider_class
 
-    def create_provider(self, config: LLMProviderConfig, force_recreate: bool = False) -> LLMProvider:
+    def create_provider(
+        self, config: LLMProviderConfig, force_recreate: bool = False
+    ) -> LLMProvider:
         """Create a provider instance."""
         provider_type = config.provider
         if provider_type not in self._provider_types:
@@ -80,7 +83,9 @@ class LLMProviderFactory:
                 if is_valid is False:
                     raise ValueError(f"Invalid configuration for provider: {provider_type}")
             self._providers[provider_type] = provider
-            self.__class__._instances[f"{provider_type}_{getattr(config, 'model', 'default')}"] = provider
+            self.__class__._instances[f"{provider_type}_{getattr(config, 'model', 'default')}"] = (
+                provider
+            )
             return provider
         except ValueError:
             raise
@@ -169,6 +174,7 @@ class LLMProviderFactory:
             except Exception as e:
                 logger.error(f"Error shutting down provider {name}: {e}")
         cls._instances.clear()
+
 
 def get_provider_factory() -> type[LLMProviderFactory]:
     """Get the LLM provider factory class."""

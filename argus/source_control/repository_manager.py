@@ -57,9 +57,7 @@ class RepositoryManager:
                 provider = self.repositories[repo_name]
                 results[repo_name] = await operation(provider)
             except Exception as e:
-                self.logger.error(
-                    f"Operation failed for repository '{repo_name}': {e!s}"
-                )
+                self.logger.error(f"Operation failed for repository '{repo_name}': {e!s}")
                 results[repo_name] = {"error": str(e)}
 
         return results
@@ -81,14 +79,10 @@ class RepositoryManager:
             provider = await self.get_provider(repo_name)
             return await provider.get_repository_info()
         except Exception as e:
-            self.logger.error(
-                f"Failed to get repository info for '{repo_name}': {e!s}"
-            )
+            self.logger.error(f"Failed to get repository info for '{repo_name}': {e!s}")
             return None
 
-    async def list_all_branches(
-        self, repos: list[str] | None = None
-    ) -> dict[str, list[str]]:
+    async def list_all_branches(self, repos: list[str] | None = None) -> dict[str, list[str]]:
         """List branches for all or specified repositories."""
 
         async def get_branches(provider: SourceControlProvider) -> list[str]:

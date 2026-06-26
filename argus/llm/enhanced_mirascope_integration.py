@@ -103,9 +103,7 @@ class PromptVersion(BaseModel):
 
     # Status and lifecycle
     status: str = "draft"  # draft, testing, active, deprecated
-    lifecycle_stage: str = (
-        "development"  # development, testing, production, maintenance
-    )
+    lifecycle_stage: str = "development"  # development, testing, production, maintenance
 
 
 class PromptData(BaseModel):
@@ -165,9 +163,7 @@ class EnhancedPromptManager:
 
         self._load_prompts()
 
-        logger.info(
-            f"Enhanced Prompt Manager initialized with Mirascope: {MIRASCOPE_AVAILABLE}"
-        )
+        logger.info(f"Enhanced Prompt Manager initialized with Mirascope: {MIRASCOPE_AVAILABLE}")
 
     def create_prompt(
         self,
@@ -237,9 +233,7 @@ class EnhancedPromptManager:
             version_to_use = prompt_data.current_version
 
         if version_to_use not in prompt_data.versions:
-            raise ValueError(
-                f"Version {version_to_use} not found for prompt {prompt_id}"
-            )
+            raise ValueError(f"Version {version_to_use} not found for prompt {prompt_id}")
 
         template = prompt_data.versions[version_to_use].template
 
@@ -335,9 +329,7 @@ class EnhancedPromptManager:
 
         self._save_prompts()
 
-        logger.info(
-            f"Deployed version {version} of prompt {prompt_id} to {environment}"
-        )
+        logger.info(f"Deployed version {version} of prompt {prompt_id} to {environment}")
 
     def run_ab_test(
         self,
@@ -353,18 +345,13 @@ class EnhancedPromptManager:
 
         prompt_data = self.prompts[prompt_id]
 
-        if (
-            version_a not in prompt_data.versions
-            or version_b not in prompt_data.versions
-        ):
+        if version_a not in prompt_data.versions or version_b not in prompt_data.versions:
             raise ValueError("Both versions must exist for A/B testing")
 
         test_id = str(uuid.uuid4())
         test_config["test_id"] = test_id
         test_config["start_time"] = datetime.now().isoformat()
-        test_config["end_time"] = (
-            datetime.now() + timedelta(hours=duration_hours)
-        ).isoformat()
+        test_config["end_time"] = (datetime.now() + timedelta(hours=duration_hours)).isoformat()
         test_config["status"] = "running"
 
         # Initialize A/B test results
@@ -386,9 +373,7 @@ class EnhancedPromptManager:
 
         self._save_prompts()
 
-        logger.info(
-            f"Started A/B test {test_id} between versions {version_a} and {version_b}"
-        )
+        logger.info(f"Started A/B test {test_id} between versions {version_a} and {version_b}")
         return test_id
 
     def record_usage(
@@ -512,12 +497,10 @@ class EnhancedPromptManager:
                 "total_usage": len(all_data),
                 "versions": {
                     version: {
-                        "usage_count": len(
-                            [r for r in all_data if r["version"] == version]
-                        ),
+                        "usage_count": len([r for r in all_data if r["version"] == version]),
                         "metrics": prompt_data.versions[version].metrics.model_dump(),
                     }
-                    for version in prompt_data.versions.keys()
+                    for version in prompt_data.versions
                 },
                 "recent_usage": all_data[-20:] if all_data else [],
             }
@@ -540,14 +523,14 @@ class EnhancedPromptManager:
         # Create optimization prompt
         optimization_prompt = f"""
         You are an expert prompt engineer. Optimize the following prompt based on these goals:
-        {', '.join(optimization_goals)}
-        
+        {", ".join(optimization_goals)}
+
         Current prompt:
         {current_template}
-        
+
         Test cases:
         {json.dumps(test_cases, indent=2)}
-        
+
         Provide an optimized version of the prompt that better achieves the stated goals.
         Consider:
         1. Clarity and specificity
@@ -555,7 +538,7 @@ class EnhancedPromptManager:
         3. Output format requirements
         4. Edge case handling
         5. Performance optimization
-        
+
         Only return the optimized prompt text, nothing else.
         """
 
@@ -585,9 +568,7 @@ class EnhancedPromptManager:
         self.test_prompt(prompt_id, test_cases, new_version)
 
         # Add optimization suggestion to metadata
-        prompt_data.versions[new_version].optimization_suggestions.extend(
-            optimization_goals
-        )
+        prompt_data.versions[new_version].optimization_suggestions.extend(optimization_goals)
 
         self._save_prompts()
 
@@ -608,9 +589,7 @@ class EnhancedPromptManager:
         version_to_use = version or prompt_data.current_version
 
         if version_to_use not in prompt_data.versions:
-            raise ValueError(
-                f"Version {version_to_use} not found for prompt {prompt_id}"
-            )
+            raise ValueError(f"Version {version_to_use} not found for prompt {prompt_id}")
 
         prompt = self.get_prompt(prompt_id, version_to_use)
         results = []
@@ -667,9 +646,7 @@ class EnhancedPromptManager:
             "timestamp": datetime.now().isoformat(),
             "test_cases": test_cases,
             "results": results,
-            "success_rate": (
-                sum(r["success"] for r in results) / len(results) if results else 0
-            ),
+            "success_rate": (sum(r["success"] for r in results) / len(results) if results else 0),
         }
 
         prompt_data.versions[version_to_use].test_results.append(test_record)
@@ -847,17 +824,17 @@ def create_enhanced_prompt_manager(
 
 # Export all public classes and functions
 __all__ = [
+    "ConfigurationManager",
     "EnhancedPromptManager",
-    "PromptData",
-    "PromptVersion",
-    "PromptMetrics",
-    "get_enhanced_prompt_manager",
-    "create_enhanced_prompt_manager",
+    "MirascopeClientManager",
     # Re-export modular components for convenience
     "MirascopeIntegrationFacade",
-    "ConfigurationManager",
-    "MirascopeClientManager",
-    "ResponseProcessor",
+    "PromptData",
+    "PromptMetrics",
+    "PromptVersion",
     "ProviderConfig",
     "ProviderType",
+    "ResponseProcessor",
+    "create_enhanced_prompt_manager",
+    "get_enhanced_prompt_manager",
 ]

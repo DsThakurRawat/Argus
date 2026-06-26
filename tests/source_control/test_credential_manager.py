@@ -150,9 +150,7 @@ class TestCredentialManager:
         manager.register_backend("env", env_backend, default=True)
 
         # Set test environment variable with JSON format
-        os.environ["github-token"] = (
-            '{"token": "test-token", "provider_type": "github"}'
-        )
+        os.environ["github-token"] = '{"token": "test-token", "provider_type": "github"}'
         try:
             credentials = await manager.get_credentials("env:github-token", "github")
             assert credentials["token"] == "test-token"
@@ -166,9 +164,7 @@ class TestCredentialManager:
         env_backend = EnvironmentBackend()
         manager.register_backend("env", env_backend)
 
-        os.environ["github-token"] = (
-            '{"token": "test-token", "provider_type": "github"}'
-        )
+        os.environ["github-token"] = '{"token": "test-token", "provider_type": "github"}'
         try:
             credentials = await manager.get_credentials("env:github-token", "github")
             assert credentials["token"] == "test-token"
@@ -213,9 +209,7 @@ class TestCredentialManager:
         env_backend = EnvironmentBackend()
         manager.register_backend("env", env_backend, default=True)
 
-        os.environ["github-token"] = (
-            '{"token": "test-token", "provider_type": "gitlab"}'
-        )
+        os.environ["github-token"] = '{"token": "test-token", "provider_type": "gitlab"}'
         try:
             credentials = await manager.get_credentials("env:github-token", "github")
             # Should still return the credentials but with a warning
@@ -230,9 +224,7 @@ class TestCredentialManager:
         env_backend = EnvironmentBackend()
         manager.register_backend("env", env_backend, default=True)
 
-        os.environ["github-token"] = (
-            '{"token": "test-token", "provider_type": "github"}'
-        )
+        os.environ["github-token"] = '{"token": "test-token", "provider_type": "github"}'
         try:
             # First call
             credentials1 = await manager.get_credentials("env:github-token", "github")
@@ -302,7 +294,5 @@ class TestCredentialManager:
             assert "sensitive-token" not in content
 
         # Verify we can decrypt and retrieve it
-        retrieved = await manager_with_encryption.get_credentials(
-            "encrypted-creds", "github"
-        )
+        retrieved = await manager_with_encryption.get_credentials("encrypted-creds", "github")
         assert retrieved == credentials

@@ -44,15 +44,9 @@ class GitHubOperations:
         self.error_handling_components = error_handling_components
 
         # Initialize sub-modules with error handling components
-        self.file_ops = GitHubFileOperations(
-            client, repo, logger, error_handling_components
-        )
-        self.branch_ops = GitHubBranchOperations(
-            client, repo, logger, error_handling_components
-        )
-        self.batch_ops = GitHubBatchOperations(
-            client, repo, logger, error_handling_components
-        )
+        self.file_ops = GitHubFileOperations(client, repo, logger, error_handling_components)
+        self.branch_ops = GitHubBranchOperations(client, repo, logger, error_handling_components)
+        self.batch_ops = GitHubBatchOperations(client, repo, logger, error_handling_components)
 
     # File operations - delegate to file_ops
     async def get_file_content(self, path: str, ref: str | None = None) -> str:
@@ -67,9 +61,7 @@ class GitHubOperations:
         branch: str | None = None,
     ) -> RemediationResult:
         """Apply remediation to a file."""
-        return await self.file_ops.apply_remediation(
-            file_path, remediation, commit_message, branch
-        )
+        return await self.file_ops.apply_remediation(file_path, remediation, commit_message, branch)
 
     async def file_exists(self, path: str, ref: str | None = None) -> bool:
         """Check if a file exists in the repository."""
@@ -79,9 +71,7 @@ class GitHubOperations:
         """Get file information."""
         return await self.file_ops.get_file_info(path, ref)
 
-    async def list_files(
-        self, path: str = "", ref: str | None = None
-    ) -> list[FileInfo]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[FileInfo]:
         """List files in a directory."""
         return await self.file_ops.list_files(path, ref)
 
@@ -143,9 +133,7 @@ class GitHubOperations:
         feature_branch: str,
     ) -> ConflictInfo:
         """Check for conflicts between branches."""
-        return await self.branch_ops.check_conflicts(
-            file_path, base_branch, feature_branch
-        )
+        return await self.branch_ops.check_conflicts(file_path, base_branch, feature_branch)
 
     async def resolve_conflicts(
         self,
@@ -154,13 +142,9 @@ class GitHubOperations:
         commit_message: str,
     ) -> bool:
         """Resolve conflicts in a file."""
-        return await self.branch_ops.resolve_conflicts(
-            file_path, resolution, commit_message
-        )
+        return await self.branch_ops.resolve_conflicts(file_path, resolution, commit_message)
 
     # Batch operations - delegate to batch_ops
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute multiple operations in batch."""
         return await self.batch_ops.batch_operations(operations)

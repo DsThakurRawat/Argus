@@ -41,7 +41,7 @@ class CapabilityDiscovery:
             "cache_hits": 0,
             "cache_misses": 0,
             "last_discovery_time": None,
-            "average_discovery_time": 0.0
+            "average_discovery_time": 0.0,
         }
 
     def _is_cache_valid(self, model_id: str) -> bool:
@@ -90,7 +90,7 @@ class CapabilityDiscovery:
                     # If it's a list, create tuples with model names
                     model_items = [("default", model_name) for model_name in available_models]  # type: ignore
 
-                for model_type, model_name in model_items:
+                for _model_type, model_name in model_items:
                     model_id = f"{provider_name}/{model_name}"
 
                     # Check cache first (unless force refresh)
@@ -133,9 +133,7 @@ class CapabilityDiscovery:
                             else:
                                 supports_tools = False
                         except Exception as e:
-                            logger.warning(
-                                f"Failed to check capabilities for {provider_name}: {e}"
-                            )
+                            logger.warning(f"Failed to check capabilities for {provider_name}: {e}")
                             supports_streaming = False
                             supports_tools = False
 
@@ -145,7 +143,7 @@ class CapabilityDiscovery:
                             if not model_config:
                                 logger.warning(
                                     f"No configuration found for model {model_name} "
-                            f"in provider {provider_name}"
+                                    f"in provider {provider_name}"
                                 )
                                 continue
                         except AttributeError:
@@ -170,8 +168,8 @@ class CapabilityDiscovery:
                                     description=cap_def.description,
                                     parameters=cap_def.parameters,
                                     performance_score=getattr(
-                            model_config, "performance_score", cap_def.performance_score
-                        ),
+                                        model_config, "performance_score", cap_def.performance_score
+                                    ),
                                     cost_efficiency=getattr(
                                         model_config, "cost_per_1k_tokens", cap_def.cost_efficiency
                                     ),
@@ -209,10 +207,10 @@ class CapabilityDiscovery:
             else:
                 # Running average
                 self._metrics["average_discovery_time"] = (
-                    (self._metrics["average_discovery_time"] *
-                     (self._metrics["discovery_attempts"] - 1) + discovery_time)
-                    / self._metrics["discovery_attempts"]
-                )
+                    self._metrics["average_discovery_time"]
+                    * (self._metrics["discovery_attempts"] - 1)
+                    + discovery_time
+                ) / self._metrics["discovery_attempts"]
 
             logger.info(
                 f"Discovered capabilities for {len(self.model_capabilities)} models "
@@ -237,7 +235,7 @@ class CapabilityDiscovery:
         """
         try:
             # Try calling as async first
-            if hasattr(capability_method, "__call__"):
+            if callable(capability_method):
                 result = capability_method()
                 # If it returns a coroutine, await it
                 if hasattr(result, "__await__"):
@@ -344,28 +342,29 @@ class CapabilityDiscovery:
         """
         total_attempts = self._metrics["discovery_attempts"]
         success_rate = (
-            self._metrics["discovery_successes"] / total_attempts
-            if total_attempts > 0 else 0.0
+            self._metrics["discovery_successes"] / total_attempts if total_attempts > 0 else 0.0
         )
 
         cache_hit_rate = (
-            self._metrics["cache_hits"] /
-            (self._metrics["cache_hits"] + self._metrics["cache_misses"])
+            self._metrics["cache_hits"]
+            / (self._metrics["cache_hits"] + self._metrics["cache_misses"])
             if (self._metrics["cache_hits"] + self._metrics["cache_misses"]) > 0
             else 0.0
         )
 
         return {
             "status": (
-                "healthy" if success_rate > 0.8
-                else "degraded" if success_rate > 0.5
+                "healthy"
+                if success_rate > 0.8
+                else "degraded"
+                if success_rate > 0.5
                 else "unhealthy"
             ),
             "success_rate": success_rate,
             "cache_hit_rate": cache_hit_rate,
             "total_models": len(self.model_capabilities),
             "last_discovery": self._metrics["last_discovery_time"],
-            "average_discovery_time": self._metrics["average_discovery_time"]
+            "average_discovery_time": self._metrics["average_discovery_time"],
         }
 
     def reset_metrics(self) -> Any:
@@ -377,18 +376,18 @@ class CapabilityDiscovery:
             "cache_hits": 0,
             "cache_misses": 0,
             "last_discovery_time": None,
-            "average_discovery_time": 0.0
+            "average_discovery_time": 0.0,
         }
         logger.info("Capability discovery metrics reset")
 
     def validate_task_requirements(self, task_type: str, model_id: str) -> dict[str, Any]:
         """
         Validate if a model meets the requirements for a specific task type.
-        
+
         Args:
             task_type: Type of task to validate for.
             model_id: ID of the model to validate.
-            
+
         Returns:
             Dictionary with validation results.
         """
@@ -396,7 +395,7 @@ class CapabilityDiscovery:
         if not model_caps:
             return {
                 "meets_requirements": False,
-                "error": f"Model {model_id} not found in capabilities database"
+                "error": f"Model {model_id} not found in capabilities database",
             }
 
         available_capabilities = [cap.name for cap in model_caps.capabilities]
@@ -409,11 +408,11 @@ class CapabilityDiscovery:
     ) -> list[dict[str, Any]]:
         """
         Find models that meet the requirements for a specific task type.
-        
+
         Args:
             task_type: Type of task to find models for.
             min_coverage: Minimum coverage score required (0.0 to 1.0).
-            
+
         Returns:
             List of dictionaries with model information and validation results.
         """
@@ -425,12 +424,14 @@ class CapabilityDiscovery:
             if validation_result.get("meets_requirements", False):
                 coverage_score = validation_result.get("coverage_score", 0.0)
                 if coverage_score >= min_coverage:
-                    suitable_models.append({
-                        "model_id": model_id,
-                        "capabilities": [cap.name for cap in model_caps.capabilities],
-                        "validation_result": validation_result,
-                        "coverage_score": coverage_score
-                    })
+                    suitable_models.append(
+                        {
+                            "model_id": model_id,
+                            "capabilities": [cap.name for cap in model_caps.capabilities],
+                            "validation_result": validation_result,
+                            "coverage_score": coverage_score,
+                        }
+                    )
 
         # Sort by coverage score (descending)
         suitable_models.sort(key=lambda x: x["coverage_score"], reverse=True)

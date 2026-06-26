@@ -160,9 +160,7 @@ class TestEnhancedErrorHandler:
         config = ErrorHandlerConfig()
         handler = EnhancedErrorHandler(config)
 
-        context = RequestContext(
-            provider_id="test_provider", request_id="test_request_123"
-        )
+        context = RequestContext(provider_id="test_provider", request_id="test_request_123")
 
         # Test transient error handling
         transient_error = Exception("temporary failure")
@@ -180,9 +178,7 @@ class TestEnhancedErrorHandler:
         config = ErrorHandlerConfig()
         handler = EnhancedErrorHandler(config)
 
-        context = RequestContext(
-            provider_id="test_provider", request_id="test_request_123"
-        )
+        context = RequestContext(provider_id="test_provider", request_id="test_request_123")
 
         # Simulate provider failures to trigger circuit breaker
         for _ in range(6):  # More than failure threshold
@@ -198,9 +194,7 @@ class TestEnhancedErrorHandler:
         config = ErrorHandlerConfig()
         handler = EnhancedErrorHandler(config)
 
-        context = RequestContext(
-            provider_id="test_provider", request_id="test_request_123"
-        )
+        context = RequestContext(provider_id="test_provider", request_id="test_request_123")
 
         # Record some errors
         await handler.handle_error(Exception("test error 1"), context)
@@ -218,9 +212,7 @@ class TestEnhancedErrorHandler:
         handler = EnhancedErrorHandler(config)
 
         # Test rate limit recovery
-        rate_limit_strategy = await handler.get_recovery_strategy(
-            ErrorCategory.RATE_LIMITED
-        )
+        rate_limit_strategy = await handler.get_recovery_strategy(ErrorCategory.RATE_LIMITED)
         assert rate_limit_strategy == "exponential_backoff"
 
         # Test provider failure recovery
@@ -230,9 +222,7 @@ class TestEnhancedErrorHandler:
         assert provider_failure_strategy == "circuit_breaker_fallback"
 
         # Test permanent error recovery
-        permanent_strategy = await handler.get_recovery_strategy(
-            ErrorCategory.PERMANENT
-        )
+        permanent_strategy = await handler.get_recovery_strategy(ErrorCategory.PERMANENT)
         assert permanent_strategy == "no_retry"
 
 
@@ -251,9 +241,7 @@ class TestErrorHandlerConfig:
 
     def test_custom_config(self) -> None:
         """Test custom configuration values."""
-        config = ErrorHandlerConfig(
-            max_retries=5, retry_delay_base=2.0, retry_delay_max=60.0
-        )
+        config = ErrorHandlerConfig(max_retries=5, retry_delay_base=2.0, retry_delay_max=60.0)
 
         assert config.max_retries == 5
         assert config.retry_delay_base == 2.0

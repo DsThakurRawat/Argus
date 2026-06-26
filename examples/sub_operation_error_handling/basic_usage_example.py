@@ -110,9 +110,7 @@ async def basic_local_file_operations_example():
         print(f"   File exists: {exists}")
 
         print("3. Testing file creation...")
-        result = await file_ops.apply_remediation(
-            "test.txt", "Hello, World!", "Initial commit"
-        )
+        result = await file_ops.apply_remediation("test.txt", "Hello, World!", "Initial commit")
         print(f"   Remediation result: {result.success} - {result.message}")
 
         print("4. Testing file content after creation...")
@@ -204,9 +202,7 @@ async def error_scenarios_example():
         )
 
         print("1. Testing normal operation...")
-        result = await file_ops.apply_remediation(
-            "normal.txt", "Normal content", "Normal commit"
-        )
+        result = await file_ops.apply_remediation("normal.txt", "Normal content", "Normal commit")
         print(f"   Normal operation: {result.success}")
 
         print("2. Testing file operations on non-existent directory...")
@@ -353,9 +349,7 @@ async def configuration_management_example():
         retrieved_config = config_manager.get_config("github", "file_operations")
         if retrieved_config:
             print(f"3. Retrieved GitHub config: {retrieved_config.operation_name}")
-            print(
-                f"   - Error handling enabled: {retrieved_config.error_handling_enabled}"
-            )
+            print(f"   - Error handling enabled: {retrieved_config.error_handling_enabled}")
             print(f"   - Max retries: {retrieved_config.get_operation_retries('file')}")
             print(f"   - Timeout: {retrieved_config.get_operation_timeout('file')}")
 

@@ -36,9 +36,7 @@ class GitLabFileOperations:
         self.logger = logger
         self.error_handling_components = error_handling_components
 
-    async def _execute_with_error_handling(
-        self, operation_name: str, func, *args, **kwargs
-    ):
+    async def _execute_with_error_handling(self, operation_name: str, func, *args, **kwargs):
         """Execute an operation with error handling if available."""
         if self.error_handling_components:
             resilient_manager = self.error_handling_components.get("resilient_manager")
@@ -77,25 +75,21 @@ class GitLabFileOperations:
             try:
                 # Check if file exists
                 try:
-                    file_data = self.project.files.get(
-                        file_path=file_path, ref=branch or "main"
-                    )
+                    file_data = self.project.files.get(file_path=file_path, ref=branch or "main")
                     # Update existing file
-                    file_data.content = base64.b64encode(
-                        remediation.encode("utf-8")
-                    ).decode("utf-8")
-                    file_data.save(
-                        branch=branch or "main", commit_message=commit_message
+                    file_data.content = base64.b64encode(remediation.encode("utf-8")).decode(
+                        "utf-8"
                     )
+                    file_data.save(branch=branch or "main", commit_message=commit_message)
                 except GitlabGetError as e:
                     if e.response_code == 404:
                         # Create new file
                         self.project.files.create(
                             {
                                 "file_path": file_path,
-                                "content": base64.b64encode(
-                                    remediation.encode("utf-8")
-                                ).decode("utf-8"),
+                                "content": base64.b64encode(remediation.encode("utf-8")).decode(
+                                    "utf-8"
+                                ),
                                 "branch": branch or "main",
                                 "commit_message": commit_message,
                             }
@@ -147,9 +141,7 @@ class GitLabFileOperations:
 
             def _get_info():
                 try:
-                    file_data = self.project.files.get(
-                        file_path=path, ref=ref or "main"
-                    )
+                    file_data = self.project.files.get(file_path=path, ref=ref or "main")
                     return FileInfo(
                         path=path,
                         size=file_data.size,
@@ -179,18 +171,14 @@ class GitLabFileOperations:
                 last_modified=None,
             )
 
-    async def list_files(
-        self, path: str = "", ref: str | None = None
-    ) -> list[FileInfo]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[FileInfo]:
         """List files in a directory."""
         try:
 
             def _list():
                 files = []
                 try:
-                    for item in self.project.repository_tree(
-                        path=path, ref=ref or "main"
-                    ):
+                    for item in self.project.repository_tree(path=path, ref=ref or "main"):
                         if item["type"] == "blob":  # File
                             files.append(
                                 FileInfo(
@@ -270,9 +258,9 @@ class GitLabFileOperations:
                             file_path=file_path, ref=branch or "main"
                         )
                         # Update existing file
-                        file_data.content = base64.b64encode(
-                            content.encode("utf-8")
-                        ).decode("utf-8")
+                        file_data.content = base64.b64encode(content.encode("utf-8")).decode(
+                            "utf-8"
+                        )
                         file_data.save(branch=branch or "main", commit_message=message)
                     except GitlabGetError as e:
                         if e.response_code == 404:
@@ -280,9 +268,9 @@ class GitLabFileOperations:
                             self.project.files.create(
                                 {
                                     "file_path": file_path,
-                                    "content": base64.b64encode(
-                                        content.encode("utf-8")
-                                    ).decode("utf-8"),
+                                    "content": base64.b64encode(content.encode("utf-8")).decode(
+                                        "utf-8"
+                                    ),
                                     "branch": branch or "main",
                                     "commit_message": message,
                                 }

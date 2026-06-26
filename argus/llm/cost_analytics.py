@@ -39,9 +39,7 @@ class AnalyticsConfig(BaseModel):
     quality_weight: float = Field(
         0.4, ge=0, le=1, description="Weight for quality in cost optimization"
     )
-    cost_weight: float = Field(
-        0.3, ge=0, le=1, description="Weight for cost in optimization"
-    )
+    cost_weight: float = Field(0.3, ge=0, le=1, description="Weight for cost in optimization")
 
 
 @dataclass
@@ -109,9 +107,7 @@ class CostAnalytics:
         """Get cost trends for a specific period and interval."""
         # Filter records by date range
         filtered_records = [
-            record
-            for record in self.usage_records
-            if start_date <= record.timestamp <= end_date
+            record for record in self.usage_records if start_date <= record.timestamp <= end_date
         ]
 
         if not filtered_records:
@@ -127,9 +123,7 @@ class CostAnalytics:
         for period, records in grouped_records.items():
             total_cost = sum(record.cost_usd for record in records)
             request_count = len(records)
-            avg_cost_per_request = (
-                total_cost / request_count if request_count > 0 else 0
-            )
+            avg_cost_per_request = total_cost / request_count if request_count > 0 else 0
 
             # Calculate change from previous period
             cost_change_percent = 0.0
@@ -140,13 +134,9 @@ class CostAnalytics:
                     (total_cost - previous_period_cost) / previous_period_cost
                 ) * 100
 
-            if (
-                previous_period_request_count is not None
-                and previous_period_request_count > 0
-            ):
+            if previous_period_request_count is not None and previous_period_request_count > 0:
                 request_change_percent = (
-                    (request_count - previous_period_request_count)
-                    / previous_period_request_count
+                    (request_count - previous_period_request_count) / previous_period_request_count
                 ) * 100
 
             trends.append(
@@ -220,9 +210,7 @@ class CostAnalytics:
         for provider, records in provider_records.items():
             total_cost = sum(record.cost_usd for record in records)
             request_count = len(records)
-            avg_cost_per_request = (
-                total_cost / request_count if request_count > 0 else 0
-            )
+            avg_cost_per_request = total_cost / request_count if request_count > 0 else 0
 
             # Calculate average response time (not available in current UsageRecord)
             avg_response_time = 0.0  # Default to 0
@@ -304,9 +292,7 @@ class CostAnalytics:
             for provider, provider_recs in provider_records.items():
                 total_cost = sum(record.cost_usd for record in provider_recs)
                 avg_cost = total_cost / len(provider_recs)
-                success_rate = sum(1 for r in provider_recs if r.success) / len(
-                    provider_recs
-                )
+                success_rate = sum(1 for r in provider_recs if r.success) / len(provider_recs)
                 provider_costs[provider] = {
                     "avg_cost": avg_cost,
                     "success_rate": success_rate,
@@ -325,10 +311,8 @@ class CostAnalytics:
                 for provider, data in provider_costs.items()
                 if (
                     provider != expensive_provider[0]
-                    and data["avg_cost"]
-                    < expensive_provider[1]["avg_cost"] * 0.8  # 20% cheaper
-                    and data["success_rate"]
-                    >= expensive_provider[1]["success_rate"] * 0.95
+                    and data["avg_cost"] < expensive_provider[1]["avg_cost"] * 0.8  # 20% cheaper
+                    and data["success_rate"] >= expensive_provider[1]["success_rate"] * 0.95
                 )  # Similar success rate
             ]
 
@@ -415,9 +399,9 @@ class CostAnalytics:
 
                 if alternatives:
                     best_alternative = min(alternatives, key=lambda x: x[1]["avg_cost"])
-                    potential_savings = (
-                        data["avg_cost"] - best_alternative[1]["avg_cost"]
-                    ) * data["request_count"]
+                    potential_savings = (data["avg_cost"] - best_alternative[1]["avg_cost"]) * data[
+                        "request_count"
+                    ]
 
                     if potential_savings > self.config.cost_optimization_threshold:
                         recommendations.append(
@@ -433,9 +417,7 @@ class CostAnalytics:
                                     "recommended_model": best_alternative[0],
                                     "provider": provider.value,
                                     "current_avg_cost": data["avg_cost"],
-                                    "recommended_avg_cost": best_alternative[1][
-                                        "avg_cost"
-                                    ],
+                                    "recommended_avg_cost": best_alternative[1]["avg_cost"],
                                     "request_count": data["request_count"],
                                 },
                             )
@@ -460,12 +442,8 @@ class CostAnalytics:
 
         if hourly_usage:
             # Find peak hours
-            peak_hours = sorted(
-                hourly_usage.items(), key=lambda x: x[1]["cost"], reverse=True
-            )[:3]
-            off_peak_hours = sorted(hourly_usage.items(), key=lambda x: x[1]["cost"])[
-                :3
-            ]
+            peak_hours = sorted(hourly_usage.items(), key=lambda x: x[1]["cost"], reverse=True)[:3]
+            off_peak_hours = sorted(hourly_usage.items(), key=lambda x: x[1]["cost"])[:3]
 
             peak_cost = sum(data["cost"] for _, data in peak_hours)
             off_peak_cost = sum(data["cost"] for _, data in off_peak_hours)
@@ -509,9 +487,7 @@ class CostAnalytics:
 
         total_cost = sum(record.cost_usd for record in filtered_records)
         total_requests = len(filtered_records)
-        successful_requests = len(
-            filtered_records
-        )  # Assume all requests are successful
+        successful_requests = len(filtered_records)  # Assume all requests are successful
 
         # Provider breakdown
         provider_breakdown = {}
@@ -549,13 +525,9 @@ class CostAnalytics:
                 "total_requests": total_requests,
                 "successful_requests": successful_requests,
                 "success_rate": (
-                    (successful_requests / total_requests) * 100
-                    if total_requests > 0
-                    else 0
+                    (successful_requests / total_requests) * 100 if total_requests > 0 else 0
                 ),
-                "avg_cost_per_request": (
-                    total_cost / total_requests if total_requests > 0 else 0
-                ),
+                "avg_cost_per_request": (total_cost / total_requests if total_requests > 0 else 0),
             },
             "provider_breakdown": provider_breakdown,
             "model_breakdown": model_breakdown,

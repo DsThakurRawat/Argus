@@ -69,20 +69,20 @@ class CircuitBreaker:
         self.total_successes += 1
         self.last_success_time = datetime.now()
 
-        if self.state == CircuitState.HALF_OPEN:
-            if self.success_count >= self.config.success_threshold:
-                self.state = CircuitState.CLOSED
-                self.failure_count = 0
-                self.success_count = 0
-                self.logger.info(
-                    f"Circuit breaker {self.name} closed after successful operations"
-                )
+        if (
+            self.state == CircuitState.HALF_OPEN
+            and self.success_count >= self.config.success_threshold
+        ):
+            self.state = CircuitState.CLOSED
+            self.failure_count = 0
+            self.success_count = 0
+            self.logger.info(f"Circuit breaker {self.name} closed after successful operations")
 
-                # Record state change in metrics
-                if self.metrics:
-                    await self.metrics.record_circuit_breaker_state_change(
-                        self.name, old_state, self.state, "unknown"
-                    )
+            # Record state change in metrics
+            if self.metrics:
+                await self.metrics.record_circuit_breaker_state_change(
+                    self.name, old_state, self.state, "unknown"
+                )
 
     async def _record_failure(self):
         """Record a failed operation."""
@@ -149,9 +149,7 @@ class CircuitBreaker:
 
         try:
             # Execute the function with timeout
-            result = await asyncio.wait_for(
-                func(*args, **kwargs), timeout=self.config.timeout
-            )
+            result = await asyncio.wait_for(func(*args, **kwargs), timeout=self.config.timeout)
             await self._record_success()
 
             # Record success in metrics

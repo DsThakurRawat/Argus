@@ -63,18 +63,12 @@ class ValidationResult:
 
     def get_critical_issues(self) -> list[ValidationIssue]:
         """Get all critical validation issues"""
-        return [
-            issue
-            for issue in self.issues
-            if issue.severity == ValidationSeverity.CRITICAL
-        ]
+        return [issue for issue in self.issues if issue.severity == ValidationSeverity.CRITICAL]
 
     def get_high_priority_issues(self) -> list[ValidationIssue]:
         """Get all high and critical priority issues"""
         return [
-            issue
-            for issue in self.issues
-            if issue.severity.value >= ValidationSeverity.HIGH.value
+            issue for issue in self.issues if issue.severity.value >= ValidationSeverity.HIGH.value
         ]
 
 
@@ -177,11 +171,7 @@ class CodeGenerationContext:
 
     def should_escalate_to_human(self) -> bool:
         """Check if the issue should be escalated to human review"""
-        return (
-            self.complexity_score >= 8
-            or self.human_review_required
-            or self.domain == "security"
-        )
+        return self.complexity_score >= 8 or self.human_review_required or self.domain == "security"
 
 
 @dataclass
@@ -217,9 +207,7 @@ class CodeGenerationResult:
                 self.validation_result.is_valid if self.validation_result else False
             ),
             "critical_issues": (
-                len(self.validation_result.get_critical_issues())
-                if self.validation_result
-                else 0
+                len(self.validation_result.get_critical_issues()) if self.validation_result else 0
             ),
             "generation_time_ms": self.generation_time_ms,
             "warnings_count": len(self.warnings),

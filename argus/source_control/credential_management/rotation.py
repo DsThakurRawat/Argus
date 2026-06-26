@@ -6,6 +6,7 @@ Credential rotation management module.
 This module handles credential rotation, validation, and testing.
 """
 
+import contextlib
 from datetime import datetime, timedelta
 import logging
 from typing import TYPE_CHECKING, Any
@@ -22,9 +23,7 @@ class CredentialRotationManager:
         self.logger = logging.getLogger("CredentialRotationManager")
         self.rotation_schedule: dict[str, datetime] = {}
 
-    async def schedule_rotation(
-        self, credential_id: str, rotation_interval_days: int = 90
-    ):
+    async def schedule_rotation(self, credential_id: str, rotation_interval_days: int = 90):
         """Schedule credential rotation."""
         next_rotation = datetime.now() + timedelta(days=rotation_interval_days)
         self.rotation_schedule[credential_id] = next_rotation
@@ -49,9 +48,7 @@ class CredentialRotationManager:
         # Store old credentials as backup
         old_credentials = None
         try:
-            old_credentials = await self.credential_manager.get_credentials(
-                credential_id, "backup"
-            )
+            old_credentials = await self.credential_manager.get_credentials(credential_id, "backup")
         except Exception:
             # No backup exists, try to get current credentials
             try:
@@ -59,23 +56,17 @@ class CredentialRotationManager:
                     credential_id, "current"
                 )
             except Exception:
-                self.logger.warning(
-                    f"No existing credentials found for {credential_id}"
-                )
+                self.logger.warning(f"No existing credentials found for {credential_id}")
 
         try:
             # Attempt rotation
-            await self.credential_manager.store_credentials(
-                credential_id, new_credential_data
-            )
+            await self.credential_manager.store_credentials(credential_id, new_credential_data)
 
             # Test new credentials
             if not await self._test_new_credentials(credential_id, new_credential_data):
                 # Rollback on failure
                 if old_credentials:
-                    await self.credential_manager.store_credentials(
-                        credential_id, old_credentials
-                    )
+                    await self.credential_manager.store_credentials(credential_id, old_credentials)
                     self.logger.error(
                         f"New credentials failed test, rolled back to old credentials for {credential_id}"
                     )
@@ -91,9 +82,7 @@ class CredentialRotationManager:
             # Rollback on error
             if old_credentials:
                 try:
-                    await self.credential_manager.store_credentials(
-                        credential_id, old_credentials
-                    )
+                    await self.credential_manager.store_credentials(credential_id, old_credentials)
                     self.logger.error(
                         f"Credential rotation failed, rolled back to old credentials for {credential_id}"
                     )
@@ -115,10 +104,7 @@ class CredentialRotationManager:
             if provider_type == "github" or provider_type == "gitlab":
                 return "token" in credentials
             elif provider_type == "aws":
-                return (
-                    "access_key_id" in credentials
-                    and "secret_access_key" in credentials
-                )
+                return "access_key_id" in credentials and "secret_access_key" in credentials
             else:
                 return len(credentials) > 0
         except Exception as e:
@@ -144,15 +130,14 @@ class CredentialRotationManager:
                     if "token" not in credential_data or not credential_data["token"]:
                         self.logger.error("GitLab credentials missing or empty token")
                         return False
-                elif provider_type == "aws":
-                    if (
-                        "access_key_id" not in credential_data
-                        or not credential_data["access_key_id"]
-                        or "secret_access_key" not in credential_data
-                        or not credential_data["secret_access_key"]
-                    ):
-                        self.logger.error("AWS credentials missing required fields")
-                        return False
+                elif provider_type == "aws" and (
+                    "access_key_id" not in credential_data
+                    or not credential_data["access_key_id"]
+                    or "secret_access_key" not in credential_data
+                    or not credential_data["secret_access_key"]
+                ):
+                    self.logger.error("AWS credentials missing required fields")
+                    return False
 
             # Check for sensitive data patterns (basic validation)
             for key, value in credential_data.items():
@@ -173,9 +158,7 @@ class CredentialRotationManager:
         try:
             # Store credentials temporarily for testing
             test_credential_id = f"{credential_id}_test"
-            await self.credential_manager.store_credentials(
-                test_credential_id, credential_data
-            )
+            await self.credential_manager.store_credentials(test_credential_id, credential_data)
 
             # Test based on provider type
             provider_type = credential_data.get("provider_type", "unknown")
@@ -198,23 +181,17 @@ class CredentialRotationManager:
             return False
         finally:
             # Clean up test credentials
-            try:
+            with contextlib.suppress(Exception):
                 # Note: delete_credentials method needs to be implemented in CredentialManager
                 # For now, we'll just log that cleanup was attempted
-                self.logger.debug(
-                    f"Would clean up test credentials for {credential_id}_test"
-                )
-            except Exception:
-                pass
+                self.logger.debug(f"Would clean up test credentials for {credential_id}_test")
 
     async def _test_github_credentials(self, credential_id: str) -> bool:
         """Test GitHub credentials by making a simple API call."""
         try:
             # This would need to be implemented with actual GitHub API call
             # For now, just validate the credential structure
-            credentials = await self.credential_manager.get_credentials(
-                credential_id, "github"
-            )
+            credentials = await self.credential_manager.get_credentials(credential_id, "github")
             return "token" in credentials and len(credentials["token"]) > 0
         except Exception as e:
             self.logger.error(f"GitHub credential test failed: {e}")
@@ -225,9 +202,7 @@ class CredentialRotationManager:
         try:
             # This would need to be implemented with actual GitLab API call
             # For now, just validate the credential structure
-            credentials = await self.credential_manager.get_credentials(
-                credential_id, "gitlab"
-            )
+            credentials = await self.credential_manager.get_credentials(credential_id, "gitlab")
             return "token" in credentials and len(credentials["token"]) > 0
         except Exception as e:
             self.logger.error(f"GitLab credential test failed: {e}")
@@ -238,9 +213,7 @@ class CredentialRotationManager:
         try:
             # This would need to be implemented with actual AWS API call
             # For now, just validate the credential structure
-            credentials = await self.credential_manager.get_credentials(
-                credential_id, "aws"
-            )
+            credentials = await self.credential_manager.get_credentials(credential_id, "aws")
             return (
                 "access_key_id" in credentials
                 and "secret_access_key" in credentials

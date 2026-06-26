@@ -160,21 +160,14 @@ class ModelScorer:
         # Calculate dimension scores
         dimension_scores = {}
         for dimension in ScoringDimension:
-            if (
-                hasattr(weights, dimension.value)
-                and getattr(weights, dimension.value) > 0
-            ):
+            if hasattr(weights, dimension.value) and getattr(weights, dimension.value) > 0:
                 scorer = self._custom_scorers.get(dimension)
                 if scorer:
                     try:
                         score = scorer(model_info, context)
-                        dimension_scores[dimension] = max(
-                            0.0, min(1.0, score)
-                        )  # Clamp to [0, 1]
+                        dimension_scores[dimension] = max(0.0, min(1.0, score))  # Clamp to [0, 1]
                     except Exception as e:
-                        logger.warning(
-                            f"Error scoring {dimension} for {model_info.name}: {e}"
-                        )
+                        logger.warning(f"Error scoring {dimension} for {model_info.name}: {e}")
                         dimension_scores[dimension] = 0.0
                 else:
                     dimension_scores[dimension] = 0.0
@@ -269,21 +262,14 @@ class ModelScorer:
                 "overall_score": score2.overall_score,
                 "dimension_scores": score2.dimension_scores,
             },
-            "winner": (
-                model1.name
-                if score1.overall_score > score2.overall_score
-                else model2.name
-            ),
+            "winner": (model1.name if score1.overall_score > score2.overall_score else model2.name),
             "score_difference": abs(score1.overall_score - score2.overall_score),
             "dimension_comparison": {},
         }
 
         # Compare each dimension
         for dimension in ScoringDimension:
-            if (
-                dimension in score1.dimension_scores
-                and dimension in score2.dimension_scores
-            ):
+            if dimension in score1.dimension_scores and dimension in score2.dimension_scores:
                 score1_val = score1.dimension_scores[dimension]
                 score2_val = score2.dimension_scores[dimension]
                 comparison["dimension_comparison"][dimension.value] = {
@@ -305,15 +291,11 @@ class ModelScorer:
         normalized_cost = min(model_info.cost_per_1k_tokens / max_cost, 1.0)
         return 1.0 - normalized_cost  # Invert so lower cost = higher score
 
-    def _score_performance(
-        self, model_info: ModelInfo, context: ScoringContext
-    ) -> float:
+    def _score_performance(self, model_info: ModelInfo, context: ScoringContext) -> float:
         """Score model based on performance metrics."""
         return model_info.performance_score
 
-    def _score_reliability(
-        self, model_info: ModelInfo, context: ScoringContext
-    ) -> float:
+    def _score_reliability(self, model_info: ModelInfo, context: ScoringContext) -> float:
         """Score model based on reliability metrics."""
         return model_info.reliability_score
 
@@ -336,14 +318,9 @@ class ModelScorer:
         # Combine performance and reliability for quality
         return (model_info.performance_score + model_info.reliability_score) / 2
 
-    def _score_availability(
-        self, model_info: ModelInfo, context: ScoringContext
-    ) -> float:
+    def _score_availability(self, model_info: ModelInfo, context: ScoringContext) -> float:
         """Score model based on availability (provider preference)."""
-        if (
-            context.provider_preference
-            and model_info.provider == context.provider_preference
-        ):
+        if context.provider_preference and model_info.provider == context.provider_preference:
             return 1.0
         return 0.5  # Neutral score for non-preferred providers
 

@@ -83,9 +83,7 @@ class SubOperationConfig:
             "provider_type": self.provider_type,
             "error_handling_enabled": self.error_handling_enabled,
             "circuit_breaker_config": (
-                self.circuit_breaker_config.__dict__
-                if self.circuit_breaker_config
-                else None
+                self.circuit_breaker_config.__dict__ if self.circuit_breaker_config else None
             ),
             "retry_config": (self.retry_config.__dict__ if self.retry_config else None),
             "default_timeout": self.default_timeout,
@@ -113,9 +111,7 @@ class SubOperationConfig:
         # Extract circuit breaker config
         circuit_breaker_config = None
         if data.get("circuit_breaker_config"):
-            circuit_breaker_config = CircuitBreakerConfig(
-                **data["circuit_breaker_config"]
-            )
+            circuit_breaker_config = CircuitBreakerConfig(**data["circuit_breaker_config"])
 
         # Extract retry config
         retry_config = None
@@ -162,9 +158,7 @@ class SubOperationConfigManager:
         self._configs[key] = config
         self.logger.info(f"Registered configuration for {key}")
 
-    def get_config(
-        self, provider_type: str, operation_name: str
-    ) -> SubOperationConfig | None:
+    def get_config(self, provider_type: str, operation_name: str) -> SubOperationConfig | None:
         """Get configuration for a specific sub-operation."""
         key = f"{provider_type}_{operation_name}"
         return self._configs.get(key)
@@ -243,9 +237,7 @@ class SubOperationConfigManager:
 _config_manager = SubOperationConfigManager()
 
 
-def get_sub_operation_config(
-    provider_type: str, operation_name: str
-) -> SubOperationConfig | None:
+def get_sub_operation_config(provider_type: str, operation_name: str) -> SubOperationConfig | None:
     """Get sub-operation configuration."""
     return _config_manager.get_config(provider_type, operation_name)
 
@@ -261,6 +253,4 @@ def create_sub_operation_config(
     custom_settings: dict[str, Any] | None = None,
 ) -> SubOperationConfig:
     """Create sub-operation configuration."""
-    return _config_manager.create_default_config(
-        provider_type, operation_name, custom_settings
-    )
+    return _config_manager.create_default_config(provider_type, operation_name, custom_settings)

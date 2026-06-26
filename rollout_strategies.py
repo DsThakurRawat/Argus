@@ -69,6 +69,7 @@ class RolloutManager:
         self.start_time = time.time()
         self.is_active = False
         self.rollout_metrics: list[RolloutMetrics] = []
+        self._background_tasks: set[asyncio.Task] = set()
 
     async def start_rollout(self) -> bool:
         """Start the rollout process."""
@@ -88,7 +89,9 @@ class RolloutManager:
         logger.info("Setting up rollout monitoring...")
 
         # Start monitoring task
-        asyncio.create_task(self._monitor_rollout())
+        task = asyncio.create_task(self._monitor_rollout())
+        self._background_tasks.add(task)
+        task.add_done_callback(self._background_tasks.discard)
 
     async def _monitor_rollout(self):
         """Monitor rollout progress and metrics."""
@@ -208,12 +211,8 @@ class RolloutManager:
             self.rollout_metrics
         )
 
-        overall_success_rate = (
-            total_successful / total_requests if total_requests > 0 else 0.0
-        )
-        overall_error_rate = (
-            total_failed / total_requests if total_requests > 0 else 0.0
-        )
+        overall_success_rate = total_successful / total_requests if total_requests > 0 else 0.0
+        overall_error_rate = total_failed / total_requests if total_requests > 0 else 0.0
 
         # Print report
         print("\n" + "=" * 80)
@@ -244,9 +243,7 @@ class RolloutManager:
         print(
             f"Error Rate: {overall_error_rate:.2%} (threshold: {self.config.error_threshold:.2%})"
         )
-        print(
-            f"Latency: {avg_latency:.2f}ms (threshold: {self.config.latency_threshold_ms:.2f}ms)"
-        )
+        print(f"Latency: {avg_latency:.2f}ms (threshold: {self.config.latency_threshold_ms:.2f}ms)")
         print(f"Cost: ${total_cost:.2f} (threshold: ${self.config.cost_threshold:.2f})")
         print()
 
@@ -279,7 +276,9 @@ class CanaryRollout(RolloutManager):
         await super().start_rollout()
 
         # Start traffic increase process
-        asyncio.create_task(self._increase_traffic_gradually())
+        task = asyncio.create_task(self._increase_traffic_gradually())
+        self._background_tasks.add(task)
+        task.add_done_callback(self._background_tasks.discard)
 
         return True
 
@@ -292,14 +291,14 @@ class CanaryRollout(RolloutManager):
                 break
 
             self.current_stage = i
-            logger.info(f"Canary stage {i+1}: Increasing traffic to {percentage:.1%}")
+            logger.info(f"Canary stage {i + 1}: Increasing traffic to {percentage:.1%}")
 
             # Wait for stage duration
             await asyncio.sleep(stage_duration * 3600)
 
             # Check if we should continue to next stage
             if not await self._should_continue_to_next_stage():
-                logger.warning(f"Stopping canary rollout at stage {i+1}")
+                logger.warning(f"Stopping canary rollout at stage {i + 1}")
                 await self.stop_rollout()
                 break
 
@@ -310,9 +309,7 @@ class CanaryRollout(RolloutManager):
 
         # Get recent metrics
         recent_metrics = (
-            self.rollout_metrics[-5:]
-            if len(self.rollout_metrics) >= 5
-            else self.rollout_metrics
+            self.rollout_metrics[-5:] if len(self.rollout_metrics) >= 5 else self.rollout_metrics
         )
 
         # Check health of recent metrics
@@ -364,9 +361,7 @@ class BlueGreenRollout(RolloutManager):
             return True
 
         recent_metrics = (
-            self.rollout_metrics[-3:]
-            if len(self.rollout_metrics) >= 3
-            else self.rollout_metrics
+            self.rollout_metrics[-3:] if len(self.rollout_metrics) >= 3 else self.rollout_metrics
         )
 
         for metrics in recent_metrics:
@@ -436,9 +431,7 @@ class FeatureFlagRollout(RolloutManager):
             return True
 
         recent_metrics = (
-            self.rollout_metrics[-2:]
-            if len(self.rollout_metrics) >= 2
-            else self.rollout_metrics
+            self.rollout_metrics[-2:] if len(self.rollout_metrics) >= 2 else self.rollout_metrics
         )
 
         for metrics in recent_metrics:
@@ -471,7 +464,7 @@ async def run_rollout_demo():
     print("📊 Simulating system activity for rollout...")
 
     # Add some successful requests
-    for i in range(50):
+    for _i in range(50):
         metrics_collector.record_request(
             provider="gemini",
             model="gemini-1.5-flash",
@@ -483,7 +476,7 @@ async def run_rollout_demo():
         )
 
     # Add some failures
-    for i in range(5):
+    for _i in range(5):
         metrics_collector.record_request(
             provider="openai",
             model="gpt-4o-mini",

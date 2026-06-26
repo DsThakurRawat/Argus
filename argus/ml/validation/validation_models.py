@@ -88,13 +88,9 @@ class ValidationResult:
         """Get issues filtered by severity level."""
         return [issue for issue in self.issues if issue.level == level]
 
-    def get_issues_by_type(
-        self, validation_type: ValidationType
-    ) -> list[ValidationIssue]:
+    def get_issues_by_type(self, validation_type: ValidationType) -> list[ValidationIssue]:
         """Get issues filtered by validation type."""
-        return [
-            issue for issue in self.issues if issue.validation_type == validation_type
-        ]
+        return [issue for issue in self.issues if issue.validation_type == validation_type]
 
     def has_critical_issues(self) -> bool:
         """Check if there are any critical issues."""

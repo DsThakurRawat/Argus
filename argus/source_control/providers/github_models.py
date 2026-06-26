@@ -51,12 +51,8 @@ class GitHubCredentials:
         """Validate credentials based on auth type."""
         if self.auth_type == GitHubAuthType.TOKEN and not self.token:
             raise ValueError("Token is required when auth_type is 'token'")
-        if self.auth_type == GitHubAuthType.APP and (
-            not self.app_id or not self.private_key
-        ):
-            raise ValueError(
-                "app_id and private_key are required when auth_type is 'app'"
-            )
+        if self.auth_type == GitHubAuthType.APP and (not self.app_id or not self.private_key):
+            raise ValueError("app_id and private_key are required when auth_type is 'app'")
 
 
 @dataclass

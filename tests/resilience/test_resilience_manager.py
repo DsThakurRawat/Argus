@@ -58,9 +58,7 @@ class TestResilienceManager:
         assert resilience_manager.fallback_timeout == 5.0
 
     @pytest.mark.asyncio
-    async def test_execute_with_resilience_success(
-        self, resilience_manager, mock_provider_func
-    ):
+    async def test_execute_with_resilience_success(self, resilience_manager, mock_provider_func):
         """Test successful execution with resilience."""
         mock_provider_func.return_value = "success"
 
@@ -104,9 +102,7 @@ class TestResilienceManager:
         # First few calls should fail normally
         for _ in range(2):
             with pytest.raises(Exception):
-                await resilience_manager.execute_with_resilience(
-                    mock_provider_func, "gemini"
-                )
+                await resilience_manager.execute_with_resilience(mock_provider_func, "gemini")
 
         # Circuit breaker should now be open
         with pytest.raises(CircuitBreakerOpenException):
@@ -115,9 +111,7 @@ class TestResilienceManager:
             )
 
     @pytest.mark.asyncio
-    async def test_execute_with_resilience_fallback(
-        self, resilience_manager, mock_provider_func
-    ):
+    async def test_execute_with_resilience_fallback(self, resilience_manager, mock_provider_func):
         """Test fallback functionality."""
 
         # Create different functions for different providers
@@ -139,14 +133,12 @@ class TestResilienceManager:
                 provider: Description of provider.
 
             """
-            if provider == "gemini":
-                return gemini_func
-            elif provider == "openai":
-                return openai_func
-            elif provider == "anthropic":
-                return anthropic_func
-            else:
-                return mock_provider_func
+            provider_map = {
+                "gemini": gemini_func,
+                "openai": openai_func,
+                "anthropic": anthropic_func,
+            }
+            return provider_map.get(provider, mock_provider_func)
 
         # Override the _try_fallback method to use different functions
         original_try_fallback = resilience_manager._try_fallback
@@ -157,10 +149,8 @@ class TestResilienceManager:
             for provider in resilience_manager.providers:
                 provider_funcs[provider] = get_provider_func(provider)
 
-            result, provider_used = (
-                await resilience_manager.fallback_manager.execute_with_fallback(
-                    provider_funcs, *args, **kwargs
-                )
+            result, provider_used = await resilience_manager.fallback_manager.execute_with_fallback(
+                provider_funcs, *args, **kwargs
             )
             return result, provider_used
 
@@ -177,9 +167,7 @@ class TestResilienceManager:
             resilience_manager._try_fallback = original_try_fallback
 
     @pytest.mark.asyncio
-    async def test_execute_with_resilience_all_fail(
-        self, resilience_manager, mock_provider_func
-    ):
+    async def test_execute_with_resilience_all_fail(self, resilience_manager, mock_provider_func):
         """Test when all providers fail."""
         # Clear circuit breaker state to ensure clean test
         resilience_manager.clear_all_circuit_breakers()
@@ -188,9 +176,7 @@ class TestResilienceManager:
 
         # After circuit breaker opens, it should raise CircuitBreakerOpenException
         with pytest.raises(CircuitBreakerOpenException):
-            await resilience_manager.execute_with_resilience(
-                mock_provider_func, "gemini"
-            )
+            await resilience_manager.execute_with_resilience(mock_provider_func, "gemini")
 
     @pytest.mark.asyncio
     async def test_execute_with_resilience_disabled_features(
@@ -334,14 +320,10 @@ class TestResilienceManager:
         mock_provider_func.side_effect = hanging_func
 
         with pytest.raises(Exception):
-            await resilience_manager.execute_with_resilience(
-                mock_provider_func, "gemini"
-            )
+            await resilience_manager.execute_with_resilience(mock_provider_func, "gemini")
 
     @pytest.mark.asyncio
-    async def test_error_classification_integration(
-        self, resilience_manager, mock_provider_func
-    ):
+    async def test_error_classification_integration(self, resilience_manager, mock_provider_func):
         """Test integration with error classification."""
         # Clear circuit breaker state to ensure clean test
         resilience_manager.clear_all_circuit_breakers()
@@ -354,9 +336,7 @@ class TestResilienceManager:
 
         # After circuit breaker opens, it should raise CircuitBreakerOpenException
         with pytest.raises(CircuitBreakerOpenException):
-            await resilience_manager.execute_with_resilience(
-                mock_provider_func, "gemini"
-            )
+            await resilience_manager.execute_with_resilience(mock_provider_func, "gemini")
 
         # Should have attempted retries
         assert mock_provider_func.call_count > 1
@@ -386,9 +366,7 @@ class TestResilienceManager:
             """
             return "sync_success"
 
-        result, provider = await resilience_manager.execute_with_resilience(
-            sync_func, "gemini"
-        )
+        result, provider = await resilience_manager.execute_with_resilience(sync_func, "gemini")
 
         assert result == "sync_success"
         assert provider == "gemini"

@@ -103,17 +103,13 @@ class WorkflowCodeGenerator:
 
             # Check if specialized generators are enabled
             if not self.enhanced_agent.code_generator_factory:
-                self.logger.warning(
-                    "Specialized generators not enabled, skipping enhancement"
-                )
+                self.logger.warning("Specialized generators not enabled, skipping enhancement")
                 return base_code
 
             # Convert string generator_type back to IssueType for the factory
             try:
                 issue_type = IssueType(generator_type)
-                generator = self.enhanced_agent.code_generator_factory.create_generator(
-                    issue_type
-                )
+                generator = self.enhanced_agent.code_generator_factory.create_generator(issue_type)
             except ValueError:
                 # If conversion fails, use UNKNOWN type
                 generator = self.enhanced_agent.code_generator_factory.create_generator(
@@ -124,9 +120,7 @@ class WorkflowCodeGenerator:
                 return base_code
 
             # Enhance the code
-            enhanced_code = await generator.enhance_code_patch(
-                base_code, prompt_context
-            )
+            enhanced_code = await generator.enhance_code_patch(base_code, prompt_context)
 
             return enhanced_code
 
@@ -145,9 +139,7 @@ class WorkflowCodeGenerator:
             Generator type string
         """
         try:
-            return self.enhanced_agent._determine_generator_type(
-                prompt_context.issue_context
-            )
+            return self.enhanced_agent._determine_generator_type(prompt_context.issue_context)
         except Exception as e:
             self.logger.error(f"Failed to determine generator type: {e}")
             return "unknown"

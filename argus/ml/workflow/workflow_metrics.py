@@ -143,12 +143,8 @@ class WorkflowMetricsCollector(ProcessableComponent[dict[str, Any], WorkflowMetr
         self.metrics_history: list[MetricData] = []
 
         # Collection settings
-        self.metrics_retention_days = (
-            config.get("metrics_retention_days", 30) if config else 30
-        )
-        self.collection_interval = (
-            config.get("collection_interval", 1.0) if config else 1.0
-        )
+        self.metrics_retention_days = config.get("metrics_retention_days", 30) if config else 30
+        self.collection_interval = config.get("collection_interval", 1.0) if config else 1.0
 
         # Performance tracking
         self.collection_count = 0
@@ -469,12 +465,8 @@ class WorkflowMetricsCollector(ProcessableComponent[dict[str, Any], WorkflowMetr
             metrics: Workflow metrics to calculate derived metrics for
         """
         if metrics.total_operations > 0:
-            metrics.success_rate = (
-                metrics.successful_operations / metrics.total_operations
-            ) * 100
-            metrics.error_rate = (
-                metrics.failed_operations / metrics.total_operations
-            ) * 100
+            metrics.success_rate = (metrics.successful_operations / metrics.total_operations) * 100
+            metrics.error_rate = (metrics.failed_operations / metrics.total_operations) * 100
 
         if metrics.total_operations > 0 and metrics.duration:
             metrics.average_operation_time = metrics.duration / metrics.total_operations

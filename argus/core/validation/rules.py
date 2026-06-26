@@ -24,9 +24,7 @@ class ValidationRule(ABC):
         self.description = description or f"Validation rule: {name}"
 
     @abstractmethod
-    def validate(
-        self, data: Any, context: dict[str, Any] | None = None
-    ) -> ValidationResult:
+    def validate(self, data: Any, context: dict[str, Any] | None = None) -> ValidationResult:
         """Validate the data.
 
         Args:
@@ -70,9 +68,7 @@ class SchemaValidator(ValidationRule):
             f"Validates data against {schema_class.__name__} schema",
         )
 
-    def validate(
-        self, data: Any, context: dict[str, Any] | None = None
-    ) -> ValidationResult:
+    def validate(self, data: Any, context: dict[str, Any] | None = None) -> ValidationResult:
         """Validate data against the schema.
 
         Args:
@@ -140,9 +136,7 @@ class CrossFieldValidator(ValidationRule):
             f"Validates relationships between fields: {', '.join(self.fields)}",
         )
 
-    def validate(
-        self, data: Any, context: dict[str, Any] | None = None
-    ) -> ValidationResult:
+    def validate(self, data: Any, context: dict[str, Any] | None = None) -> ValidationResult:
         """Validate cross-field relationships.
 
         Args:
@@ -193,9 +187,7 @@ class EnvironmentValidator(ValidationRule):
             f"Validates configuration for {environment} environment",
         )
 
-    def validate(
-        self, data: Any, context: dict[str, Any] | None = None
-    ) -> ValidationResult:
+    def validate(self, data: Any, context: dict[str, Any] | None = None) -> ValidationResult:
         """Validate environment-specific requirements.
 
         Args:
@@ -241,9 +233,7 @@ class EnvironmentValidator(ValidationRule):
             if field in data:
                 value = data[field]
                 for constraint_name, constraint_value in constraints.items():
-                    if not self._check_constraint(
-                        field, value, constraint_name, constraint_value
-                    ):
+                    if not self._check_constraint(field, value, constraint_name, constraint_value):
                         result.add_error(
                             message=(
                                 f"Field '{field}' violates {constraint_name} "
@@ -311,13 +301,9 @@ class CustomValidator(ValidationRule):
         self.validation_func = validation_func
         self.error_message = error_message
         self.field = field
-        super().__init__(
-            name or "CustomValidator", f"Custom validation: {error_message}"
-        )
+        super().__init__(name or "CustomValidator", f"Custom validation: {error_message}")
 
-    def validate(
-        self, data: Any, context: dict[str, Any] | None = None
-    ) -> ValidationResult:
+    def validate(self, data: Any, context: dict[str, Any] | None = None) -> ValidationResult:
         """Validate using custom logic.
 
         Args:
@@ -331,9 +317,7 @@ class CustomValidator(ValidationRule):
 
         try:
             if not self.validation_func(data, context):
-                result.add_error(
-                    message=self.error_message, field=self.field, rule_name=self.name
-                )
+                result.add_error(message=self.error_message, field=self.field, rule_name=self.name)
         except Exception as e:
             result.add_error(
                 message=f"Custom validation failed: {e!s}",
@@ -367,9 +351,7 @@ class CompositeValidator(ValidationRule):
             name or "CompositeValidator", f"Combines {len(validators)} validation rules"
         )
 
-    def validate(
-        self, data: Any, context: dict[str, Any] | None = None
-    ) -> ValidationResult:
+    def validate(self, data: Any, context: dict[str, Any] | None = None) -> ValidationResult:
         """Validate using all validators.
 
         Args:

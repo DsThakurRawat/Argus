@@ -1,4 +1,3 @@
-from typing import Any
 # argus/config/ml_config.py
 
 """
@@ -6,6 +5,7 @@ Unified ML configuration consolidating all ML-related settings.
 """
 
 from enum import Enum
+from typing import Any
 
 from pydantic import Field, field_validator
 

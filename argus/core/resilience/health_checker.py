@@ -20,7 +20,7 @@ class HealthStatus(Enum):
 @dataclass
 class HealthCheck:
     """Health check definition.
-    
+
     Attributes:
         name: Name of the health check
         check_func: Function to perform the health check
@@ -42,14 +42,14 @@ class HealthCheck:
 
 class HealthChecker:
     """Health checker implementation for fault tolerance.
-    
+
     Monitors system health through various health checks
     and provides health status information.
     """
 
     def __init__(self, config: dict[str, Any] | None = None):
         """Initialize the health checker.
-        
+
         Args:
             config: Health checker configuration
         """
@@ -66,7 +66,7 @@ class HealthChecker:
 
     def add_health_check(self, health_check: HealthCheck) -> None:
         """Add a health check.
-        
+
         Args:
             health_check: Health check to add
         """
@@ -78,7 +78,7 @@ class HealthChecker:
 
     def remove_health_check(self, name: str) -> None:
         """Remove a health check.
-        
+
         Args:
             name: Name of the health check to remove
         """
@@ -90,10 +90,10 @@ class HealthChecker:
 
     def check_health(self, name: str | None = None) -> dict[str, Any]:
         """Check health of specific check or all checks.
-        
+
         Args:
             name: Name of specific health check, or None for all
-            
+
         Returns:
             Health check results
         """
@@ -104,10 +104,10 @@ class HealthChecker:
 
     def _check_single_health(self, name: str) -> dict[str, Any]:
         """Check health of a single health check.
-        
+
         Args:
             name: Name of the health check
-            
+
         Returns:
             Health check result
         """
@@ -116,7 +116,7 @@ class HealthChecker:
                 "name": name,
                 "status": HealthStatus.UNKNOWN.value,
                 "error": "Health check not found",
-                "timestamp": time.time()
+                "timestamp": time.time(),
             }
 
         health_check = self._health_checks[name]
@@ -126,7 +126,7 @@ class HealthChecker:
                 "name": name,
                 "status": HealthStatus.UNKNOWN.value,
                 "error": "Health check disabled",
-                "timestamp": time.time()
+                "timestamp": time.time(),
             }
 
         start_time = time.time()
@@ -145,7 +145,7 @@ class HealthChecker:
                     "result": result,
                     "duration": duration,
                     "timestamp": time.time(),
-                    "error": None
+                    "error": None,
                 }
 
             # Record in history
@@ -157,7 +157,7 @@ class HealthChecker:
                 "result": result,
                 "duration": duration,
                 "timestamp": time.time(),
-                "metadata": health_check.metadata
+                "metadata": health_check.metadata,
             }
 
         except Exception as e:
@@ -171,7 +171,7 @@ class HealthChecker:
                     "result": False,
                     "duration": duration,
                     "timestamp": time.time(),
-                    "error": str(e)
+                    "error": str(e),
                 }
 
             # Record in history
@@ -184,12 +184,12 @@ class HealthChecker:
                 "duration": duration,
                 "timestamp": time.time(),
                 "error": str(e),
-                "metadata": health_check.metadata
+                "metadata": health_check.metadata,
             }
 
     def _check_all_health(self) -> dict[str, Any]:
         """Check health of all health checks.
-        
+
         Returns:
             Overall health status and individual check results
         """
@@ -213,15 +213,15 @@ class HealthChecker:
             "critical_failures": critical_failures,
             "total_checks": len(self._health_checks),
             "check_results": check_results,
-            "timestamp": time.time()
+            "timestamp": time.time(),
         }
 
     def _execute_health_check(self, health_check: HealthCheck) -> bool:
         """Execute a health check with timeout.
-        
+
         Args:
             health_check: Health check to execute
-            
+
         Returns:
             Health check result
         """
@@ -233,14 +233,10 @@ class HealthChecker:
             return False
 
     def _record_health_check(
-        self,
-        name: str,
-        result: bool,
-        duration: float,
-        error: str | None
+        self, name: str, result: bool, duration: float, error: str | None
     ) -> None:
         """Record a health check result.
-        
+
         Args:
             name: Name of the health check
             result: Health check result
@@ -254,14 +250,14 @@ class HealthChecker:
                 "duration": duration,
                 "error": error,
                 "timestamp": time.time(),
-                "status": self._health_status[name].value
+                "status": self._health_status[name].value,
             }
 
             self._health_history.append(health_record)
 
             # Trim history if needed
             if len(self._health_history) > self._max_history:
-                self._health_history = self._health_history[-self._max_history:]
+                self._health_history = self._health_history[-self._max_history :]
 
     def start_monitoring(self) -> Any:
         """Start background health monitoring."""
@@ -304,10 +300,10 @@ class HealthChecker:
 
     def get_health_status(self, name: str | None = None) -> dict[str, Any]:
         """Get current health status.
-        
+
         Args:
             name: Name of specific health check, or None for all
-            
+
         Returns:
             Health status information
         """
@@ -316,7 +312,7 @@ class HealthChecker:
                 "name": name,
                 "status": self._health_status.get(name, HealthStatus.UNKNOWN).value,
                 "last_check": self._last_check_time.get(name, 0.0),
-                "result": self._check_results.get(name, {})
+                "result": self._check_results.get(name, {}),
             }
         else:
             return {
@@ -325,15 +321,15 @@ class HealthChecker:
                     name: {
                         "status": status.value,
                         "last_check": self._last_check_time.get(name, 0.0),
-                        "result": self._check_results.get(name, {})
+                        "result": self._check_results.get(name, {}),
                     }
                     for name, status in self._health_status.items()
-                }
+                },
             }
 
     def _get_overall_status(self) -> HealthStatus:
         """Get overall health status.
-        
+
         Returns:
             Overall health status
         """
@@ -349,8 +345,7 @@ class HealthChecker:
             return HealthStatus.UNHEALTHY
 
         unhealthy_count = sum(
-            1 for status in self._health_status.values()
-            if status == HealthStatus.UNHEALTHY
+            1 for status in self._health_status.values() if status == HealthStatus.UNHEALTHY
         )
         if unhealthy_count > 0:
             return HealthStatus.DEGRADED
@@ -359,10 +354,10 @@ class HealthChecker:
 
     def get_health_history(self, limit: int | None = None) -> list[dict[str, Any]]:
         """Get health check history.
-        
+
         Args:
             limit: Optional limit on number of records to return
-            
+
         Returns:
             List of health check records
         """
@@ -373,10 +368,10 @@ class HealthChecker:
 
     def is_healthy(self, name: str | None = None) -> bool:
         """Check if system is healthy.
-        
+
         Args:
             name: Name of specific health check, or None for overall
-            
+
         Returns:
             True if healthy, False otherwise
         """
@@ -387,7 +382,7 @@ class HealthChecker:
 
     def reset(self) -> Any:
         """Reset the health checker.
-        
+
         Clears all history and resets status.
         """
         with self._lock:
@@ -398,7 +393,7 @@ class HealthChecker:
 
     def __enter__(self):
         """Context manager entry.
-        
+
         Returns:
             Self
         """
@@ -406,7 +401,7 @@ class HealthChecker:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit.
-        
+
         Args:
             exc_type: Exception type
             exc_val: Exception value

@@ -30,9 +30,7 @@ class TestSecurityIntegration:
         provider.repo = MagicMock()
         return provider
 
-    def test_security_scanning_tool_integration(
-        self, mock_github_provider: str
-    ) -> None:
+    def test_security_scanning_tool_integration(self, mock_github_provider: str) -> None:
         """Test integration with security scanning tools."""
         # Test security scanning tool configuration
         security_tools = {
@@ -297,9 +295,7 @@ class TestSecurityIntegration:
         assert tool_monitoring["performance_monitoring"]["enabled"] is True
         assert tool_monitoring["error_monitoring"]["enabled"] is True
 
-    def test_security_tool_integration_validation(
-        self, mock_github_provider: str
-    ) -> None:
+    def test_security_tool_integration_validation(self, mock_github_provider: str) -> None:
         """Test security tool integration validation."""
         # Test security tool integration validation
         integration_validation = {
@@ -321,10 +317,7 @@ class TestSecurityIntegration:
         }
 
         assert integration_validation["api_compatibility"]["version_check"] is True
-        assert (
-            integration_validation["authentication_validation"]["credential_validation"]
-            is True
-        )
+        assert integration_validation["authentication_validation"]["credential_validation"] is True
         assert integration_validation["data_validation"]["schema_validation"] is True
 
     def test_security_tool_error_handling(self, mock_github_provider: str) -> None:

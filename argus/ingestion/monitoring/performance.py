@@ -12,6 +12,7 @@ Provides comprehensive performance monitoring including:
 
 import asyncio
 from collections import defaultdict, deque
+import contextlib
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 import logging
@@ -84,9 +85,7 @@ class PerformanceMonitor:
         self.update_interval = update_interval
 
         # Performance data storage
-        self._operation_times: dict[str, deque] = defaultdict(
-            lambda: deque(maxlen=window_size)
-        )
+        self._operation_times: dict[str, deque] = defaultdict(lambda: deque(maxlen=window_size))
         self._operation_counts: dict[str, int] = defaultdict(int)
         self._success_counts: dict[str, int] = defaultdict(int)
         self._failure_counts: dict[str, int] = defaultdict(int)
@@ -119,10 +118,8 @@ class PerformanceMonitor:
         self._running = False
         if self._update_task:
             self._update_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._update_task
-            except asyncio.CancelledError:
-                pass
         logger.info("PerformanceMonitor stopped")
 
     def record_operation(
@@ -181,9 +178,7 @@ class PerformanceMonitor:
                 if key.startswith(f"{component}:")
             }
 
-    def get_operation_metrics(
-        self, component: str, operation: str
-    ) -> PerformanceMetrics | None:
+    def get_operation_metrics(self, component: str, operation: str) -> PerformanceMetrics | None:
         """
         Get performance metrics for a specific operation.
 
@@ -225,18 +220,14 @@ class PerformanceMonitor:
             }
 
             # Calculate component-level summaries
-            components = set(key.split(":", 1)[0] for key in self._metrics.keys())
+            components = {key.split(":", 1)[0] for key in self._metrics}
 
             for component in components:
                 component_metrics = self.get_component_metrics(component)
 
                 total_ops = sum(m.total_operations for m in component_metrics.values())
-                total_success = sum(
-                    m.successful_operations for m in component_metrics.values()
-                )
-                total_time = sum(
-                    m.total_processing_time_ms for m in component_metrics.values()
-                )
+                total_success = sum(m.successful_operations for m in component_metrics.values())
+                total_time = sum(m.total_processing_time_ms for m in component_metrics.values())
 
                 summary["components"][component] = {
                     "total_operations": total_ops,
@@ -266,12 +257,8 @@ class PerformanceMonitor:
                 )
 
                 # Calculate weighted average processing time
-                total_time = sum(
-                    m.total_processing_time_ms for m in self._metrics.values()
-                )
-                summary["overall"]["average_processing_time_ms"] = (
-                    total_time / total_ops
-                )
+                total_time = sum(m.total_processing_time_ms for m in self._metrics.values())
+                summary["overall"]["average_processing_time_ms"] = total_time / total_ops
 
             return summary
 

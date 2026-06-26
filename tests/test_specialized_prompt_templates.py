@@ -7,7 +7,6 @@ This module contains comprehensive tests for specialized prompt templates
 including database, API, and security error templates.
 """
 
-
 from argus.ml.prompt_context_models import (
     IssueContext,
     IssueType,

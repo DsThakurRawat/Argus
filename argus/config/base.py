@@ -1,4 +1,3 @@
-from typing import Any
 # argus/config/base.py
 
 """
@@ -8,6 +7,7 @@ Base configuration classes with environment support and schema versioning.
 from enum import Enum
 import hashlib
 import json
+from typing import Any
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -34,12 +34,8 @@ class BaseConfig(BaseSettings):
     )
 
     # Schema versioning and metadata
-    schema_version: str = Field(
-        default="1.0.0", description="Configuration schema version"
-    )
-    last_validated: str | None = Field(
-        default=None, description="Last validation timestamp"
-    )
+    schema_version: str = Field(default="1.0.0", description="Configuration schema version")
+    last_validated: str | None = Field(default=None, description="Last validation timestamp")
     validation_checksum: str | None = Field(
         default=None, description="Configuration validation checksum"
     )
@@ -59,9 +55,7 @@ class BaseConfig(BaseSettings):
         """Validate configuration schema version."""
         supported_versions = ["1.0.0"]
         if v not in supported_versions:
-            raise ValueError(
-                f"Unsupported schema version {v}. Supported: {supported_versions}"
-            )
+            raise ValueError(f"Unsupported schema version {v}. Supported: {supported_versions}")
         return v
 
     @field_validator("log_level")

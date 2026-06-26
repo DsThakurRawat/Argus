@@ -38,14 +38,12 @@ class TestGeminiPatternClassifierInit:
         assert classifier.confidence_assessment_threshold == 0.8
 
     @patch("argus.ml.gemini_pattern_classifier.GeminiAPIClient")
-    def test_init_with_monitoring_components(
-        self, mock_gemini_client_class: str
-    ) -> None:
+    def test_init_with_monitoring_components(self, mock_gemini_client_class: str) -> None:
         """Test initialization with cost tracker and rate limiter."""
         cost_tracker = Mock()
         rate_limiter = Mock()
 
-        classifier = GeminiPatternClassifier(
+        GeminiPatternClassifier(
             api_key="test_key", cost_tracker=cost_tracker, rate_limiter=rate_limiter
         )
 
@@ -139,9 +137,7 @@ class TestGeminiPatternClassifierClassification:
         mock_gemini_client_class.return_value = mock_gemini_client
 
         classifier = GeminiPatternClassifier(api_key="test_key")
-        results = await classifier.classify_patterns(
-            sample_window, sample_threshold_results
-        )
+        results = await classifier.classify_patterns(sample_window, sample_threshold_results)
 
         assert len(results) == 1
         pattern_match = results[0]
@@ -209,9 +205,7 @@ class TestGeminiPatternClassifierClassification:
         mock_gemini_client_class.return_value = mock_gemini_client
 
         classifier = GeminiPatternClassifier(api_key="test_key")
-        results = await classifier.classify_patterns(
-            sample_window, sample_threshold_results
-        )
+        results = await classifier.classify_patterns(sample_window, sample_threshold_results)
 
         assert len(results) == 1
         pattern_match = results[0]
@@ -243,9 +237,7 @@ class TestGeminiPatternClassifierClassification:
         mock_gemini_client_class.return_value = mock_gemini_client
 
         classifier = GeminiPatternClassifier(api_key="test_key")
-        results = await classifier.classify_patterns(
-            sample_window, sample_threshold_results
-        )
+        results = await classifier.classify_patterns(sample_window, sample_threshold_results)
 
         assert len(results) == 0
 
@@ -270,9 +262,7 @@ class TestGeminiPatternClassifierClassification:
         mock_gemini_client_class.return_value = mock_gemini_client
 
         classifier = GeminiPatternClassifier(api_key="test_key")
-        results = await classifier.classify_patterns(
-            sample_window, sample_threshold_results
-        )
+        results = await classifier.classify_patterns(sample_window, sample_threshold_results)
 
         assert len(results) == 0
 
@@ -305,9 +295,7 @@ class TestGeminiPatternClassifierClassification:
         mock_gemini_client_class.return_value = mock_gemini_client
 
         classifier = GeminiPatternClassifier(api_key="test_key")
-        results = await classifier.classify_patterns(
-            sample_window, sample_threshold_results
-        )
+        results = await classifier.classify_patterns(sample_window, sample_threshold_results)
 
         # Should return empty list for unknown pattern type
         assert len(results) == 0
@@ -369,13 +357,9 @@ class TestGeminiPatternClassifierHelpers:
         """Test pattern type string to enum mapping."""
         classifier = GeminiPatternClassifier(api_key="test_key")
 
+        assert classifier._map_pattern_type("cascade_failure") == PatternType.CASCADE_FAILURE
         assert (
-            classifier._map_pattern_type("cascade_failure")
-            == PatternType.CASCADE_FAILURE
-        )
-        assert (
-            classifier._map_pattern_type("service_degradation")
-            == PatternType.SERVICE_DEGRADATION
+            classifier._map_pattern_type("service_degradation") == PatternType.SERVICE_DEGRADATION
         )
         assert classifier._map_pattern_type("unknown_pattern") is None
 
@@ -418,9 +402,7 @@ class TestGeminiPatternClassifierPrompts:
     """Test prompt building functionality."""
 
     @patch("argus.ml.gemini_pattern_classifier.GeminiAPIClient")
-    def test_classification_prompt_building(
-        self, mock_gemini_client_class: str
-    ) -> None:
+    def test_classification_prompt_building(self, mock_gemini_client_class: str) -> None:
         """Test classification prompt construction."""
         classifier = GeminiPatternClassifier(api_key="test_key")
 
@@ -489,10 +471,7 @@ class TestGeminiPatternClassifierPrompts:
         assert classification_schema["type"] == "object"
         assert "pattern_type" in classification_schema["properties"]
         assert "confidence_score" in classification_schema["properties"]
-        assert (
-            "cascade_failure"
-            in classification_schema["properties"]["pattern_type"]["enum"]
-        )
+        assert "cascade_failure" in classification_schema["properties"]["pattern_type"]["enum"]
 
         # Test confidence schema
         confidence_schema = classifier._build_confidence_schema()

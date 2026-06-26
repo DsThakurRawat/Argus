@@ -1,4 +1,3 @@
-from typing import Any
 # argus/config/secrets.py
 
 """
@@ -6,6 +5,7 @@ Enhanced secrets management with validation and secure handling.
 """
 
 import os
+from typing import Any
 
 from pydantic import Field, SecretStr, field_validator
 
@@ -55,9 +55,7 @@ class SecretsConfig(BaseConfig):
             return v
 
         # GitHub personal access tokens start with 'ghp_' or 'github_pat_'
-        if not (
-            token_value.startswith("ghp_") or token_value.startswith("github_pat_")
-        ):
+        if not (token_value.startswith("ghp_") or token_value.startswith("github_pat_")):
             raise ValueError("Invalid GitHub token format")
 
         return v
@@ -111,7 +109,5 @@ class SecretsConfig(BaseConfig):
             "gcp_service_account_key": (
                 "***MASKED***" if self.gcp_service_account_key else "***NOT_SET***"
             ),
-            "database_password": (
-                "***MASKED***" if self.database_password else "***NOT_SET***"
-            ),
+            "database_password": ("***MASKED***" if self.database_password else "***NOT_SET***"),
         }

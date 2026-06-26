@@ -55,7 +55,9 @@ class MetricsAnalyzer:
                 "status": (
                     "healthy"
                     if success_rate > 0.95
-                    else "degraded" if success_rate > 0.8 else "unhealthy"
+                    else "degraded"
+                    if success_rate > 0.8
+                    else "unhealthy"
                 ),
             }
 
@@ -131,9 +133,7 @@ class MetricsAnalyzer:
         anomalies = await self.detect_anomalies(provider_name, window_minutes)
         for anomaly in anomalies:
             if anomaly["type"] == "high_error_rate":
-                recommendations.append(
-                    "Review error logs and consider implementing retry logic"
-                )
+                recommendations.append("Review error logs and consider implementing retry logic")
             elif anomaly["type"] == "slow_operations":
                 recommendations.append(
                     "Consider implementing caching or optimizing slow operations"

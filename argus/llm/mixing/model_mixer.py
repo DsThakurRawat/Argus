@@ -101,9 +101,7 @@ class TaskDecomposer(ABC):
     """Abstract base class for task decomposition strategies."""
 
     @abstractmethod
-    async def decompose_task(
-        self, task: str, context: dict[str, Any]
-    ) -> TaskDecomposition:
+    async def decompose_task(self, task: str, context: dict[str, Any]) -> TaskDecomposition:
         """Decompose a complex task into subtasks."""
         pass
 
@@ -115,9 +113,7 @@ class SimpleTaskDecomposer(TaskDecomposer):
         """Initialize the simple task decomposer."""
         self.model_registry = model_registry
 
-    async def decompose_task(
-        self, task: str, context: dict[str, Any]
-    ) -> TaskDecomposition:
+    async def decompose_task(self, task: str, context: dict[str, Any]) -> TaskDecomposition:
         """Decompose a task using simple heuristics."""
         # Simple decomposition based on task length and keywords
         subtasks = []
@@ -501,9 +497,7 @@ class ModelMixer:
             r"<link\b[^>]*javascript",
             r"<meta\b[^>]*http-equiv",
         ]
-        return any(
-            re.search(pattern, prompt, re.IGNORECASE) for pattern in dangerous_patterns
-        )
+        return any(re.search(pattern, prompt, re.IGNORECASE) for pattern in dangerous_patterns)
 
     def _sanitize_prompt(self, prompt: str) -> str:
         """Sanitize prompt by removing or escaping dangerous content."""
@@ -538,24 +532,17 @@ class ModelMixer:
         start_time = time.time()
 
         # Get model configurations
-        if custom_configs:
-            model_configs = custom_configs
-        else:
-            model_configs = self.specialized_mixers.get(task_type, [])
+        model_configs = custom_configs or self.specialized_mixers.get(task_type, [])
 
         # Validate model configurations
         self._validate_model_configs(model_configs)
 
         if not model_configs:
-            raise ValueError(
-                f"No model configurations available for task type: {task_type}"
-            )
+            raise ValueError(f"No model configurations available for task type: {task_type}")
 
         # Apply cost-aware filtering if cost manager is available
         if self.cost_manager:
-            model_configs = await self._apply_cost_aware_filtering(
-                model_configs, prompt
-            )
+            model_configs = await self._apply_cost_aware_filtering(model_configs, prompt)
 
         # Execute models based on strategy
         if strategy == MixingStrategy.PARALLEL:
@@ -571,10 +558,8 @@ class ModelMixer:
         if results:
             valid_results = [r for r in results if r is not None]
             if valid_results:
-                aggregated_result, confidence = (
-                    await self.result_aggregator.aggregate_results(
-                        valid_results, model_configs, strategy
-                    )
+                aggregated_result, confidence = await self.result_aggregator.aggregate_results(
+                    valid_results, model_configs, strategy
                 )
             else:
                 aggregated_result = ""
@@ -645,9 +630,7 @@ class ModelMixer:
                 )
                 estimated_costs.append((config, cost))
             except Exception as e:
-                logger.warning(
-                    f"Failed to estimate cost for {config.provider}:{config.model}: {e}"
-                )
+                logger.warning(f"Failed to estimate cost for {config.provider}:{config.model}: {e}")
                 estimated_costs.append((config, float("inf")))
 
         # Filter out configurations that exceed cost limits
@@ -656,9 +639,7 @@ class ModelMixer:
             if config.cost_limit is None or cost <= config.cost_limit:
                 filtered_configs.append(config)
             else:
-                logger.info(
-                    f"Filtered out {config.provider}:{config.model} due to cost limit"
-                )
+                logger.info(f"Filtered out {config.provider}:{config.model} due to cost limit")
 
         return filtered_configs if filtered_configs else model_configs
 
@@ -719,16 +700,12 @@ class ModelMixer:
 
         for config in model_configs:
             try:
-                result = await self._execute_single_model(
-                    config, current_prompt, context
-                )
+                result = await self._execute_single_model(config, current_prompt, context)
                 results.append(result)
 
                 # Use result as input for next model (with some context)
                 if result and result.content:
-                    current_prompt = (
-                        f"Previous result: {result.content}\n\nOriginal task: {prompt}"
-                    )
+                    current_prompt = f"Previous result: {result.content}\n\nOriginal task: {prompt}"
             except Exception as e:
                 logger.error(f"Model {config.provider}:{config.model} failed: {e}")
                 results.append(None)
@@ -778,17 +755,13 @@ class ModelMixer:
     ) -> list[MixingResult]:
         """Decompose a complex task and mix models for each subtask."""
         # Decompose the task
-        decomposition = await self.task_decomposer.decompose_task(
-            complex_task, context or {}
-        )
+        decomposition = await self.task_decomposer.decompose_task(complex_task, context or {})
 
         # Mix models for each subtask
         results = []
         for i, subtask in enumerate(decomposition.subtasks):
             try:
-                result = await self.mix_models(
-                    subtask, task_type, strategy, context=context
-                )
+                result = await self.mix_models(subtask, task_type, strategy, context=context)
                 result.metadata["subtask_index"] = i
                 result.metadata["original_task"] = complex_task
                 results.append(result)

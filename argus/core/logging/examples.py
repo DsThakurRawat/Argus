@@ -41,9 +41,7 @@ def flow_tracking_example():
     get_flow_tracker()
 
     # Start a flow
-    flow_id = logger.start_flow(
-        "user_registration", metadata={"user_email": "user@example.com"}
-    )
+    flow_id = logger.start_flow("user_registration", metadata={"user_email": "user@example.com"})
     logger.info("Starting user registration", flow_id=flow_id)
 
     # Simulate some work

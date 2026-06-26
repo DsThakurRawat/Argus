@@ -54,9 +54,7 @@ def test_analyze_issue(
     # Arrange
     # Configure the mock GenerativeModel to return a predefined response
     mock_instance = MagicMock()
-    mock_instance.generate_content.return_value.text = json.dumps(
-        mock_gemini_response_analysis
-    )
+    mock_instance.generate_content.return_value.text = json.dumps(mock_gemini_response_analysis)
     mock_generative_model.return_value = mock_instance
 
     agent = AnalysisAgent(
@@ -69,19 +67,14 @@ def test_analyze_issue(
 
     # Act
     flow_id = "test-flow-001"
-    remediation_plan = agent.analyze_issue(
-        triage_packet, historical_logs, configs, flow_id
-    )
+    remediation_plan = agent.analyze_issue(triage_packet, historical_logs, configs, flow_id)
 
     # Assert
     assert isinstance(remediation_plan, RemediationPlan)
     assert (
-        remediation_plan.root_cause_analysis
-        == mock_gemini_response_analysis["root_cause_analysis"]
+        remediation_plan.root_cause_analysis == mock_gemini_response_analysis["root_cause_analysis"]
     )
-    assert (
-        remediation_plan.proposed_fix == mock_gemini_response_analysis["proposed_fix"]
-    )
+    assert remediation_plan.proposed_fix == mock_gemini_response_analysis["proposed_fix"]
     assert remediation_plan.code_patch == mock_gemini_response_analysis["code_patch"]
     # Note: iac_fix is no longer part of RemediationPlan in this version
 

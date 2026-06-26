@@ -79,9 +79,7 @@ class CostAnalysisTester:
                     )
 
                 except Exception as e:
-                    logger.error(
-                        f"Cost estimation failed for {test_case['provider']}: {e}"
-                    )
+                    logger.error(f"Cost estimation failed for {test_case['provider']}: {e}")
                     return False
 
             logger.info("Cost tracking accuracy test passed")
@@ -136,9 +134,7 @@ class CostAnalysisTester:
                         break
 
                 except Exception as e:
-                    logger.error(
-                        f"Budget enforcement test failed for {request['provider']}: {e}"
-                    )
+                    logger.error(f"Budget enforcement test failed for {request['provider']}: {e}")
                     return False
 
             logger.info("Budget enforcement test passed")
@@ -307,9 +303,7 @@ class CostAnalysisTester:
                 return False
 
             # Find the cheapest provider
-            cheapest_provider = min(
-                provider_costs.keys(), key=lambda k: provider_costs[k]
-            )
+            cheapest_provider = min(provider_costs.keys(), key=lambda k: provider_costs[k])
             logger.info(
                 f"Cheapest provider: {cheapest_provider} (${provider_costs[cheapest_provider]:.6f})"
             )
@@ -411,21 +405,15 @@ class CostAnalysisTester:
             try:
                 result = await test_func()
                 results[test_name] = result
-                logger.info(
-                    f"Cost analysis test '{test_name}': {'PASSED' if result else 'FAILED'}"
-                )
+                logger.info(f"Cost analysis test '{test_name}': {'PASSED' if result else 'FAILED'}")
             except Exception as e:
-                logger.error(
-                    f"Cost analysis test '{test_name}' failed with exception: {e}"
-                )
+                logger.error(f"Cost analysis test '{test_name}' failed with exception: {e}")
                 results[test_name] = False
 
         # Summary
         passed_tests = sum(1 for result in results.values() if result)
         total_tests = len(results)
 
-        logger.info(
-            f"Cost analysis tests completed: {passed_tests}/{total_tests} passed"
-        )
+        logger.info(f"Cost analysis tests completed: {passed_tests}/{total_tests} passed")
 
         return results

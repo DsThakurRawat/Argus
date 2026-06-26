@@ -4,6 +4,7 @@
 Integration tests for the log ingestion system.
 """
 
+import contextlib
 import os
 import tempfile
 
@@ -29,10 +30,8 @@ class TestFileSystemIntegration:
         yield temp_file
 
         # Cleanup
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(temp_file)
-        except OSError:
-            pass
 
     def test_file_system_adapter_creation(self) -> None:
         """Test creating a file system adapter."""

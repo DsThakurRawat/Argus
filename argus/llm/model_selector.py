@@ -86,13 +86,9 @@ class ModelSelector:
         self._cache_ttl = 300  # 5 minutes
         self._selection_stats: dict[str, int] = {}
 
-        logger.info(
-            "ModelSelector initialized with registry, capability discovery, and scorer"
-        )
+        logger.info("ModelSelector initialized with registry, capability discovery, and scorer")
 
-    def select_model(
-        self, criteria: SelectionCriteria, use_cache: bool = True
-    ) -> SelectionResult:
+    def select_model(self, criteria: SelectionCriteria, use_cache: bool = True) -> SelectionResult:
         """Select the best model based on criteria with fallback support."""
         # Check cache first
         cache_key = None
@@ -136,9 +132,7 @@ class ModelSelector:
         # Update statistics
         self._update_selection_stats(criteria.strategy)
 
-        logger.info(
-            f"Selected model: {primary_model.name} using strategy: {criteria.strategy}"
-        )
+        logger.info(f"Selected model: {primary_model.name} using strategy: {criteria.strategy}")
         return result
 
     def select_model_with_fallback(
@@ -157,15 +151,11 @@ class ModelSelector:
                 break
 
             if self._is_model_available(fallback_model):
-                logger.info(
-                    f"Using fallback model: {fallback_model.name} (attempt {i+1})"
-                )
+                logger.info(f"Using fallback model: {fallback_model.name} (attempt {i + 1})")
                 return fallback_model, result
 
         # If no fallback available, return primary (will be handled by caller)
-        logger.warning(
-            f"No available models in fallback chain for criteria: {criteria}"
-        )
+        logger.warning(f"No available models in fallback chain for criteria: {criteria}")
         return result.selected_model, result
 
     def _get_candidate_models(self, criteria: SelectionCriteria) -> list[ModelInfo]:
@@ -176,10 +166,7 @@ class ModelSelector:
 
         for model_info in all_models:
             # Filter by semantic type
-            if (
-                criteria.semantic_type
-                and model_info.semantic_type != criteria.semantic_type
-            ):
+            if criteria.semantic_type and model_info.semantic_type != criteria.semantic_type:
                 continue
 
             # Filter by required capabilities using CapabilityDiscovery
@@ -192,19 +179,14 @@ class ModelSelector:
                 # Check if model has all required capabilities
                 has_all_required = True
                 for req_cap in criteria.required_capabilities:
-                    if not any(
-                        mc.name == req_cap.name for mc in model_caps.capabilities
-                    ):
+                    if not any(mc.name == req_cap.name for mc in model_caps.capabilities):
                         has_all_required = False
                         break
                 if not has_all_required:
                     continue
 
             # Apply other filters (max_cost, min_performance, min_reliability)
-            if (
-                criteria.max_cost is not None
-                and model_info.cost_per_1k_tokens > criteria.max_cost
-            ):
+            if criteria.max_cost is not None and model_info.cost_per_1k_tokens > criteria.max_cost:
                 continue
             if (
                 criteria.min_performance is not None
@@ -241,10 +223,7 @@ class ModelSelector:
     def _meets_criteria(self, model: ModelInfo, criteria: SelectionCriteria) -> bool:
         """Check if model meets all criteria."""
         # Check provider preference
-        if (
-            criteria.provider_preference
-            and model.provider != criteria.provider_preference
-        ):
+        if criteria.provider_preference and model.provider != criteria.provider_preference:
             return False
 
         # Check latency constraint (simplified heuristic)
@@ -273,9 +252,7 @@ class ModelSelector:
         # Use pattern matching for strategy selection
         match criteria.strategy:
             case SelectionStrategy.BEST_SCORE:
-                return self._select_by_best_score(
-                    candidates, context, criteria.custom_weights
-                )
+                return self._select_by_best_score(candidates, context, criteria.custom_weights)
             case SelectionStrategy.FASTEST:
                 return self._select_by_fastest(candidates, context)
             case SelectionStrategy.CHEAPEST:
@@ -285,14 +262,10 @@ class ModelSelector:
             case SelectionStrategy.BALANCED:
                 return self._select_by_balanced(candidates, context)
             case SelectionStrategy.CUSTOM:
-                return self._select_by_custom(
-                    candidates, context, criteria.custom_weights
-                )
+                return self._select_by_custom(candidates, context, criteria.custom_weights)
             case _:
                 # Default to best score
-                return self._select_by_best_score(
-                    candidates, context, criteria.custom_weights
-                )
+                return self._select_by_best_score(candidates, context, criteria.custom_weights)
 
     def _select_by_best_score(
         self,
@@ -301,9 +274,7 @@ class ModelSelector:
         custom_weights: ScoringWeights | None = None,
     ) -> tuple[ModelInfo, ModelScore]:
         """Select model with best overall score."""
-        ranked_models = self.model_scorer.rank_models(
-            candidates, context, custom_weights, top_k=1
-        )
+        ranked_models = self.model_scorer.rank_models(candidates, context, custom_weights, top_k=1)
         if not ranked_models:
             raise ValueError("No models could be scored")
 
@@ -339,9 +310,7 @@ class ModelSelector:
         self, candidates: list[ModelInfo], context: ScoringContext
     ) -> tuple[ModelInfo, ModelScore]:
         """Select model with balanced scoring."""
-        balanced_weights = ScoringWeights(
-            cost=0.25, performance=0.35, reliability=0.35, speed=0.05
-        )
+        balanced_weights = ScoringWeights(cost=0.25, performance=0.35, reliability=0.35, speed=0.05)
         return self._select_by_best_score(candidates, context, balanced_weights)
 
     def _select_by_custom(
@@ -475,9 +444,7 @@ class ModelSelector:
     def _update_selection_stats(self, strategy: SelectionStrategy) -> None:
         """Update selection statistics."""
         strategy_key = strategy.value
-        self._selection_stats[strategy_key] = (
-            self._selection_stats.get(strategy_key, 0) + 1
-        )
+        self._selection_stats[strategy_key] = self._selection_stats.get(strategy_key, 0) + 1
 
     def clear_cache(self) -> None:
         """Clear the selection cache."""

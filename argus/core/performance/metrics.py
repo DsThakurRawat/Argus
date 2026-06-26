@@ -27,7 +27,7 @@ class MetricType(Enum):
 @dataclass
 class MetricValue:
     """A single metric value with metadata.
-    
+
     Attributes:
         name: Name of the metric
         value: Numeric value
@@ -46,7 +46,7 @@ class MetricValue:
 @dataclass
 class MetricAggregation:
     """Aggregated metric statistics.
-    
+
     Attributes:
         count: Number of samples
         sum: Sum of all values
@@ -71,7 +71,7 @@ class MetricAggregation:
 @dataclass
 class PerformanceMetrics:
     """Performance metrics for a specific operation or component.
-    
+
     Attributes:
         operation_name: Name of the operation
         total_requests: Total number of requests
@@ -108,7 +108,7 @@ class PerformanceMetrics:
 @dataclass
 class MetricsConfig:
     """Configuration for metrics collection.
-    
+
     Attributes:
         max_metrics_per_operation: Maximum number of metrics to store per operation
         aggregation_window: Time window for metric aggregation in seconds
@@ -130,7 +130,7 @@ class MetricsConfig:
 
 class MetricsCollector:
     """Core performance metrics collection system.
-    
+
     Provides comprehensive metrics collection for HTTP requests,
     memory usage, CPU utilization, and I/O throughput with
     configurable aggregation and retention policies.
@@ -138,7 +138,7 @@ class MetricsCollector:
 
     def __init__(self, config: MetricsConfig | None = None):
         """Initialize the metrics collector.
-        
+
         Args:
             config: Metrics collection configuration
         """
@@ -167,7 +167,7 @@ class MetricsCollector:
                 cutoff_time = current_time - self._config.retention_period
 
                 with self._lock:
-                    for operation_name, metrics_deque in self._metrics.items():
+                    for _operation_name, metrics_deque in self._metrics.items():
                         # Remove old metrics
                         while metrics_deque and metrics_deque[0].timestamp < cutoff_time:
                             metrics_deque.popleft()
@@ -191,10 +191,10 @@ class MetricsCollector:
         value: int | float,
         operation: str | None = None,
         tags: dict[str, str] | None = None,
-        unit: str = ""
+        unit: str = "",
     ) -> None:
         """Record a metric value.
-        
+
         Args:
             name: Name of the metric
             value: Metric value
@@ -205,12 +205,7 @@ class MetricsCollector:
         if not self._should_sample():
             return
 
-        metric = MetricValue(
-            name=name,
-            value=value,
-            tags=tags or {},
-            unit=unit
-        )
+        metric = MetricValue(name=name, value=value, tags=tags or {}, unit=unit)
 
         with self._lock:
             # Store metric by operation or global
@@ -225,16 +220,17 @@ class MetricsCollector:
 
     def _should_sample(self) -> bool:
         """Check if we should sample this metric based on sampling rate.
-        
+
         Returns:
             True if we should sample, False otherwise
         """
         import random
+
         return random.random() < self._config.sampling_rate
 
     def _update_aggregation(self, key: str, metric: MetricValue) -> None:
         """Update metric aggregation for a key.
-        
+
         Args:
             key: Aggregation key
             metric: Metric value to aggregate
@@ -260,11 +256,11 @@ class MetricsCollector:
     @contextmanager
     def track_operation(self, operation_name: str, tags: dict[str, str] | None = None):
         """Context manager for tracking operation performance.
-        
+
         Args:
             operation_name: Name of the operation
             tags: Additional metadata tags
-            
+
         Yields:
             Operation context
         """
@@ -280,7 +276,7 @@ class MetricsCollector:
                 duration * 1000,  # Convert to milliseconds
                 operation=operation_name,
                 tags=tags,
-                unit="ms"
+                unit="ms",
             )
             self._increment_operation_count(operation_name, success=True)
 
@@ -292,23 +288,19 @@ class MetricsCollector:
                 duration * 1000,
                 operation=operation_name,
                 tags={**(tags or {}), "error": str(e)},
-                unit="ms"
+                unit="ms",
             )
             self._increment_operation_count(operation_name, success=False)
             raise
 
     @asynccontextmanager
-    async def track_async_operation(
-        self,
-        operation_name: str,
-        tags: dict[str, str] | None = None
-    ):
+    async def track_async_operation(self, operation_name: str, tags: dict[str, str] | None = None):
         """Async context manager for tracking async operation performance.
-        
+
         Args:
             operation_name: Name of the operation
             tags: Additional metadata tags
-            
+
         Yields:
             Async operation context
         """
@@ -324,7 +316,7 @@ class MetricsCollector:
                 duration * 1000,  # Convert to milliseconds
                 operation=operation_name,
                 tags=tags,
-                unit="ms"
+                unit="ms",
             )
             self._increment_operation_count(operation_name, success=True)
 
@@ -336,14 +328,14 @@ class MetricsCollector:
                 duration * 1000,
                 operation=operation_name,
                 tags={**(tags or {}), "error": str(e)},
-                unit="ms"
+                unit="ms",
             )
             self._increment_operation_count(operation_name, success=False)
             raise
 
     def _increment_operation_count(self, operation_name: str, success: bool = True) -> None:
         """Increment operation count.
-        
+
         Args:
             operation_name: Name of the operation
             success: Whether the operation was successful
@@ -359,7 +351,7 @@ class MetricsCollector:
 
     def record_memory_usage(self, operation: str | None = None) -> None:
         """Record current memory usage.
-        
+
         Args:
             operation: Operation name (optional)
         """
@@ -368,23 +360,17 @@ class MetricsCollector:
 
         try:
             import psutil
+
             process = psutil.Process()
             memory_info = process.memory_info()
             memory_usage = memory_info.rss  # Resident Set Size
 
-            self.record_metric(
-                "memory_usage",
-                memory_usage,
-                operation=operation,
-                unit="bytes"
-            )
+            self.record_metric("memory_usage", memory_usage, operation=operation, unit="bytes")
 
             # Store in memory samples
-            self._memory_samples.append(MetricValue(
-                name="memory_usage",
-                value=memory_usage,
-                unit="bytes"
-            ))
+            self._memory_samples.append(
+                MetricValue(name="memory_usage", value=memory_usage, unit="bytes")
+            )
 
         except ImportError:
             logger.warning("psutil not available for memory tracking")
@@ -393,7 +379,7 @@ class MetricsCollector:
 
     def record_cpu_usage(self, operation: str | None = None) -> None:
         """Record current CPU usage.
-        
+
         Args:
             operation: Operation name (optional)
         """
@@ -402,21 +388,15 @@ class MetricsCollector:
 
         try:
             import psutil
+
             cpu_percent = psutil.cpu_percent()
 
-            self.record_metric(
-                "cpu_usage",
-                cpu_percent,
-                operation=operation,
-                unit="percent"
-            )
+            self.record_metric("cpu_usage", cpu_percent, operation=operation, unit="percent")
 
             # Store in CPU samples
-            self._cpu_samples.append(MetricValue(
-                name="cpu_usage",
-                value=cpu_percent,
-                unit="percent"
-            ))
+            self._cpu_samples.append(
+                MetricValue(name="cpu_usage", value=cpu_percent, unit="percent")
+            )
 
         except ImportError:
             logger.warning("psutil not available for CPU tracking")
@@ -425,10 +405,10 @@ class MetricsCollector:
 
     def get_metrics(self, operation: str | None = None) -> list[MetricValue]:
         """Get metrics for a specific operation or all operations.
-        
+
         Args:
             operation: Operation name (optional)
-            
+
         Returns:
             List of metric values
         """
@@ -443,10 +423,10 @@ class MetricsCollector:
 
     def get_aggregation(self, operation: str | None = None) -> dict[str, MetricAggregation]:
         """Get metric aggregations.
-        
+
         Args:
             operation: Operation name (optional)
-            
+
         Returns:
             Dictionary of metric aggregations
         """
@@ -458,10 +438,10 @@ class MetricsCollector:
 
     def get_performance_metrics(self, operation_name: str) -> PerformanceMetrics:
         """Get comprehensive performance metrics for an operation.
-        
+
         Args:
             operation_name: Name of the operation
-            
+
         Returns:
             Performance metrics
         """
@@ -472,7 +452,8 @@ class MetricsCollector:
 
             # Get response time metrics
             response_times = [
-                m.value for m in self._metrics.get(operation_name, [])
+                m.value
+                for m in self._metrics.get(operation_name, [])
                 if m.name in ["operation_duration", "async_operation_duration"]
             ]
 
@@ -511,25 +492,22 @@ class MetricsCollector:
                 throughput=throughput,
                 error_rate=error_rate,
                 memory_usage=int(memory_usage),
-                cpu_usage=cpu_usage
+                cpu_usage=cpu_usage,
             )
 
     def get_all_performance_metrics(self) -> dict[str, PerformanceMetrics]:
         """Get performance metrics for all operations.
-        
+
         Returns:
             Dictionary of operation names to performance metrics
         """
         with self._lock:
             operations = set(self._operation_counts.keys())
-            return {
-                operation: self.get_performance_metrics(operation)
-                for operation in operations
-            }
+            return {operation: self.get_performance_metrics(operation) for operation in operations}
 
     def reset_metrics(self, operation: str | None = None) -> None:
         """Reset metrics for a specific operation or all operations.
-        
+
         Args:
             operation: Operation name (optional)
         """
@@ -549,7 +527,7 @@ class MetricsCollector:
 
     def get_metrics_summary(self) -> dict[str, Any]:
         """Get a summary of all metrics.
-        
+
         Returns:
             Metrics summary
         """
@@ -564,13 +542,13 @@ class MetricsCollector:
                     "max_metrics_per_operation": self._config.max_metrics_per_operation,
                     "aggregation_window": self._config.aggregation_window,
                     "retention_period": self._config.retention_period,
-                    "sampling_rate": self._config.sampling_rate
-                }
+                    "sampling_rate": self._config.sampling_rate,
+                },
             }
 
     def __enter__(self):
         """Context manager entry.
-        
+
         Returns:
             Self
         """
@@ -578,7 +556,7 @@ class MetricsCollector:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit.
-        
+
         Args:
             exc_type: Exception type
             exc_val: Exception value

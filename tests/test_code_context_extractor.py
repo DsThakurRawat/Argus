@@ -56,12 +56,8 @@ class TestCodeAnalysisConfig:
 
     def test_invalid_timeout(self, tmp_path: Path) -> None:
         """Test configuration with invalid timeout."""
-        with pytest.raises(
-            ValueError, match="analysis_timeout_seconds must be positive"
-        ):
-            CodeAnalysisConfig(
-                repository_path=str(tmp_path), analysis_timeout_seconds=0
-            )
+        with pytest.raises(ValueError, match="analysis_timeout_seconds must be positive"):
+            CodeAnalysisConfig(repository_path=str(tmp_path), analysis_timeout_seconds=0)
 
     def test_invalid_commit_count(self, tmp_path: Path) -> None:
         """Test configuration with invalid commit count."""
@@ -291,9 +287,7 @@ class TestComplexityMetrics:
 
     def test_invalid_complexity_values(self) -> None:
         """Test complexity metrics with invalid values."""
-        with pytest.raises(
-            ValueError, match="cyclomatic_complexity cannot be negative"
-        ):
+        with pytest.raises(ValueError, match="cyclomatic_complexity cannot be negative"):
             ComplexityMetrics(
                 cyclomatic_complexity=-1.0,
                 cognitive_complexity=5.0,
@@ -302,9 +296,7 @@ class TestComplexityMetrics:
                 technical_debt_ratio=0.1,
             )
 
-        with pytest.raises(
-            ValueError, match="maintainability_index must be between 0 and 100"
-        ):
+        with pytest.raises(ValueError, match="maintainability_index must be between 0 and 100"):
             ComplexityMetrics(
                 cyclomatic_complexity=5.0,
                 cognitive_complexity=5.0,
@@ -373,9 +365,7 @@ class TestDependencyVulnerability:
 
     def test_invalid_severity(self) -> None:
         """Test vulnerability with invalid severity."""
-        with pytest.raises(
-            ValueError, match="severity must be CRITICAL, HIGH, MEDIUM, or LOW"
-        ):
+        with pytest.raises(ValueError, match="severity must be CRITICAL, HIGH, MEDIUM, or LOW"):
             DependencyVulnerability(
                 package_name="package",
                 current_version="1.0.0",
@@ -448,7 +438,7 @@ class TestCodeContextExtractor:
     def test_initialization_invalid_repo(self) -> None:
         """Test initialization with invalid repository path."""
         with pytest.raises(ValueError, match="Repository path does not exist"):
-            config = CodeAnalysisConfig(repository_path="/nonexistent/path")
+            CodeAnalysisConfig(repository_path="/nonexistent/path")
 
     @pytest.mark.asyncio
     @patch("asyncio.create_subprocess_exec")
@@ -636,9 +626,7 @@ class TestCodeContextExtractor:
         ) as mock_subprocess:
             # Mock a slow subprocess
             mock_process = AsyncMock()
-            mock_process.communicate = AsyncMock(
-                side_effect=asyncio.sleep(1)
-            )  # Slow operation
+            mock_process.communicate = AsyncMock(side_effect=asyncio.sleep(1))  # Slow operation
             mock_subprocess.return_value = mock_process
 
             result = await extractor.extract_code_context(time_window, [])

@@ -326,9 +326,7 @@ class SelfHealingManager:
             time_diff = (current_time - pattern.last_seen).total_seconds()
             if time_diff > time_window:
                 pattern.occurrence_count = 0  # Reset count
-                self.logger.debug(
-                    f"Pattern {pattern.name}: time window exceeded, resetting count"
-                )
+                self.logger.debug(f"Pattern {pattern.name}: time window exceeded, resetting count")
                 return False
 
         self.logger.debug(f"Pattern {pattern.name}: conditions met")
@@ -426,9 +424,7 @@ class SelfHealingManager:
         for action in action_stats:
             total = action_stats[action]["total"]
             successful = action_stats[action]["successful"]
-            action_stats[action]["success_rate"] = (
-                successful / total if total > 0 else 0
-            )
+            action_stats[action]["success_rate"] = successful / total if total > 0 else 0
 
         return {
             "total_recovery_attempts": total_attempts,
@@ -437,9 +433,7 @@ class SelfHealingManager:
                 successful_attempts / total_attempts if total_attempts > 0 else 0
             ),
             "action_statistics": action_stats,
-            "pattern_occurrences": {
-                p.name: p.occurrence_count for p in self.error_patterns
-            },
+            "pattern_occurrences": {p.name: p.occurrence_count for p in self.error_patterns},
         }
 
     def get_health_status(self) -> dict[str, Any]:
@@ -461,12 +455,8 @@ class SelfHealingManager:
         return {
             "health_score": max(0, health_score),
             "status": (
-                "healthy"
-                if health_score > 80
-                else "degraded" if health_score > 50 else "unhealthy"
+                "healthy" if health_score > 80 else "degraded" if health_score > 50 else "unhealthy"
             ),
             "recovery_stats": stats,
-            "active_patterns": [
-                p.name for p in self.error_patterns if p.occurrence_count > 0
-            ],
+            "active_patterns": [p.name for p in self.error_patterns if p.occurrence_count > 0],
         }

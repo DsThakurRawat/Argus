@@ -138,9 +138,7 @@ class TestSourceControlGlobalConfig:
 
         with pytest.raises(ValidationError) as exc_info:
             SourceControlGlobalConfig(rate_limit_requests_per_minute=10001)
-        assert "Rate limit cannot exceed 10000 requests per minute" in str(
-            exc_info.value
-        )
+        assert "Rate limit cannot exceed 10000 requests per minute" in str(exc_info.value)
 
         # Invalid burst size
         with pytest.raises(ValidationError) as exc_info:
@@ -155,12 +153,8 @@ class TestSourceControlGlobalConfig:
         """Test rate limiting configuration validation."""
         # Burst size greater than requests per minute should raise error
         with pytest.raises(ValidationError) as exc_info:
-            SourceControlGlobalConfig(
-                rate_limit_requests_per_minute=10, rate_limit_burst_size=20
-            )
-        assert "Burst size cannot be greater than requests per minute" in str(
-            exc_info.value
-        )
+            SourceControlGlobalConfig(rate_limit_requests_per_minute=10, rate_limit_burst_size=20)
+        assert "Burst size cannot be greater than requests per minute" in str(exc_info.value)
 
     def test_get_effective_credentials(self) -> None:
         """Test getting effective credentials."""
@@ -240,9 +234,7 @@ class TestSourceControlConfig:
     def test_valid_repositories(self) -> None:
         """Test valid repository configuration."""
         repo1 = GitHubRepositoryConfig(name="repo1", url="owner/repo1")
-        repo2 = GitLabRepositoryConfig(
-            name="repo2", url="https://gitlab.com/owner/repo2"
-        )
+        repo2 = GitLabRepositoryConfig(name="repo2", url="https://gitlab.com/owner/repo2")
 
         config = SourceControlConfig(repositories=[repo1, repo2])
         assert len(config.repositories) == 2
@@ -252,9 +244,7 @@ class TestSourceControlConfig:
     def test_get_repository_by_name(self) -> None:
         """Test getting repository by name."""
         repo1 = GitHubRepositoryConfig(name="repo1", url="owner/repo1")
-        repo2 = GitLabRepositoryConfig(
-            name="repo2", url="https://gitlab.com/owner/repo2"
-        )
+        repo2 = GitLabRepositoryConfig(name="repo2", url="https://gitlab.com/owner/repo2")
 
         config = SourceControlConfig(repositories=[repo1, repo2])
 
@@ -272,9 +262,7 @@ class TestSourceControlConfig:
     def test_get_repositories_by_type(self) -> None:
         """Test getting repositories by type."""
         repo1 = GitHubRepositoryConfig(name="repo1", url="owner/repo1")
-        repo2 = GitLabRepositoryConfig(
-            name="repo2", url="https://gitlab.com/owner/repo2"
-        )
+        repo2 = GitLabRepositoryConfig(name="repo2", url="https://gitlab.com/owner/repo2")
         repo3 = GitHubRepositoryConfig(name="repo3", url="owner/repo3")
 
         config = SourceControlConfig(repositories=[repo1, repo2, repo3])
@@ -300,9 +288,7 @@ class TestSourceControlConfig:
         repo2 = GitLabRepositoryConfig(
             name="repo2", url="https://gitlab.com/owner/repo2", paths=["/docs"]
         )
-        repo3 = GitHubRepositoryConfig(
-            name="repo3", url="owner/repo3", paths=["/src", "/config"]
-        )
+        repo3 = GitHubRepositoryConfig(name="repo3", url="owner/repo3", paths=["/src", "/config"])
 
         config = SourceControlConfig(repositories=[repo1, repo2, repo3])
 

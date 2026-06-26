@@ -123,9 +123,7 @@ class ResilientOperationManager:
                 self.operation_circuit_breaker_config.default,
             )
             self.circuit_breakers[name] = CircuitBreaker(config, name, self.metrics)
-            self.logger.debug(
-                f"Created circuit breaker for {name} with {operation_type} config"
-            )
+            self.logger.debug(f"Created circuit breaker for {name} with {operation_type} config")
         return self.circuit_breakers[name]
 
     async def execute_resilient_operation(
@@ -143,9 +141,7 @@ class ResilientOperationManager:
         except Exception:
             # Other errors, try with retry logic
             try:
-                return await self.retry_manager.execute_with_retry(
-                    func, *args, **kwargs
-                )
+                return await self.retry_manager.execute_with_retry(func, *args, **kwargs)
             except Exception as retry_error:
                 # If retry also fails, record the failure in circuit breaker
                 await circuit_breaker._record_failure()
@@ -190,11 +186,7 @@ class ResilientOperationManager:
 
         return ProviderHealth(
             status="healthy" if overall_healthy else "unhealthy",
-            message=(
-                "All circuits healthy"
-                if overall_healthy
-                else "Some circuits are unhealthy"
-            ),
+            message=("All circuits healthy" if overall_healthy else "Some circuits are unhealthy"),
             additional_info={
                 "circuit_breakers": circuit_stats,
                 "total_circuits": len(self.circuit_breakers),

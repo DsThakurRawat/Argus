@@ -40,25 +40,19 @@ def github_provider(github_credentials: str, repository_config: str) -> None:
 class TestGitHubProviderInitialization:
     """Test GitHub provider initialization."""
 
-    def test_init_with_credentials(
-        self, github_credentials: str, repository_config: str
-    ) -> None:
+    def test_init_with_credentials(self, github_credentials: str, repository_config: str) -> None:
         """Test initialization with credentials."""
         provider = GitHubProvider(repository_config, github_credentials)
         assert provider.repo_config == repository_config
         assert provider.credentials == github_credentials
         assert provider.base_url == repository_config.api_base_url
 
-    def test_init_without_credentials_raises_error(
-        self, repository_config: str
-    ) -> None:
+    def test_init_without_credentials_raises_error(self, repository_config: str) -> None:
         """Test initialization without credentials raises error."""
         with pytest.raises(ValueError, match="GitHub credentials are required"):
             GitHubProvider(repository_config, None)
 
-    def test_init_with_invalid_credentials_raises_error(
-        self, repository_config: str
-    ) -> None:
+    def test_init_with_invalid_credentials_raises_error(self, repository_config: str) -> None:
         """Test initialization with invalid credentials raises error."""
         invalid_creds = CredentialConfig()  # No token provided
         GitHubProvider(repository_config, invalid_creds)
@@ -157,14 +151,10 @@ class TestGitHubProviderFileOperations:
         mock_repo.get_contents.return_value = mock_content
         github_provider.repo = mock_repo
 
-        content = await github_provider.get_file_content(
-            "path/to/file.txt", "feature-branch"
-        )
+        content = await github_provider.get_file_content("path/to/file.txt", "feature-branch")
 
         assert content == "file content"
-        mock_repo.get_contents.assert_called_once_with(
-            "path/to/file.txt", ref="feature-branch"
-        )
+        mock_repo.get_contents.assert_called_once_with("path/to/file.txt", ref="feature-branch")
 
     @pytest.mark.asyncio
     async def test_get_file_content_not_found(self, github_provider):
@@ -185,9 +175,7 @@ class TestGitHubProviderFileOperations:
         mock_repo.get_contents.return_value = [MagicMock()]  # List indicates directory
         github_provider.repo = mock_repo
 
-        with pytest.raises(
-            ValueError, match="Path path/to/dir is a directory, not a file"
-        ):
+        with pytest.raises(ValueError, match="Path path/to/dir is a directory, not a file"):
             await github_provider.get_file_content("path/to/dir")
 
 
@@ -207,9 +195,7 @@ class TestGitHubProviderBranchOperations:
 
         assert result is True
         mock_repo.get_git_ref.assert_called_once_with("heads/main")
-        mock_repo.create_git_ref.assert_called_once_with(
-            "refs/heads/new-feature", "abc123"
-        )
+        mock_repo.create_git_ref.assert_called_once_with("refs/heads/new-feature", "abc123")
 
     @pytest.mark.asyncio
     async def test_create_branch_with_base_ref(self, github_provider):
@@ -224,9 +210,7 @@ class TestGitHubProviderBranchOperations:
 
         assert result is True
         mock_repo.get_git_ref.assert_called_once_with("heads/develop")
-        mock_repo.create_git_ref.assert_called_once_with(
-            "refs/heads/new-feature", "def456"
-        )
+        mock_repo.create_git_ref.assert_called_once_with("refs/heads/new-feature", "def456")
 
     @pytest.mark.asyncio
     async def test_delete_branch_success(self, github_provider):
@@ -400,9 +384,12 @@ class TestGitHubProviderBatchOperations:
         from argus.source_control.models import BatchOperation
 
         # Mock the apply_remediation method
-        with patch.object(
-            github_provider, "apply_remediation", return_value=MagicMock(success=True)
-        ), patch.object(github_provider, "create_branch", return_value=True):
+        with (
+            patch.object(
+                github_provider, "apply_remediation", return_value=MagicMock(success=True)
+            ),
+            patch.object(github_provider, "create_branch", return_value=True),
+        ):
             operations = [
                 BatchOperation(
                     operation_type="update_file",

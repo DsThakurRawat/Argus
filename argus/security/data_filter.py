@@ -33,9 +33,7 @@ class FilterRule(BaseModel):
     data_type: SensitiveDataType = Field(..., description="Type of sensitive data")
     pattern: str = Field(..., description="Regex pattern to match")
     replacement: str = Field(default="[REDACTED]", description="Replacement text")
-    case_sensitive: bool = Field(
-        default=False, description="Whether pattern is case sensitive"
-    )
+    case_sensitive: bool = Field(default=False, description="Whether pattern is case sensitive")
     enabled: bool = Field(default=True, description="Whether rule is enabled")
 
 
@@ -140,13 +138,9 @@ class DataFilter:
             if rule.enabled:
                 try:
                     flags = 0 if rule.case_sensitive else re.IGNORECASE
-                    self._compiled_patterns[rule.pattern] = re.compile(
-                        rule.pattern, flags
-                    )
+                    self._compiled_patterns[rule.pattern] = re.compile(rule.pattern, flags)
                 except re.error as e:
-                    logger.warning(
-                        f"Invalid regex pattern for rule {rule.data_type}: {e}"
-                    )
+                    logger.warning(f"Invalid regex pattern for rule {rule.data_type}: {e}")
 
     def add_rule(self, rule: FilterRule) -> None:
         """Add a new filtering rule."""
@@ -175,9 +169,7 @@ class DataFilter:
                 rule.enabled = True
                 try:
                     flags = 0 if rule.case_sensitive else re.IGNORECASE
-                    self._compiled_patterns[rule.pattern] = re.compile(
-                        rule.pattern, flags
-                    )
+                    self._compiled_patterns[rule.pattern] = re.compile(rule.pattern, flags)
                 except re.error as e:
                     logger.warning(f"Invalid regex pattern when enabling rule: {e}")
                 return True

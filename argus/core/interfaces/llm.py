@@ -385,9 +385,7 @@ class ChatModel(LLMModel[RequestT, ResponseT]):
         self.add_capability("conversation")
 
     @abstractmethod
-    def chat_completion(
-        self, messages: list[dict[str, Any]], **kwargs: Any
-    ) -> ResponseT:
+    def chat_completion(self, messages: list[dict[str, Any]], **kwargs: Any) -> ResponseT:
         """
         Generate a chat completion.
 
@@ -459,9 +457,7 @@ class CompletionModel(LLMModel[RequestT, ResponseT]):
         pass
 
     @abstractmethod
-    def text_completion_stream(
-        self, prompt: Content, **kwargs: Any
-    ) -> AsyncIterator[ResponseT]:
+    def text_completion_stream(self, prompt: Content, **kwargs: Any) -> AsyncIterator[ResponseT]:
         """
         Generate a streaming text completion.
 
@@ -554,9 +550,7 @@ class LLMManager(MonitorableComponent[RequestT, ResponseT]):
     LLM providers and models.
     """
 
-    def __init__(
-        self, manager_id: str, name: str, config: ConfigDict | None = None
-    ) -> None:
+    def __init__(self, manager_id: str, name: str, config: ConfigDict | None = None) -> None:
         """
         Initialize the LLM manager.
 
@@ -614,9 +608,7 @@ class LLMManager(MonitorableComponent[RequestT, ResponseT]):
         pass
 
     @abstractmethod
-    def route_request(
-        self, request: RequestT, preferred_model: ModelId | None = None
-    ) -> ResponseT:
+    def route_request(self, request: RequestT, preferred_model: ModelId | None = None) -> ResponseT:
         """
         Route a request to an appropriate model.
 
@@ -667,7 +659,5 @@ class LLMManager(MonitorableComponent[RequestT, ResponseT]):
             List of models with the capability
         """
         return [
-            model
-            for model in self._model_registry.values()
-            if model.has_capability(capability)
+            model for model in self._model_registry.values() if model.has_capability(capability)
         ]

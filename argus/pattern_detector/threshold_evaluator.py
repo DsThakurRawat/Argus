@@ -90,11 +90,7 @@ class ThresholdEvaluator:
             service
             for service, logs in service_groups.items()
             if len(
-                [
-                    log
-                    for log in logs
-                    if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
-                ]
+                [log for log in logs if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]]
             )
             > 0
         ]
@@ -111,36 +107,26 @@ class ThresholdEvaluator:
             affected_services=affected_services,
         )
 
-    def _evaluate_error_rate(
-        self, window: TimeWindow, config: ThresholdConfig
-    ) -> ThresholdResult:
+    def _evaluate_error_rate(self, window: TimeWindow, config: ThresholdConfig) -> ThresholdResult:
         error_logs = window.get_error_logs()
         total_logs = len(window.logs)
         current_rate = (len(error_logs) / total_logs * 100) if total_logs > 0 else 0.0
-        baseline_rate = self.baseline_tracker.get_global_baseline(
-            config.baseline_window_count
-        )
-        rate_increase = (
-            current_rate - baseline_rate if baseline_rate > 0 else current_rate
-        )
+        baseline_rate = self.baseline_tracker.get_global_baseline(config.baseline_window_count)
+        rate_increase = current_rate - baseline_rate if baseline_rate > 0 else current_rate
         rate_increase_percentage = (
             (rate_increase / baseline_rate * 100)
             if baseline_rate > 0
-            else float("inf") if current_rate > 0 else 0.0
+            else float("inf")
+            if current_rate > 0
+            else 0.0
         )
-        triggered = (
-            rate_increase_percentage >= config.min_rate_increase and current_rate > 0
-        )
+        triggered = rate_increase_percentage >= config.min_rate_increase and current_rate > 0
         service_groups = window.get_service_groups()
         affected_services = [
             service
             for service, logs in service_groups.items()
             if len(
-                [
-                    log
-                    for log in logs
-                    if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
-                ]
+                [log for log in logs if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]]
             )
             > 0
         ]
@@ -167,9 +153,7 @@ class ThresholdEvaluator:
         all_error_logs = []
         for service, logs in service_groups.items():
             service_errors = [
-                log
-                for log in logs
-                if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
+                log for log in logs if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
             ]
             if service_errors:
                 affected_services.append(service)
@@ -203,9 +187,7 @@ class ThresholdEvaluator:
         affected_services = [
             service
             for service, logs in service_groups.items()
-            if any(
-                config.severity_weights.get(log.severity, 1.0) >= 5.0 for log in logs
-            )
+            if any(config.severity_weights.get(log.severity, 1.0) >= 5.0 for log in logs)
         ]
         return ThresholdResult(
             threshold_type=config.threshold_type,
@@ -230,9 +212,7 @@ class ThresholdEvaluator:
         all_error_logs = []
         for service, logs in service_groups.items():
             service_errors = [
-                log
-                for log in logs
-                if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
+                log for log in logs if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
             ]
             if service_errors:
                 services_with_errors.append(service)

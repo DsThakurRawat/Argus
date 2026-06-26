@@ -62,9 +62,7 @@ class EnhancedTriageAgent(EnhancedBaseAgent[TriageResult]):
             **kwargs,
         )
 
-        logger.info(
-            "EnhancedTriageAgent initialized with performance-focused optimization"
-        )
+        logger.info("EnhancedTriageAgent initialized with performance-focused optimization")
 
     async def triage_issue(
         self,

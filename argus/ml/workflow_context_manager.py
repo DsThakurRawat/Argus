@@ -131,9 +131,7 @@ class WorkflowContextManager:
                 raise ValueError("Failed to get repository context")
 
             # Determine generator type
-            generator_type = self.enhanced_agent._determine_generator_type(
-                issue_context
-            )
+            generator_type = self.enhanced_agent._determine_generator_type(issue_context)
             pattern_key = f"{issue_context.issue_type.value}:{flow_id}"
 
             cached_pattern = await self.pattern_cache.get_issue_pattern(
@@ -141,9 +139,7 @@ class WorkflowContextManager:
             )
 
             if cached_pattern:
-                self.logger.debug(
-                    f"[CONTEXT] Using cached issue pattern for flow_id={flow_id}"
-                )
+                self.logger.debug(f"[CONTEXT] Using cached issue pattern for flow_id={flow_id}")
                 # Convert cached pattern back to IssueContext if needed
                 if isinstance(cached_pattern, dict):
                     # Reconstruct IssueContext from cached data
@@ -170,9 +166,7 @@ class WorkflowContextManager:
             return context
 
         except Exception as e:
-            self.logger.error(
-                f"[CONTEXT] Context building failed for flow_id={flow_id}: {e}"
-            )
+            self.logger.error(f"[CONTEXT] Context building failed for flow_id={flow_id}: {e}")
             # Return minimal context on failure
             # Ensure issue_context is not an Exception before passing to fallback
             safe_issue_context = None
@@ -180,9 +174,7 @@ class WorkflowContextManager:
                 safe_issue_context = issue_context
             return self._create_fallback_context(triage_packet, safe_issue_context)
 
-    async def _get_repository_context(
-        self, analysis_depth: str, flow_id: str
-    ) -> RepositoryContext:
+    async def _get_repository_context(self, analysis_depth: str, flow_id: str) -> RepositoryContext:
         """Helper method for async repository context retrieval."""
         try:
             # Check cache first
@@ -200,18 +192,14 @@ class WorkflowContextManager:
                 return cached_repo_context
             else:
                 # Perform repository analysis
-                self.logger.info(
-                    f"[CONTEXT] Analyzing repository for flow_id={flow_id}"
-                )
+                self.logger.info(f"[CONTEXT] Analyzing repository for flow_id={flow_id}")
                 return await self.repo_analyzer.analyze_repository(analysis_depth)
 
         except Exception as e:
             self.logger.error(f"Failed to get repository context: {e}")
             raise
 
-    async def _extract_issue_context_async(
-        self, triage_packet: dict[str, Any]
-    ) -> IssueContext:
+    async def _extract_issue_context_async(self, triage_packet: dict[str, Any]) -> IssueContext:
         """Helper method for async issue context extraction."""
         try:
             return self.enhanced_agent._extract_issue_context(triage_packet)

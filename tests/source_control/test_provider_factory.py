@@ -43,17 +43,13 @@ class TestProviderFactory:
         return MagicMock()
 
     @pytest.mark.asyncio
-    async def test_create_provider_without_credentials(
-        self, factory, mock_github_provider_class
-    ):
+    async def test_create_provider_without_credentials(self, factory, mock_github_provider_class):
         """Test creating a provider without credentials."""
         # Register the mock provider
         factory.register_provider("github", mock_github_provider_class)
 
         # Create repository config
-        repo_config = GitHubRepositoryConfig(
-            name="test-repo", url="https://github.com/test/repo"
-        )
+        repo_config = GitHubRepositoryConfig(name="test-repo", url="https://github.com/test/repo")
 
         # Create provider
         await factory.create_provider(repo_config)
@@ -62,9 +58,7 @@ class TestProviderFactory:
         mock_github_provider_class.assert_called_once_with(repo_config.model_dump())
 
     @pytest.mark.asyncio
-    async def test_create_provider_with_credentials(
-        self, factory, mock_github_provider_class
-    ):
+    async def test_create_provider_with_credentials(self, factory, mock_github_provider_class):
         """Test creating a provider with credentials."""
         # Register the mock provider
         factory.register_provider("github", mock_github_provider_class)
@@ -74,9 +68,7 @@ class TestProviderFactory:
         factory.credential_manager.get_credentials.return_value = mock_credentials
 
         # Create repository config
-        repo_config = GitHubRepositoryConfig(
-            name="test-repo", url="https://github.com/test/repo"
-        )
+        repo_config = GitHubRepositoryConfig(name="test-repo", url="https://github.com/test/repo")
 
         # Create provider
         await factory.create_provider(repo_config)
@@ -90,9 +82,7 @@ class TestProviderFactory:
     @pytest.mark.asyncio
     async def test_create_provider_unsupported_type(self, factory):
         """Test creating a provider with unsupported type."""
-        repo_config = GitHubRepositoryConfig(
-            name="test-repo", url="https://github.com/test/repo"
-        )
+        repo_config = GitHubRepositoryConfig(name="test-repo", url="https://github.com/test/repo")
 
         with pytest.raises(ValueError, match="Unsupported provider type"):
             await factory.create_provider(repo_config)
@@ -106,14 +96,10 @@ class TestProviderFactory:
         factory.register_provider("github", mock_github_provider_class)
 
         # Mock credential retrieval to raise an exception
-        factory.credential_manager.get_credentials.side_effect = Exception(
-            "Credential error"
-        )
+        factory.credential_manager.get_credentials.side_effect = Exception("Credential error")
 
         # Create repository config
-        repo_config = GitHubRepositoryConfig(
-            name="test-repo", url="https://github.com/test/repo"
-        )
+        repo_config = GitHubRepositoryConfig(name="test-repo", url="https://github.com/test/repo")
 
         # Create provider - should still work but without credentials
         await factory.create_provider(repo_config)
@@ -133,9 +119,7 @@ class TestProviderFactory:
         local_repo_path.mkdir()
 
         # Create local repository config
-        repo_config = LocalRepositoryConfig(
-            name="local-repo", path=str(local_repo_path)
-        )
+        repo_config = LocalRepositoryConfig(name="local-repo", path=str(local_repo_path))
 
         # Create provider
         await factory.create_provider(repo_config)

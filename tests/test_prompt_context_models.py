@@ -7,7 +7,6 @@ This module contains comprehensive tests for all context data models
 used in the enhanced prompt generation system.
 """
 
-
 from argus.ml.prompt_context_models import (
     BusinessImpact,
     IssueContext,
@@ -412,9 +411,7 @@ class TestValidationResult:
 
     def test_validation_result_defaults(self) -> None:
         """Test validation result with default values."""
-        result = ValidationResult(
-            success=False, issues=["Missing context"], suggestions=[]
-        )
+        result = ValidationResult(success=False, issues=["Missing context"], suggestions=[])
 
         assert result.success is False
         assert len(result.issues) == 1

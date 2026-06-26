@@ -1,7 +1,6 @@
-from typing import Any
 # argus/legacy_config.py
-
 import re  # Added for regex validation
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 import yaml

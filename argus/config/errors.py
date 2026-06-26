@@ -46,9 +46,7 @@ class ConfigValidationError(ConfigError):
 
     def format_errors(self) -> str:
         """Format validation errors for display with enhanced context."""
-        formatted = [
-            f"Configuration validation failed in {self.config_file or 'unknown file'}:"
-        ]
+        formatted = [f"Configuration validation failed in {self.config_file or 'unknown file'}:"]
 
         for i, error in enumerate(self.errors, 1):
             field = " → ".join(str(loc) for loc in error["loc"])

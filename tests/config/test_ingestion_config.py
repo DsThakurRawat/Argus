@@ -371,19 +371,12 @@ class TestIngestionConfig:
 
         assert len(errors) > 0
         assert any("max_throughput must be positive" in error for error in errors)
-        assert any(
-            "error_threshold must be between 0 and 1" in error for error in errors
-        )
-        assert any(
-            "health_check_interval must be positive" in error for error in errors
-        )
+        assert any("error_threshold must be between 0 and 1" in error for error in errors)
+        assert any("health_check_interval must be positive" in error for error in errors)
         assert any("max_message_length must be positive" in error for error in errors)
         assert any("default_buffer_size must be positive" in error for error in errors)
         assert any("max_memory_mb must be positive" in error for error in errors)
-        assert any(
-            "backpressure_threshold must be between 0 and 1" in error
-            for error in errors
-        )
+        assert any("backpressure_threshold must be between 0 and 1" in error for error in errors)
 
 
 class TestIngestionConfigManager:

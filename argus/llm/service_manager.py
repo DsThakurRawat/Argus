@@ -12,18 +12,20 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 import logging
-from typing import Any
+from typing import Any, Protocol
 
 from ..core.exceptions import ServiceError
 from .service_base import ServiceConfig, ServiceHealth, ServiceStatus
-from typing import Protocol
+
 
 class ManagedService(Protocol):
     service_id: str
+
     async def initialize(self) -> None: ...
     async def shutdown(self) -> None: ...
     async def check_health(self) -> ServiceHealth: ...
     async def process_request(self, request: Any, context: Any = None) -> Any: ...
+
 
 BaseService = ManagedService  # Alias to minimize changes
 
@@ -87,12 +89,8 @@ class ServiceMetrics:
             ) / self.request_count
 
         self.last_request_time = datetime.now()
-        self.error_rate = (
-            self.error_count / self.request_count if self.request_count > 0 else 0.0
-        )
-        self.health_score = max(
-            0.0, 1.0 - self.error_rate - (self.avg_response_time / 1000.0)
-        )
+        self.error_rate = self.error_count / self.request_count if self.request_count > 0 else 0.0
+        self.health_score = max(0.0, 1.0 - self.error_rate - (self.avg_response_time / 1000.0))
 
 
 @dataclass
@@ -151,9 +149,7 @@ class ServiceHealthChecker:
     async def start_health_monitoring(self, registry: ServiceRegistry) -> None:
         """Start health monitoring for all registered services."""
         for service_id in registry.services:
-            task = asyncio.create_task(
-                self._monitor_service_health(service_id, registry)
-            )
+            task = asyncio.create_task(self._monitor_service_health(service_id, registry))
             self.health_checks[service_id] = task
 
     async def stop_health_monitoring(self) -> Any:
@@ -163,9 +159,7 @@ class ServiceHealthChecker:
         await asyncio.gather(*self.health_checks.values(), return_exceptions=True)
         self.health_checks.clear()
 
-    async def _monitor_service_health(
-        self, service_id: str, registry: ServiceRegistry
-    ) -> None:
+    async def _monitor_service_health(self, service_id: str, registry: ServiceRegistry) -> None:
         """Monitor health of a specific service."""
         while True:
             try:
@@ -175,9 +169,7 @@ class ServiceHealthChecker:
                     registry.service_metrics[service_id].health_score = health.score
 
                     if health.status != ServiceStatus.HEALTHY:
-                        self.logger.warning(
-                            f"Service {service_id} is unhealthy: {health.status}"
-                        )
+                        self.logger.warning(f"Service {service_id} is unhealthy: {health.status}")
                 else:
                     self.logger.error(f"Service {service_id} not found in registry")
 
@@ -190,9 +182,7 @@ class ServiceHealthChecker:
 class LoadBalancer:
     """Load balancer for distributing requests across services."""
 
-    def __init__(
-        self, strategy: LoadBalancingStrategy = LoadBalancingStrategy.ROUND_ROBIN
-    ):
+    def __init__(self, strategy: LoadBalancingStrategy = LoadBalancingStrategy.ROUND_ROBIN):
         self.strategy = strategy
         self.current_index = 0
         self.logger = logging.getLogger(__name__)
@@ -242,9 +232,11 @@ class LoadBalancer:
         """Select service with least active connections."""
         return min(
             services,
-            key=lambda s: registry.service_metrics.get(
-                s.service_id, ServiceMetrics(service_id="")
-            ).request_count,
+            key=lambda s: (
+                registry.service_metrics.get(
+                    s.service_id, ServiceMetrics(service_id="")
+                ).request_count
+            ),
         )
 
     def _weighted_selection(
@@ -252,9 +244,7 @@ class LoadBalancer:
     ) -> BaseService:
         """Select service based on weighted health score."""
         weights = [
-            registry.service_metrics.get(
-                s.service_id, ServiceMetrics(service_id="")
-            ).health_score
+            registry.service_metrics.get(s.service_id, ServiceMetrics(service_id="")).health_score
             for s in services
         ]
         total_weight = sum(weights)
@@ -284,9 +274,11 @@ class LoadBalancer:
         """Select service with highest health score."""
         return max(
             services,
-            key=lambda s: registry.service_metrics.get(
-                s.service_id, ServiceMetrics(service_id="")
-            ).health_score,
+            key=lambda s: (
+                registry.service_metrics.get(
+                    s.service_id, ServiceMetrics(service_id="")
+                ).health_score
+            ),
         )
 
 
@@ -317,7 +309,7 @@ class ServiceManager:
             self.logger.info("Service manager initialized successfully")
         except Exception as e:
             self.logger.error(f"Failed to initialize service manager: {e}")
-            raise ServiceError(f"Service manager initialization failed: {e}")
+            raise ServiceError(f"Service manager initialization failed: {e}") from e
 
     async def shutdown(self) -> None:
         """Shutdown the service manager and all services."""
@@ -334,8 +326,6 @@ class ServiceManager:
             self.logger.info("Service manager shutdown completed")
         except Exception as e:
             self.logger.error(f"Error during service manager shutdown: {e}")
-
-
 
     async def get_service(
         self, service_type: ServiceType, service_id: str | None = None

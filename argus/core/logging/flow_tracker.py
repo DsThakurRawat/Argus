@@ -1,5 +1,6 @@
 """Flow tracking system for the logging framework."""
 
+import contextlib
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from threading import local
@@ -158,10 +159,8 @@ class FlowTracker:
 
             # Remove from thread-local stack
             if hasattr(self._thread_local, "flow_stack"):
-                try:
+                with contextlib.suppress(ValueError):
                     self._thread_local.flow_stack.remove(flow_id)
-                except ValueError:
-                    pass  # Flow not in stack
 
             # Add to history
             self._flow_history.append(flow_context)
@@ -266,9 +265,7 @@ class FlowTracker:
             flow = self.get_flow_context(flow_id)
             if not flow:
                 # Try to find in history
-                flow = next(
-                    (f for f in self._flow_history if f.flow_id == flow_id), None
-                )
+                flow = next((f for f in self._flow_history if f.flow_id == flow_id), None)
                 if not flow:
                     return {"flow_id": flow_id, "status": "not_found"}
 

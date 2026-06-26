@@ -34,7 +34,7 @@ class TestErrorEndpoints(unittest.TestCase):
         self.app.testing = True
 
         # Create a temporary log file for testing
-        self.temp_log = tempfile.NamedTemporaryFile(mode="w+", delete=False)
+        self.temp_log = tempfile.NamedTemporaryFile(mode="w+", delete=False)  # noqa: SIM115 - persistent temp file reused across test
         self.temp_log.close()
 
         # Patch the log file path

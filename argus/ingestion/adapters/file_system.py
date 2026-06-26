@@ -74,9 +74,7 @@ class FileSystemAdapter(LogIngestionInterface):
 
             path = Path(self.config.file_path)
             if not path.exists():
-                raise SourceConnectionError(
-                    f"File path does not exist: {self.config.file_path}"
-                )
+                raise SourceConnectionError(f"File path does not exist: {self.config.file_path}")
 
             # Initialize file positions
             self._initialize_file_positions()
@@ -85,9 +83,7 @@ class FileSystemAdapter(LogIngestionInterface):
             self._last_check_time = datetime.now()
 
         except Exception as e:
-            raise SourceConnectionError(
-                f"Failed to start file system adapter: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to start file system adapter: {e}") from e
 
     async def stop(self) -> None:
         """Stop the file system consumer."""
@@ -114,18 +110,14 @@ class FileSystemAdapter(LogIngestionInterface):
                 except Exception as e:
                     self._total_logs_failed += 1
                     self._consecutive_failures += 1
-                    raise LogParsingError(
-                        f"Failed to read file {file_path}: {e}"
-                    ) from e
+                    raise LogParsingError(f"Failed to read file {file_path}: {e}") from e
 
             # Reset failure count on successful processing
             self._consecutive_failures = 0
 
         except Exception as e:
             self._consecutive_failures += 1
-            raise SourceConnectionError(
-                f"Failed to get logs from file system: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to get logs from file system: {e}") from e
 
     async def get_logs_continuous(self) -> AsyncGenerator[LogEntry, None]:  # type: ignore
         """Get logs from file system continuously."""
@@ -158,9 +150,7 @@ class FileSystemAdapter(LogIngestionInterface):
 
         except Exception as e:
             self._consecutive_failures += 1
-            raise SourceConnectionError(
-                f"Failed to get logs from file system: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to get logs from file system: {e}") from e
 
     def _initialize_file_positions(self) -> None:
         """Initialize file positions for tracking."""
@@ -213,9 +203,7 @@ class FileSystemAdapter(LogIngestionInterface):
 
                 # Read new content with resilience
                 async def _read_file():
-                    with open(
-                        file_path, encoding=self.encoding, errors="replace"
-                    ) as f:
+                    with open(file_path, encoding=self.encoding, errors="replace") as f:
                         f.seek(last_position)
                         content = f.read()
                         return content
@@ -266,10 +254,8 @@ class FileSystemAdapter(LogIngestionInterface):
 
                     # Parse timestamp
                     try:
-                        timestamp = datetime.fromisoformat(
-                            timestamp_str.replace("Z", "+00:00")
-                        )
-                    except:
+                        timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+                    except Exception:
                         timestamp = datetime.now()
 
                     # Map level to LogSeverity
@@ -325,9 +311,7 @@ class FileSystemAdapter(LogIngestionInterface):
 
         return log_entries
 
-    def _parse_log_line(
-        self, line: str, file_path: str, line_num: int
-    ) -> LogEntry | None:
+    def _parse_log_line(self, line: str, file_path: str, line_num: int) -> LogEntry | None:
         """Parse a single log line into a LogEntry."""
         try:
             # Basic log parsing - can be enhanced with more sophisticated parsing
@@ -379,9 +363,7 @@ class FileSystemAdapter(LogIngestionInterface):
                 metadata={
                     "file_path": file_path,
                     "line_number": line_num,
-                    "file_size": (
-                        os.path.getsize(file_path) if os.path.exists(file_path) else 0
-                    ),
+                    "file_size": (os.path.getsize(file_path) if os.path.exists(file_path) else 0),
                     "raw_line": line,
                 },
             )
@@ -468,9 +450,7 @@ class FileSystemAdapter(LogIngestionInterface):
         self._consecutive_failures += 1
 
         # Consider file system errors as potentially recoverable
-        if isinstance(error, (OSError, IOError)):
-            return True
-        return False
+        return bool(isinstance(error, (OSError, IOError)))
 
     async def get_health_metrics(self) -> dict[str, Any]:
         """Get detailed health and performance metrics."""

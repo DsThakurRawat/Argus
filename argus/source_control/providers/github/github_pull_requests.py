@@ -19,9 +19,7 @@ from ...models import ProviderCapabilities
 class GitHubPullRequests:
     """Handles pull request operations for GitHub."""
 
-    def __init__(
-        self, client: Github, repo: Repository, logger: logging.Logger
-    ) -> None:
+    def __init__(self, client: Github, repo: Repository, logger: logging.Logger) -> None:
         """Initialize pull request operations with GitHub client and repository."""
         self.client = client
         self.repo = repo
@@ -73,12 +71,8 @@ class GitHubPullRequests:
                             "ref": pr.base.ref,
                             "sha": pr.base.sha,
                         },
-                        "created_at": (
-                            pr.created_at.isoformat() if pr.created_at else None
-                        ),
-                        "updated_at": (
-                            pr.updated_at.isoformat() if pr.updated_at else None
-                        ),
+                        "created_at": (pr.created_at.isoformat() if pr.created_at else None),
+                        "updated_at": (pr.updated_at.isoformat() if pr.updated_at else None),
                     }
                 except GithubException as e:
                     self.logger.error(f"Failed to create pull request: {e}")
@@ -126,12 +120,8 @@ class GitHubPullRequests:
                             "ref": pr.base.ref,
                             "sha": pr.base.sha,
                         },
-                        "created_at": (
-                            pr.created_at.isoformat() if pr.created_at else None
-                        ),
-                        "updated_at": (
-                            pr.updated_at.isoformat() if pr.updated_at else None
-                        ),
+                        "created_at": (pr.created_at.isoformat() if pr.created_at else None),
+                        "updated_at": (pr.updated_at.isoformat() if pr.updated_at else None),
                         "merged": pr.merged,
                         "mergeable": pr.mergeable,
                         "mergeable_state": pr.mergeable_state,

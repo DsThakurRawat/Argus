@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 import logging
 import time
-from typing import Any, Set
+from typing import Any
 
 from ..base import LLMResponse
 from ..constants import MAX_CONCURRENT_REQUESTS
@@ -47,9 +47,7 @@ class PerformanceMetrics:
     throughput: float = 0.0
     last_updated: float = field(default_factory=time.time)
 
-    def update(
-        self, response_time: float, success: bool, cache_hit: bool = False
-    ) -> None:
+    def update(self, response_time: float, success: bool, cache_hit: bool = False) -> None:
         """
         Update metrics with new data.
 
@@ -409,7 +407,7 @@ class PerformanceOptimizer:
         self.cache = PerformanceCache(cache_size, cache_ttl)
         self.load_balancer = LoadBalancer()
         self.semaphore = asyncio.Semaphore(max_concurrent_requests)
-        self.optimization_strategies: Set[OptimizationStrategy] = set()
+        self.optimization_strategies: set[OptimizationStrategy] = set()
 
         # Performance tracking
         self.global_metrics = PerformanceMetrics()
@@ -552,9 +550,7 @@ class PerformanceOptimizer:
 
         # Filter available models
         filtered_models = [
-            model
-            for model in available_models
-            if model in self.load_balancer.model_weights
+            model for model in available_models if model in self.load_balancer.model_weights
         ]
 
         if not filtered_models:
@@ -578,9 +574,7 @@ class PerformanceOptimizer:
             success: Whether the request was successful
             cache_hit: Whether this was a cache hit
         """
-        self.load_balancer.update_performance(
-            model_key, response_time, success, cache_hit
-        )
+        self.load_balancer.update_performance(model_key, response_time, success, cache_hit)
         self.global_metrics.update(response_time, success, cache_hit)
 
     def get_performance_summary(self) -> dict[str, Any]:
@@ -603,17 +597,13 @@ class PerformanceOptimizer:
             "model_performance": {
                 model_key: {
                     "request_count": metrics.request_count,
-                    "success_rate": metrics.success_count
-                    / max(metrics.request_count, 1)
-                    * 100,
+                    "success_rate": metrics.success_count / max(metrics.request_count, 1) * 100,
                     "average_response_time": metrics.average_response_time,
                     "error_rate": metrics.error_rate,
                 }
                 for model_key, metrics in self.load_balancer.get_all_performance().items()
             },
-            "enabled_strategies": [
-                strategy.value for strategy in self.optimization_strategies
-            ],
+            "enabled_strategies": [strategy.value for strategy in self.optimization_strategies],
         }
 
     def reset_performance_metrics(self) -> Any:

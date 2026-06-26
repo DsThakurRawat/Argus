@@ -128,12 +128,8 @@ class RESTAPITemplate(BaseProviderTemplate):
         )
 
         # Customizable endpoints
-        self.chat_endpoint = self._get_provider_specific_config(
-            "chat_endpoint", "/chat"
-        )
-        self.health_endpoint = self._get_provider_specific_config(
-            "health_endpoint", "/health"
-        )
+        self.chat_endpoint = self._get_provider_specific_config("chat_endpoint", "/chat")
+        self.health_endpoint = self._get_provider_specific_config("health_endpoint", "/health")
 
     async def _make_api_request(self, request: LLMRequest) -> dict[str, Any]:
         """Make custom REST API request."""

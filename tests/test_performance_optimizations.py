@@ -108,9 +108,7 @@ class TestRepositoryContextCache:
         context = {"architecture": "microservices", "framework": "fastapi"}
 
         # Cache repository context
-        success = await repo_cache.set_repository_context(
-            repo_path, context, "standard"
-        )
+        success = await repo_cache.set_repository_context(repo_path, context, "standard")
         assert success is True
 
         # Retrieve cached context
@@ -132,9 +130,7 @@ class TestRepositoryContextCache:
 
         # Verify all entries are removed
         basic_context = await repo_cache.get_repository_context(repo_path, "basic")
-        standard_context = await repo_cache.get_repository_context(
-            repo_path, "standard"
-        )
+        standard_context = await repo_cache.get_repository_context(repo_path, "standard")
 
         assert basic_context is None
         assert standard_context is None
@@ -161,15 +157,11 @@ class TestIssuePatternCache:
         pattern_result = {"classification": "database_error", "confidence": 0.9}
 
         # Cache pattern
-        success = await pattern_cache.set_issue_pattern(
-            pattern_type, pattern_data, pattern_result
-        )
+        success = await pattern_cache.set_issue_pattern(pattern_type, pattern_data, pattern_result)
         assert success is True
 
         # Retrieve cached pattern
-        cached_result = await pattern_cache.get_issue_pattern(
-            pattern_type, pattern_data
-        )
+        cached_result = await pattern_cache.get_issue_pattern(pattern_type, pattern_data)
         assert cached_result == pattern_result
 
 
@@ -285,10 +277,7 @@ class TestPerformanceConfig:
         restored_config = PerformanceConfig.from_dict(config_dict)
 
         # Verify they're equivalent
-        assert (
-            restored_config.enable_performance_monitoring
-            == config.enable_performance_monitoring
-        )
+        assert restored_config.enable_performance_monitoring == config.enable_performance_monitoring
         assert restored_config.performance_log_level == config.performance_log_level
         assert restored_config.max_memory_usage_mb == config.max_memory_usage_mb
 

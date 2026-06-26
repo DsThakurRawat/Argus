@@ -97,9 +97,7 @@ class CostManagementConfig(BaseModel):
     )
     enforcement_policy: EnforcementPolicy = EnforcementPolicy.WARN
     optimization_strategy: OptimizationStrategy = OptimizationStrategy.BALANCED
-    refresh_interval: int = Field(
-        3600, gt=0, description="Pricing refresh interval in seconds"
-    )
+    refresh_interval: int = Field(3600, gt=0, description="Pricing refresh interval in seconds")
     max_records: int = Field(10000, gt=0, description="Maximum usage records to keep")
 
 
@@ -134,9 +132,7 @@ class DynamicCostManager:
         """Initialize with default pricing for known providers."""
         default_pricing = {
             ProviderType.OPENAI: {
-                "gpt-4": PricingInfo(
-                    "gpt-4", ProviderType.OPENAI, 0.03, 0.06, datetime.now()
-                ),
+                "gpt-4": PricingInfo("gpt-4", ProviderType.OPENAI, 0.03, 0.06, datetime.now()),
                 "gpt-3.5-turbo": PricingInfo(
                     "gpt-3.5-turbo", ProviderType.OPENAI, 0.0015, 0.002, datetime.now()
                 ),
@@ -234,9 +230,7 @@ class DynamicCostManager:
             except Exception as e:
                 logger.warning(f"Failed to refresh pricing for {provider_type}: {e}")
 
-    async def _update_provider_pricing(
-        self, provider_type: ProviderType, provider
-    ) -> None:
+    async def _update_provider_pricing(self, provider_type: ProviderType, provider) -> None:
         """Update pricing for a specific provider."""
         # This would integrate with provider-specific pricing APIs
         # For now, we'll use the provider's cost_estimate method as a reference
@@ -258,9 +252,7 @@ class DynamicCostManager:
             return None
 
         # Check if pricing is still valid
-        if datetime.now() - pricing_info.last_updated > timedelta(
-            seconds=pricing_info.ttl_seconds
-        ):
+        if datetime.now() - pricing_info.last_updated > timedelta(seconds=pricing_info.ttl_seconds):
             logger.warning(f"Pricing for {provider}:{model} is stale")
 
         return pricing_info
@@ -271,9 +263,7 @@ class DynamicCostManager:
         """Estimate cost for a request."""
         pricing = self.get_pricing(provider, model)
         if not pricing:
-            logger.warning(
-                f"No pricing data for {provider}:{model}, using default estimate"
-            )
+            logger.warning(f"No pricing data for {provider}:{model}, using default estimate")
             return (input_tokens + output_tokens) * 0.001  # Default $1 per 1k tokens
 
         input_cost = (input_tokens / 1000) * pricing.input_cost_per_1k
@@ -305,8 +295,7 @@ class DynamicCostManager:
                     alert
                     for alert in self.budget_alerts
                     if alert.threshold_percentage == threshold
-                    and (datetime.now() - alert.timestamp).total_seconds()
-                    < 3600  # 1 hour
+                    and (datetime.now() - alert.timestamp).total_seconds() < 3600  # 1 hour
                 ]
 
                 if not recent_alerts:
@@ -320,7 +309,7 @@ class DynamicCostManager:
                     )
                     self.budget_alerts.append(alert)
                     logger.warning(
-                        f"Budget alert: {threshold*100}% threshold exceeded (${current_spend:.2f}/${budget_limit:.2f})"
+                        f"Budget alert: {threshold * 100}% threshold exceeded (${current_spend:.2f}/${budget_limit:.2f})"
                     )
 
     def get_current_spend(self) -> float:
@@ -334,9 +323,7 @@ class DynamicCostManager:
         else:  # MONTHLY
             start_time = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
-        recent_usage = [
-            record for record in self.usage_records if record.timestamp >= start_time
-        ]
+        recent_usage = [record for record in self.usage_records if record.timestamp >= start_time]
 
         return sum(record.cost_usd for record in recent_usage)
 

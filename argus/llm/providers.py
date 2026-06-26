@@ -11,6 +11,7 @@ capability detection.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import logging
+from typing import ClassVar
 
 from .base import ErrorSeverity, LLMProviderError, ModelType
 from .config import LLMProviderConfig, ModelConfig
@@ -59,9 +60,7 @@ class BaseProviderHandler(ABC):
         pass
 
     @abstractmethod
-    def calculate_cost(
-        self, model_name: str, input_tokens: int, output_tokens: int
-    ) -> float:
+    def calculate_cost(self, model_name: str, input_tokens: int, output_tokens: int) -> float:
         """Calculate cost for a specific model and token usage."""
         pass
 
@@ -96,9 +95,7 @@ class OpenAIProviderHandler(BaseProviderHandler):
                 errors.append(f"Invalid OpenAI model name: {model_name}")
 
             if model_config.max_tokens > 128000:
-                errors.append(
-                    f"Model {model_name} max_tokens exceeds OpenAI limit (128,000)"
-                )
+                errors.append(f"Model {model_name} max_tokens exceeds OpenAI limit (128,000)")
 
         return errors
 
@@ -151,17 +148,13 @@ class OpenAIProviderHandler(BaseProviderHandler):
             ModelType.ANALYSIS: "o1-preview",
         }
 
-    def calculate_cost(
-        self, model_name: str, input_tokens: int, output_tokens: int
-    ) -> float:
+    def calculate_cost(self, model_name: str, input_tokens: int, output_tokens: int) -> float:
         """Calculate OpenAI cost."""
         capabilities = self.get_capabilities()
         cost_per_1k = capabilities.cost_per_1k_tokens.get(model_name, 0.0)
 
         input_cost = (input_tokens / 1000) * cost_per_1k
-        output_cost = (
-            (output_tokens / 1000) * cost_per_1k * 2
-        )  # Output is typically 2x input cost
+        output_cost = (output_tokens / 1000) * cost_per_1k * 2  # Output is typically 2x input cost
 
         return input_cost + output_cost
 
@@ -187,9 +180,7 @@ class AnthropicProviderHandler(BaseProviderHandler):
                 errors.append(f"Invalid Anthropic model name: {model_name}")
 
             if model_config.max_tokens > 200000:
-                errors.append(
-                    f"Model {model_name} max_tokens exceeds Anthropic limit (200,000)"
-                )
+                errors.append(f"Model {model_name} max_tokens exceeds Anthropic limit (200,000)")
 
         return errors
 
@@ -241,9 +232,7 @@ class AnthropicProviderHandler(BaseProviderHandler):
             ModelType.ANALYSIS: "claude-3-opus-20240229",
         }
 
-    def calculate_cost(
-        self, model_name: str, input_tokens: int, output_tokens: int
-    ) -> float:
+    def calculate_cost(self, model_name: str, input_tokens: int, output_tokens: int) -> float:
         """Calculate Anthropic cost."""
         capabilities = self.get_capabilities()
         cost_per_1k = capabilities.cost_per_1k_tokens.get(model_name, 0.0)
@@ -320,9 +309,7 @@ class OllamaProviderHandler(BaseProviderHandler):
             ModelType.ANALYSIS: "llama3.2:11b",
         }
 
-    def calculate_cost(
-        self, model_name: str, input_tokens: int, output_tokens: int
-    ) -> float:
+    def calculate_cost(self, model_name: str, input_tokens: int, output_tokens: int) -> float:
         """Calculate Ollama cost (free)."""
         return 0.0
 
@@ -384,9 +371,7 @@ class GrokProviderHandler(BaseProviderHandler):
             ModelType.DEEP_THINKING: "grok-2",
         }
 
-    def calculate_cost(
-        self, model_name: str, input_tokens: int, output_tokens: int
-    ) -> float:
+    def calculate_cost(self, model_name: str, input_tokens: int, output_tokens: int) -> float:
         """Calculate Grok cost."""
         capabilities = self.get_capabilities()
         cost_per_1k = capabilities.cost_per_1k_tokens.get(model_name, 0.0)
@@ -468,9 +453,7 @@ class BedrockProviderHandler(BaseProviderHandler):
             ModelType.ANALYSIS: "claude-3-opus-20240229-v1:0",
         }
 
-    def calculate_cost(
-        self, model_name: str, input_tokens: int, output_tokens: int
-    ) -> float:
+    def calculate_cost(self, model_name: str, input_tokens: int, output_tokens: int) -> float:
         """Calculate Bedrock cost."""
         capabilities = self.get_capabilities()
         cost_per_1k = capabilities.cost_per_1k_tokens.get(model_name, 0.0)
@@ -484,7 +467,7 @@ class BedrockProviderHandler(BaseProviderHandler):
 class ProviderHandlerFactory:
     """Factory for creating provider-specific handlers."""
 
-    _handlers = {
+    _handlers: ClassVar[dict[str, type[BaseProviderHandler]]] = {
         "openai": OpenAIProviderHandler,
         "anthropic": AnthropicProviderHandler,
         "ollama": OllamaProviderHandler,
@@ -519,9 +502,7 @@ class ProviderHandlerFactory:
             return [f"Unsupported provider: {config.provider}"]
 
     @classmethod
-    def validate_provider_credentials(
-        cls, config: LLMProviderConfig
-    ) -> tuple[bool, str | None]:
+    def validate_provider_credentials(cls, config: LLMProviderConfig) -> tuple[bool, str | None]:
         """Validate provider credentials using appropriate handler."""
         try:
             handler = cls.create_handler(config)

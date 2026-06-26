@@ -54,9 +54,7 @@ class WorkflowValidationEngine:
         """
         try:
             if not self.validation_pipeline:
-                self.logger.warning(
-                    "Validation pipeline not set, using basic validation"
-                )
+                self.logger.warning("Validation pipeline not set, using basic validation")
                 return await self._validate_python_code(
                     analysis_result.get("analysis", {}).get("code_patch", "")
                 )
@@ -64,9 +62,7 @@ class WorkflowValidationEngine:
             # Prepare code result for validation pipeline
             code_result = {
                 "code_patch": analysis_result.get("analysis", {}).get("code_patch", ""),
-                "file_path": analysis_result.get("analysis", {}).get(
-                    "file_path", "unknown"
-                ),
+                "file_path": analysis_result.get("analysis", {}).get("file_path", "unknown"),
                 "generator_type": prompt_context.generator_type,
                 "issue_type": prompt_context.issue_context.issue_type.value,
             }
@@ -97,9 +93,7 @@ class WorkflowValidationEngine:
                     for issue in validation_result.issues
                 ],
                 "warnings": [
-                    issue
-                    for issue in validation_result.issues
-                    if issue.level.value == "warning"
+                    issue for issue in validation_result.issues if issue.level.value == "warning"
                 ],
                 "suggestions": [
                     {

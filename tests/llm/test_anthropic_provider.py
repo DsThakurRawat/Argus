@@ -37,9 +37,7 @@ def mock_config() -> None:
 @pytest.fixture
 def provider(mock_config: str) -> None:
     """Create an AnthropicProvider instance with mocked dependencies."""
-    with patch(
-        "argus.llm.providers.anthropic_provider.anthropic.AsyncAnthropic"
-    ) as mock_client:
+    with patch("argus.llm.providers.anthropic_provider.anthropic.AsyncAnthropic") as mock_client:
         mock_client_instance = MagicMock()
         mock_client.return_value = mock_client_instance
         provider = AnthropicProvider(mock_config)
@@ -52,9 +50,7 @@ class TestAnthropicProvider:
 
     def test_provider_initialization(self, mock_config: str) -> None:
         """Test provider initialization."""
-        with patch(
-            "argus.llm.providers.anthropic_provider.anthropic.AsyncAnthropic"
-        ):
+        with patch("argus.llm.providers.anthropic_provider.anthropic.AsyncAnthropic"):
             provider = AnthropicProvider(mock_config)
             assert provider.provider_type == "anthropic"
             assert provider.model == "claude-3-5-sonnet-20241022"
@@ -115,9 +111,7 @@ class TestAnthropicProvider:
     @pytest.mark.asyncio
     async def test_health_check_failure(self, provider):
         """Test health check failure."""
-        provider.client.messages.create = MagicMock(
-            side_effect=Exception("Connection failed")
-        )
+        provider.client.messages.create = MagicMock(side_effect=Exception("Connection failed"))
 
         result = await provider.health_check()
         assert result is False
@@ -171,9 +165,7 @@ class TestAnthropicProvider:
             provider_specific={"model": "claude-3-5-sonnet-20241022"},
         )
 
-        with pytest.raises(
-            ValueError, match="Anthropic API key must start with 'sk-ant-'"
-        ):
+        with pytest.raises(ValueError, match="Anthropic API key must start with 'sk-ant-'"):
             AnthropicProvider.validate_config(config_with_invalid_key)
 
     def test_convert_messages_to_anthropic_format(self, provider: str) -> None:

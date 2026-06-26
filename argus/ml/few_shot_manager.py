@@ -59,9 +59,7 @@ class FewShotManager:
         self.examples.append(example)
         return True
 
-    def get_examples(
-        self, pattern_type: str | None = None, limit: int = 5
-    ) -> list[dict[str, Any]]:
+    def get_examples(self, pattern_type: str | None = None, limit: int = 5) -> list[dict[str, Any]]:
         """
         Get few-shot examples.
 

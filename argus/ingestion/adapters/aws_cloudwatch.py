@@ -71,9 +71,7 @@ class AWSCloudWatchAdapter(LogIngestionInterface):
 
         except Exception as e:
             logger.error(f"Failed to start AWS CloudWatch adapter: {e}")
-            raise SourceConnectionError(
-                f"Failed to start AWS CloudWatch adapter: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to start AWS CloudWatch adapter: {e}") from e
 
     async def stop(self) -> None:
         """Stop the AWS CloudWatch adapter."""
@@ -113,9 +111,7 @@ class AWSCloudWatchAdapter(LogIngestionInterface):
             logger.error(f"Error getting logs from CloudWatch: {e}")
             self._error_count += 1
             self._last_error = str(e)
-            raise SourceConnectionError(
-                f"Failed to get logs from CloudWatch: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to get logs from CloudWatch: {e}") from e
 
     async def health_check(self) -> SourceHealth:
         """Check the health of the AWS CloudWatch adapter."""
@@ -141,9 +137,7 @@ class AWSCloudWatchAdapter(LogIngestionInterface):
                     "log_group": self.config.log_group_name,
                     "region": self.config.region,
                     "last_check": (
-                        self._last_check_time.isoformat()
-                        if self._last_check_time
-                        else None
+                        self._last_check_time.isoformat() if self._last_check_time else None
                     ),
                 },
             )
@@ -176,16 +170,13 @@ class AWSCloudWatchAdapter(LogIngestionInterface):
 
     async def handle_error(self, error: Exception, context: dict[str, Any]) -> bool:
         """Handle errors from the adapter."""
-        logger.error(
-            f"AWS CloudWatch error in {context.get('operation', 'unknown')}: {error}"
-        )
+        logger.error(f"AWS CloudWatch error in {context.get('operation', 'unknown')}: {error}")
         self._error_count += 1
         self._last_error = str(error)
 
-        # Return True if error should be retried
-        if isinstance(error, (ClientError, NoCredentialsError)):
-            return False  # Don't retry credential/connection errors
-        return True
+        # Return True if error should be retried.
+        # Don't retry credential/connection errors.
+        return not isinstance(error, (ClientError, NoCredentialsError))
 
     async def get_health_metrics(self) -> dict[str, Any]:
         """Get detailed health metrics."""
@@ -209,9 +200,7 @@ class AWSCloudWatchAdapter(LogIngestionInterface):
 
         try:
             # Try to describe log groups
-            self.client.describe_log_groups(
-                logGroupNamePrefix=self.config.log_group_name, limit=1
-            )
+            self.client.describe_log_groups(logGroupNamePrefix=self.config.log_group_name, limit=1)
         except ClientError as e:
             if (
                 hasattr(e, "response")
@@ -241,9 +230,7 @@ class AWSCloudWatchAdapter(LogIngestionInterface):
             if self.client is None:
                 return []
             response = self.client.describe_log_streams(**kwargs)
-            return [
-                stream["logStreamName"] for stream in response.get("logStreams", [])
-            ]
+            return [stream["logStreamName"] for stream in response.get("logStreams", [])]
 
         except ClientError as e:
             logger.error(f"Error getting log streams: {e}")
@@ -271,9 +258,7 @@ class AWSCloudWatchAdapter(LogIngestionInterface):
             logger.error(f"Error getting log events from {stream_name}: {e}")
             return []
 
-    def _convert_to_log_entry(
-        self, event: dict[str, Any], stream_name: str
-    ) -> LogEntry:
+    def _convert_to_log_entry(self, event: dict[str, Any], stream_name: str) -> LogEntry:
         """Convert CloudWatch log event to LogEntry."""
         # Extract timestamp
         timestamp = datetime.fromtimestamp(event["timestamp"] / 1000, tz=UTC)

@@ -1,4 +1,3 @@
-from typing import Any
 # argus/config/source_control_remediation.py
 
 """
@@ -6,6 +5,7 @@ Remediation strategy configuration models for source control operations.
 """
 
 from enum import Enum
+from typing import Any
 
 from pydantic import Field, field_validator
 
@@ -46,52 +46,32 @@ class RemediationStrategyConfig(BaseConfig):
     )
 
     # Auto-merge and review settings
-    auto_merge: bool = Field(
-        default=False, description="Whether to auto-merge after creation"
-    )
-    require_review: bool = Field(
-        default=True, description="Whether to require human review"
-    )
+    auto_merge: bool = Field(default=False, description="Whether to auto-merge after creation")
+    require_review: bool = Field(default=True, description="Whether to require human review")
 
     # PR/MR metadata
-    labels: list[str] = Field(
-        default_factory=list, description="Labels to apply to PRs/MRs"
-    )
-    assignees: list[str] = Field(
-        default_factory=list, description="Users to assign to PRs/MRs"
-    )
-    reviewers: list[str] = Field(
-        default_factory=list, description="Users to request review from"
-    )
+    labels: list[str] = Field(default_factory=list, description="Labels to apply to PRs/MRs")
+    assignees: list[str] = Field(default_factory=list, description="Users to assign to PRs/MRs")
+    reviewers: list[str] = Field(default_factory=list, description="Users to request review from")
 
     # Commit message settings
     commit_message_template: str | None = Field(
         default=None,
         description="Template for commit messages (for direct_commit strategy)",
     )
-    commit_author_name: str | None = Field(
-        default=None, description="Author name for commits"
-    )
-    commit_author_email: str | None = Field(
-        default=None, description="Author email for commits"
-    )
+    commit_author_name: str | None = Field(default=None, description="Author name for commits")
+    commit_author_email: str | None = Field(default=None, description="Author email for commits")
 
     # Patch-specific settings
     output_path: str | None = Field(
         default=None, description="Path for patch files (for patch strategy)"
     )
     format: PatchFormat = Field(default=PatchFormat.UNIFIED, description="Patch format")
-    include_metadata: bool = Field(
-        default=True, description="Include metadata in patches"
-    )
+    include_metadata: bool = Field(default=True, description="Include metadata in patches")
 
     # Branch settings
-    branch_prefix: str = Field(
-        default="sre-fix", description="Prefix for created branches"
-    )
-    branch_suffix: str | None = Field(
-        default=None, description="Suffix for created branches"
-    )
+    branch_prefix: str = Field(default="sre-fix", description="Prefix for created branches")
+    branch_suffix: str | None = Field(default=None, description="Suffix for created branches")
 
     # Conflict resolution
     conflict_resolution: ConflictResolutionStrategy = Field(
@@ -147,9 +127,7 @@ class RemediationStrategyConfig(BaseConfig):
             required_placeholders = ["{issue_id}", "{description}"]
             for placeholder in required_placeholders:
                 if placeholder not in v:
-                    raise ValueError(
-                        f"Commit message template must include {placeholder}"
-                    )
+                    raise ValueError(f"Commit message template must include {placeholder}")
 
         return v
 
@@ -191,9 +169,7 @@ class RemediationStrategyConfig(BaseConfig):
     def get_commit_message(self, issue_id: str, description: str) -> str:
         """Generate commit message using template."""
         if self.commit_message_template:
-            return self.commit_message_template.format(
-                issue_id=issue_id, description=description
-            )
+            return self.commit_message_template.format(issue_id=issue_id, description=description)
 
         return f"SRE Fix: {issue_id} - {description}"
 

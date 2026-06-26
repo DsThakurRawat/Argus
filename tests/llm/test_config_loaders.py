@@ -147,9 +147,7 @@ class TestEnvironmentConfigLoader:
         loader._set_nested_value(data, "cost_config.monthly_budget", "100.0")
         assert data["cost_config"]["monthly_budget"] == 100.0
 
-        loader._set_nested_value(
-            data, "resilience_config.circuit_breaker_enabled", "true"
-        )
+        loader._set_nested_value(data, "resilience_config.circuit_breaker_enabled", "true")
         assert data["resilience_config"]["circuit_breaker_enabled"] is True
 
         loader._set_nested_value(data, "resilience_config.retry_attempts", "3")
@@ -304,9 +302,7 @@ class TestProgrammaticConfigLoader:
         config_data = {
             "default_provider": "openai",
             "default_model_type": "smart",
-            "providers": {
-                "openai": {"provider": "openai", "api_key": "test-key", "models": {}}
-            },
+            "providers": {"openai": {"provider": "openai", "api_key": "test-key", "models": {}}},
             "agents": {},
         }
 
@@ -367,9 +363,7 @@ class TestConfigLoaderManager:
 
         # Add loaders with different priorities
         env_loader = EnvironmentConfigLoader(priority=1)
-        prog_loader = ProgrammaticConfigLoader(
-            {"default_provider": "programmatic"}, priority=2
-        )
+        prog_loader = ProgrammaticConfigLoader({"default_provider": "programmatic"}, priority=2)
 
         manager.add_loader(prog_loader)  # Add higher priority first
         manager.add_loader(env_loader)  # Add lower priority second

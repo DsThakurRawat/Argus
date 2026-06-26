@@ -174,16 +174,12 @@ class CascadeFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
 
         # Find cascade failure triggers
         cascade_triggers = [
-            r
-            for r in threshold_results
-            if r.threshold_type == "cascade_failure" and r.triggered
+            r for r in threshold_results if r.threshold_type == "cascade_failure" and r.triggered
         ]
 
         # Find service impact triggers
         service_impact_triggers = [
-            r
-            for r in threshold_results
-            if r.threshold_type == "service_impact" and r.triggered
+            r for r in threshold_results if r.threshold_type == "service_impact" and r.triggered
         ]
 
         # Check if we have cascade failure indicators
@@ -259,9 +255,7 @@ class CascadeFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
         time_correlation_factor = min(time_span / 300.0, 1.0)  # 5 minutes max
 
         confidence = (
-            service_count_factor * 0.4
-            + error_density_factor * 0.3
-            + time_correlation_factor * 0.3
+            service_count_factor * 0.4 + error_density_factor * 0.3 + time_correlation_factor * 0.3
         )
 
         return min(confidence, 1.0)
@@ -299,11 +293,7 @@ class CascadeFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
             service = log.service_name or "unknown"
             service_counts[service] = service_counts.get(service, 0) + 1
 
-        return (
-            max(service_counts.items(), key=lambda x: x[1])[0]
-            if service_counts
-            else None
-        )
+        return max(service_counts.items(), key=lambda x: x[1])[0] if service_counts else None
 
 
 class ServiceDegradationDetector(BaseDetectionAlgorithm[PatternMatch]):
@@ -341,9 +331,7 @@ class ServiceDegradationDetector(BaseDetectionAlgorithm[PatternMatch]):
                 continue
 
             # Calculate error rate
-            total_logs = len(
-                [log for log in logs if log.service_name in trigger.affected_services]
-            )
+            total_logs = len([log for log in logs if log.service_name in trigger.affected_services])
             error_logs = len(
                 [
                     log
@@ -364,9 +352,7 @@ class ServiceDegradationDetector(BaseDetectionAlgorithm[PatternMatch]):
                 )
 
                 if confidence_score >= self.degradation_config.min_confidence:
-                    primary_service = self._identify_primary_service(
-                        trigger.triggering_logs
-                    )
+                    primary_service = self._identify_primary_service(trigger.triggering_logs)
                     severity = self._determine_severity_level(trigger.triggering_logs)
 
                     patterns.append(
@@ -413,9 +399,7 @@ class ServiceDegradationDetector(BaseDetectionAlgorithm[PatternMatch]):
         time_span = (window.end_time - window.start_time).total_seconds()
         time_factor = min(time_span / 1800.0, 1.0)  # 30 minutes max
 
-        confidence = (
-            error_rate_factor * 0.5 + log_volume_factor * 0.3 + time_factor * 0.2
-        )
+        confidence = error_rate_factor * 0.5 + log_volume_factor * 0.3 + time_factor * 0.2
 
         return min(confidence, 1.0)
 
@@ -452,11 +436,7 @@ class ServiceDegradationDetector(BaseDetectionAlgorithm[PatternMatch]):
             service = log.service_name or "unknown"
             service_counts[service] = service_counts.get(service, 0) + 1
 
-        return (
-            max(service_counts.items(), key=lambda x: x[1])[0]
-            if service_counts
-            else None
-        )
+        return max(service_counts.items(), key=lambda x: x[1])[0] if service_counts else None
 
 
 class TrafficSpikeDetector(BaseDetectionAlgorithm[PatternMatch]):
@@ -481,29 +461,21 @@ class TrafficSpikeDetector(BaseDetectionAlgorithm[PatternMatch]):
 
         # Find traffic spike triggers
         spike_triggers = [
-            r
-            for r in threshold_results
-            if r.threshold_type == "traffic_spike" and r.triggered
+            r for r in threshold_results if r.threshold_type == "traffic_spike" and r.triggered
         ]
 
         if not spike_triggers:
             return patterns
 
         for trigger in spike_triggers:
-            confidence_score = self._calculate_confidence(
-                window, trigger.triggering_logs
-            )
+            confidence_score = self._calculate_confidence(window, trigger.triggering_logs)
 
             if confidence_score >= self.spike_config.min_confidence:
-                primary_service = self._identify_primary_service(
-                    trigger.triggering_logs
-                )
+                primary_service = self._identify_primary_service(trigger.triggering_logs)
                 severity = self._determine_severity_level(trigger.triggering_logs)
 
                 # Calculate volume increase
-                volume_increase = self._calculate_volume_increase(
-                    window, trigger.triggering_logs
-                )
+                volume_increase = self._calculate_volume_increase(window, trigger.triggering_logs)
 
                 patterns.append(
                     PatternMatch(
@@ -545,9 +517,7 @@ class TrafficSpikeDetector(BaseDetectionAlgorithm[PatternMatch]):
 
         # Time concentration factor
         time_span = (window.end_time - window.start_time).total_seconds()
-        time_concentration_factor = min(
-            300.0 / time_span, 1.0
-        )  # Prefer shorter time windows
+        time_concentration_factor = min(300.0 / time_span, 1.0)  # Prefer shorter time windows
 
         confidence = log_volume_factor * 0.6 + time_concentration_factor * 0.4
 
@@ -594,11 +564,7 @@ class TrafficSpikeDetector(BaseDetectionAlgorithm[PatternMatch]):
             service = log.service_name or "unknown"
             service_counts[service] = service_counts.get(service, 0) + 1
 
-        return (
-            max(service_counts.items(), key=lambda x: x[1])[0]
-            if service_counts
-            else None
-        )
+        return max(service_counts.items(), key=lambda x: x[1])[0] if service_counts else None
 
 
 class ConfigurationIssueDetector(BaseDetectionAlgorithm[PatternMatch]):
@@ -638,9 +604,7 @@ class ConfigurationIssueDetector(BaseDetectionAlgorithm[PatternMatch]):
                     pattern_type=PatternType.CONFIGURATION_ISSUE,
                     confidence_score=confidence_score,
                     primary_service=primary_service,
-                    affected_services=list(
-                        set(log.service_name or "unknown" for log in config_logs)
-                    ),
+                    affected_services=list({log.service_name or "unknown" for log in config_logs}),
                     severity_level=severity,
                     evidence={
                         "config_error_count": len(config_logs),
@@ -665,10 +629,7 @@ class ConfigurationIssueDetector(BaseDetectionAlgorithm[PatternMatch]):
 
         for log in logs:
             log_message = (log.error_message or "").lower()
-            if any(
-                keyword in log_message
-                for keyword in self.config_issue_config.config_keywords
-            ):
+            if any(keyword in log_message for keyword in self.config_issue_config.config_keywords):
                 config_logs.append(log)
 
         return config_logs
@@ -687,12 +648,12 @@ class ConfigurationIssueDetector(BaseDetectionAlgorithm[PatternMatch]):
 
         # Keyword diversity factor
         unique_keywords = len(
-            set(
+            {
                 keyword
                 for log in logs
                 for keyword in self.config_issue_config.config_keywords
                 if keyword in (log.error_message or "").lower()
-            )
+            }
         )
         keyword_diversity_factor = min(unique_keywords / 3.0, 1.0)
 
@@ -732,9 +693,7 @@ class ConfigurationIssueDetector(BaseDetectionAlgorithm[PatternMatch]):
         first_error_time = sorted_logs[0].timestamp
         time_since_start = (first_error_time - window.start_time).total_seconds()
 
-        return (
-            time_since_start <= self.config_issue_config.rapid_onset_threshold_seconds
-        )
+        return time_since_start <= self.config_issue_config.rapid_onset_threshold_seconds
 
     def _determine_severity_level(self, logs: list[LogEntry]) -> str:
         """Determine severity level based on log entries."""
@@ -769,11 +728,7 @@ class ConfigurationIssueDetector(BaseDetectionAlgorithm[PatternMatch]):
             service = log.service_name or "unknown"
             service_counts[service] = service_counts.get(service, 0) + 1
 
-        return (
-            max(service_counts.items(), key=lambda x: x[1])[0]
-            if service_counts
-            else None
-        )
+        return max(service_counts.items(), key=lambda x: x[1])[0] if service_counts else None
 
 
 class DependencyFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
@@ -814,15 +769,13 @@ class DependencyFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
                     confidence_score=confidence_score,
                     primary_service=primary_service,
                     affected_services=list(
-                        set(log.service_name or "unknown" for log in dependency_logs)
+                        {log.service_name or "unknown" for log in dependency_logs}
                     ),
                     severity_level=severity,
                     evidence={
                         "dependency_error_count": len(dependency_logs),
                         "keywords_found": self._extract_keywords(dependency_logs),
-                        "external_services": self._identify_external_services(
-                            dependency_logs
-                        ),
+                        "external_services": self._identify_external_services(dependency_logs),
                     },
                     remediation_priority="HIGH",
                     suggested_actions=[
@@ -843,8 +796,7 @@ class DependencyFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
         for log in logs:
             log_message = (log.error_message or "").lower()
             if any(
-                keyword in log_message
-                for keyword in self.dependency_config.dependency_keywords
+                keyword in log_message for keyword in self.dependency_config.dependency_keywords
             ):
                 dependency_logs.append(log)
 
@@ -864,12 +816,12 @@ class DependencyFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
 
         # Keyword diversity factor
         unique_keywords = len(
-            set(
+            {
                 keyword
                 for log in logs
                 for keyword in self.dependency_config.dependency_keywords
                 if keyword in (log.error_message or "").lower()
-            )
+            }
         )
         keyword_diversity_factor = min(unique_keywords / 2.0, 1.0)
 
@@ -877,9 +829,7 @@ class DependencyFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
         external_service_factor = 1.0 if self._has_external_services(logs) else 0.5
 
         confidence = (
-            log_count_factor * 0.4
-            + keyword_diversity_factor * 0.3
-            + external_service_factor * 0.3
+            log_count_factor * 0.4 + keyword_diversity_factor * 0.3 + external_service_factor * 0.3
         )
 
         return min(confidence, 1.0)
@@ -952,11 +902,7 @@ class DependencyFailureDetector(BaseDetectionAlgorithm[PatternMatch]):
             service = log.service_name or "unknown"
             service_counts[service] = service_counts.get(service, 0) + 1
 
-        return (
-            max(service_counts.items(), key=lambda x: x[1])[0]
-            if service_counts
-            else None
-        )
+        return max(service_counts.items(), key=lambda x: x[1])[0] if service_counts else None
 
 
 class ResourceExhaustionDetector(BaseDetectionAlgorithm[PatternMatch]):
@@ -997,15 +943,13 @@ class ResourceExhaustionDetector(BaseDetectionAlgorithm[PatternMatch]):
                     confidence_score=confidence_score,
                     primary_service=primary_service,
                     affected_services=list(
-                        set(log.service_name or "unknown" for log in resource_logs)
+                        {log.service_name or "unknown" for log in resource_logs}
                     ),
                     severity_level=severity,
                     evidence={
                         "resource_error_count": len(resource_logs),
                         "keywords_found": self._extract_keywords(resource_logs),
-                        "gradual_onset": self._check_gradual_onset(
-                            resource_logs, window
-                        ),
+                        "gradual_onset": self._check_gradual_onset(resource_logs, window),
                     },
                     remediation_priority="HIGH",
                     suggested_actions=[
@@ -1025,10 +969,7 @@ class ResourceExhaustionDetector(BaseDetectionAlgorithm[PatternMatch]):
 
         for log in logs:
             log_message = (log.error_message or "").lower()
-            if any(
-                keyword in log_message
-                for keyword in self.resource_config.resource_keywords
-            ):
+            if any(keyword in log_message for keyword in self.resource_config.resource_keywords):
                 resource_logs.append(log)
 
         return resource_logs
@@ -1047,12 +988,12 @@ class ResourceExhaustionDetector(BaseDetectionAlgorithm[PatternMatch]):
 
         # Keyword diversity factor
         unique_keywords = len(
-            set(
+            {
                 keyword
                 for log in logs
                 for keyword in self.resource_config.resource_keywords
                 if keyword in (log.error_message or "").lower()
-            )
+            }
         )
         keyword_diversity_factor = min(unique_keywords / 2.0, 1.0)
 
@@ -1060,9 +1001,7 @@ class ResourceExhaustionDetector(BaseDetectionAlgorithm[PatternMatch]):
         gradual_onset_factor = 1.0 if self._check_gradual_onset(logs, window) else 0.7
 
         confidence = (
-            log_count_factor * 0.4
-            + keyword_diversity_factor * 0.3
-            + gradual_onset_factor * 0.3
+            log_count_factor * 0.4 + keyword_diversity_factor * 0.3 + gradual_onset_factor * 0.3
         )
 
         return min(confidence, 1.0)
@@ -1138,11 +1077,7 @@ class ResourceExhaustionDetector(BaseDetectionAlgorithm[PatternMatch]):
             service = log.service_name or "unknown"
             service_counts[service] = service_counts.get(service, 0) + 1
 
-        return (
-            max(service_counts.items(), key=lambda x: x[1])[0]
-            if service_counts
-            else None
-        )
+        return max(service_counts.items(), key=lambda x: x[1])[0] if service_counts else None
 
 
 class DetectionAlgorithmFactory:

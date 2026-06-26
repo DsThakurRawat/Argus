@@ -248,19 +248,13 @@ class IngestionConfig:
                 errors.append("Source name cannot be empty")
 
             if source.priority < 1 or source.priority > 100:
-                errors.append(
-                    f"Source '{source.name}' priority must be between 1 and 100"
-                )
+                errors.append(f"Source '{source.name}' priority must be between 1 and 100")
 
             if source.max_retries < 0:
-                errors.append(
-                    f"Source '{source.name}' max_retries must be non-negative"
-                )
+                errors.append(f"Source '{source.name}' max_retries must be non-negative")
 
             if source.retry_delay < 0:
-                errors.append(
-                    f"Source '{source.name}' retry_delay must be non-negative"
-                )
+                errors.append(f"Source '{source.name}' retry_delay must be non-negative")
 
             if source.timeout <= 0:
                 errors.append(f"Source '{source.name}' timeout must be positive")
@@ -310,9 +304,7 @@ class IngestionConfigManager:
         self.config_path = Path(config_path) if config_path else None
         self._config: IngestionConfig | None = None
 
-    def load_config(
-        self, config_path: str | Path | None = None
-    ) -> IngestionConfig:
+    def load_config(self, config_path: str | Path | None = None) -> IngestionConfig:
         """Load configuration from file."""
         if config_path:
             self.config_path = Path(config_path)
@@ -327,9 +319,7 @@ class IngestionConfigManager:
                 elif self.config_path.suffix.lower() == ".json":
                     data = json.load(f)
                 else:
-                    raise ConfigError(
-                        f"Unsupported config file format: {self.config_path.suffix}"
-                    )
+                    raise ConfigError(f"Unsupported config file format: {self.config_path.suffix}")
 
             self._config = self._parse_config(data)
             return self._config
@@ -354,9 +344,7 @@ class IngestionConfigManager:
             max_memory_mb=global_data.get("max_memory_mb", 500),
             backpressure_threshold=global_data.get("backpressure_threshold", 0.8),
             drop_oldest_on_full=global_data.get("drop_oldest_on_full", True),
-            buffer_strategy=BufferStrategy(
-                global_data.get("buffer_strategy", "memory")
-            ),
+            buffer_strategy=BufferStrategy(global_data.get("buffer_strategy", "memory")),
         )
 
         # Parse sources
@@ -374,9 +362,7 @@ class IngestionConfigManager:
                     credentials_path=source_config.get("credentials_path"),
                     max_messages=source_config.get("max_messages", 100),
                     ack_deadline_seconds=source_config.get("ack_deadline_seconds", 60),
-                    flow_control_max_messages=source_config.get(
-                        "flow_control_max_messages", 1000
-                    ),
+                    flow_control_max_messages=source_config.get("flow_control_max_messages", 1000),
                     flow_control_max_bytes=source_config.get(
                         "flow_control_max_bytes", 10 * 1024 * 1024
                     ),
@@ -385,9 +371,7 @@ class IngestionConfigManager:
                     max_retries=source_data.get("max_retries", 3),
                     retry_delay=source_data.get("retry_delay", 1.0),
                     timeout=source_data.get("timeout", 30.0),
-                    circuit_breaker_enabled=source_data.get(
-                        "circuit_breaker_enabled", True
-                    ),
+                    circuit_breaker_enabled=source_data.get("circuit_breaker_enabled", True),
                     rate_limit_per_second=source_data.get("rate_limit_per_second"),
                 )
             elif source_type == SourceType.GCP_LOGGING:
@@ -404,9 +388,7 @@ class IngestionConfigManager:
                     max_retries=source_data.get("max_retries", 3),
                     retry_delay=source_data.get("retry_delay", 1.0),
                     timeout=source_data.get("timeout", 30.0),
-                    circuit_breaker_enabled=source_data.get(
-                        "circuit_breaker_enabled", True
-                    ),
+                    circuit_breaker_enabled=source_data.get("circuit_breaker_enabled", True),
                     rate_limit_per_second=source_data.get("rate_limit_per_second"),
                 )
             elif source_type == SourceType.FILE_SYSTEM:
@@ -424,9 +406,7 @@ class IngestionConfigManager:
                     max_retries=source_data.get("max_retries", 3),
                     retry_delay=source_data.get("retry_delay", 1.0),
                     timeout=source_data.get("timeout", 30.0),
-                    circuit_breaker_enabled=source_data.get(
-                        "circuit_breaker_enabled", True
-                    ),
+                    circuit_breaker_enabled=source_data.get("circuit_breaker_enabled", True),
                     rate_limit_per_second=source_data.get("rate_limit_per_second"),
                 )
             elif source_type == SourceType.AWS_CLOUDWATCH:
@@ -444,9 +424,7 @@ class IngestionConfigManager:
                     max_retries=source_data.get("max_retries", 3),
                     retry_delay=source_data.get("retry_delay", 1.0),
                     timeout=source_data.get("timeout", 30.0),
-                    circuit_breaker_enabled=source_data.get(
-                        "circuit_breaker_enabled", True
-                    ),
+                    circuit_breaker_enabled=source_data.get("circuit_breaker_enabled", True),
                     rate_limit_per_second=source_data.get("rate_limit_per_second"),
                 )
             elif source_type == SourceType.KUBERNETES:
@@ -464,9 +442,7 @@ class IngestionConfigManager:
                     max_retries=source_data.get("max_retries", 3),
                     retry_delay=source_data.get("retry_delay", 1.0),
                     timeout=source_data.get("timeout", 30.0),
-                    circuit_breaker_enabled=source_data.get(
-                        "circuit_breaker_enabled", True
-                    ),
+                    circuit_breaker_enabled=source_data.get("circuit_breaker_enabled", True),
                     rate_limit_per_second=source_data.get("rate_limit_per_second"),
                 )
             elif source_type == SourceType.SYSLOG:
@@ -483,9 +459,7 @@ class IngestionConfigManager:
                     max_retries=source_data.get("max_retries", 3),
                     retry_delay=source_data.get("retry_delay", 1.0),
                     timeout=source_data.get("timeout", 30.0),
-                    circuit_breaker_enabled=source_data.get(
-                        "circuit_breaker_enabled", True
-                    ),
+                    circuit_breaker_enabled=source_data.get("circuit_breaker_enabled", True),
                     rate_limit_per_second=source_data.get("rate_limit_per_second"),
                 )
             else:
@@ -505,9 +479,7 @@ class IngestionConfigManager:
             return ["No configuration loaded"]
         return self._config.validate()
 
-    def save_config(
-        self, config: IngestionConfig, output_path: str | Path
-    ) -> None:
+    def save_config(self, config: IngestionConfig, output_path: str | Path) -> None:
         """Save configuration to file."""
         output_path = Path(output_path)
 

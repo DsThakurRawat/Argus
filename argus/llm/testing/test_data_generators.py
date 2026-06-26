@@ -186,9 +186,7 @@ class TestDataGenerator:
         custom_length: int | None = None,
     ) -> str:
         """Generate a test prompt."""
-        templates = self.prompt_templates.get(
-            prompt_type, self.prompt_templates[PromptType.SIMPLE]
-        )
+        templates = self.prompt_templates.get(prompt_type, self.prompt_templates[PromptType.SIMPLE])
         template = random.choice(templates)  # nosec B311
 
         # Fill template with random values
@@ -234,10 +232,7 @@ class TestDataGenerator:
         **kwargs,
     ) -> list[LLMRequest]:
         """Generate a batch of LLM requests."""
-        return [
-            self.generate_llm_request(prompt_type, model_type, **kwargs)
-            for _ in range(count)
-        ]
+        return [self.generate_llm_request(prompt_type, model_type, **kwargs) for _ in range(count)]
 
     def generate_test_scenarios(
         self,
@@ -333,18 +328,10 @@ class TestDataGenerator:
             "{character}": self._generate_character_name(),
             "{situation}": self._generate_situation(),
             "{concept}": random.choice(self.topics),  # nosec B311
-            "{style}": random.choice(
-                ["modern", "classical", "abstract", "realistic"]
-            ),  # nosec B311
-            "{poem_type}": random.choice(
-                ["haiku", "sonnet", "free verse", "limerick"]
-            ),  # nosec B311
-            "{theme}": random.choice(
-                ["love", "nature", "technology", "adventure"]
-            ),  # nosec B311
-            "{product_type}": random.choice(
-                ["app", "website", "service", "tool"]
-            ),  # nosec B311
+            "{style}": random.choice(["modern", "classical", "abstract", "realistic"]),  # nosec B311
+            "{poem_type}": random.choice(["haiku", "sonnet", "free verse", "limerick"]),  # nosec B311
+            "{theme}": random.choice(["love", "nature", "technology", "adventure"]),  # nosec B311
+            "{product_type}": random.choice(["app", "website", "service", "tool"]),  # nosec B311
             "{problem}": random.choice(  # nosec B311
                 ["communication", "productivity", "entertainment", "education"]
             ),
@@ -398,12 +385,8 @@ class TestDataGenerator:
             "{model}": random.choice(  # nosec B311
                 ["linear regression", "neural network", "decision tree"]
             ),
-            "{metrics}": random.choice(
-                ["accuracy", "precision", "recall", "F1 score"]
-            ),  # nosec B311
-            "{data_format}": random.choice(
-                ["JSON", "CSV", "XML", "YAML"]
-            ),  # nosec B311
+            "{metrics}": random.choice(["accuracy", "precision", "recall", "F1 score"]),  # nosec B311
+            "{data_format}": random.choice(["JSON", "CSV", "XML", "YAML"]),  # nosec B311
             "{input_format}": random.choice(["JSON", "CSV", "XML"]),  # nosec B311
             "{output_format}": random.choice(["JSON", "CSV", "XML"]),  # nosec B311
             "{data}": self._generate_sample_data(),
@@ -411,18 +394,14 @@ class TestDataGenerator:
                 ["entities", "sentiments", "keywords", "summaries"]
             ),
             "{text}": self._generate_sample_text(),
-            "{context}": random.choice(
-                ["business", "academic", "technical", "social"]
-            ),  # nosec B311
+            "{context}": random.choice(["business", "academic", "technical", "social"]),  # nosec B311
             "{domain}": random.choice(  # nosec B311
                 ["technology", "healthcare", "finance", "education"]
             ),
             "{approach}": random.choice(  # nosec B311
                 ["agile", "waterfall", "lean", "design thinking"]
             ),
-            "{interface}": random.choice(
-                ["REST API", "GraphQL", "gRPC", "WebSocket"]
-            ),  # nosec B311
+            "{interface}": random.choice(["REST API", "GraphQL", "gRPC", "WebSocket"]),  # nosec B311
             "{class_type}": random.choice(  # nosec B311
                 ["service", "repository", "controller", "model"]
             ),
@@ -511,9 +490,7 @@ class TestDataGenerator:
         """Make a prompt suitable for stress testing."""
         # Make the prompt very long
         return (
-            prompt
-            + " "
-            + " ".join([random.choice(self.topics) for _ in range(50)])  # nosec B311
+            prompt + " " + " ".join([random.choice(self.topics) for _ in range(50)])  # nosec B311
         )
 
     def _make_edge_case_prompt(self, prompt: str) -> str:
@@ -582,9 +559,7 @@ class TestDataGenerator:
         """Generate an error condition test scenario."""
         return {
             "type": "error_condition",
-            "prompt": self.generate_prompt(
-                PromptType.SIMPLE, TestScenario.ERROR_CONDITION
-            ),
+            "prompt": self.generate_prompt(PromptType.SIMPLE, TestScenario.ERROR_CONDITION),
             "expected_behavior": "error_handled",
             "timeout_seconds": 30,
         }

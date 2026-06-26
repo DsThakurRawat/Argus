@@ -115,9 +115,7 @@ class ConfigurableComponent(BaseComponent):
     capabilities.
     """
 
-    def __init__(
-        self, component_id: str, name: str, config: ConfigDict | None = None
-    ) -> None:
+    def __init__(self, component_id: str, name: str, config: ConfigDict | None = None) -> None:
         """
         Initialize the configurable component.
 
@@ -180,9 +178,7 @@ class StatefulComponent(ConfigurableComponent):
     capabilities.
     """
 
-    def __init__(
-        self, component_id: str, name: str, config: ConfigDict | None = None
-    ) -> None:
+    def __init__(self, component_id: str, name: str, config: ConfigDict | None = None) -> None:
         """
         Initialize the stateful component.
 
@@ -246,9 +242,7 @@ class StatefulComponent(ConfigurableComponent):
 
     def save_state_history(self) -> Any:
         """Save current state to history."""
-        self._state_history.append(
-            {"timestamp": time.time(), "state": self._state.copy()}
-        )
+        self._state_history.append({"timestamp": time.time(), "state": self._state.copy()})
 
 
 class ProcessableComponent(StatefulComponent, Generic[T, R]):
@@ -259,9 +253,7 @@ class ProcessableComponent(StatefulComponent, Generic[T, R]):
     capabilities.
     """
 
-    def __init__(
-        self, component_id: str, name: str, config: ConfigDict | None = None
-    ) -> None:
+    def __init__(self, component_id: str, name: str, config: ConfigDict | None = None) -> None:
         """
         Initialize the processable component.
 
@@ -328,9 +320,7 @@ class MonitorableComponent(ProcessableComponent[T, R]):
     capabilities.
     """
 
-    def __init__(
-        self, component_id: str, name: str, config: ConfigDict | None = None
-    ) -> None:
+    def __init__(self, component_id: str, name: str, config: ConfigDict | None = None) -> None:
         """
         Initialize the monitorable component.
 
@@ -377,9 +367,7 @@ class MonitorableComponent(ProcessableComponent[T, R]):
         """Update component metrics."""
         self._metrics = self.collect_metrics()
 
-    def add_alert(
-        self, alert_type: str, message: str, severity: str = "warning"
-    ) -> None:
+    def add_alert(self, alert_type: str, message: str, severity: str = "warning") -> None:
         """
         Add an alert.
 

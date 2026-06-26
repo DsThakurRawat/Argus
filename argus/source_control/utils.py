@@ -190,9 +190,7 @@ def is_fatal_status(status: OperationStatus) -> bool:
     return status in fatal_statuses
 
 
-async def timeout_operation(
-    operation: Callable[[], Awaitable[Any]], timeout_seconds: float
-) -> Any:
+async def timeout_operation(operation: Callable[[], Awaitable[Any]], timeout_seconds: float) -> Any:
     """
     Execute an operation with a timeout.
 

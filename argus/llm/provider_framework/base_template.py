@@ -30,9 +30,7 @@ class BaseProviderTemplate(LLMProvider):
         """Initialize the provider with configuration."""
         super().__init__(config)
         self.api_key = config.api_key
-        self.base_url = (
-            str(config.base_url) if config.base_url else self._get_default_base_url()
-        )
+        self.base_url = str(config.base_url) if config.base_url else self._get_default_base_url()
         self.timeout = config.timeout or 30
         self.max_retries = config.max_retries or 3
 
@@ -76,9 +74,7 @@ class BaseProviderTemplate(LLMProvider):
                 return response
 
             except Exception as e:
-                logger.warning(
-                    f"Attempt {attempt + 1} failed for {self.provider_name}: {e}"
-                )
+                logger.warning(f"Attempt {attempt + 1} failed for {self.provider_name}: {e}")
 
                 if attempt == self.max_retries - 1:
                     raise
@@ -107,9 +103,7 @@ class BaseProviderTemplate(LLMProvider):
             )
 
             # Use a short timeout for health checks
-            response = await asyncio.wait_for(
-                self._make_api_request(test_request), timeout=5.0
-            )
+            response = await asyncio.wait_for(self._make_api_request(test_request), timeout=5.0)
             return response is not None
 
         except Exception as e:
@@ -148,9 +142,7 @@ class BaseProviderTemplate(LLMProvider):
         if not config.api_key:
             raise ValueError(f"API key is required for {cls.__name__}")
 
-        if config.base_url and not str(config.base_url).startswith(
-            ("http://", "https://")
-        ):
+        if config.base_url and not str(config.base_url).startswith(("http://", "https://")):
             raise ValueError("Base URL must start with http:// or https://")
 
     # Helper methods for common functionality

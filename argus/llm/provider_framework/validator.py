@@ -69,9 +69,7 @@ class ProviderValidator:
 
         return errors
 
-    def _validate_abstract_methods(
-        self, provider_class: type[LLMProvider]
-    ) -> list[str]:
+    def _validate_abstract_methods(self, provider_class: type[LLMProvider]) -> list[str]:
         """Validate that all abstract methods are implemented."""
         errors = []
 
@@ -85,9 +83,7 @@ class ProviderValidator:
         # Check if all abstract methods are implemented
         for method_name in abstract_methods:
             if not hasattr(provider_class, method_name):
-                errors.append(
-                    f"Missing implementation of abstract method: {method_name}"
-                )
+                errors.append(f"Missing implementation of abstract method: {method_name}")
             else:
                 method = getattr(provider_class, method_name)
                 if getattr(method, "__isabstractmethod__", False):
@@ -117,18 +113,19 @@ class ProviderValidator:
 
         # Check if config parameter has proper type annotation
         config_param = sig.parameters.get("config")
-        if config_param and config_param.annotation != inspect.Parameter.empty:
-            if not (
+        if (
+            config_param
+            and config_param.annotation != inspect.Parameter.empty
+            and not (
                 config_param.annotation == LLMProviderConfig
                 or str(config_param.annotation).endswith("LLMProviderConfig")
-            ):
-                errors.append("Config parameter should be typed as LLMProviderConfig")
+            )
+        ):
+            errors.append("Config parameter should be typed as LLMProviderConfig")
 
         return errors
 
-    def _validate_config_validation(
-        self, provider_class: type[LLMProvider]
-    ) -> list[str]:
+    def _validate_config_validation(self, provider_class: type[LLMProvider]) -> list[str]:
         """Validate that config validation is implemented."""
         errors = []
 
@@ -153,9 +150,7 @@ class ProviderValidator:
 
         return errors
 
-    def _validate_method_signatures(
-        self, provider_class: type[LLMProvider]
-    ) -> list[str]:
+    def _validate_method_signatures(self, provider_class: type[LLMProvider]) -> list[str]:
         """Validate method signatures match the interface."""
         errors = []
 
@@ -309,9 +304,7 @@ class ProviderValidator:
         if not config.api_key:
             errors.append("API key is required")
 
-        if config.base_url and not str(config.base_url).startswith(
-            ("http://", "https://")
-        ):
+        if config.base_url and not str(config.base_url).startswith(("http://", "https://")):
             errors.append("Base URL must start with http:// or https://")
 
         if config.timeout and config.timeout <= 0:
@@ -322,9 +315,7 @@ class ProviderValidator:
 
         return errors
 
-    def generate_validation_report(
-        self, provider_class: type[LLMProvider]
-    ) -> dict[str, Any]:
+    def generate_validation_report(self, provider_class: type[LLMProvider]) -> dict[str, Any]:
         """
         Generate a comprehensive validation report.
 
@@ -351,13 +342,9 @@ class ProviderValidator:
 
         # Generate recommendations
         if not errors:
-            report["recommendations"].append(
-                "Provider implementation is valid and ready for use"
-            )
+            report["recommendations"].append("Provider implementation is valid and ready for use")
         else:
-            report["recommendations"].append(
-                "Fix the validation errors before using this provider"
-            )
+            report["recommendations"].append("Fix the validation errors before using this provider")
 
             if any("docstring" in error for error in errors):
                 report["recommendations"].append("Add comprehensive documentation")
@@ -400,9 +387,7 @@ class ProviderValidator:
             # Validate each provider class
             results = {}
             for provider_class in provider_classes:
-                results[provider_class.__name__] = self.generate_validation_report(
-                    provider_class
-                )
+                results[provider_class.__name__] = self.generate_validation_report(provider_class)
 
             return {
                 "file_path": file_path,

@@ -27,9 +27,7 @@ class TestSubOperationConfig:
 
     def test_config_creation(self) -> None:
         """Test creating a basic configuration."""
-        config = SubOperationConfig(
-            operation_name="file_operations", provider_type="local"
-        )
+        config = SubOperationConfig(operation_name="file_operations", provider_type="local")
 
         assert config.operation_name == "file_operations"
         assert config.provider_type == "local"
@@ -201,9 +199,7 @@ class TestSubOperationConfigManager:
         assert config.file_operation_timeout == 60.0  # Local default
         assert config.file_operation_retries == 2  # Local default
 
-    def test_create_default_config_with_custom_settings(
-        self, config_manager: str
-    ) -> None:
+    def test_create_default_config_with_custom_settings(self, config_manager: str) -> None:
         """Test creating default configuration with custom settings."""
         custom_settings = {
             "file_operation_timeout": 90.0,
@@ -211,9 +207,7 @@ class TestSubOperationConfigManager:
             "custom_key": "custom_value",
         }
 
-        config = config_manager.create_default_config(
-            "github", "file_operations", custom_settings
-        )
+        config = config_manager.create_default_config("github", "file_operations", custom_settings)
 
         assert config.file_operation_timeout == 90.0
         assert config.log_level == "DEBUG"
@@ -275,9 +269,7 @@ class TestGlobalFunctions:
         """Test creating sub-operation configuration with custom settings."""
         custom_settings = {"file_operation_timeout": 90.0, "log_level": "DEBUG"}
 
-        config = create_sub_operation_config(
-            "github", "file_operations", custom_settings
-        )
+        config = create_sub_operation_config("github", "file_operations", custom_settings)
 
         assert config.file_operation_timeout == 90.0
         assert config.log_level == "DEBUG"

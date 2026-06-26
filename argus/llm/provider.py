@@ -34,9 +34,7 @@ class LLMProvider(ABC):
         pass
 
     @abstractmethod
-    async def generate_text(
-        self, prompt: str, model: str | None = None, **kwargs: Any
-    ) -> str:
+    async def generate_text(self, prompt: str, model: str | None = None, **kwargs: Any) -> str:
         """Generate text response using LiteLLM."""
         pass
 
@@ -86,7 +84,7 @@ class LLMProvider(ABC):
         """Resolve the model name, using first available if not specified."""
         if model:
             return model
-        return list(self.config.models.keys())[0]
+        return next(iter(self.config.models.keys()))
 
     @property
     def is_initialized(self) -> bool:

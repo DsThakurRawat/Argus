@@ -42,9 +42,7 @@ class CapabilityComparer:
             model_caps = self.capability_database.get_capabilities(model_id)
             if model_caps:
                 comparison_results[model_id] = {
-                    "capabilities": {
-                        cap.name: cap.model_dump() for cap in model_caps.capabilities
-                    },
+                    "capabilities": {cap.name: cap.model_dump() for cap in model_caps.capabilities},
                     "summary": {},
                 }
                 for cap in model_caps.capabilities:
@@ -58,7 +56,7 @@ class CapabilityComparer:
                 }
 
         # Add comparison metrics
-        for model_id, data in comparison_results.items():
+        for _model_id, data in comparison_results.items():
             summary = data["summary"]
             if "status" in summary and summary["status"] == "not_found":
                 continue
@@ -67,26 +65,20 @@ class CapabilityComparer:
             summary["num_capabilities"] = num_capabilities
 
             # Calculate average performance and cost efficiency
-            total_performance = sum(
-                c["performance_score"] for c in data["capabilities"].values()
-            )
-            total_cost_efficiency = sum(
-                c["cost_efficiency"] for c in data["capabilities"].values()
-            )
+            total_performance = sum(c["performance_score"] for c in data["capabilities"].values())
+            total_cost_efficiency = sum(c["cost_efficiency"] for c in data["capabilities"].values())
 
             summary["avg_performance_score"] = (
                 total_performance / num_capabilities if num_capabilities > 0 else 0.0
             )
             summary["avg_cost_efficiency"] = (
-                total_cost_efficiency / num_capabilities
-                if num_capabilities > 0
-                else 0.0
+                total_cost_efficiency / num_capabilities if num_capabilities > 0 else 0.0
             )
 
             # Identify unique and common capabilities
             unique_capabilities = []
             common_capabilities = []
-            for cap_name in data["capabilities"].keys():
+            for cap_name in data["capabilities"]:
                 if len(all_capabilities.get(cap_name, [])) == 1:
                     unique_capabilities.append(cap_name)
                 elif len(all_capabilities.get(cap_name, [])) == len(model_ids):

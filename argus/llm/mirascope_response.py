@@ -129,11 +129,7 @@ class JSONStructureValidator(ResponseValidator):
                 "valid": len(missing_fields) == 0,
                 "parsed_data": data,
                 "missing_fields": missing_fields,
-                "error": (
-                    f"Missing required fields: {missing_fields}"
-                    if missing_fields
-                    else None
-                ),
+                "error": (f"Missing required fields: {missing_fields}" if missing_fields else None),
             }
 
         except json.JSONDecodeError as e:
@@ -148,9 +144,7 @@ class RegexPatternValidator(ResponseValidator):
     """Validates response against regex patterns."""
 
     def __init__(self, patterns: dict[str, str]) -> None:
-        self.patterns = {
-            name: re.compile(pattern) for name, pattern in patterns.items()
-        }
+        self.patterns = {name: re.compile(pattern) for name, pattern in patterns.items()}
 
     def validate(self, response: ClientResponse) -> dict[str, Any]:
         """Validate against regex patterns."""
@@ -185,9 +179,7 @@ class ResponseTransformer(ABC):
 class TextCleanerTransformer(ResponseTransformer):
     """Cleans and normalizes text content."""
 
-    def __init__(
-        self, remove_extra_whitespace: bool = True, normalize_quotes: bool = True
-    ):
+    def __init__(self, remove_extra_whitespace: bool = True, normalize_quotes: bool = True):
         self.remove_extra_whitespace = remove_extra_whitespace
         self.normalize_quotes = normalize_quotes
 
@@ -269,9 +261,7 @@ class QualityAssessor:
 
         # Cost efficiency factor
         if response.cost_usd and response.cost_usd > 0:
-            cost_efficiency = content_length / (
-                response.cost_usd * 1000
-            )  # chars per dollar
+            cost_efficiency = content_length / (response.cost_usd * 1000)  # chars per dollar
             cost_score = min(1.0, cost_efficiency / 1000)  # Normalize
             score += cost_score * 0.1
             factors.append(f"cost_efficiency: {cost_score:.2f}")
@@ -343,9 +333,7 @@ class QualityAssessor:
             "additionally",
             "consequently",
         ]
-        transition_count = sum(
-            1 for word in transition_words if word.lower() in content.lower()
-        )
+        transition_count = sum(1 for word in transition_words if word.lower() in content.lower())
         score += min(0.3, transition_count * 0.1)
 
         # Check for repetition (negative factor)
@@ -410,9 +398,7 @@ class ResponseProcessor:
                         errors.append(result.get("error", "Validation failed"))
                         status = ResponseStatus.VALIDATION_ERROR
                 except Exception as e:
-                    error_msg = (
-                        f"Validator {validator.__class__.__name__} failed: {e!s}"
-                    )
+                    error_msg = f"Validator {validator.__class__.__name__} failed: {e!s}"
                     errors.append(error_msg)
                     self.logger.warning(error_msg)
 
@@ -436,9 +422,7 @@ class ResponseProcessor:
                     if processed_content != old_content:
                         transformations_applied.append(transformer.__class__.__name__)
                 except Exception as e:
-                    error_msg = (
-                        f"Transformer {transformer.__class__.__name__} failed: {e!s}"
-                    )
+                    error_msg = f"Transformer {transformer.__class__.__name__} failed: {e!s}"
                     errors.append(error_msg)
                     status = ResponseStatus.TRANSFORMATION_ERROR
                     self.logger.warning(error_msg)
@@ -489,9 +473,7 @@ class ResponseProcessor:
                 data = json.loads(processed.processed_content)
                 structured_data = response_model(**data)
             except (json.JSONDecodeError, ValidationError) as e:
-                processed.metadata.errors.append(
-                    f"Failed to parse structured data: {e!s}"
-                )
+                processed.metadata.errors.append(f"Failed to parse structured data: {e!s}")
                 processed.status = ResponseStatus.PARSING_ERROR
                 self.logger.warning(f"Failed to parse structured response: {e}")
 

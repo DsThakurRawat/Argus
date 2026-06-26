@@ -64,16 +64,12 @@ class EnhancedErrorHandler:
         # Default to permanent for unknown errors
         return ErrorCategory.PERMANENT
 
-    async def handle_error(
-        self, error: Exception, context: RequestContext
-    ) -> Any | None:
+    async def handle_error(self, error: Exception, context: RequestContext) -> Any | None:
         """Main error handling entry point."""
         category = self.categorize_error(error)
         await self.analytics.record_error(error, category, context)
 
-        self.logger.warning(
-            f"Error {category.name} for provider {context.provider_id}: {error!s}"
-        )
+        self.logger.warning(f"Error {category.name} for provider {context.provider_id}: {error!s}")
 
         # Check circuit breaker for provider failures
         if category == ErrorCategory.PROVIDER_FAILURE:
@@ -95,34 +91,26 @@ class EnhancedErrorHandler:
         # For permanent errors, don't retry
         return None
 
-    async def _handle_transient(
-        self, error: Exception, context: RequestContext
-    ) -> Any | None:
+    async def _handle_transient(self, error: Exception, context: RequestContext) -> Any | None:
         """Handle transient errors with retry."""
         if context.retry_count < context.max_retries:
             delay = min(
                 self.config.retry_delay_base * (2**context.retry_count),
                 self.config.retry_delay_max,
             )
-            self.logger.info(
-                f"Retrying in {delay}s (attempt {context.retry_count + 1})"
-            )
+            self.logger.info(f"Retrying in {delay}s (attempt {context.retry_count + 1})")
             await asyncio.sleep(delay)
             return "retry"
         return None
 
-    async def _handle_rate_limited(
-        self, error: Exception, context: RequestContext
-    ) -> Any | None:
+    async def _handle_rate_limited(self, error: Exception, context: RequestContext) -> Any | None:
         """Handle rate limit errors with backoff."""
         delay = min(60.0, self.config.retry_delay_base * (2**context.retry_count))
         self.logger.info(f"Rate limited, backing off for {delay}s")
         await asyncio.sleep(delay)
         return "retry"
 
-    async def _handle_timeout(
-        self, error: Exception, context: RequestContext
-    ) -> Any | None:
+    async def _handle_timeout(self, error: Exception, context: RequestContext) -> Any | None:
         """Handle timeout errors."""
         if context.retry_count < context.max_retries:
             delay = self.config.retry_delay_base * 2
@@ -131,9 +119,7 @@ class EnhancedErrorHandler:
             return "retry"
         return None
 
-    async def _handle_network(
-        self, error: Exception, context: RequestContext
-    ) -> Any | None:
+    async def _handle_network(self, error: Exception, context: RequestContext) -> Any | None:
         """Handle network errors."""
         if context.retry_count < context.max_retries:
             delay = min(

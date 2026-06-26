@@ -28,17 +28,13 @@ from .rotation import CredentialRotationManager
 class CredentialManager:
     """Manages secure credential storage and retrieval."""
 
-    def __init__(
-        self, encryption_key: str | None = None, enable_rotation: bool = True
-    ):
+    def __init__(self, encryption_key: str | None = None, enable_rotation: bool = True):
         self.backends: dict[str, CredentialBackend] = {}
         self.default_backend: str | None = None
         self.logger = logging.getLogger(__name__)
         self.credential_cache: dict[str, dict[str, Any]] = {}
         self.cache_expiry: dict[str, datetime] = {}
-        self.rotation_manager = (
-            CredentialRotationManager(self) if enable_rotation else None
-        )
+        self.rotation_manager = CredentialRotationManager(self) if enable_rotation else None
 
         # Setup encryption
         if encryption_key:
@@ -99,15 +95,12 @@ class CredentialManager:
         backend = AzureKeyVaultBackend(vault_url, credential)
         self.register_backend(name, backend, set_as_default)
 
-    async def get_credentials(
-        self, credential_id: str, provider_type: str
-    ) -> dict[str, Any]:
+    async def get_credentials(self, credential_id: str, provider_type: str) -> dict[str, Any]:
         """Retrieve credentials for a specific provider."""
         # Check cache first
         cache_key = f"{credential_id}:{provider_type}"
-        if (
-            cache_key in self.credential_cache
-            and datetime.now() < self.cache_expiry.get(cache_key, datetime.min)
+        if cache_key in self.credential_cache and datetime.now() < self.cache_expiry.get(
+            cache_key, datetime.min
         ):
             return self.credential_cache[cache_key]
 
@@ -145,9 +138,7 @@ class CredentialManager:
         except json.JSONDecodeError as e:
             raise ValueError(f"Invalid credential format for {credential_id}") from e
 
-    async def store_credentials(
-        self, credential_id: str, credential_data: dict[str, Any]
-    ) -> None:
+    async def store_credentials(self, credential_id: str, credential_data: dict[str, Any]) -> None:
         """Store credentials in the specified backend."""
         backend_name, actual_key = self._parse_credential_id(credential_id)
         if backend_name not in self.backends:
@@ -172,9 +163,7 @@ class CredentialManager:
             self.credential_cache[cache_key] = credential_data
             self.cache_expiry[cache_key] = datetime.now() + timedelta(minutes=15)
 
-    async def rotate_credentials(
-        self, credential_id: str, new_value: dict[str, Any]
-    ) -> None:
+    async def rotate_credentials(self, credential_id: str, new_value: dict[str, Any]) -> None:
         """Rotate credentials with a new value."""
         # Store new credentials
         await self.store_credentials(credential_id, new_value)
@@ -194,9 +183,7 @@ class CredentialManager:
     ):
         """Schedule credential rotation."""
         if self.rotation_manager:
-            await self.rotation_manager.schedule_rotation(
-                credential_id, rotation_interval_days
-            )
+            await self.rotation_manager.schedule_rotation(credential_id, rotation_interval_days)
         else:
             self.logger.warning("Rotation manager not enabled")
 
@@ -209,9 +196,7 @@ class CredentialManager:
     async def validate_credential(self, credential_id: str, provider_type: str) -> bool:
         """Validate that a credential is working."""
         if self.rotation_manager:
-            return await self.rotation_manager.validate_credential(
-                credential_id, provider_type
-            )
+            return await self.rotation_manager.validate_credential(credential_id, provider_type)
         return True  # If no rotation manager, assume valid
 
     def _parse_credential_id(self, credential_id: str) -> tuple:

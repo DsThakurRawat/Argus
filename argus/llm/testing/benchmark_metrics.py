@@ -65,12 +65,8 @@ class MetricsCollector:
     ) -> ThroughputMetrics:
         """Calculate throughput statistics."""
         failed_requests = total_requests - successful_requests
-        success_rate = (
-            (successful_requests / total_requests) if total_requests > 0 else 0.0
-        )
-        requests_per_second = (
-            total_requests / total_duration if total_duration > 0 else 0.0
-        )
+        success_rate = (successful_requests / total_requests) if total_requests > 0 else 0.0
+        requests_per_second = total_requests / total_duration if total_duration > 0 else 0.0
 
         return ThroughputMetrics(
             total_requests=total_requests,

@@ -1,4 +1,3 @@
-from typing import Any
 # argus/config/source_control_credentials.py
 
 """
@@ -6,6 +5,7 @@ Credential configuration models for source control providers.
 """
 
 from pathlib import Path
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 from pydantic.types import SecretStr
@@ -17,23 +17,15 @@ class CredentialConfig(BaseConfig):
     """Configuration for repository credentials."""
 
     # Token-based authentication
-    token_env: str | None = Field(
-        None, description="Environment variable containing the token"
-    )
-    token_file: str | None = Field(
-        None, description="File path containing the token"
-    )
+    token_env: str | None = Field(None, description="Environment variable containing the token")
+    token_file: str | None = Field(None, description="File path containing the token")
     token: SecretStr | None = Field(
         None, description="Direct token value (not recommended for production)"
     )
 
     # Username/password authentication
-    username_env: str | None = Field(
-        None, description="Environment variable for username"
-    )
-    password_env: str | None = Field(
-        None, description="Environment variable for password"
-    )
+    username_env: str | None = Field(None, description="Environment variable for username")
+    password_env: str | None = Field(None, description="Environment variable for password")
     username: str | None = Field(
         None, description="Direct username value (not recommended for production)"
     )
@@ -51,9 +43,7 @@ class CredentialConfig(BaseConfig):
     )
 
     # OAuth authentication
-    client_id_env: str | None = Field(
-        None, description="Environment variable for OAuth client ID"
-    )
+    client_id_env: str | None = Field(None, description="Environment variable for OAuth client ID")
     client_secret_env: str | None = Field(
         None, description="Environment variable for OAuth client secret"
     )
@@ -135,9 +125,7 @@ class CredentialConfig(BaseConfig):
                 with open(self.token_file) as f:
                     return f.read().strip()
             except OSError as e:
-                raise ValueError(
-                    f"Failed to read token from file {self.token_file}: {e}"
-                ) from e
+                raise ValueError(f"Failed to read token from file {self.token_file}: {e}") from e
 
         return None
 

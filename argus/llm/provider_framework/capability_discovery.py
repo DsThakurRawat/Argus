@@ -88,9 +88,7 @@ class ProviderCapabilityDiscovery:
                     capability.supported = await test_func(provider)
                 else:
                     capability.supported = test_func(provider)
-                capability.details = await self._get_capability_details(
-                    provider, capability_name
-                )
+                capability.details = await self._get_capability_details(provider, capability_name)
 
                 capabilities[capability_name] = capability
 
@@ -173,10 +171,7 @@ class ProviderCapabilityDiscovery:
             config = getattr(provider, "config", None)
             if config and hasattr(config, "provider_specific"):
                 provider_specific = getattr(config, "provider_specific", {})
-                return (
-                    "json_mode" in provider_specific
-                    or "structured_output" in provider_specific
-                )
+                return "json_mode" in provider_specific or "structured_output" in provider_specific
             return False
         except Exception:
             return False
@@ -204,8 +199,7 @@ class ProviderCapabilityDiscovery:
             if config and hasattr(config, "provider_specific"):
                 provider_specific = getattr(config, "provider_specific", {})
                 return (
-                    "custom_models" in provider_specific
-                    or "fine_tuned_models" in provider_specific
+                    "custom_models" in provider_specific or "fine_tuned_models" in provider_specific
                 )
             return False
         except Exception:
@@ -234,23 +228,17 @@ class ProviderCapabilityDiscovery:
         try:
             if capability_name == "streaming":
                 details["implementation"] = (
-                    "generate_stream"
-                    if hasattr(provider, "generate_stream")
-                    else "fallback"
+                    "generate_stream" if hasattr(provider, "generate_stream") else "fallback"
                 )
 
             elif capability_name == "tools":
                 details["implementation"] = (
-                    "supports_tools"
-                    if hasattr(provider, "supports_tools")
-                    else "unknown"
+                    "supports_tools" if hasattr(provider, "supports_tools") else "unknown"
                 )
 
             elif capability_name == "embeddings":
                 details["implementation"] = (
-                    "embeddings"
-                    if hasattr(provider, "embeddings")
-                    else "not_implemented"
+                    "embeddings" if hasattr(provider, "embeddings") else "not_implemented"
                 )
 
             elif capability_name == "vision":
@@ -269,18 +257,14 @@ class ProviderCapabilityDiscovery:
                 config = getattr(provider, "config", None)
                 if config and hasattr(config, "provider_specific"):
                     provider_specific = getattr(config, "provider_specific", {})
-                    details["custom_model_config"] = provider_specific.get(
-                        "custom_models", {}
-                    )
+                    details["custom_model_config"] = provider_specific.get("custom_models", {})
 
         except Exception as e:
             details["error"] = str(e)
 
         return details
 
-    def get_provider_capabilities(
-        self, provider_name: str
-    ) -> dict[str, ProviderCapability] | None:
+    def get_provider_capabilities(self, provider_name: str) -> dict[str, ProviderCapability] | None:
         """Get capabilities for a specific provider."""
         return self.capability_registry.get(provider_name)
 
@@ -311,17 +295,12 @@ class ProviderCapabilityDiscovery:
         providers = []
 
         for provider_name, capabilities in self.capability_registry.items():
-            if (
-                capability_name in capabilities
-                and capabilities[capability_name].supported
-            ):
+            if capability_name in capabilities and capabilities[capability_name].supported:
                 providers.append(provider_name)
 
         return providers
 
-    def find_providers_matching_requirements(
-        self, required_capabilities: list[str]
-    ) -> list[str]:
+    def find_providers_matching_requirements(self, required_capabilities: list[str]) -> list[str]:
         """Find providers that support all required capabilities."""
         matching_providers = []
 
@@ -352,9 +331,7 @@ class ProviderCapabilityDiscovery:
 
         return matrix
 
-    def validate_provider_for_use_case(
-        self, provider_name: str, use_case: str
-    ) -> dict[str, Any]:
+    def validate_provider_for_use_case(self, provider_name: str, use_case: str) -> dict[str, Any]:
         """
         Validate if a provider is suitable for a specific use case.
 
@@ -404,9 +381,9 @@ class ProviderCapabilityDiscovery:
 
         # Calculate compatibility score
         if required_capabilities:
-            validation_result["score"] = len(
-                validation_result["supported_capabilities"]
-            ) / len(required_capabilities)
+            validation_result["score"] = len(validation_result["supported_capabilities"]) / len(
+                required_capabilities
+            )
         else:
             validation_result["score"] = 1.0
 
@@ -431,9 +408,7 @@ class ProviderCapabilityDiscovery:
                 capabilities = self.discover_provider_capabilities(provider)
                 all_capabilities[provider.provider_name] = capabilities
             except Exception as e:
-                logger.error(
-                    f"Failed to discover capabilities for {provider.provider_name}: {e}"
-                )
+                logger.error(f"Failed to discover capabilities for {provider.provider_name}: {e}")
 
         return all_capabilities
 

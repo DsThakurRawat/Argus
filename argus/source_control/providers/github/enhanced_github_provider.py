@@ -8,10 +8,9 @@ system including circuit breakers, retry mechanisms, error classification, grace
 degradation, health checks, and metrics collection.
 """
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from github import Github
-from github.Repository import Repository
 
 from ....config.source_control_repositories import GitHubRepositoryConfig
 from ...enhanced_base_implementation import EnhancedBaseSourceControlProvider
@@ -30,6 +29,9 @@ from .github_operations import GitHubOperations
 from .github_pull_requests import GitHubPullRequests
 from .github_utils import GitHubUtils
 
+if TYPE_CHECKING:
+    from github.Repository import Repository
+
 
 class EnhancedGitHubProvider(EnhancedBaseSourceControlProvider):
     """Enhanced GitHub provider with comprehensive error handling."""
@@ -40,9 +42,7 @@ class EnhancedGitHubProvider(EnhancedBaseSourceControlProvider):
 
         # Convert config dict back to GitHubRepositoryConfig for type safety
         self.repo_config = GitHubRepositoryConfig(**config)
-        self.credentials = (
-            None  # Will be set later when credential management is integrated
-        )
+        self.credentials = None  # Will be set later when credential management is integrated
         self.client: Github | None = None
         self.repo: Repository | None = None
 
@@ -60,9 +60,7 @@ class EnhancedGitHubProvider(EnhancedBaseSourceControlProvider):
             # Initialize component modules
             if self.client and self.repo:
                 self.operations = GitHubOperations(self.client, self.repo, self.logger)
-                self.pull_requests = GitHubPullRequests(
-                    self.client, self.repo, self.logger
-                )
+                self.pull_requests = GitHubPullRequests(self.client, self.repo, self.logger)
                 self.utils = GitHubUtils(self.client, self.repo, self.logger)
 
             self.logger.info(
@@ -190,9 +188,7 @@ class EnhancedGitHubProvider(EnhancedBaseSourceControlProvider):
             "get_file_info", self.operations.get_file_info, path, ref
         )
 
-    async def list_files(
-        self, path: str = "", ref: str | None = None
-    ) -> list[FileInfo]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[FileInfo]:
         """List files with error handling."""
         if not self.operations:
             raise RuntimeError("Provider not initialized")
@@ -290,9 +286,7 @@ class EnhancedGitHubProvider(EnhancedBaseSourceControlProvider):
             "get_repository_info", self.operations.get_repository_info
         )
 
-    async def check_conflicts(
-        self, path: str, content: str, branch: str | None = None
-    ) -> bool:
+    async def check_conflicts(self, path: str, content: str, branch: str | None = None) -> bool:
         """Check conflicts with error handling."""
         if not self.operations:
             raise RuntimeError("Provider not initialized")
@@ -301,9 +295,7 @@ class EnhancedGitHubProvider(EnhancedBaseSourceControlProvider):
             "check_conflicts", self.operations.check_conflicts, path, content, branch
         )
 
-    async def resolve_conflicts(
-        self, path: str, content: str, strategy: str = "manual"
-    ) -> bool:
+    async def resolve_conflicts(self, path: str, content: str, strategy: str = "manual") -> bool:
         """Resolve conflicts with error handling."""
         if not self.operations:
             raise RuntimeError("Provider not initialized")
@@ -383,9 +375,7 @@ class EnhancedGitHubProvider(EnhancedBaseSourceControlProvider):
         )
 
     # Enhanced batch operations with error handling
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute batch operations with comprehensive error handling."""
         if not self.operations:
             raise RuntimeError("Provider not initialized")

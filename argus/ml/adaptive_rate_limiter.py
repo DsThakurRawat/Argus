@@ -105,10 +105,13 @@ class AdaptiveRateLimiter:
             return False
 
         # Check cost constraints
-        if self.config.enable_cost_tracking and estimated_cost:
-            if not self._check_cost_constraints(estimated_cost, cost_tracker):
-                self.logger.warning("Cost constraints exceeded, blocking request")
-                return False
+        if (
+            self.config.enable_cost_tracking
+            and estimated_cost
+            and not self._check_cost_constraints(estimated_cost, cost_tracker)
+        ):
+            self.logger.warning("Cost constraints exceeded, blocking request")
+            return False
 
         return True
 
@@ -190,9 +193,7 @@ class AdaptiveRateLimiter:
         self._last_rate_limit_time = time.time()
         self.logger.warning("Rate limit hit, requests will be throttled")
 
-    async def get_delay_seconds(
-        self, urgency: UrgencyLevel = UrgencyLevel.MEDIUM
-    ) -> float:
+    async def get_delay_seconds(self, urgency: UrgencyLevel = UrgencyLevel.MEDIUM) -> float:
         """
         Get the delay in seconds before the next request should be made.
 
@@ -279,13 +280,11 @@ class AdaptiveRateLimiter:
 
         if self.circuit_state == CircuitState.HALF_OPEN:
             # Allow limited requests for testing
-            if (
+            return bool(
                 self.last_recovery_test
                 and time.time() - self.last_recovery_test
                 >= self.config.recovery_test_interval_seconds
-            ):
-                return True
-            return False
+            )
 
         return False
 
@@ -305,15 +304,10 @@ class AdaptiveRateLimiter:
 
         return self.request_count < max_requests
 
-    def _check_cost_constraints(
-        self, estimated_cost: float, cost_tracker: Any | None
-    ) -> bool:
+    def _check_cost_constraints(self, estimated_cost: float, cost_tracker: Any | None) -> bool:
         """Check if cost constraints allow the request."""
         # Check per-request cost limit
-        if (
-            self.config.max_cost_per_request
-            and estimated_cost > self.config.max_cost_per_request
-        ):
+        if self.config.max_cost_per_request and estimated_cost > self.config.max_cost_per_request:
             return False
 
         # Check daily cost limit
@@ -352,9 +346,7 @@ class AdaptiveRateLimiter:
             self.adaptive_delay += self.config.adaptation_factor
         else:
             # Decrease delay for good success rate
-            self.adaptive_delay = max(
-                0, self.adaptive_delay - self.config.adaptation_factor
-            )
+            self.adaptive_delay = max(0, self.adaptive_delay - self.config.adaptation_factor)
 
     def _get_rate_limit_delay(self) -> float:
         """Get delay due to rate limiting."""
@@ -373,14 +365,12 @@ class AdaptiveRateLimiter:
 
     def _update_circuit_state(self):
         """Update circuit breaker state."""
-        if self.circuit_state == CircuitState.OPEN:
-            if (
-                self._circuit_opened_at
-                and time.time() - self._circuit_opened_at
-                >= self.config.circuit_open_duration_seconds
-            ):
-                self.circuit_state = CircuitState.HALF_OPEN
-                self.last_recovery_attempt = time.time()
+        if self.circuit_state == CircuitState.OPEN and (
+            self._circuit_opened_at
+            and time.time() - self._circuit_opened_at >= self.config.circuit_open_duration_seconds
+        ):
+            self.circuit_state = CircuitState.HALF_OPEN
+            self.last_recovery_attempt = time.time()
 
     def _update_backoff(self):
         """Update backoff delay."""

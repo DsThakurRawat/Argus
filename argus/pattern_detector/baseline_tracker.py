@@ -19,9 +19,7 @@ class BaselineTracker:
         self.max_history = max_history
         self.service_baselines: dict[str, list[float]] = defaultdict(list)
         self.global_baseline: list[float] = []
-        logger.info(
-            f"[PATTERN_DETECTION] BaselineTracker initialized: max_history={max_history}"
-        )
+        logger.info(f"[PATTERN_DETECTION] BaselineTracker initialized: max_history={max_history}")
 
     def update_baseline(self, window: TimeWindow) -> None:
         """
@@ -49,9 +47,7 @@ class BaselineTracker:
                     if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
                 ]
             )
-            service_rate = (
-                (service_errors / service_total * 100) if service_total > 0 else 0.0
-            )
+            service_rate = (service_errors / service_total * 100) if service_total > 0 else 0.0
 
             self.service_baselines[service_name].append(service_rate)
             if len(self.service_baselines[service_name]) > self.max_history:

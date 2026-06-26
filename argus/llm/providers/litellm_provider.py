@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class LiteLLMProvider(LLMProvider):
     """
     Universal adapter for LiteLLM supported providers.
-    
+
     This class allows the SRE agent to switch between providers like Azure,
     OpenRouter, and Mistral with a single consistent interface.
     """
@@ -82,9 +82,7 @@ class LiteLLMProvider(LLMProvider):
             tool_calls=getattr(response.choices[0].message, "tool_calls", None),  # type: ignore
         )
 
-    async def generate_stream(
-        self, request: LLMRequest
-    ) -> AsyncGenerator[LLMResponse, None]:
+    async def generate_stream(self, request: LLMRequest) -> AsyncGenerator[LLMResponse, None]:
         """
         Generate a streaming response using LiteLLM.
 
@@ -116,7 +114,7 @@ class LiteLLMProvider(LLMProvider):
 
     async def embeddings(self, text: str) -> list[float]:
         """Generate vector embeddings using LiteLLM's embedding API."""
-        response = await litellm.aembedding( # type: ignore
+        response = await litellm.aembedding(  # type: ignore
             model=f"{self.config.provider}/{self.model}",
             input=[text],
             api_key=self.api_key,
@@ -125,15 +123,15 @@ class LiteLLMProvider(LLMProvider):
 
     def token_count(self, text: str) -> int:
         """Calculate token count using provider-specific tokenizers."""
-        return litellm.token_counter(model=self.model, text=text) # type: ignore
+        return litellm.token_counter(model=self.model, text=text)  # type: ignore
 
     def cost_estimate(self, input_tokens: int, output_tokens: int) -> float:
         """Estimate the USD cost of the completion request."""
         try:
-            return litellm.completion_cost( # type: ignore
+            return litellm.completion_cost(  # type: ignore
                 model=self.model,
-                prompt_tokens=input_tokens, # type: ignore
-                completion_tokens=output_tokens, # type: ignore
+                prompt_tokens=input_tokens,  # type: ignore
+                completion_tokens=output_tokens,  # type: ignore
             )
         except Exception:
             return 0.0

@@ -1,7 +1,3 @@
-from typing import Any, TypeVar
-
-#
-
 # argus/core/interfaces/protocols.py
 
 """
@@ -13,7 +9,7 @@ rather than inheritance hierarchy.
 """
 
 from collections.abc import AsyncIterator
-from typing import Protocol
+from typing import Any, Protocol, TypeVar
 
 from ..types import (
     AgentContext,
@@ -168,9 +164,7 @@ class Alertable(Protocol):
         """Check for alerts."""
         ...
 
-    def add_alert(
-        self, alert_type: str, message: str, severity: str = "warning"
-    ) -> None:
+    def add_alert(self, alert_type: str, message: str, severity: str = "warning") -> None:
         """Add an alert."""
         ...
 
@@ -394,9 +388,7 @@ class EventListener(Protocol):
 class ResourceManager(Protocol):
     """Protocol for resource managers."""
 
-    def allocate_resource(
-        self, resource_type: str, requirements: dict[str, Any]
-    ) -> str:
+    def allocate_resource(self, resource_type: str, requirements: dict[str, Any]) -> str:
         """Allocate a resource."""
         ...
 

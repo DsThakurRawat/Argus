@@ -59,9 +59,7 @@ class TestModelPerformanceMonitor:
         assert monitor.config.baseline_establishment_size == 20
 
     @pytest.mark.asyncio
-    async def test_track_prediction_accuracy_correct(
-        self, monitor: ModelPerformanceMonitor
-    ):
+    async def test_track_prediction_accuracy_correct(self, monitor: ModelPerformanceMonitor):
         """Test tracking correct prediction."""
         await monitor.track_prediction_accuracy(
             prediction="memory_leak",
@@ -78,9 +76,7 @@ class TestModelPerformanceMonitor:
         assert monitor.pattern_type_accuracy["memory_leak"][0] == 1.0
 
     @pytest.mark.asyncio
-    async def test_track_prediction_accuracy_incorrect(
-        self, monitor: ModelPerformanceMonitor
-    ):
+    async def test_track_prediction_accuracy_incorrect(self, monitor: ModelPerformanceMonitor):
         """Test tracking incorrect prediction."""
         await monitor.track_prediction_accuracy(
             prediction="memory_leak",
@@ -116,18 +112,14 @@ class TestModelPerformanceMonitor:
         )  # Mean of 0.8, 0.82, 0.84, 0.86, 0.88
         assert monitor.baseline_latency == 120.0  # Mean of 100, 110, 120, 130, 140
 
-    def test_get_performance_metrics_empty(
-        self, monitor: ModelPerformanceMonitor
-    ) -> None:
+    def test_get_performance_metrics_empty(self, monitor: ModelPerformanceMonitor) -> None:
         """Test getting metrics when no data is available."""
         metrics = monitor.get_performance_metrics()
         expected = PerformanceMetrics.empty_metrics()
         assert metrics == expected
 
     @pytest.mark.asyncio
-    async def test_get_performance_metrics_with_data(
-        self, monitor: ModelPerformanceMonitor
-    ):
+    async def test_get_performance_metrics_with_data(self, monitor: ModelPerformanceMonitor):
         """Test getting metrics with data."""
         # Add test data
         for i in range(8):
@@ -147,9 +139,7 @@ class TestModelPerformanceMonitor:
         assert "pattern_accuracy" in metrics
         assert "memory_leak" in metrics["pattern_accuracy"]
 
-    def test_get_drift_summary_no_alerts(
-        self, monitor: ModelPerformanceMonitor
-    ) -> None:
+    def test_get_drift_summary_no_alerts(self, monitor: ModelPerformanceMonitor) -> None:
         """Test drift summary with no alerts."""
         summary = monitor.get_drift_summary()
         assert summary["has_drift"] is False
@@ -157,9 +147,7 @@ class TestModelPerformanceMonitor:
         assert summary["recent_alerts"] == []
         assert summary["severity_counts"] == {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
 
-    def test_get_drift_summary_with_alerts(
-        self, monitor: ModelPerformanceMonitor
-    ) -> None:
+    def test_get_drift_summary_with_alerts(self, monitor: ModelPerformanceMonitor) -> None:
         """Test drift summary with alerts."""
         # Add test alerts
         alert1 = DriftAlert(
@@ -210,7 +198,7 @@ class TestModelPerformanceMonitor:
     async def test_drift_check_conditions(self, monitor: ModelPerformanceMonitor):
         """Test drift check timing conditions."""
         # Add enough samples but don't wait for interval
-        for i in range(8):
+        for _i in range(8):
             await monitor.track_prediction_accuracy(
                 prediction="memory_leak",
                 actual_outcome="memory_leak",
@@ -284,9 +272,7 @@ class TestModelPerformanceMonitor:
             monitor.accuracy_history.append(1.0)
             monitor.confidence_history.append(0.8)
             monitor.latency_history.append(100.0)
-            monitor.pattern_type_accuracy[pattern].append(
-                1.0 if pattern == actual else 0.0
-            )
+            monitor.pattern_type_accuracy[pattern].append(1.0 if pattern == actual else 0.0)
 
         pattern_accuracy = monitor._calculate_pattern_accuracy()
 
@@ -578,13 +564,8 @@ class TestPerformanceMetrics:
 
     def test_calculate_drift_percentage(self) -> None:
         """Test drift percentage calculation."""
-        assert (
-            abs(PerformanceMetrics.calculate_drift_percentage(0.8, 0.9) - 12.5) < 1e-10
-        )
-        assert (
-            abs(PerformanceMetrics.calculate_drift_percentage(0.8, 0.7) - (-12.5))
-            < 1e-10
-        )
+        assert abs(PerformanceMetrics.calculate_drift_percentage(0.8, 0.9) - 12.5) < 1e-10
+        assert abs(PerformanceMetrics.calculate_drift_percentage(0.8, 0.7) - (-12.5)) < 1e-10
         assert PerformanceMetrics.calculate_drift_percentage(0.0, 0.5) == 0.0
 
     def test_is_significant_drift(self) -> None:

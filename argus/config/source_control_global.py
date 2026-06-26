@@ -1,4 +1,3 @@
-from typing import Any
 # argus/config/source_control_global.py
 
 """
@@ -6,6 +5,7 @@ Global source control configuration models.
 """
 
 from enum import Enum
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 
@@ -42,18 +42,14 @@ class SourceControlGlobalConfig(BaseConfig):
     )
 
     # Discovery and automation
-    auto_discovery: bool = Field(
-        default=False, description="Enable automatic repository discovery"
-    )
+    auto_discovery: bool = Field(default=False, description="Enable automatic repository discovery")
     conflict_resolution: ConflictResolutionStrategy = Field(
         default=ConflictResolutionStrategy.MANUAL,
         description="Conflict resolution strategy",
     )
 
     # Logging and monitoring
-    audit_logging: bool = Field(
-        default=True, description="Enable audit logging for all operations"
-    )
+    audit_logging: bool = Field(default=True, description="Enable audit logging for all operations")
     enable_metrics: bool = Field(default=True, description="Enable metrics collection")
 
     # Performance settings
@@ -80,20 +76,14 @@ class SourceControlGlobalConfig(BaseConfig):
     rate_limit_requests_per_minute: int = Field(
         default=60, ge=1, description="Maximum requests per minute per provider"
     )
-    rate_limit_burst_size: int = Field(
-        default=10, ge=1, description="Burst size for rate limiting"
-    )
+    rate_limit_burst_size: int = Field(default=10, ge=1, description="Burst size for rate limiting")
 
     # Caching
     enable_caching: bool = Field(
         default=True, description="Enable caching for repository operations"
     )
-    cache_ttl_seconds: int = Field(
-        default=3600, ge=60, description="Cache TTL in seconds"
-    )
-    max_cache_size_mb: int = Field(
-        default=100, ge=1, description="Maximum cache size in MB"
-    )
+    cache_ttl_seconds: int = Field(default=3600, ge=60, description="Cache TTL in seconds")
+    max_cache_size_mb: int = Field(default=100, ge=1, description="Maximum cache size in MB")
 
     # Security settings
     enable_credential_rotation: bool = Field(
@@ -160,11 +150,11 @@ class SourceControlGlobalConfig(BaseConfig):
     @model_validator(mode="after")
     def validate_rate_limiting_config(self) -> Any:
         """Validate rate limiting configuration."""
-        if self.enable_rate_limiting:
-            if self.rate_limit_burst_size > self.rate_limit_requests_per_minute:
-                raise ValueError(
-                    "Burst size cannot be greater than requests per minute"
-                )
+        if (
+            self.enable_rate_limiting
+            and self.rate_limit_burst_size > self.rate_limit_requests_per_minute
+        ):
+            raise ValueError("Burst size cannot be greater than requests per minute")
         return self
 
     def get_effective_credentials(
@@ -177,11 +167,7 @@ class SourceControlGlobalConfig(BaseConfig):
         self, repo_strategy: RemediationStrategyConfig | None
     ) -> RemediationStrategyConfig:
         """Get effective remediation strategy for a repository."""
-        return (
-            repo_strategy
-            or self.default_remediation_strategy
-            or RemediationStrategyConfig()
-        )
+        return repo_strategy or self.default_remediation_strategy or RemediationStrategyConfig()
 
     def should_use_caching(self) -> bool:
         """Check if caching should be used."""
@@ -195,9 +181,9 @@ class SourceControlGlobalConfig(BaseConfig):
 class SourceControlConfig(BaseConfig):
     """Source control configuration for a service."""
 
-    repositories: list[
-        GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig
-    ] = Field(default_factory=list, description="List of repositories for this service")
+    repositories: list[GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig] = (
+        Field(default_factory=list, description="List of repositories for this service")
+    )
 
     @field_validator("repositories")
     @classmethod
@@ -237,17 +223,13 @@ class SourceControlConfig(BaseConfig):
 
     def get_repositories_by_type(
         self, repo_type: str
-    ) -> list[
-        GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig
-    ]:
+    ) -> list[GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig]:
         """Get all repositories of a specific type."""
         return [repo for repo in self.repositories if repo.type == repo_type]
 
     def get_repositories_for_path(
         self, file_path: str
-    ) -> list[
-        GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig
-    ]:
+    ) -> list[GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig]:
         """Get repositories that match the given file path."""
         matching_repos = []
         for repo in self.repositories:

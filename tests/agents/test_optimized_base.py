@@ -135,9 +135,7 @@ class TestOptimizedBaseAgent:
             assert mock_llm_service.generate_structured.call_count == 2
 
     @pytest.mark.asyncio
-    async def test_execute_with_provider_fallback(
-        self, optimized_agent, mock_llm_service
-    ):
+    async def test_execute_with_provider_fallback(self, optimized_agent, mock_llm_service):
         """Test execute method with provider fallback."""
         # Mock first call to fail, second to succeed
         mock_llm_service.generate_structured = AsyncMock(
@@ -235,9 +233,7 @@ class TestOptimizedBaseAgent:
         assert optimized_agent.min_performance == 0.8
         assert optimized_agent.min_quality == 0.7
 
-    def test_get_performance_stats(
-        self, optimized_agent: str, mock_llm_service: str
-    ) -> None:
+    def test_get_performance_stats(self, optimized_agent: str, mock_llm_service: str) -> None:
         """Test getting performance statistics."""
         with patch.object(optimized_agent, "llm_service", mock_llm_service):
             stats = optimized_agent.get_performance_stats()
@@ -252,9 +248,7 @@ class TestOptimizedBaseAgent:
             assert "constraints" in stats
             assert "optimizations_enabled" in stats
 
-    def test_conversation_context(
-        self, optimized_agent: str, mock_llm_service: str
-    ) -> None:
+    def test_conversation_context(self, optimized_agent: str, mock_llm_service: str) -> None:
         """Test conversation context management."""
         with patch.object(optimized_agent, "llm_service", mock_llm_service):
             # Initial context should be empty
@@ -306,17 +300,17 @@ class TestOptimizedBaseAgent:
     async def test_error_handling(self, optimized_agent, mock_llm_service):
         """Test error handling in optimized agent."""
         # Mock the service to raise an exception
-        mock_llm_service.generate_structured = AsyncMock(
-            side_effect=Exception("Test error")
-        )
+        mock_llm_service.generate_structured = AsyncMock(side_effect=Exception("Test error"))
 
-        with patch.object(optimized_agent, "llm_service", mock_llm_service):
-            with pytest.raises(Exception, match="Test error"):
-                await optimized_agent.execute(
-                    prompt_name="test_prompt",
-                    prompt_args={"input": "test input"},
-                    use_fallback=False,  # Disable fallback to test error propagation
-                )
+        with (
+            patch.object(optimized_agent, "llm_service", mock_llm_service),
+            pytest.raises(Exception, match="Test error"),
+        ):
+            await optimized_agent.execute(
+                prompt_name="test_prompt",
+                prompt_args={"input": "test input"},
+                use_fallback=False,  # Disable fallback to test error propagation
+            )
 
     def test_prompt_caching(self, optimized_agent: str) -> None:
         """Test that prompts are cached."""
@@ -371,9 +365,7 @@ class TestPerformanceBenchmarks:
         )
         init_time = (time.time() - start_time) * 1000
 
-        assert (
-            init_time < 10.0
-        ), f"Initialization took {init_time:.2f}ms, expected < 10ms"
+        assert init_time < 10.0, f"Initialization took {init_time:.2f}ms, expected < 10ms"
 
     @pytest.mark.asyncio
     async def test_execute_overhead(self, mock_llm_config):
@@ -399,9 +391,9 @@ class TestPerformanceBenchmarks:
             operation_time = (time.time() - start_time) * 1000
 
             # The overhead should be minimal (excluding the actual LLM call)
-            assert (
-                operation_time < 10.0
-            ), f"Operation overhead was {operation_time:.2f}ms, expected < 10ms"
+            assert operation_time < 10.0, (
+                f"Operation overhead was {operation_time:.2f}ms, expected < 10ms"
+            )
 
     @pytest.mark.asyncio
     async def test_batch_execute_performance(self, mock_llm_config):
@@ -416,8 +408,7 @@ class TestPerformanceBenchmarks:
         mock_llm_service = AsyncMock()
         mock_llm_service.batch_generate_structured = AsyncMock(
             return_value=[
-                TestResponse(text=f"test response {i}", confidence=0.9)
-                for i in range(20)
+                TestResponse(text=f"test response {i}", confidence=0.9) for i in range(20)
             ]
         )
 
@@ -436,9 +427,7 @@ class TestPerformanceBenchmarks:
 
             assert len(results) == 20
             # Batch processing should be more efficient than sequential
-            assert (
-                batch_time < 100.0
-            ), f"Batch processing took {batch_time:.2f}ms, expected < 100ms"
+            assert batch_time < 100.0, f"Batch processing took {batch_time:.2f}ms, expected < 100ms"
 
     @pytest.mark.asyncio
     async def test_concurrent_executions(self, mock_llm_config):
@@ -470,6 +459,6 @@ class TestPerformanceBenchmarks:
             assert len(results) == 10
             assert all(isinstance(result, TestResponse) for result in results)
             # Concurrent execution should be efficient
-            assert (
-                concurrent_time < 50.0
-            ), f"Concurrent execution took {concurrent_time:.2f}ms, expected < 50ms"
+            assert concurrent_time < 50.0, (
+                f"Concurrent execution took {concurrent_time:.2f}ms, expected < 50ms"
+            )

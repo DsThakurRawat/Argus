@@ -26,9 +26,7 @@ class OpenAIProvider(LLMProvider):
         self.api_key = config.api_key
         self.base_url = config.base_url or "https://api.openai.com/v1"
         self.organization = (
-            config.provider_specific.get("organization_id")
-            if config.provider_specific
-            else None
+            config.provider_specific.get("organization_id") if config.provider_specific else None
         )
 
         # Initialize OpenAI client

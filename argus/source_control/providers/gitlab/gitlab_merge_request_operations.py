@@ -34,18 +34,11 @@ class GitLabMergeRequestOperations:
         self.logger = logger
         self.error_handling_components = error_handling_components
 
-    async def _execute_with_error_handling(
-        self, operation_name: str, func, *args, **kwargs
-    ):
+    async def _execute_with_error_handling(self, operation_name: str, func, *args, **kwargs):
         """Execute a function with error handling if available."""
-        if (
-            self.error_handling_components
-            and "resilient_manager" in self.error_handling_components
-        ):
+        if self.error_handling_components and "resilient_manager" in self.error_handling_components:
             resilient_manager = self.error_handling_components["resilient_manager"]
-            return await resilient_manager.execute_with_retry(
-                operation_name, func, *args, **kwargs
-            )
+            return await resilient_manager.execute_with_retry(operation_name, func, *args, **kwargs)
 
         # Fall back to direct execution
         return await func(*args, **kwargs)
@@ -80,9 +73,7 @@ class GitLabMergeRequestOperations:
                         "description": description,
                         "source_branch": source_branch,
                         "target_branch": target_branch,
-                        "remove_source_branch": kwargs.get(
-                            "remove_source_branch", False
-                        ),
+                        "remove_source_branch": kwargs.get("remove_source_branch", False),
                     }
                 )
 
@@ -274,9 +265,7 @@ class GitLabMergeRequestOperations:
 
             return files
 
-        return await self._execute_with_error_handling(
-            "get_merge_request_files", _get_files
-        )
+        return await self._execute_with_error_handling("get_merge_request_files", _get_files)
 
     async def get_merge_request_commits(self, mr_id: int) -> list[dict[str, Any]]:
         """Get commits in a merge request."""
@@ -303,6 +292,4 @@ class GitLabMergeRequestOperations:
 
             return commits
 
-        return await self._execute_with_error_handling(
-            "get_merge_request_commits", _get_commits
-        )
+        return await self._execute_with_error_handling("get_merge_request_commits", _get_commits)

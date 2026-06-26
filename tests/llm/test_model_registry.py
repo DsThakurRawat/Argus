@@ -30,9 +30,7 @@ class TestModelRegistry:
 
     def test_model_registry_with_config(self) -> None:
         """Test ModelRegistry initialization with custom config."""
-        config = ModelRegistryConfig(
-            config_file="test.yaml", auto_reload=True, cache_ttl=600
-        )
+        config = ModelRegistryConfig(config_file="test.yaml", auto_reload=True, cache_ttl=600)
         registry = ModelRegistry(config)
         assert registry.config.config_file == "test.yaml"
         assert registry.config.auto_reload is True
@@ -242,9 +240,7 @@ class TestModelRegistry:
         assert openai_models[0].name == "fast-openai"
 
         # Test query by capabilities
-        streaming_models = registry.query_models(
-            capabilities=[ModelCapability.STREAMING]
-        )
+        streaming_models = registry.query_models(capabilities=[ModelCapability.STREAMING])
         assert len(streaming_models) == 2
         model_names = {m.name for m in streaming_models}
         assert model_names == {"fast-openai", "fast-gemini"}
@@ -313,9 +309,7 @@ class TestModelRegistry:
 
     def test_should_reload(self) -> None:
         """Test cache reload logic."""
-        config = ModelRegistryConfig(
-            auto_reload=True, cache_ttl=1, config_file="test.yaml"
-        )
+        config = ModelRegistryConfig(auto_reload=True, cache_ttl=1, config_file="test.yaml")
         registry = ModelRegistry(config)
 
         # Should reload if never loaded

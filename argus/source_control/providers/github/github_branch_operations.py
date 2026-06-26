@@ -36,9 +36,7 @@ class GitHubBranchOperations:
         self.logger = logger
         self.error_handling_components = error_handling_components
 
-    async def _execute_with_error_handling(
-        self, operation_name: str, func, *args, **kwargs
-    ):
+    async def _execute_with_error_handling(self, operation_name: str, func, *args, **kwargs):
         """Execute an operation with error handling if available."""
         if self.error_handling_components:
             resilient_manager = self.error_handling_components.get("resilient_manager")
@@ -158,14 +156,10 @@ class GitHubBranchOperations:
                         description=self.repo.description or "",
                         additional_info={
                             "created_at": (
-                                self.repo.created_at.isoformat()
-                                if self.repo.created_at
-                                else None
+                                self.repo.created_at.isoformat() if self.repo.created_at else None
                             ),
                             "updated_at": (
-                                self.repo.updated_at.isoformat()
-                                if self.repo.updated_at
-                                else None
+                                self.repo.updated_at.isoformat() if self.repo.updated_at else None
                             ),
                         },
                     )
@@ -207,13 +201,9 @@ class GitHubBranchOperations:
                 try:
                     # Get file content from both branches
                     base_content = self.repo.get_contents(file_path, ref=base_branch)
-                    feature_content = self.repo.get_contents(
-                        file_path, ref=feature_branch
-                    )
+                    feature_content = self.repo.get_contents(file_path, ref=feature_branch)
 
-                    if isinstance(base_content, list) or isinstance(
-                        feature_content, list
-                    ):
+                    if isinstance(base_content, list) or isinstance(feature_content, list):
                         return ConflictInfo(
                             path=file_path,
                             conflict_type="directory",
@@ -222,13 +212,9 @@ class GitHubBranchOperations:
                             conflict_details={},
                         )
 
-                    base_text = (
-                        base_content.content if hasattr(base_content, "content") else ""
-                    )
+                    base_text = base_content.content if hasattr(base_content, "content") else ""
                     feature_text = (
-                        feature_content.content
-                        if hasattr(feature_content, "content")
-                        else ""
+                        feature_content.content if hasattr(feature_content, "content") else ""
                     )
 
                     has_conflicts = base_text != feature_text

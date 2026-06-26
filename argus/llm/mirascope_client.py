@@ -16,6 +16,7 @@ import logging
 import time
 from typing import (
     Any,
+    ClassVar,
     TypeVar,
 )
 
@@ -61,9 +62,7 @@ class RequestMetrics:
     error_message: str | None = None
     retry_count: int = 0
 
-    def complete(
-        self, tokens_used: int | None = None, cost_usd: float | None = None
-    ) -> None:
+    def complete(self, tokens_used: int | None = None, cost_usd: float | None = None) -> None:
         """Mark request as completed."""
         self.end_time = time.time()
         self.duration_ms = (self.end_time - self.start_time) * 1000
@@ -116,9 +115,7 @@ class BaseProviderClient(ABC):
         pass
 
     @abstractmethod
-    async def generate_structured(
-        self, prompt: str, response_model: type[T], **kwargs: Any
-    ) -> T:
+    async def generate_structured(self, prompt: str, response_model: type[T], **kwargs: Any) -> T:
         """Generate a structured response."""
         pass
 
@@ -177,9 +174,7 @@ class AnthropicClient(BaseProviderClient):
             cost_usd=0.001,
         )
 
-    async def generate_structured(
-        self, prompt: str, response_model: type[T], **kwargs: Any
-    ) -> T:
+    async def generate_structured(self, prompt: str, response_model: type[T], **kwargs: Any) -> T:
         """Generate structured response using Anthropic."""
         await self.generate(prompt, **kwargs)
         # In a real implementation, this would parse the response into the model
@@ -192,7 +187,7 @@ class AnthropicClient(BaseProviderClient):
 
         # Simulate streaming response
         for i in range(5):
-            yield f"Streaming chunk {i+1} for: {prompt[:30]}..."
+            yield f"Streaming chunk {i + 1} for: {prompt[:30]}..."
             await asyncio.sleep(0.1)
 
 
@@ -230,9 +225,7 @@ class OpenAIClient(BaseProviderClient):
             cost_usd=0.002,
         )
 
-    async def generate_structured(
-        self, prompt: str, response_model: type[T], **kwargs: Any
-    ) -> T:
+    async def generate_structured(self, prompt: str, response_model: type[T], **kwargs: Any) -> T:
         """Generate structured response using OpenAI."""
         await self.generate(prompt, **kwargs)
         return response_model()  # Placeholder
@@ -243,7 +236,7 @@ class OpenAIClient(BaseProviderClient):
             raise RuntimeError("OpenAI client not available")
 
         for i in range(5):
-            yield f"OpenAI streaming chunk {i+1} for: {prompt[:30]}..."
+            yield f"OpenAI streaming chunk {i + 1} for: {prompt[:30]}..."
             await asyncio.sleep(0.1)
 
 
@@ -279,9 +272,7 @@ class GoogleClient(BaseProviderClient):
             cost_usd=0.0015,
         )
 
-    async def generate_structured(
-        self, prompt: str, response_model: type[T], **kwargs: Any
-    ) -> T:
+    async def generate_structured(self, prompt: str, response_model: type[T], **kwargs: Any) -> T:
         """Generate structured response using Google."""
         await self.generate(prompt, **kwargs)
         return response_model()  # Placeholder
@@ -292,14 +283,14 @@ class GoogleClient(BaseProviderClient):
             raise RuntimeError("Google client not available")
 
         for i in range(5):
-            yield f"Google streaming chunk {i+1} for: {prompt[:30]}..."
+            yield f"Google streaming chunk {i + 1} for: {prompt[:30]}..."
             await asyncio.sleep(0.1)
 
 
 class ClientFactory:
     """Factory for creating provider clients."""
 
-    _client_classes = {
+    _client_classes: ClassVar[dict[ProviderType, type[BaseProviderClient]]] = {
         ProviderType.ANTHROPIC: AnthropicClient,
         ProviderType.OPENAI: OpenAIClient,
         ProviderType.GOOGLE: GoogleClient,
@@ -348,9 +339,7 @@ class MirascopeClientManager:
             except Exception as e:
                 self.logger.error(f"Failed to initialize client for {name}: {e}")
 
-    def get_client(
-        self, provider_name: str | None = None
-    ) -> BaseProviderClient | None:
+    def get_client(self, provider_name: str | None = None) -> BaseProviderClient | None:
         """Get a client by name or the default client."""
         if provider_name:
             return self.clients.get(provider_name)
@@ -404,18 +393,14 @@ class MirascopeClientManager:
                 response = await client.generate(prompt, **kwargs)
                 metrics.complete(response.tokens_used, response.cost_usd)
 
-                self.logger.info(
-                    f"Generated response using {client.config.provider_type.value}"
-                )
+                self.logger.info(f"Generated response using {client.config.provider_type.value}")
                 return response
 
             except Exception as e:
                 last_error = e
                 if metrics:
                     metrics.fail(str(e))
-                self.logger.warning(
-                    f"Client {client.config.provider_type.value} failed: {e}"
-                )
+                self.logger.warning(f"Client {client.config.provider_type.value} failed: {e}")
                 continue
 
         raise RuntimeError(f"All clients failed. Last error: {last_error}")
@@ -443,18 +428,14 @@ class MirascopeClientManager:
         last_error = None
         for client in clients_to_try:
             try:
-                result = await client.generate_structured(
-                    prompt, response_model, **kwargs
-                )
+                result = await client.generate_structured(prompt, response_model, **kwargs)
                 self.logger.info(
                     f"Generated structured response using {client.config.provider_type.value}"
                 )
                 return result
             except Exception as e:
                 last_error = e
-                self.logger.warning(
-                    f"Client {client.config.provider_type.value} failed: {e}"
-                )
+                self.logger.warning(f"Client {client.config.provider_type.value} failed: {e}")
                 continue
 
         raise RuntimeError(f"All clients failed. Last error: {last_error}")

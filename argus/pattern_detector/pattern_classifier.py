@@ -8,7 +8,6 @@ pattern detection components including pattern matchers, confidence calculators,
 and ensemble methods for comprehensive pattern classification.
 """
 
-
 from ..logger import setup_logging
 from .classifier_ensemble import EnsembleConfig, PatternEnsemble
 from .confidence_scorer import ConfidenceScorer
@@ -36,9 +35,7 @@ class PatternClassifier:
             config=self.ensemble_config, confidence_scorer=self.confidence_scorer
         )
 
-        self.logger.info(
-            "[PATTERN_DETECTION] PatternClassifier initialized with ensemble"
-        )
+        self.logger.info("[PATTERN_DETECTION] PatternClassifier initialized with ensemble")
 
     def classify_patterns(
         self, window: TimeWindow, threshold_results: list[ThresholdResult]

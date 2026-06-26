@@ -53,9 +53,7 @@ class LLMDashboardAPI:
             "metrics": metrics_summary,
             "cost": cost_summary,
             "status": (
-                "operational"
-                if health_summary.get("overall_status") == "healthy"
-                else "degraded"
+                "operational" if health_summary.get("overall_status") == "healthy" else "degraded"
             ),
         }
 
@@ -72,9 +70,7 @@ class LLMDashboardAPI:
                     "success_count": health.success_count,
                     "failure_count": health.failure_count,
                     "success_rate": (
-                        health.success_count / health.check_count
-                        if health.check_count > 0
-                        else 0
+                        health.success_count / health.check_count if health.check_count > 0 else 0
                     ),
                     "avg_response_time_ms": health.avg_response_time_ms,
                     "issues": health.issues,
@@ -93,9 +89,7 @@ class LLMDashboardAPI:
             },
         }
 
-    def get_metrics(
-        self, provider: str | None = None, model: str | None = None
-    ) -> dict[str, Any]:
+    def get_metrics(self, provider: str | None = None, model: str | None = None) -> dict[str, Any]:
         """Get metrics data for dashboard."""
         if provider and model:
             # Get specific model metrics
@@ -179,9 +173,7 @@ class LLMDashboardAPI:
                 },
             }
 
-    def get_performance_data(
-        self, provider: str | None = None, hours: int = 24
-    ) -> dict[str, Any]:
+    def get_performance_data(self, provider: str | None = None, hours: int = 24) -> dict[str, Any]:
         """Get performance data for charts and graphs."""
         # This would typically query time-series data
         # For now, we'll return current metrics with some mock historical data
@@ -192,9 +184,7 @@ class LLMDashboardAPI:
                 return {"error": f"No performance data found for provider {provider}"}
 
             # Get throughput metrics
-            throughput = self.metrics_collector.get_throughput_metrics(
-                provider, window_minutes=60
-            )
+            throughput = self.metrics_collector.get_throughput_metrics(provider, window_minutes=60)
 
             return {
                 "timestamp": datetime.now().isoformat(),
@@ -215,7 +205,7 @@ class LLMDashboardAPI:
             all_providers = self.metrics_collector.get_all_provider_metrics()
             performance_data = {}
 
-            for provider_name in all_providers.keys():
+            for provider_name in all_providers:
                 throughput = self.metrics_collector.get_throughput_metrics(
                     provider_name, window_minutes=60
                 )
@@ -228,9 +218,7 @@ class LLMDashboardAPI:
                         "requests_per_minute": throughput.get("requests_per_minute", 0),
                         "requests_per_second": throughput.get("requests_per_second", 0),
                     },
-                    "historical_data": self._generate_mock_historical_data(
-                        provider_name, hours
-                    ),
+                    "historical_data": self._generate_mock_historical_data(provider_name, hours),
                 }
 
             return {
@@ -239,9 +227,7 @@ class LLMDashboardAPI:
                 "providers": performance_data,
             }
 
-    def get_cost_analytics(
-        self, provider: str | None = None, days: int = 30
-    ) -> dict[str, Any]:
+    def get_cost_analytics(self, provider: str | None = None, days: int = 30) -> dict[str, Any]:
         """Get cost analytics data."""
         if not self.cost_manager:
             return {"error": "Cost management not available"}
@@ -347,15 +333,9 @@ class LLMDashboardAPI:
         alerts = self.get_alerts()
 
         # Determine overall system status
-        if (
-            health_summary.get("overall_status") == "healthy"
-            and alerts["critical_alerts"] == 0
-        ):
+        if health_summary.get("overall_status") == "healthy" and alerts["critical_alerts"] == 0:
             system_status = "operational"
-        elif (
-            health_summary.get("overall_status") == "degraded"
-            or alerts["critical_alerts"] > 0
-        ):
+        elif health_summary.get("overall_status") == "degraded" or alerts["critical_alerts"] > 0:
             system_status = "degraded"
         else:
             system_status = "unhealthy"
@@ -377,9 +357,7 @@ class LLMDashboardAPI:
             },
         }
 
-    def _generate_mock_historical_data(
-        self, provider: str, hours: int
-    ) -> list[dict[str, Any]]:
+    def _generate_mock_historical_data(self, provider: str, hours: int) -> list[dict[str, Any]]:
         """Generate mock historical data for charts."""
         # In a real implementation, this would query time-series data
         data_points = []

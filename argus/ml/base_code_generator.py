@@ -54,9 +54,7 @@ class BaseCodeGenerator(ABC):
         """Load domain-specific validation rules"""
         pass
 
-    async def generate_code_fix(
-        self, issue_context: IssueContext
-    ) -> CodeGenerationResult:
+    async def generate_code_fix(self, issue_context: IssueContext) -> CodeGenerationResult:
         """Generate code fix using our existing prompt system"""
         start_time = time.time()
 
@@ -78,9 +76,7 @@ class BaseCodeGenerator(ABC):
                 code=patterned_code,
                 language=self._detect_language(patterned_code),
                 file_path=(
-                    issue_context.affected_files[0]
-                    if issue_context.affected_files
-                    else "unknown"
+                    issue_context.affected_files[0] if issue_context.affected_files else "unknown"
                 ),
                 original_issue=str(issue_context.issue_type),
                 fix_description=f"Fix for {issue_context.issue_type.value} issue",
@@ -134,9 +130,7 @@ class BaseCodeGenerator(ABC):
 
             # If validation fails, return original code
             if not validation_result.is_valid:
-                self.logger.warning(
-                    f"Enhanced code validation failed: {validation_result.issues}"
-                )
+                self.logger.warning(f"Enhanced code validation failed: {validation_result.issues}")
                 return code_patch
 
             return enhanced_code
@@ -145,9 +139,7 @@ class BaseCodeGenerator(ABC):
             self.logger.error(f"Code enhancement failed: {e}")
             return code_patch
 
-    async def enhance_fix_description(
-        self, description: str, context: PromptContext
-    ) -> str:
+    async def enhance_fix_description(self, description: str, context: PromptContext) -> str:
         """
         Enhance the fix description using domain-specific knowledge.
 
@@ -176,9 +168,7 @@ class BaseCodeGenerator(ABC):
         """Get logger for this generator"""
         return logging.getLogger(f"{self.__class__.__name__}")
 
-    async def _generate_domain_specific_prompt(
-        self, issue_context: IssueContext
-    ) -> str:
+    async def _generate_domain_specific_prompt(self, issue_context: IssueContext) -> str:
         """Generate domain-specific prompt using our existing system"""
         if not self.context:
             raise ValueError("Context not set. Call set_context() first.")
@@ -191,8 +181,8 @@ class BaseCodeGenerator(ABC):
 Your task is to generate code to fix the following issue:
 
 ISSUE TYPE: {issue_context.issue_type.value}
-AFFECTED FILES: {', '.join(issue_context.affected_files)}
-ERROR PATTERNS: {', '.join(issue_context.error_patterns)}
+AFFECTED FILES: {", ".join(issue_context.affected_files)}
+ERROR PATTERNS: {", ".join(issue_context.error_patterns)}
 SEVERITY: {issue_context.severity_level}
 COMPLEXITY: {issue_context.complexity_score}
 
@@ -210,9 +200,7 @@ Return only the code fix, no explanations."""
 
         return prompt
 
-    async def _generate_initial_code(
-        self, prompt: str, issue_context: IssueContext
-    ) -> str:
+    async def _generate_initial_code(self, prompt: str, issue_context: IssueContext) -> str:
         """Generate initial code using the main model"""
         if not self.context:
             raise ValueError("Context not set. Call set_context() first.")
@@ -399,9 +387,7 @@ def fix_{domain}_issue():
         """Generate tests for the code fix"""
         # This is a simplified implementation
         # In practice, this would use our existing prompt system to generate tests
-        return (
-            f"# Tests for {code_fix.file_path}\n# TODO: Implement comprehensive tests"
-        )
+        return f"# Tests for {code_fix.file_path}\n# TODO: Implement comprehensive tests"
 
     async def _generate_documentation(self, code_fix: CodeFix) -> str:
         """Generate documentation for the code fix"""

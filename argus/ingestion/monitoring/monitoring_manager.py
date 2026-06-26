@@ -11,6 +11,7 @@ This module provides a unified interface for all monitoring capabilities:
 """
 
 import asyncio
+import contextlib
 from dataclasses import dataclass
 from datetime import datetime
 import logging
@@ -110,10 +111,8 @@ class MonitoringManager:
 
         if self._startup_task:
             self._startup_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._startup_task
-            except asyncio.CancelledError:
-                pass
 
         # Stop all components
         stop_tasks = []
@@ -253,13 +252,9 @@ class MonitoringManager:
         # Also record in metrics collector
         if self.metrics_collector:
             if success:
-                self.metrics_collector.increment_counter(
-                    f"{component}_{operation}_success_total"
-                )
+                self.metrics_collector.increment_counter(f"{component}_{operation}_success_total")
             else:
-                self.metrics_collector.increment_counter(
-                    f"{component}_{operation}_failure_total"
-                )
+                self.metrics_collector.increment_counter(f"{component}_{operation}_failure_total")
 
             self.metrics_collector.record_histogram(
                 f"{component}_{operation}_duration_seconds",
@@ -373,7 +368,5 @@ async def create_system_alert(
     """Create a system alert."""
     manager = get_global_monitoring_manager()
     if manager:
-        return await manager.create_alert(
-            title=title, message=message, level=level, source=source
-        )
+        return await manager.create_alert(title=title, message=message, level=level, source=source)
     return None

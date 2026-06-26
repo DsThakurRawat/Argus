@@ -100,8 +100,8 @@ class TestOptimizedLLMService:
                 fallback_models=[],
             )
 
-            optimized_service.performance_optimizer.get_optimized_model_selection = (
-                AsyncMock(return_value=(mock_model, MagicMock()))
+            optimized_service.performance_optimizer.get_optimized_model_selection = AsyncMock(
+                return_value=(mock_model, MagicMock())
             )
 
             result = await optimized_service.generate_structured(
@@ -154,8 +154,8 @@ class TestOptimizedLLMService:
                 fallback_models=[],
             )
 
-            optimized_service.performance_optimizer.get_optimized_model_selection = (
-                AsyncMock(return_value=(mock_model, MagicMock()))
+            optimized_service.performance_optimizer.get_optimized_model_selection = AsyncMock(
+                return_value=(mock_model, MagicMock())
             )
 
             result = await optimized_service.generate_text(
@@ -199,22 +199,18 @@ class TestOptimizedLLMService:
                 ),
             ]
 
-            optimized_service.performance_optimizer.optimized_registry.get_models_by_type = AsyncMock(
-                return_value=mock_models
+            optimized_service.performance_optimizer.optimized_registry.get_models_by_type = (
+                AsyncMock(return_value=mock_models)
             )
 
-            models = await optimized_service.get_available_models(
-                model_type=ModelType.SMART
-            )
+            models = await optimized_service.get_available_models(model_type=ModelType.SMART)
 
             assert len(models) == 2
             assert "model1" in models
             assert "model2" in models
 
     @pytest.mark.asyncio
-    async def test_batch_generate_structured(
-        self, optimized_service, mock_enhanced_service
-    ):
+    async def test_batch_generate_structured(self, optimized_service, mock_enhanced_service):
         """Test batch structured generation."""
         with patch.object(optimized_service, "_enhanced_service_loader") as mock_loader:
             mock_loader.get.return_value = mock_enhanced_service
@@ -239,9 +235,7 @@ class TestOptimizedLLMService:
             assert all(isinstance(result, TestResponse) for result in results)
 
     @pytest.mark.asyncio
-    async def test_batch_generate_structured_without_optimizations(
-        self, mock_llm_config
-    ):
+    async def test_batch_generate_structured_without_optimizations(self, mock_llm_config):
         """Test batch generation without optimizations (sequential fallback)."""
         service = OptimizedLLMService(mock_llm_config, enable_optimizations=False)
 
@@ -291,12 +285,8 @@ class TestOptimizedLLMService:
     async def test_clear_caches(self, optimized_service):
         """Test clearing caches."""
         # Mock the cache clear methods
-        optimized_service.performance_optimizer.model_selection_cache._cache.clear = (
-            AsyncMock()
-        )
-        optimized_service.performance_optimizer.optimized_registry._model_cache.clear = (
-            AsyncMock()
-        )
+        optimized_service.performance_optimizer.model_selection_cache._cache.clear = AsyncMock()
+        optimized_service.performance_optimizer.optimized_registry._model_cache.clear = AsyncMock()
 
         await optimized_service.clear_caches()
 
@@ -322,9 +312,7 @@ class TestOptimizedLLMService:
                     fallback_models=[],
                 )
             )
-            mock_enhanced_service.model_scorer.score_model = MagicMock(
-                return_value=MagicMock()
-            )
+            mock_enhanced_service.model_scorer.score_model = MagicMock(return_value=MagicMock())
             mock_loader.get.return_value = mock_enhanced_service
 
             await optimized_service.warmup()
@@ -352,8 +340,8 @@ class TestOptimizedLLMService:
                 fallback_models=[],
             )
 
-            optimized_service.performance_optimizer.get_optimized_model_selection = (
-                AsyncMock(return_value=(mock_model, MagicMock()))
+            optimized_service.performance_optimizer.get_optimized_model_selection = AsyncMock(
+                return_value=(mock_model, MagicMock())
             )
 
             # Perform an operation
@@ -418,9 +406,7 @@ class TestPerformanceBenchmarks:
         OptimizedLLMService(mock_llm_config, enable_optimizations=True)
         init_time = (time.time() - start_time) * 1000
 
-        assert (
-            init_time < 10.0
-        ), f"Initialization took {init_time:.2f}ms, expected < 10ms"
+        assert init_time < 10.0, f"Initialization took {init_time:.2f}ms, expected < 10ms"
 
     @pytest.mark.asyncio
     async def test_operation_overhead(self, mock_llm_config):
@@ -461,16 +447,14 @@ class TestPerformanceBenchmarks:
             operation_time = (time.time() - start_time) * 1000
 
             # The overhead should be minimal (excluding the actual LLM call)
-            assert (
-                operation_time < 10.0
-            ), f"Operation overhead was {operation_time:.2f}ms, expected < 10ms"
+            assert operation_time < 10.0, (
+                f"Operation overhead was {operation_time:.2f}ms, expected < 10ms"
+            )
 
     @pytest.mark.asyncio
     async def test_batch_processing_performance(self, mock_llm_config):
         """Test that batch processing is efficient."""
-        service = OptimizedLLMService(
-            mock_llm_config, enable_optimizations=True, batch_size=10
-        )
+        service = OptimizedLLMService(mock_llm_config, enable_optimizations=True, batch_size=10)
 
         with patch.object(service, "_enhanced_service_loader") as mock_loader:
             mock_enhanced_service = AsyncMock()
@@ -484,9 +468,7 @@ class TestPerformanceBenchmarks:
                 side_effect=lambda func, *args, **kwargs: func(*args, **kwargs)
             )
 
-            requests = [
-                {"prompt": f"Test prompt {i}", "options": {}} for i in range(20)
-            ]
+            requests = [{"prompt": f"Test prompt {i}", "options": {}} for i in range(20)]
 
             start_time = time.time()
             results = await service.batch_generate_structured(
@@ -497,6 +479,4 @@ class TestPerformanceBenchmarks:
 
             assert len(results) == 20
             # Batch processing should be more efficient than sequential
-            assert (
-                batch_time < 100.0
-            ), f"Batch processing took {batch_time:.2f}ms, expected < 100ms"
+            assert batch_time < 100.0, f"Batch processing took {batch_time:.2f}ms, expected < 100ms"

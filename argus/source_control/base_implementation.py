@@ -45,15 +45,9 @@ class BaseSourceControlProvider(SourceControlProvider):
         self._error_handling_components = None
         # Initialize resilient operation manager (legacy support)
         circuit_config = CircuitBreakerConfig(
-            failure_threshold=self._retry_config.get(
-                "circuit_breaker_failure_threshold", 5
-            ),
-            recovery_timeout=self._retry_config.get(
-                "circuit_breaker_recovery_timeout", 60.0
-            ),
-            success_threshold=self._retry_config.get(
-                "circuit_breaker_success_threshold", 3
-            ),
+            failure_threshold=self._retry_config.get("circuit_breaker_failure_threshold", 5),
+            recovery_timeout=self._retry_config.get("circuit_breaker_recovery_timeout", 60.0),
+            success_threshold=self._retry_config.get("circuit_breaker_success_threshold", 3),
             timeout=self._timeout_config.get("default", 30.0),
         )
         retry_config = RetryConfig(
@@ -71,15 +65,11 @@ class BaseSourceControlProvider(SourceControlProvider):
         enable_monitoring = self.get_config_value("monitoring", {}).get("enabled", True)
         if enable_monitoring:
             self.monitoring_manager = MonitoringManager(
-                enable_metrics=self.get_config_value("monitoring", {}).get(
-                    "enable_metrics", True
-                ),
+                enable_metrics=self.get_config_value("monitoring", {}).get("enable_metrics", True),
                 enable_health_checks=self.get_config_value("monitoring", {}).get(
                     "enable_health_checks", True
                 ),
-                enable_alerts=self.get_config_value("monitoring", {}).get(
-                    "enable_alerts", True
-                ),
+                enable_alerts=self.get_config_value("monitoring", {}).get("enable_alerts", True),
             )
             self.metrics_collector = MetricsCollector()
             self.operation_metrics = OperationMetrics(self.metrics_collector)
@@ -107,12 +97,12 @@ class BaseSourceControlProvider(SourceControlProvider):
             operation_name, func, *args, **kwargs
         )
 
-    def _initialize_error_handling(self, provider_name: str, config: dict[str, Any] | None = None) -> None:
+    def _initialize_error_handling(
+        self, provider_name: str, config: dict[str, Any] | None = None
+    ) -> None:
         """Initialize the advanced error handling system for a specific provider."""
         try:
-            self._error_handling_components = create_provider_error_handling(
-                provider_name, config
-            )
+            self._error_handling_components = create_provider_error_handling(provider_name, config)
             self.logger.info(f"Error handling system initialized for {provider_name}")
         except Exception as e:
             self.logger.error(f"Failed to initialize error handling for {provider_name}: {e}")
@@ -144,9 +134,7 @@ class BaseSourceControlProvider(SourceControlProvider):
 
         return False
 
-    async def retry_operation(
-        self, operation: str, max_retries: int | None = None
-    ) -> bool:
+    async def retry_operation(self, operation: str, max_retries: int | None = None) -> bool:
         """Retry a failed operation with exponential backoff."""
         if max_retries is None:
             max_retries = self._retry_config.get("max_retries", 3)
@@ -171,9 +159,7 @@ class BaseSourceControlProvider(SourceControlProvider):
             except Exception as e:
                 self.logger.warning(f"Retry attempt {attempt + 1} failed: {e}")
                 if attempt == (max_retries or 0) - 1:
-                    self.logger.error(
-                        f"All retry attempts failed for operation {operation}"
-                    )
+                    self.logger.error(f"All retry attempts failed for operation {operation}")
                     return False
 
         return False
@@ -188,9 +174,7 @@ class BaseSourceControlProvider(SourceControlProvider):
         error_type = type(error).__name__
         return error_type in retryable_errors
 
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Default implementation for batch operations."""
         results = []
 
@@ -230,9 +214,7 @@ class BaseSourceControlProvider(SourceControlProvider):
 
         if operation_type == "update_file":
             if operation.file_path is None or operation.content is None:
-                raise ValueError(
-                    "Path and content are required for update_file operation"
-                )
+                raise ValueError("Path and content are required for update_file operation")
             return await self.apply_remediation(
                 operation.file_path, operation.content, "Batch update"
             )
@@ -240,11 +222,7 @@ class BaseSourceControlProvider(SourceControlProvider):
             # This would need to be implemented by subclasses
             raise NotImplementedError("Delete file operation not implemented")
         elif operation_type == "create_branch":
-            name = (
-                operation.additional_params.get("name")
-                if operation.additional_params
-                else None
-            )
+            name = operation.additional_params.get("name") if operation.additional_params else None
             if name is None:
                 raise ValueError("Branch name is required for create_branch operation")
             return await self.create_branch(
@@ -283,9 +261,7 @@ class BaseSourceControlProvider(SourceControlProvider):
             self.logger.error(f"Basic health check failed: {e}")
             return resilient_health
 
-    async def check_conflicts(
-        self, path: str, content: str, branch: str | None = None
-    ) -> bool:
+    async def check_conflicts(self, path: str, content: str, branch: str | None = None) -> bool:
         """Default implementation for conflict checking."""
         # This is a simplified implementation
         # Real implementations would check for actual merge conflicts
@@ -296,9 +272,7 @@ class BaseSourceControlProvider(SourceControlProvider):
             # If we can't read the file, assume no conflicts
             return False
 
-    async def resolve_conflicts(
-        self, path: str, content: str, strategy: str = "manual"
-    ) -> bool:
+    async def resolve_conflicts(self, path: str, content: str, strategy: str = "manual") -> bool:
         """Default implementation for conflict resolution."""
         if strategy == "manual":
             self.logger.warning(f"Manual conflict resolution required for {path}")
@@ -306,9 +280,7 @@ class BaseSourceControlProvider(SourceControlProvider):
         elif strategy == "auto":
             # Attempt automatic resolution
             try:
-                await self.apply_remediation(
-                    path, content, f"Auto-resolve conflicts in {path}"
-                )
+                await self.apply_remediation(path, content, f"Auto-resolve conflicts in {path}")
                 return True
             except Exception as e:
                 self.logger.error(f"Auto conflict resolution failed: {e}")
@@ -364,9 +336,7 @@ class BaseSourceControlProvider(SourceControlProvider):
             additional_info=additional_info or {},
         )
 
-    def _log_operation(
-        self, operation: str, success: bool, details: dict[str, Any] | None = None
-    ):
+    def _log_operation(self, operation: str, success: bool, details: dict[str, Any] | None = None):
         """Log an operation with details."""
         level = logging.INFO if success else logging.ERROR
         message = f"Operation '{operation}' {'succeeded' if success else 'failed'}"

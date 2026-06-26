@@ -49,10 +49,6 @@ class CapabilityRequirements(BaseModel):
             return True  # Empty requirements are valid
 
         # Check for duplicate capabilities
-        if len(self.required_capabilities) != len(set(self.required_capabilities)):
-            return False
-
         # Validate custom criteria if needed
         # Add more validation logic as requirements evolve
-
-        return True
+        return len(self.required_capabilities) == len(set(self.required_capabilities))

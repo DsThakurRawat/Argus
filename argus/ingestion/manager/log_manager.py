@@ -139,9 +139,7 @@ class LogManager:
                 async for log_entry in log_iterator:
                     # Check backpressure
                     if not await self.backpressure_manager.can_accept():
-                        logger.warning(
-                            f"Backpressure detected, dropping log from '{source_name}'"
-                        )
+                        logger.warning(f"Backpressure detected, dropping log from '{source_name}'")
                         continue
 
                     # Set source information
@@ -155,9 +153,7 @@ class LogManager:
                             else:
                                 self.callback(log_entry)
                         except Exception as e:
-                            logger.error(
-                                f"Error in callback for source '{source_name}': {e}"
-                            )
+                            logger.error(f"Error in callback for source '{source_name}': {e}")
 
                     # Update backpressure stats
                     await self.backpressure_manager.increment_queue()
@@ -166,8 +162,10 @@ class LogManager:
                 # For file system sources, wait a bit before checking again
                 try:
                     source_config = source.get_config()
-                    if (hasattr(source_config, "source_type") and
-                        source_config.source_type.value == "file_system"):
+                    if (
+                        hasattr(source_config, "source_type")
+                        and source_config.source_type.value == "file_system"
+                    ):
                         await asyncio.sleep(1)
                 except Exception:
                     # If we can't get config, continue without the sleep
@@ -177,9 +175,7 @@ class LogManager:
                 logger.error(f"Error processing logs from source '{source_name}': {e}")
                 # Handle error through source's error handler
                 try:
-                    await source.handle_error(
-                        e, {"source": source_name, "operation": "get_logs"}
-                    )
+                    await source.handle_error(e, {"source": source_name, "operation": "get_logs"})
                 except Exception as handler_error:
                     logger.error(
                         f"Error handler failed for source '{source_name}': {handler_error}"
@@ -195,9 +191,7 @@ class LogManager:
                 try:
                     health = await source.health_check()
                     if not health.is_healthy:
-                        logger.warning(
-                            f"Source '{source_name}' is unhealthy: {health.last_error}"
-                        )
+                        logger.warning(f"Source '{source_name}' is unhealthy: {health.last_error}")
                 except Exception as e:
                     logger.error(f"Health check failed for source '{source_name}': {e}")
 
@@ -212,9 +206,7 @@ class LogManager:
                 health = await source.health_check()
                 health_status[source_name] = health
             except Exception as e:
-                health_status[source_name] = SourceHealth(
-                    is_healthy=False, last_error=str(e)
-                )
+                health_status[source_name] = SourceHealth(is_healthy=False, last_error=str(e))
         return health_status
 
     async def get_metrics(self) -> dict[str, Any]:

@@ -70,17 +70,13 @@ class TestLocalFileOperationsConfig:
             config=default_config,
         )
 
-    def test_initialization_with_config(
-        self, file_operations: str, default_config: str
-    ) -> None:
+    def test_initialization_with_config(self, file_operations: str, default_config: str) -> None:
         """Test initialization with configuration."""
         assert file_operations.config == default_config
         assert file_operations.provider_type == "local"
         assert file_operations.operation_name == "file_operations"
 
-    def test_initialization_without_config(
-        self, temp_dir: str, mock_logger: str
-    ) -> None:
+    def test_initialization_without_config(self, temp_dir: str, mock_logger: str) -> None:
         """Test initialization without configuration (should create default)."""
         file_ops = LocalFileOperations(
             root_path=temp_dir,
@@ -238,7 +234,9 @@ class TestLocalFileOperationsConfig:
             "resilient_manager"
         ].execute_with_retry = mock_execute_with_retry
 
-        patch_content = "--- original\n+++ modified\n@@ -1,1 +1,1 @@\n-Original content\n+Modified content"
+        patch_content = (
+            "--- original\n+++ modified\n@@ -1,1 +1,1 @@\n-Original content\n+Modified content"
+        )
         result = await file_operations.apply_patch(patch_content, "test.txt")
 
         assert result is True
@@ -374,6 +372,4 @@ class TestLocalFileOperationsConfig:
             return "slow_result"
 
         with pytest.raises(asyncio.TimeoutError):
-            await file_ops._execute_with_error_handling(
-                "slow_operation", slow_operation, "file"
-            )
+            await file_ops._execute_with_error_handling("slow_operation", slow_operation, "file")

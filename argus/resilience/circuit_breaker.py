@@ -87,10 +87,7 @@ class CircuitBreaker:
         self._total_requests += 1
 
         # Check if circuit should be opened
-        if (
-            self._state == CircuitState.CLOSED
-            and self._failure_count >= self.failure_threshold
-        ):
+        if self._state == CircuitState.CLOSED and self._failure_count >= self.failure_threshold:
             self._open_circuit()
 
         # Check if circuit should be half-opened for testing
@@ -119,9 +116,7 @@ class CircuitBreaker:
                 raise e
             else:
                 # Unexpected exception - don't count as failure
-                logger.warning(
-                    f"Unexpected exception in circuit breaker '{self.name}': {e}"
-                )
+                logger.warning(f"Unexpected exception in circuit breaker '{self.name}': {e}")
                 raise e
 
     def _should_attempt_reset(self) -> bool:
@@ -137,9 +132,7 @@ class CircuitBreaker:
         self._last_failure_time = time.time()
         self._circuit_opened_count += 1
 
-        logger.warning(
-            f"Circuit breaker '{self.name}' opened after {self._failure_count} failures"
-        )
+        logger.warning(f"Circuit breaker '{self.name}' opened after {self._failure_count} failures")
 
     def _half_open_circuit(self) -> None:
         """Move circuit to half-open state for testing."""
@@ -196,9 +189,7 @@ class CircuitBreaker:
     def get_stats(self) -> dict[str, Any]:
         """Get circuit breaker statistics."""
         success_rate = (
-            self._total_successes / self._total_requests * 100
-            if self._total_requests > 0
-            else 0
+            self._total_successes / self._total_requests * 100 if self._total_requests > 0 else 0
         )
 
         return {

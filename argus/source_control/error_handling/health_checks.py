@@ -21,9 +21,7 @@ class HealthCheckManager:
         self.resilient_manager = resilient_manager
         self.logger = logging.getLogger("HealthCheckManager")
 
-    def get_circuit_breaker_health(
-        self, circuit_name: str | None = None
-    ) -> dict[str, Any]:
+    def get_circuit_breaker_health(self, circuit_name: str | None = None) -> dict[str, Any]:
         """Get health status for circuit breakers."""
         if circuit_name:
             if circuit_name not in self.resilient_manager.circuit_breakers:
@@ -37,9 +35,7 @@ class HealthCheckManager:
             stats = circuit.get_stats()
 
             return {
-                "status": (
-                    "healthy" if circuit.state != CircuitState.OPEN else "unhealthy"
-                ),
+                "status": ("healthy" if circuit.state != CircuitState.OPEN else "unhealthy"),
                 "circuit_name": circuit_name,
                 "state": circuit.state.value,
                 "stats": stats,
@@ -52,9 +48,7 @@ class HealthCheckManager:
 
         for name, circuit in self.resilient_manager.circuit_breakers.items():
             stats = circuit.get_stats()
-            is_healthy = (
-                circuit.state != CircuitState.OPEN and stats["failure_rate"] <= 0.5
-            )
+            is_healthy = circuit.state != CircuitState.OPEN and stats["failure_rate"] <= 0.5
 
             if not is_healthy:
                 all_circuits_healthy = False
@@ -72,9 +66,7 @@ class HealthCheckManager:
         return {
             "status": "healthy" if all_circuits_healthy else "unhealthy",
             "total_circuits": len(self.resilient_manager.circuit_breakers),
-            "healthy_circuits": sum(
-                1 for ch in circuit_health if ch["status"] == "healthy"
-            ),
+            "healthy_circuits": sum(1 for ch in circuit_health if ch["status"] == "healthy"),
             "circuits": circuit_health,
             "message": (
                 "All circuit breakers are healthy"
@@ -83,9 +75,7 @@ class HealthCheckManager:
             ),
         }
 
-    def get_operation_type_health(
-        self, operation_type: str | None = None
-    ) -> dict[str, Any]:
+    def get_operation_type_health(self, operation_type: str | None = None) -> dict[str, Any]:
         """Get health status for operation types."""
         operation_type_stats = {}
 
@@ -104,9 +94,7 @@ class HealthCheckManager:
                 }
 
             stats = circuit.get_stats()
-            is_healthy = (
-                circuit.state != CircuitState.OPEN and stats["failure_rate"] <= 0.5
-            )
+            is_healthy = circuit.state != CircuitState.OPEN and stats["failure_rate"] <= 0.5
 
             operation_type_stats[op_type]["total"] += 1
             if is_healthy:
@@ -133,9 +121,7 @@ class HealthCheckManager:
                 }
 
             stats = operation_type_stats[operation_type]
-            is_healthy = (
-                stats["open_circuits"] == 0 and stats["healthy"] == stats["total"]
-            )
+            is_healthy = stats["open_circuits"] == 0 and stats["healthy"] == stats["total"]
 
             return {
                 "status": "healthy" if is_healthy else "unhealthy",
@@ -152,9 +138,7 @@ class HealthCheckManager:
         type_health = []
 
         for op_type, stats in operation_type_stats.items():
-            is_healthy = (
-                stats["open_circuits"] == 0 and stats["healthy"] == stats["total"]
-            )
+            is_healthy = stats["open_circuits"] == 0 and stats["healthy"] == stats["total"]
 
             if not is_healthy:
                 all_types_healthy = False
@@ -173,9 +157,7 @@ class HealthCheckManager:
         return {
             "status": "healthy" if all_types_healthy else "unhealthy",
             "total_operation_types": len(operation_type_stats),
-            "healthy_operation_types": sum(
-                1 for th in type_health if th["status"] == "healthy"
-            ),
+            "healthy_operation_types": sum(1 for th in type_health if th["status"] == "healthy"),
             "operation_types": type_health,
             "message": (
                 "All operation types are healthy"
@@ -190,8 +172,7 @@ class HealthCheckManager:
         operation_type_health = self.get_operation_type_health()
 
         overall_healthy = (
-            circuit_health["status"] == "healthy"
-            and operation_type_health["status"] == "healthy"
+            circuit_health["status"] == "healthy" and operation_type_health["status"] == "healthy"
         )
 
         return {
@@ -205,9 +186,7 @@ class HealthCheckManager:
             ),
         }
 
-    def _get_circuit_health_message(
-        self, state: CircuitState, stats: dict[str, Any]
-    ) -> str:
+    def _get_circuit_health_message(self, state: CircuitState, stats: dict[str, Any]) -> str:
         """Get a descriptive message for circuit health."""
         if state == CircuitState.OPEN:
             return f"Circuit is open (failure rate: {stats['failure_rate']:.2%})"

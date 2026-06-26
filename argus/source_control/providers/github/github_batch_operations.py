@@ -34,9 +34,7 @@ class GitHubBatchOperations:
         self.logger = logger
         self.error_handling_components = error_handling_components
 
-    async def _execute_with_error_handling(
-        self, operation_name: str, func, *args, **kwargs
-    ):
+    async def _execute_with_error_handling(self, operation_name: str, func, *args, **kwargs):
         """Execute an operation with error handling if available."""
         if self.error_handling_components:
             resilient_manager = self.error_handling_components.get("resilient_manager")
@@ -48,9 +46,7 @@ class GitHubBatchOperations:
         # Fall back to direct execution
         return await func(*args, **kwargs)
 
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute multiple operations in batch."""
 
         async def _batch():
@@ -62,14 +58,14 @@ class GitHubBatchOperations:
                         self.repo.create_file(
                             path=operation.file_path,
                             message=(
-                                operation.additional_params.get(
-                                    "message", "Create file"
-                                )
+                                operation.additional_params.get("message", "Create file")
                                 if operation.additional_params
                                 else "Create file"
                             ),
                             content=operation.content or "",
-                            branch=operation.additional_params.get("branch") if operation.additional_params else None,  # type: ignore
+                            branch=operation.additional_params.get("branch")
+                            if operation.additional_params
+                            else None,  # type: ignore
                         )
                         results.append(
                             OperationResult(
@@ -100,15 +96,15 @@ class GitHubBatchOperations:
                         self.repo.update_file(
                             path=operation.file_path,
                             message=(
-                                operation.additional_params.get(
-                                    "message", "Update file"
-                                )
+                                operation.additional_params.get("message", "Update file")
                                 if operation.additional_params
                                 else "Update file"
                             ),
                             content=operation.content or "",
                             sha=file_obj.sha,  # type: ignore
-                            branch=operation.additional_params.get("branch") if operation.additional_params else None,  # type: ignore
+                            branch=operation.additional_params.get("branch")
+                            if operation.additional_params
+                            else None,  # type: ignore
                         )
                         results.append(
                             OperationResult(
@@ -139,14 +135,14 @@ class GitHubBatchOperations:
                         self.repo.delete_file(
                             path=operation.file_path,
                             message=(
-                                operation.additional_params.get(
-                                    "message", "Delete file"
-                                )
+                                operation.additional_params.get("message", "Delete file")
                                 if operation.additional_params
                                 else "Delete file"
                             ),
                             sha=file_obj.sha,  # type: ignore
-                            branch=operation.additional_params.get("branch") if operation.additional_params else None,  # type: ignore
+                            branch=operation.additional_params.get("branch")
+                            if operation.additional_params
+                            else None,  # type: ignore
                         )
                         results.append(
                             OperationResult(

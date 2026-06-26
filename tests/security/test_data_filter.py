@@ -281,9 +281,7 @@ class TestDataFilter:
 
     def test_remove_rule_nonexistent(self, data_filter: str) -> None:
         """Test removing a non-existent rule."""
-        result = data_filter.remove_rule(
-            SensitiveDataType.CUSTOM, r"nonexistent_pattern"
-        )
+        result = data_filter.remove_rule(SensitiveDataType.CUSTOM, r"nonexistent_pattern")
         assert result is False
 
     def test_enable_rule(self, data_filter: str) -> None:
@@ -320,9 +318,7 @@ class TestDataFilter:
         api_key_rules = data_filter.get_rules_by_type(SensitiveDataType.API_KEY)
 
         assert len(api_key_rules) > 0
-        assert all(
-            rule.data_type == SensitiveDataType.API_KEY for rule in api_key_rules
-        )
+        assert all(rule.data_type == SensitiveDataType.API_KEY for rule in api_key_rules)
 
     def test_get_enabled_rules(self, data_filter: str) -> None:
         """Test getting enabled rules."""

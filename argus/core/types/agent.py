@@ -63,9 +63,7 @@ CoordinationEvent: TypeAlias = str
 # Workflow types
 WorkflowId: TypeAlias = str
 WorkflowStep: TypeAlias = str
-WorkflowStatus: TypeAlias = (
-    str  # 'pending', 'running', 'completed', 'failed', 'cancelled'
-)
+WorkflowStatus: TypeAlias = str  # 'pending', 'running', 'completed', 'failed', 'cancelled'
 
 
 # Agent protocols
@@ -203,9 +201,7 @@ class LoggableAgent(Protocol):
 class TriageAgent(BaseAgent, Protocol):
     """Protocol for triage agents."""
 
-    def triage_log(
-        self, log_content: Content, context: AgentContext
-    ) -> "TriageResponse":
+    def triage_log(self, log_content: Content, context: AgentContext) -> "TriageResponse":
         """Triage a log entry."""
         ...
 
@@ -213,9 +209,7 @@ class TriageAgent(BaseAgent, Protocol):
 class AnalysisAgent(BaseAgent, Protocol):
     """Protocol for analysis agents."""
 
-    def analyze_patterns(
-        self, data: Content, context: AgentContext
-    ) -> "AnalysisResponse":
+    def analyze_patterns(self, data: Content, context: AgentContext) -> "AnalysisResponse":
         """Analyze patterns in data."""
         ...
 
@@ -223,9 +217,7 @@ class AnalysisAgent(BaseAgent, Protocol):
 class RemediationAgent(BaseAgent, Protocol):
     """Protocol for remediation agents."""
 
-    def generate_remediation(
-        self, issue: Content, context: AgentContext
-    ) -> "RemediationResponse":
+    def generate_remediation(self, issue: Content, context: AgentContext) -> "RemediationResponse":
         """Generate remediation actions."""
         ...
 
@@ -293,7 +285,7 @@ def create_agent_context(
     user_id: UserId | None = None,
     session_id: SessionId | None = None,
     tenant_id: str | None = None,
-    **kwargs: Any
+    **kwargs: Any,
 ) -> AgentContext:
     """
     Create a standardized agent context.
@@ -342,10 +334,7 @@ def validate_agent_request(request: AgentRequest) -> bool:
             return False
 
         # Validate request type
-        if request.request_type not in ["triage", "analysis", "remediation"]:
-            return False
-
-        return True
+        return request.request_type in ["triage", "analysis", "remediation"]
     except (AttributeError, TypeError):
         return False
 
@@ -374,9 +363,6 @@ def validate_agent_response(response: AgentResponse) -> bool:
             return False
 
         # Validate response type
-        if response.response_type not in ["success", "error", "partial"]:
-            return False
-
-        return True
+        return response.response_type in ["success", "error", "partial"]
     except (AttributeError, TypeError):
         return False

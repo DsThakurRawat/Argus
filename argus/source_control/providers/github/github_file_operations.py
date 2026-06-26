@@ -38,9 +38,7 @@ class GitHubFileOperations:
         self.logger = logger
         self.error_handling_components = error_handling_components
 
-    async def _execute_with_error_handling(
-        self, operation_name: str, func, *args, **kwargs
-    ):
+    async def _execute_with_error_handling(self, operation_name: str, func, *args, **kwargs):
         """Execute an operation with error handling if available."""
         if self.error_handling_components:
             resilient_manager = self.error_handling_components.get("resilient_manager")
@@ -104,10 +102,7 @@ class GitHubFileOperations:
                         additional_info={},
                     )
 
-                if hasattr(contents, "sha"):
-                    sha = contents.sha
-                else:
-                    sha = None
+                sha = contents.sha if hasattr(contents, "sha") else None
 
                 # Update file with remediation
                 if sha:
@@ -193,8 +188,7 @@ class GitHubFileOperations:
                         is_binary=contents.type == "file" and contents.size > 0,  # type: ignore
                         last_modified=(
                             contents.last_modified  # type: ignore
-                            if hasattr(contents, "last_modified")
-                            and contents.last_modified
+                            if hasattr(contents, "last_modified") and contents.last_modified
                             else None
                         ),
                     )
@@ -211,9 +205,7 @@ class GitHubFileOperations:
 
         return await self._execute_with_error_handling("get_file_info", _get_info)
 
-    async def list_files(
-        self, path: str = "", ref: str | None = None
-    ) -> list[FileInfo]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[FileInfo]:
         """List files in a directory."""
         try:
 
@@ -235,8 +227,7 @@ class GitHubFileOperations:
                                     is_binary=item.type == "file" and item.size > 0,  # type: ignore
                                     last_modified=(
                                         item.last_modified  # type: ignore
-                                        if hasattr(item, "last_modified")
-                                        and item.last_modified
+                                        if hasattr(item, "last_modified") and item.last_modified
                                         else None
                                     ),
                                 )
@@ -251,8 +242,7 @@ class GitHubFileOperations:
                                 is_binary=contents.type == "file" and contents.size > 0,  # type: ignore
                                 last_modified=(
                                     contents.last_modified  # type: ignore
-                                    if hasattr(contents, "last_modified")
-                                    and contents.last_modified
+                                    if hasattr(contents, "last_modified") and contents.last_modified
                                     else None
                                 ),
                             )
@@ -295,13 +285,11 @@ class GitHubFileOperations:
                 try:
                     # Get current content
                     contents = self.repo.get_contents(file_path)
-                    if isinstance(contents, list):
-                        return False
 
                     # Apply patch (simplified - in real implementation, use patch library)
                     # This is a placeholder implementation
                     # current_content = base64.b64decode(contents.content).decode("utf-8")
-                    return True
+                    return not isinstance(contents, list)
                 except GithubException as e:
                     if e.status == 404:
                         return False

@@ -112,7 +112,7 @@ class LoggingConfig:
     # Handlers and Filters
     handlers: list[HandlerConfig] = field(default_factory=list)
     filters: list[dict[str, Any]] = field(default_factory=list)
-    
+
     # Alerting
     alerting: list[dict[str, Any]] = field(default_factory=list)
 
@@ -212,9 +212,7 @@ class LoggingConfig:
             ConfigurationError: If the handler configuration is invalid
         """
         if not handler.name:
-            raise ConfigurationError(
-                "Handler name cannot be empty", config_key="handler.name"
-            )
+            raise ConfigurationError("Handler name cannot be empty", config_key="handler.name")
 
         if not isinstance(handler.destination, OutputDestination):
             raise ConfigurationError(
@@ -396,9 +394,7 @@ class LoggingConfigManager:
                 handlers = []
                 for handler_dict in config_dict["handlers"]:
                     handler_dict = handler_dict.copy()
-                    handler_dict["destination"] = OutputDestination(
-                        handler_dict["destination"]
-                    )
+                    handler_dict["destination"] = OutputDestination(handler_dict["destination"])
                     handler_dict["level"] = LogLevel(handler_dict["level"])
                     handler_dict["format"] = LogFormat(handler_dict["format"])
                     handlers.append(HandlerConfig(**handler_dict))
@@ -406,9 +402,7 @@ class LoggingConfigManager:
 
             # Convert flow tracking
             if "flow_tracking" in config_dict:
-                config_dict["flow_tracking"] = FlowTrackingConfig(
-                    **config_dict["flow_tracking"]
-                )
+                config_dict["flow_tracking"] = FlowTrackingConfig(**config_dict["flow_tracking"])
 
             # Convert metrics
             if "metrics" in config_dict:

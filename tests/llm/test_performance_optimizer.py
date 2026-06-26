@@ -124,9 +124,7 @@ class TestModelSelectionCache:
         )
 
     @pytest.mark.asyncio
-    async def test_cache_selection(
-        self, selection_cache, mock_model_info, mock_selection_result
-    ):
+    async def test_cache_selection(self, selection_cache, mock_model_info, mock_selection_result):
         """Test caching and retrieving model selection results."""
         # Cache a selection result
         await selection_cache.cache_selection(
@@ -155,9 +153,7 @@ class TestModelSelectionCache:
         assert selection_result.score == 0.85
 
     @pytest.mark.asyncio
-    async def test_cache_stats(
-        self, selection_cache, mock_model_info, mock_selection_result
-    ):
+    async def test_cache_stats(self, selection_cache, mock_model_info, mock_selection_result):
         """Test cache statistics tracking."""
         # Perform some cache operations
         await selection_cache.cache_selection(
@@ -258,15 +254,11 @@ class TestOptimizedModelRegistry:
     @pytest.mark.asyncio
     async def test_get_models_by_provider(self, optimized_registry):
         """Test getting models by provider."""
-        gemini_models = await optimized_registry.get_models_by_provider(
-            ProviderType.GEMINI
-        )
+        gemini_models = await optimized_registry.get_models_by_provider(ProviderType.GEMINI)
         assert len(gemini_models) == 1
         assert gemini_models[0].name == "model1"
 
-        openai_models = await optimized_registry.get_models_by_provider(
-            ProviderType.OPENAI
-        )
+        openai_models = await optimized_registry.get_models_by_provider(ProviderType.OPENAI)
         assert len(openai_models) == 1
         assert openai_models[0].name == "model2"
 
@@ -333,15 +325,11 @@ class TestOptimizedModelScorer:
         weights = ScoringWeights()
 
         # First call should hit the base scorer
-        result1 = await optimized_scorer.score_model(
-            mock_model_info, mock_scoring_context, weights
-        )
+        result1 = await optimized_scorer.score_model(mock_model_info, mock_scoring_context, weights)
         assert result1.performance_score == 0.8
 
         # Second call should use cache
-        result2 = await optimized_scorer.score_model(
-            mock_model_info, mock_scoring_context, weights
-        )
+        result2 = await optimized_scorer.score_model(mock_model_info, mock_scoring_context, weights)
         assert result2.performance_score == 0.8
 
         # Base scorer should only be called once
@@ -560,16 +548,14 @@ class TestPerformanceOptimizer:
         mock_selector.select_model.return_value = mock_result
 
         # Test model selection
-        model_info, selection_result = (
-            await performance_optimizer.get_optimized_model_selection(
-                model_type=ModelType.SMART,
-                provider=None,
-                selection_strategy=SelectionStrategy.BEST_SCORE,
-                max_cost=None,
-                min_performance=None,
-                min_reliability=None,
-                model_selector=mock_selector,
-            )
+        model_info, selection_result = await performance_optimizer.get_optimized_model_selection(
+            model_type=ModelType.SMART,
+            provider=None,
+            selection_strategy=SelectionStrategy.BEST_SCORE,
+            max_cost=None,
+            min_performance=None,
+            min_reliability=None,
+            model_selector=mock_selector,
         )
 
         assert model_info.name == "test-model"
@@ -739,9 +725,5 @@ class TestPerformanceBenchmarks:
         cached_load_time = (time.time() - start_time) * 1000
 
         assert result == "loaded_value"
-        assert (
-            first_load_time < 10.0
-        ), f"First load took {first_load_time:.2f}ms, expected < 10ms"
-        assert (
-            cached_load_time < 1.0
-        ), f"Cached load took {cached_load_time:.2f}ms, expected < 1ms"
+        assert first_load_time < 10.0, f"First load took {first_load_time:.2f}ms, expected < 10ms"
+        assert cached_load_time < 1.0, f"Cached load took {cached_load_time:.2f}ms, expected < 1ms"

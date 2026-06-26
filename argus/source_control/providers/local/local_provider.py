@@ -44,13 +44,8 @@ class LocalProvider(BaseSourceControlProvider):
         self.backup_directory = getattr(self.repo_config, "backup_directory", None)
 
         # Initialize error handling system
-        if (
-            hasattr(self.repo_config, "error_handling")
-            and self.repo_config.error_handling
-        ):
-            self._initialize_error_handling(
-                "local", self.repo_config.error_handling.model_dump()
-            )
+        if hasattr(self.repo_config, "error_handling") and self.repo_config.error_handling:
+            self._initialize_error_handling("local", self.repo_config.error_handling.model_dump())
 
         # Initialize sub-modules with error handling components
         self.file_ops = LocalFileOperations(
@@ -136,9 +131,7 @@ class LocalProvider(BaseSourceControlProvider):
                         "file_operations", self.file_ops.get_file_content, path
                     )
                 except Exception as e:
-                    self.logger.error(
-                        f"Failed to get file content with error handling: {e}"
-                    )
+                    self.logger.error(f"Failed to get file content with error handling: {e}")
                     raise
             else:
                 return await self.file_ops.get_file_content(path)
@@ -166,9 +159,7 @@ class LocalProvider(BaseSourceControlProvider):
                         message,
                     )
                 except Exception as e:
-                    self.logger.error(
-                        f"Failed to apply remediation with error handling: {e}"
-                    )
+                    self.logger.error(f"Failed to apply remediation with error handling: {e}")
                     return RemediationResult(
                         success=False,
                         message=f"Failed to apply remediation: {e}",
@@ -192,9 +183,7 @@ class LocalProvider(BaseSourceControlProvider):
         """Get file information."""
         return await self.file_ops.get_file_info(path)
 
-    async def list_files(
-        self, path: str = "", ref: str | None = None
-    ) -> list[FileInfo]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[FileInfo]:
         """List files in a directory."""
         return await self.file_ops.list_files(path)
 
@@ -254,9 +243,7 @@ class LocalProvider(BaseSourceControlProvider):
         base_branch = "main"  # This should be configurable
 
         try:
-            conflict_info = await self.git_ops.check_conflicts(
-                path, base_branch, feature_branch
-            )
+            conflict_info = await self.git_ops.check_conflicts(path, base_branch, feature_branch)
             return conflict_info.has_conflicts
         except Exception as e:
             self.logger.error(f"Failed to check conflicts: {e}")
@@ -285,9 +272,7 @@ class LocalProvider(BaseSourceControlProvider):
         return await self.git_ops.execute_git_command(command)
 
     # Batch operations - delegate to batch_ops
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute multiple operations in batch."""
         return await self.batch_ops.batch_operations(operations)
 

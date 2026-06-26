@@ -12,6 +12,7 @@ Provides comprehensive health monitoring including:
 
 import asyncio
 from collections.abc import Awaitable, Callable
+import contextlib
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -99,10 +100,8 @@ class HealthChecker:
         self._running = False
         if self._check_task:
             self._check_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._check_task
-            except asyncio.CancelledError:
-                pass
         logger.info("HealthChecker stopped")
 
     def register_health_check(
@@ -180,8 +179,7 @@ class HealthChecker:
 
         # Run checks concurrently
         tasks = {
-            name: asyncio.create_task(self.run_health_check(name))
-            for name in self._health_checks.keys()
+            name: asyncio.create_task(self.run_health_check(name)) for name in self._health_checks
         }
 
         for name, task in tasks.items():
@@ -258,24 +256,16 @@ class HealthChecker:
             "statistics": {
                 "total_components": len(self._component_health),
                 "healthy_components": sum(
-                    1
-                    for h in self._component_health.values()
-                    if h.status == HealthStatus.HEALTHY
+                    1 for h in self._component_health.values() if h.status == HealthStatus.HEALTHY
                 ),
                 "degraded_components": sum(
-                    1
-                    for h in self._component_health.values()
-                    if h.status == HealthStatus.DEGRADED
+                    1 for h in self._component_health.values() if h.status == HealthStatus.DEGRADED
                 ),
                 "unhealthy_components": sum(
-                    1
-                    for h in self._component_health.values()
-                    if h.status == HealthStatus.UNHEALTHY
+                    1 for h in self._component_health.values() if h.status == HealthStatus.UNHEALTHY
                 ),
                 "unknown_components": sum(
-                    1
-                    for h in self._component_health.values()
-                    if h.status == HealthStatus.UNKNOWN
+                    1 for h in self._component_health.values() if h.status == HealthStatus.UNKNOWN
                 ),
             },
         }
@@ -295,9 +285,7 @@ class HealthChecker:
             except Exception as e:
                 logger.error(f"Error in periodic health checks: {e}")
 
-    async def _update_component_health(
-        self, name: str, result: HealthCheckResult
-    ) -> None:
+    async def _update_component_health(self, name: str, result: HealthCheckResult) -> None:
         """Update component health based on check result."""
         if name not in self._component_health:
             return
@@ -494,9 +482,7 @@ async def create_system_health_check() -> HealthCheckResult:
                 "memory_usage_percent": memory_usage_percent,
                 "disk_usage_percent": disk_usage_percent,
                 "cpu_count": psutil.cpu_count(),
-                "load_average": (
-                    psutil.getloadavg() if hasattr(psutil, "getloadavg") else None
-                ),
+                "load_average": (psutil.getloadavg() if hasattr(psutil, "getloadavg") else None),
             },
         )
 

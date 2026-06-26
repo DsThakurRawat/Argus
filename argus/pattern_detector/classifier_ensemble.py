@@ -172,8 +172,7 @@ class WeightedVotingStrategy:
                 combined_pattern = self._combine_group_patterns(group_patterns, config)
                 if (
                     combined_pattern
-                    and combined_pattern.confidence_score
-                    >= config.min_ensemble_confidence
+                    and combined_pattern.confidence_score >= config.min_ensemble_confidence
                 ):
                     ensemble_patterns.append(combined_pattern)
 
@@ -233,17 +232,13 @@ class WeightedVotingStrategy:
             suggested_actions=combined_actions,
         )
 
-    def _calculate_pattern_weight(
-        self, pattern: PatternMatch, config: EnsembleConfig
-    ) -> float:
+    def _calculate_pattern_weight(self, pattern: PatternMatch, config: EnsembleConfig) -> float:
         """Calculate weight for a pattern in ensemble voting."""
         # Base weight from confidence
         confidence_weight = pattern.confidence_score * config.confidence_weight
 
         # Frequency weight (number of affected services)
-        frequency_weight = (
-            min(1.0, len(pattern.affected_services) / 5.0) * config.frequency_weight
-        )
+        frequency_weight = min(1.0, len(pattern.affected_services) / 5.0) * config.frequency_weight
 
         # Recency weight (assume all patterns are recent for now)
         recency_weight = config.recency_weight
@@ -398,32 +393,22 @@ class ConsensusVotingStrategy:
 
         return patterns[best_pattern_index]
 
-    def _calculate_agreement(
-        self, pattern_a: PatternMatch, pattern_b: PatternMatch
-    ) -> float:
+    def _calculate_agreement(self, pattern_a: PatternMatch, pattern_b: PatternMatch) -> float:
         """Calculate agreement score between two patterns."""
         # Service overlap
         services_a = set(pattern_a.affected_services)
         services_b = set(pattern_b.affected_services)
-        service_overlap = len(services_a & services_b) / max(
-            len(services_a | services_b), 1
-        )
+        service_overlap = len(services_a & services_b) / max(len(services_a | services_b), 1)
 
         # Confidence similarity
         confidence_diff = abs(pattern_a.confidence_score - pattern_b.confidence_score)
         confidence_similarity = 1.0 - confidence_diff
 
         # Severity similarity
-        severity_similarity = (
-            1.0 if pattern_a.severity_level == pattern_b.severity_level else 0.5
-        )
+        severity_similarity = 1.0 if pattern_a.severity_level == pattern_b.severity_level else 0.5
 
         # Weighted average
-        return (
-            service_overlap * 0.5
-            + confidence_similarity * 0.3
-            + severity_similarity * 0.2
-        )
+        return service_overlap * 0.5 + confidence_similarity * 0.3 + severity_similarity * 0.2
 
 
 class PatternEnsemble:
@@ -478,18 +463,14 @@ class PatternEnsemble:
             return []
 
         # Apply ensemble strategy
-        ensemble_patterns = self.ensemble_strategy.combine_patterns(
-            all_patterns, self.config
-        )
+        ensemble_patterns = self.ensemble_strategy.combine_patterns(all_patterns, self.config)
 
         # Sort by confidence score
         ensemble_patterns.sort(key=lambda p: p.confidence_score, reverse=True)
 
         # Limit to max patterns per ensemble
         if len(ensemble_patterns) > self.config.max_patterns_per_ensemble:
-            ensemble_patterns = ensemble_patterns[
-                : self.config.max_patterns_per_ensemble
-            ]
+            ensemble_patterns = ensemble_patterns[: self.config.max_patterns_per_ensemble]
 
         self.logger.info(
             f"[PATTERN_ENSEMBLE] Ensemble classification complete: "

@@ -4,7 +4,6 @@
 CLI tools and development utilities for configuration management.
 """
 
-
 import click
 import yaml
 
@@ -22,9 +21,7 @@ def config_cli() -> None:
 
 @config_cli.command()
 @click.argument("config_file", type=click.Path(exists=True))
-@click.option(
-    "--environment", "-e", default="development", help="Environment to validate against"
-)
+@click.option("--environment", "-e", default="development", help="Environment to validate against")
 def validate(config_file: str, environment: str) -> None:
     """Validate configuration file against schema."""
     try:
@@ -43,9 +40,7 @@ def validate(config_file: str, environment: str) -> None:
             if config.validate_checksum():
                 click.echo("✅ Configuration checksum validation passed")
             else:
-                click.echo(
-                    "⚠️  Configuration checksum validation failed - possible drift detected"
-                )
+                click.echo("⚠️  Configuration checksum validation failed - possible drift detected")
 
     except ConfigValidationError as e:
         click.echo("❌ Configuration validation failed:")
@@ -118,9 +113,7 @@ def generate_template(environment: str, output: str) -> None:
 @config_cli.command()
 @click.argument("config_file1", type=click.Path(exists=True))
 @click.argument("config_file2", type=click.Path(exists=True))
-@click.option(
-    "--format", "output_format", type=click.Choice(["yaml", "json"]), default="yaml"
-)
+@click.option("--format", "output_format", type=click.Choice(["yaml", "json"]), default="yaml")
 def diff(config_file1: str, config_file2: str, output_format: str) -> None:
     """Compare two configuration files and show differences."""
     try:
@@ -146,9 +139,7 @@ def diff(config_file1: str, config_file2: str, output_format: str) -> None:
                     f"(dict), got {type(config2_data).__name__}"
                 )
 
-        diff_result = ConfigDevUtils.diff_configs(
-            config1_data, config2_data, output_format
-        )
+        diff_result = ConfigDevUtils.diff_configs(config1_data, config2_data, output_format)
         click.echo(diff_result)
 
     except click.ClickException:

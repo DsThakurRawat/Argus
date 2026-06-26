@@ -42,18 +42,11 @@ class LocalGitOperations:
         self.repo: Repo | None = None
         self._initialize_git()
 
-    async def _execute_with_error_handling(
-        self, operation_name: str, func, *args, **kwargs
-    ):
+    async def _execute_with_error_handling(self, operation_name: str, func, *args, **kwargs):
         """Execute a function with error handling if available."""
-        if (
-            self.error_handling_components
-            and "resilient_manager" in self.error_handling_components
-        ):
+        if self.error_handling_components and "resilient_manager" in self.error_handling_components:
             resilient_manager = self.error_handling_components["resilient_manager"]
-            return await resilient_manager.execute_with_retry(
-                operation_name, func, *args, **kwargs
-            )
+            return await resilient_manager.execute_with_retry(operation_name, func, *args, **kwargs)
 
         # Fall back to direct execution
         return await func(*args, **kwargs)
@@ -85,9 +78,28 @@ class LocalGitOperations:
 
         # Only allow specific Git commands for security
         allowed_commands = {
-            "add", "branch", "checkout", "commit", "diff", "fetch", "log", "merge",
-            "pull", "push", "reset", "show", "status", "tag", "config", "remote",
-            "rev-parse", "ls-files", "ls-tree", "cat-file", "show-ref", "for-each-ref"
+            "add",
+            "branch",
+            "checkout",
+            "commit",
+            "diff",
+            "fetch",
+            "log",
+            "merge",
+            "pull",
+            "push",
+            "reset",
+            "show",
+            "status",
+            "tag",
+            "config",
+            "remote",
+            "rev-parse",
+            "ls-files",
+            "ls-tree",
+            "cat-file",
+            "show-ref",
+            "for-each-ref",
         }
 
         # First argument should be a valid Git command
@@ -198,9 +210,7 @@ class LocalGitOperations:
                 self.logger.error(f"Failed to get current branch: {e}")
                 return "main"
 
-        return await self._execute_with_error_handling(
-            "get_current_branch", _get_current
-        )
+        return await self._execute_with_error_handling("get_current_branch", _get_current)
 
     async def get_repository_info(self) -> RepositoryInfo:
         """Get repository information."""
@@ -309,9 +319,7 @@ class LocalGitOperations:
                     conflict_type="merge",
                     has_conflicts=has_conflicts,
                     conflict_files=conflict_files,
-                    conflict_details=(
-                        {"message": conflict_details} if conflict_details else {}
-                    ),
+                    conflict_details=({"message": conflict_details} if conflict_details else {}),
                 )
             except Exception as e:
                 self.logger.error(f"Failed to check conflicts: {e}")
@@ -376,8 +384,7 @@ class LocalGitOperations:
                             author=commit.author.name or "Unknown",
                             author_email=commit.author.email or "unknown@example.com",
                             committer=commit.committer.name or "Unknown",
-                            committer_email=commit.committer.email
-                            or "unknown@example.com",
+                            committer_email=commit.committer.email or "unknown@example.com",
                             date=commit.committed_datetime,
                         )
                     )
@@ -402,9 +409,7 @@ class LocalGitOperations:
                 self.logger.error(f"Failed to get diff between commits: {e}")
                 return ""
 
-        return await self._execute_with_error_handling(
-            "diff_between_commits", _get_diff
-        )
+        return await self._execute_with_error_handling("diff_between_commits", _get_diff)
 
     async def execute_git_command(self, command: list[str]) -> str:
         """Execute a Git command and return output."""

@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 class GroqProvider(LLMProvider):
     """
     Groq API provider implementation for ultra-fast model inference.
-    
+
     This provider leverages Groq's LPUs to deliver low-latency responses
     for open-source models like Llama and Mixtral.
     """
@@ -84,9 +84,7 @@ class GroqProvider(LLMProvider):
             tool_calls=message.get("tool_calls"),
         )
 
-    async def generate_stream(
-        self, request: LLMRequest
-    ) -> AsyncGenerator[LLMResponse, None]:
+    async def generate_stream(self, request: LLMRequest) -> AsyncGenerator[LLMResponse, None]:
         """
         Generate a streaming response from Groq.
 
@@ -146,10 +144,7 @@ class GroqProvider(LLMProvider):
 
     def _convert_messages(self, messages: list[dict[str, str]]) -> list[dict[str, str]]:
         """Convert standard message format to Groq API format."""
-        return [
-            {"role": m.get("role", "user"), "content": m.get("content", "")}
-            for m in messages
-        ]
+        return [{"role": m.get("role", "user"), "content": m.get("content", "")} for m in messages]
 
     def _extract_usage(self, usage: dict[str, Any]) -> dict[str, int]:
         """Extract token usage statistics from the API response."""

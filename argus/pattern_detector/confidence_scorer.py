@@ -22,9 +22,7 @@ from .models import (
 class ConfidenceScorer:
     """Advanced confidence scoring engine for pattern detection."""
 
-    def __init__(
-        self, confidence_rules: dict[str, list[ConfidenceRule]] | None = None
-    ):
+    def __init__(self, confidence_rules: dict[str, list[ConfidenceRule]] | None = None):
         self.logger = logging.getLogger(__name__)
         self.confidence_rules = confidence_rules or self._get_default_confidence_rules()
         self.logger.info("[CONFIDENCE_SCORING] ConfidenceScorer initialized")
@@ -59,9 +57,7 @@ class ConfidenceScorer:
         overall_score = (weighted_sum / total_weight) if total_weight > 0 else 0.0
         overall_score = max(0.0, min(1.0, overall_score))
         confidence_level = self._determine_confidence_level(overall_score)
-        explanation = self._generate_explanation(
-            pattern_type, factor_scores, raw_factors
-        )
+        explanation = self._generate_explanation(pattern_type, factor_scores, raw_factors)
 
         return ConfidenceScore(
             overall_score=overall_score,
@@ -78,55 +74,31 @@ class ConfidenceScorer:
         context: dict[str, Any],
     ) -> dict[str, float]:
         factors = {}
-        factors[ConfidenceFactors.TIME_CONCENTRATION] = (
-            self._calculate_time_concentration(logs, window)
+        factors[ConfidenceFactors.TIME_CONCENTRATION] = self._calculate_time_concentration(
+            logs, window
         )
-        factors[ConfidenceFactors.TIME_CORRELATION] = self._calculate_time_correlation(
-            logs
-        )
-        factors[ConfidenceFactors.RAPID_ONSET] = (
-            1.0 if self._check_rapid_onset(logs, 60) else 0.0
-        )
-        factors[ConfidenceFactors.GRADUAL_ONSET] = (
-            1.0 if self._check_gradual_onset(logs) else 0.0
-        )
+        factors[ConfidenceFactors.TIME_CORRELATION] = self._calculate_time_correlation(logs)
+        factors[ConfidenceFactors.RAPID_ONSET] = 1.0 if self._check_rapid_onset(logs, 60) else 0.0
+        factors[ConfidenceFactors.GRADUAL_ONSET] = 1.0 if self._check_gradual_onset(logs) else 0.0
         services = list({log.service_name for log in logs if log.service_name})
         factors[ConfidenceFactors.SERVICE_COUNT] = min(1.0, len(services) / 5.0)
-        factors[ConfidenceFactors.SERVICE_DISTRIBUTION] = (
-            self._calculate_service_distribution(logs)
-        )
+        factors[ConfidenceFactors.SERVICE_DISTRIBUTION] = self._calculate_service_distribution(logs)
         factors[ConfidenceFactors.CROSS_SERVICE_CORRELATION] = (
             self._calculate_cross_service_correlation(logs)
         )
         factors[ConfidenceFactors.ERROR_FREQUENCY] = min(1.0, len(logs) / 20.0)
-        factors[ConfidenceFactors.ERROR_SEVERITY] = self._calculate_severity_factor(
-            logs
-        )
-        factors[ConfidenceFactors.ERROR_TYPE_CONSISTENCY] = (
-            self._calculate_error_consistency(logs)
-        )
-        factors[ConfidenceFactors.MESSAGE_SIMILARITY] = (
-            self._calculate_message_similarity(logs)
-        )
-        factors[ConfidenceFactors.BASELINE_DEVIATION] = context.get(
-            "baseline_deviation", 0.5
-        )
+        factors[ConfidenceFactors.ERROR_SEVERITY] = self._calculate_severity_factor(logs)
+        factors[ConfidenceFactors.ERROR_TYPE_CONSISTENCY] = self._calculate_error_consistency(logs)
+        factors[ConfidenceFactors.MESSAGE_SIMILARITY] = self._calculate_message_similarity(logs)
+        factors[ConfidenceFactors.BASELINE_DEVIATION] = context.get("baseline_deviation", 0.5)
         factors[ConfidenceFactors.TREND_ANALYSIS] = context.get("trend_score", 0.5)
         factors[ConfidenceFactors.SEASONAL_PATTERN] = context.get("seasonal_score", 0.5)
-        factors[ConfidenceFactors.DEPENDENCY_STATUS] = context.get(
-            "dependency_health", 0.8
-        )
-        factors[ConfidenceFactors.RESOURCE_UTILIZATION] = context.get(
-            "resource_pressure", 0.3
-        )
-        factors[ConfidenceFactors.DEPLOYMENT_CORRELATION] = context.get(
-            "recent_deployment", 0.0
-        )
+        factors[ConfidenceFactors.DEPENDENCY_STATUS] = context.get("dependency_health", 0.8)
+        factors[ConfidenceFactors.RESOURCE_UTILIZATION] = context.get("resource_pressure", 0.3)
+        factors[ConfidenceFactors.DEPLOYMENT_CORRELATION] = context.get("recent_deployment", 0.0)
         return factors
 
-    def _calculate_time_concentration(
-        self, logs: list[LogEntry], window: TimeWindow
-    ) -> float:
+    def _calculate_time_concentration(self, logs: list[LogEntry], window: TimeWindow) -> float:
         if not logs or len(logs) < 2:
             return 0.0
         timestamps = sorted([log.timestamp for log in logs])
@@ -149,9 +121,7 @@ class ConfidenceScorer:
         service_counts = {}
         for log in logs:
             if log.service_name:
-                service_counts[log.service_name] = (
-                    service_counts.get(log.service_name, 0) + 1
-                )
+                service_counts[log.service_name] = service_counts.get(log.service_name, 0) + 1
         if len(service_counts) <= 1:
             return 0.0
         counts = list(service_counts.values())
@@ -275,9 +245,7 @@ class ConfidenceScorer:
         if len(logs) < 3:
             return False
         sorted_logs = sorted(logs, key=lambda x: x.timestamp)
-        total_time = (
-            sorted_logs[-1].timestamp - sorted_logs[0].timestamp
-        ).total_seconds()
+        total_time = (sorted_logs[-1].timestamp - sorted_logs[0].timestamp).total_seconds()
         if total_time < 60:
             return False
         bucket_size = total_time / 3
@@ -327,9 +295,7 @@ class ConfidenceScorer:
         for factor_type, score in top_factors:
             if score > 0.1:
                 raw_value = raw_factors.get(factor_type, 0.0)
-                explanations.append(
-                    f"- {factor_type}: {score:.2f} (raw: {raw_value:.2f})"
-                )
+                explanations.append(f"- {factor_type}: {score:.2f} (raw: {raw_value:.2f})")
         if factor_scores.get(ConfidenceFactors.RAPID_ONSET, 0) > 0:
             explanations.append("- Rapid error onset detected (high confidence)")
         if factor_scores.get(ConfidenceFactors.CROSS_SERVICE_CORRELATION, 0) > 0.5:
@@ -382,17 +348,13 @@ class ConfidenceScorer:
             ],
             PatternType.SPORADIC_ERRORS: [
                 ConfidenceRule(ConfidenceFactors.SERVICE_DISTRIBUTION, 0.3),
-                ConfidenceRule(
-                    ConfidenceFactors.TIME_CORRELATION, 0.25, decay_function="linear"
-                ),
+                ConfidenceRule(ConfidenceFactors.TIME_CORRELATION, 0.25, decay_function="linear"),
                 ConfidenceRule(
                     ConfidenceFactors.ERROR_TYPE_CONSISTENCY,
                     0.2,
                     decay_function="linear",
                 ),
-                ConfidenceRule(
-                    ConfidenceFactors.MESSAGE_SIMILARITY, 0.15, decay_function="linear"
-                ),
+                ConfidenceRule(ConfidenceFactors.MESSAGE_SIMILARITY, 0.15, decay_function="linear"),
                 ConfidenceRule(ConfidenceFactors.BASELINE_DEVIATION, 0.1),
             ],
         }

@@ -80,9 +80,7 @@ class TestBaseSubOperation:
         async def mock_execute_with_retry(operation_name, func, *args, **kwargs):
             return await func(*args, **kwargs)
 
-        resilient_manager.execute_with_retry = AsyncMock(
-            side_effect=mock_execute_with_retry
-        )
+        resilient_manager.execute_with_retry = AsyncMock(side_effect=mock_execute_with_retry)
 
         return {"resilient_manager": resilient_manager}
 
@@ -150,16 +148,12 @@ class TestBaseSubOperation:
             return "slow_result"
 
         with pytest.raises(asyncio.TimeoutError):
-            await sub_op._execute_with_error_handling(
-                "slow_operation", slow_operation, "file"
-            )
+            await sub_op._execute_with_error_handling("slow_operation", slow_operation, "file")
 
         assert sub_op._error_count == 1
 
     @pytest.mark.asyncio
-    async def test_execute_with_error_handling_exception(
-        self, mock_logger, test_config
-    ):
+    async def test_execute_with_error_handling_exception(self, mock_logger, test_config):
         """Test execution with exception handling."""
         sub_op = MockSubOperation(logger=mock_logger, config=test_config)
 
@@ -188,9 +182,7 @@ class TestBaseSubOperation:
         result = await sub_op.test_operation("test_value")
 
         assert result == "processed_test_value"  # From actual function execution
-        mock_error_handling_components[
-            "resilient_manager"
-        ].execute_with_retry.assert_called_once()
+        mock_error_handling_components["resilient_manager"].execute_with_retry.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_execute_with_custom_retry_config(
@@ -208,9 +200,7 @@ class TestBaseSubOperation:
         await sub_op.test_operation("test_value")
 
         # Verify that resilient manager was called
-        mock_error_handling_components[
-            "resilient_manager"
-        ].execute_with_retry.assert_called_once()
+        mock_error_handling_components["resilient_manager"].execute_with_retry.assert_called_once()
 
     def test_get_performance_stats(self, sub_operation: str) -> None:
         """Test getting performance statistics."""

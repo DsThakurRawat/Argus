@@ -38,9 +38,7 @@ def mock_config() -> None:
 @pytest.fixture
 def provider(mock_config: str) -> None:
     """Create an OllamaProvider instance with mocked dependencies."""
-    with patch(
-        "argus.llm.providers.ollama_provider.ollama.Client"
-    ) as mock_client:
+    with patch("argus.llm.providers.ollama_provider.ollama.Client") as mock_client:
         mock_client_instance = MagicMock()
         mock_client.return_value = mock_client_instance
         provider = OllamaProvider(mock_config)
@@ -118,8 +116,7 @@ class TestOllamaProvider:
 
             """
             # Return a regular generator
-            for chunk in mock_chunks:
-                yield chunk
+            yield from mock_chunks
 
         provider.client.chat = mock_chat
 

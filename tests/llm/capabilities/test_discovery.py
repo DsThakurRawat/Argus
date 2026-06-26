@@ -79,9 +79,7 @@ def test_get_model_capabilities(mock_llm_providers: str) -> None:
     # Manually add some capabilities for testing retrieval
     discovery.model_capabilities["test_provider/model_fast"] = ModelCapabilities(
         model_id="test_provider/model_fast",
-        capabilities=[
-            ModelCapability(name="text_generation", description="...", parameters={})
-        ],
+        capabilities=[ModelCapability(name="text_generation", description="...", parameters={})],
     )
 
     caps = discovery.get_model_capabilities("test_provider/model_fast")
@@ -104,15 +102,11 @@ def test_find_models_by_capability(mock_llm_providers: str) -> None:
     # Manually add some capabilities for testing search
     discovery.model_capabilities["provider1/model_A"] = ModelCapabilities(
         model_id="provider1/model_A",
-        capabilities=[
-            ModelCapability(name="text_generation", description="...", parameters={})
-        ],
+        capabilities=[ModelCapability(name="text_generation", description="...", parameters={})],
     )
     discovery.model_capabilities["provider2/model_B"] = ModelCapabilities(
         model_id="provider2/model_B",
-        capabilities=[
-            ModelCapability(name="code_generation", description="...", parameters={})
-        ],
+        capabilities=[ModelCapability(name="code_generation", description="...", parameters={})],
     )
     discovery.model_capabilities["provider3/model_C"] = ModelCapabilities(
         model_id="provider3/model_C",

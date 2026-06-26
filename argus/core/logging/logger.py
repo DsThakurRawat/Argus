@@ -6,29 +6,12 @@ import time
 from typing import Any
 
 from .alerting import AlertRule, AlertSeverity, get_alert_manager
-from .config import LoggingConfig, HandlerConfig
+from .config import HandlerConfig, LoggingConfig
 from .context import context_manager
-from .filters import (
-    ContextFilter,
-    LevelFilter,
-    RateLimitFilter,
-    SamplingFilter,
-)
-from .filters import (
-    ContextFilter as TagFilter,
-)
-from .filters import (
-    MessageFilter as RegexFilter,
-)
 from .flow_tracker import get_flow_tracker
 from .handlers import (
     ConsoleHandler,
-    DatabaseHandler,
     HTTPHandler,
-    QueueHandler,
-)
-from .handlers import (
-    DatabaseHandler as SyslogHandler,
 )
 from .handlers import (
     RotatingStructuredFileHandler as RotatingFileHandler,
@@ -91,10 +74,7 @@ class Logger:
             formatter_type = config.format.value
 
             if handler_type == "console":
-                return ConsoleHandler(
-                    formatter_type=formatter_type,
-                    colorize=config.colorize
-                )
+                return ConsoleHandler(formatter_type=formatter_type, colorize=config.colorize)
             elif handler_type == "file":
                 if not config.file_path:
                     self._logger.error("File handler requires file_path")
@@ -105,13 +85,13 @@ class Logger:
                         maxBytes=config.max_file_size_mb * 1024 * 1024,
                         backupCount=config.backup_count,
                         encoding=config.encoding,
-                        formatter_type=formatter_type
+                        formatter_type=formatter_type,
                     )
                 else:
                     return FileHandler(
                         filename=config.file_path,
                         encoding=config.encoding,
-                        formatter_type=formatter_type
+                        formatter_type=formatter_type,
                     )
             elif handler_type == "syslog":
                 # Assuming DatabaseHandler as SyslogHandler was a mistake, but keeping the signature
@@ -123,9 +103,11 @@ class Logger:
                     self._logger.error("Remote handler requires remote_url")
                     return None
                 return HTTPHandler(
-                    host=config.remote_url.split('/')[2] if '//' in config.remote_url else config.remote_url,
+                    host=config.remote_url.split("/")[2]
+                    if "//" in config.remote_url
+                    else config.remote_url,
                     url=config.remote_url,
-                    formatter_type=formatter_type
+                    formatter_type=formatter_type,
                 )
             else:
                 self._logger.warning(f"Unknown handler type: {handler_type}")
@@ -156,11 +138,12 @@ class Logger:
             if not filter_type:
                 self._logger.warning("Filter configuration missing 'type'")
                 return None
-                
+
             # Remove 'type' from kwargs
             kwargs = {k: v for k, v in config.items() if k != "type"}
-            
+
             from .filters import create_filter
+
             return create_filter(filter_type, **kwargs)
 
         except Exception as e:
@@ -172,9 +155,7 @@ class Logger:
         for alert_config in self._config.alerting:
             rule = AlertRule(
                 name=alert_config["name"],
-                condition=eval(
-                    alert_config["condition"]
-                ),  # Note: Use safer method in production
+                condition=eval(alert_config["condition"]),  # Note: Use safer method in production
                 severity=AlertSeverity(alert_config["severity"]),
                 message_template=alert_config["message_template"],
                 cooldown_seconds=alert_config.get("cooldown_seconds", 300),

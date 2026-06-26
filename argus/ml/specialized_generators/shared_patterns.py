@@ -23,7 +23,7 @@ def get_common_patterns() -> dict[str, CodePattern]:
             code_template="""def validate_input(input_data, schema):
     if not isinstance(input_data, dict):
         raise ValueError("Input must be a dictionary")
-    
+
     try:
         validated_data = schema.validate(input_data)
         return validated_data
@@ -141,7 +141,7 @@ def get_api_patterns() -> list[CodePattern]:
     token = request.headers.get('Authorization', '').replace('Bearer ', '')
     if not token:
         raise AuthenticationError('Missing authentication token')
-    
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
         request.user = payload
@@ -167,14 +167,14 @@ def get_security_patterns() -> list[CodePattern]:
             code_template="""def secure_input_validation(input_data, allowed_patterns):
     if not isinstance(input_data, str):
         raise SecurityError("Invalid input type")
-    
+
     # Remove potentially dangerous characters
     sanitized = re.sub(r'[<>"\']', '', input_data)
-    
+
     # Validate against allowed patterns
     if not re.match(allowed_patterns, sanitized):
         raise SecurityError("Input contains forbidden characters")
-    
+
     return sanitized""",
             validation_rules=["input_validation_rule"],
             best_practices=["Always validate inputs", "Use whitelist approach"],
@@ -193,7 +193,7 @@ def get_security_patterns() -> list[CodePattern]:
         stored_hash
     ):
         raise AuthenticationError("Invalid credentials")
-    
+
     # Generate secure session token
     session_token = secrets.token_urlsafe(32)
     session_data = {
@@ -201,7 +201,7 @@ def get_security_patterns() -> list[CodePattern]:
         'created_at': datetime.utcnow(),
         'expires_at': datetime.utcnow() + timedelta(hours=1)
     }
-    
+
     return session_token, session_data""",
             validation_rules=["authentication_rule"],
             best_practices=["Use constant-time comparison", "Secure session tokens"],

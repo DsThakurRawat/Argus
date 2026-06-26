@@ -7,7 +7,6 @@ This example shows how to create a new provider with minimal code using the fram
 This provider can be implemented in less than 50 lines of code.
 """
 
-
 from ...base import ModelType
 from ...config import LLMProviderConfig
 from ..templates import HTTPAPITemplate
@@ -47,9 +46,7 @@ class SimpleProvider(HTTPAPITemplate):
 
         # Add custom validation for this provider
         if not config.api_key or len(config.api_key) < 10:
-            raise ValueError(
-                "Simple provider requires a valid API key of at least 10 characters"
-            )
+            raise ValueError("Simple provider requires a valid API key of at least 10 characters")
 
 
 # That's it! This provider is now ready to use.

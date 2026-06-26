@@ -158,7 +158,7 @@ class GeminiPatternClassifier:
         req = GeminiRequest(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            generation_config={"response_mime_type": "application/json", "response_schema": schema}
+            generation_config={"response_mime_type": "application/json", "response_schema": schema},
         )
         resp = await self.gemini_client.generate_content(req)
         if not resp.success:
@@ -185,7 +185,10 @@ class GeminiPatternClassifier:
             conf_req = GeminiRequest(
                 model=model,
                 messages=[{"role": "user", "content": conf_prompt}],
-                generation_config={"response_mime_type": "application/json", "response_schema": conf_schema}
+                generation_config={
+                    "response_mime_type": "application/json",
+                    "response_schema": conf_schema,
+                },
             )
             conf_resp = await self.gemini_client.generate_content(conf_req)
             if conf_resp.success:

@@ -40,9 +40,7 @@ ContentFormat: TypeAlias = str  # 'plain', 'markdown', 'json', 'xml'
 
 # Token types
 TokenCount: TypeAlias = int
-TokenUsage: TypeAlias = dict[
-    str, TokenCount
-]  # {'prompt': 100, 'completion': 50, 'total': 150}
+TokenUsage: TypeAlias = dict[str, TokenCount]  # {'prompt': 100, 'completion': 50, 'total': 150}
 
 # Cost types
 CostPerToken: TypeAlias = float

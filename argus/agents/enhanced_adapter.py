@@ -62,9 +62,7 @@ class EnhancedAgentAdapter:
             github_token = getattr(self.legacy_agent, "github_token", "dummy_token")
             repo_name = getattr(self.legacy_agent, "repo_name", "dummy_repo")
             self._enhanced_agent = EnhancedRemediationAgent(
-                github_token=github_token,
-                repo_name=repo_name,
-                **kwargs
+                github_token=github_token, repo_name=repo_name, **kwargs
             )
         else:
             self._enhanced_agent = EnhancedTextAgent(**kwargs)
@@ -121,15 +119,15 @@ class AgentMigrationHelper:
             github_token = getattr(legacy_agent, "github_token", "dummy_token")
             repo_name = getattr(legacy_agent, "repo_name", "dummy_repo")
             return EnhancedRemediationAgent(
-                github_token=github_token,
-                repo_name=repo_name,
-                **kwargs
+                github_token=github_token, repo_name=repo_name, **kwargs
             )
         else:
             return EnhancedTextAgent(**kwargs)
 
     @staticmethod
-    def validate_migration_compatibility(legacy_agent: Any, llm_config: LLMConfig) -> dict[str, Any]:
+    def validate_migration_compatibility(
+        legacy_agent: Any, llm_config: LLMConfig
+    ) -> dict[str, Any]:
         """Validate if a legacy agent is compatible for migration."""
         required_attrs = ["response_model", "llm_service", "_prompts"]
         missing = []

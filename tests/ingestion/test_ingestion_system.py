@@ -408,9 +408,7 @@ class TestFileSystemAdapter:
         assert calls[2][0][0].level == LogSeverity.WARNING
 
     @pytest.mark.asyncio
-    async def test_fs_adapter_process_files_with_callback_error(
-        self, fs_adapter, temp_log_dir
-    ):
+    async def test_fs_adapter_process_files_with_callback_error(self, fs_adapter, temp_log_dir):
         """Test processing files when callback raises an error."""
         # Create a test log file
         test_log_file = temp_log_dir / "test.log"
@@ -445,9 +443,7 @@ class TestFileSystemAdapter:
         mock_callback.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_fs_adapter_process_files_invalid_encoding(
-        self, fs_adapter, temp_log_dir
-    ):
+    async def test_fs_adapter_process_files_invalid_encoding(self, fs_adapter, temp_log_dir):
         """Test processing files with invalid encoding."""
         # Create a test log file with invalid encoding
         test_log_file = temp_log_dir / "test.log"

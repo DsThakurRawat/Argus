@@ -20,6 +20,7 @@ from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 async def run_simple_benchmark():
     """Run simple performance benchmark."""
     print("🚀 Starting Enhanced Multi-Provider LLM Performance Benchmark")
@@ -37,12 +38,12 @@ async def run_simple_benchmark():
                         "model_type": "fast",
                         "cost_per_1k_tokens": 0.000075,
                         "max_tokens": 1000000,
-                        "capabilities": ["text", "json"]
+                        "capabilities": ["text", "json"],
                     }
-                }
+                },
             }
         },
-        default_model_type="fast"
+        default_model_type="fast",
     )
 
     # Get metrics collector
@@ -67,12 +68,12 @@ async def run_simple_benchmark():
                             "model_type": "smart",
                             "cost_per_1k_tokens": 0.00015,
                             "max_tokens": 128000,
-                            "capabilities": ["text", "json"]
+                            "capabilities": ["text", "json"],
                         }
-                    }
+                    },
                 }
             },
-            default_model_type="smart"
+            default_model_type="smart",
         )
         config_duration = time.time() - start_time
 
@@ -97,7 +98,7 @@ async def run_simple_benchmark():
                 request=None,  # Mock request
                 response=None,  # Mock response
                 duration_ms=100 + i * 10,
-                cost=0.001 + i * 0.0001
+                cost=0.001 + i * 0.0001,
             )
 
         metrics_duration = time.time() - start_time
@@ -121,7 +122,7 @@ async def run_simple_benchmark():
             project="test-project",
             location="us-central1",
             model="gemini-1.5-flash",
-            llm_config=config
+            llm_config=config,
         )
 
         agent_duration = time.time() - start_time
@@ -149,11 +150,7 @@ async def run_simple_benchmark():
         # Create some objects to test memory usage
         test_objects = []
         for i in range(1000):
-            test_objects.append({
-                "id": i,
-                "data": f"test_data_{i}" * 10,
-                "timestamp": time.time()
-            })
+            test_objects.append({"id": i, "data": f"test_data_{i}" * 10, "timestamp": time.time()})
 
         memory_after = process.memory_info().rss / 1024 / 1024  # MB
         memory_usage = memory_after - memory_before
@@ -187,20 +184,18 @@ async def run_simple_benchmark():
             project="test-project",
             location="us-central1",
             model="gemini-1.5-flash",
-            llm_config=config
+            llm_config=config,
         )
 
         analysis_agent = EnhancedAnalysisAgent(
             project="test-project",
             location="us-central1",
             model="gemini-1.5-flash",
-            llm_config=config
+            llm_config=config,
         )
 
         remediation_agent = EnhancedRemediationAgent(
-            repo="test/repo",
-            use_local_patches=True,
-            llm_config=config
+            repo="test/repo", use_local_patches=True, llm_config=config
         )
 
         integration_duration = time.time() - start_time
@@ -233,6 +228,7 @@ async def run_simple_benchmark():
     print("   5. ✅ Enhanced agents are properly integrated")
 
     return True
+
 
 if __name__ == "__main__":
     asyncio.run(run_simple_benchmark())

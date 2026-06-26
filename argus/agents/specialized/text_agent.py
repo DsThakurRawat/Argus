@@ -15,7 +15,7 @@ from ...llm.common.enums import ProviderType
 from ...llm.config import LLMConfig
 from ...llm.strategy_manager import OptimizationGoal
 from ..enhanced_base import EnhancedBaseAgent
-from ..response_models import TextResponse, StatusCode
+from ..response_models import StatusCode, TextResponse
 
 logger = logging.getLogger(__name__)
 
@@ -87,9 +87,7 @@ class EnhancedTextAgent(EnhancedBaseAgent[TextResponse]):
         else:
             return ModelType.FAST
 
-    def _prepare_text_prompt(
-        self, prompt: str, context: dict[str, Any] | None = None
-    ) -> str:
+    def _prepare_text_prompt(self, prompt: str, context: dict[str, Any] | None = None) -> str:
         """
         Prepare and enhance the text generation prompt.
 
@@ -100,7 +98,7 @@ class EnhancedTextAgent(EnhancedBaseAgent[TextResponse]):
         Returns:
             Enhanced prompt ready for LLM processing
         """
-        enhanced_prompt = f"""You are an expert text generation assistant. Generate 
+        enhanced_prompt = f"""You are an expert text generation assistant. Generate
 high-quality, coherent text based on the following request:
 
 {prompt}
@@ -147,9 +145,7 @@ Guidelines:
             # Determine optimal model configuration
             task_context = {
                 "content_length": len(prompt),
-                "complexity": (
-                    context.get("complexity", "medium") if context else "medium"
-                ),
+                "complexity": (context.get("complexity", "medium") if context else "medium"),
                 "quality_requirement": self.min_quality,
             }
 
@@ -209,7 +205,7 @@ Guidelines:
         """
         summary_length = max_length or min(len(text) // 4, 500)
 
-        prompt = f"""Summarize the following text in a {style} style 
+        prompt = f"""Summarize the following text in a {style} style
 (max {summary_length} characters):
 
 {text}
@@ -243,7 +239,7 @@ Summary:"""
         Returns:
             TextResponse containing the explanation
         """
-        prompt = f"""Explain the following topic in a clear, {level}-level way 
+        prompt = f"""Explain the following topic in a clear, {level}-level way
 for a {audience} audience:
 
 {topic}

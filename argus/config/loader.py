@@ -6,14 +6,16 @@ Configuration loader with support for multiple sources and complete implementati
 
 import os
 from pathlib import Path
-from typing import Any, TypeVar, Union
+from typing import TYPE_CHECKING, Any, TypeVar, Union
 
 import yaml
 
 from .base import BaseConfig
 from .errors import ConfigFileError
-from .source_control_error_handling import ErrorHandlingConfig
 from .source_control_error_handling_loader import ErrorHandlingConfigLoader
+
+if TYPE_CHECKING:
+    from .source_control_error_handling import ErrorHandlingConfig
 
 T = TypeVar("T", bound=BaseConfig)
 
@@ -65,13 +67,9 @@ class ConfigLoader:
             return config_class(**final_config)
 
         except yaml.YAMLError as e:
-            raise ConfigFileError(
-                f"Invalid YAML configuration: {e}", config_file, e
-            ) from e
+            raise ConfigFileError(f"Invalid YAML configuration: {e}", config_file, e) from e
         except Exception as e:
-            raise ConfigFileError(
-                f"Configuration loading failed: {e}", config_file, e
-            ) from e
+            raise ConfigFileError(f"Configuration loading failed: {e}", config_file, e) from e
 
     def _load_yaml_config(self, filename: str) -> dict[str, Any]:
         """Load configuration from YAML file."""
@@ -109,22 +107,16 @@ class ConfigLoader:
 
                 if env_value is not None:
                     # Handle nested configuration with double underscore
-                    nested_env_vars = self._extract_nested_env_vars(
-                        field_name, config_class
-                    )
+                    nested_env_vars = self._extract_nested_env_vars(field_name, config_class)
                     if nested_env_vars:
                         env_vars[field_name] = nested_env_vars
                     else:
                         # Convert string values to appropriate types
-                        env_vars[field_name] = self._convert_env_value(
-                            env_value, field_info
-                        )
+                        env_vars[field_name] = self._convert_env_value(env_value, field_info)
 
         return env_vars
 
-    def _extract_nested_env_vars(
-        self, prefix: str, config_class: type[T]
-    ) -> dict[str, Any]:
+    def _extract_nested_env_vars(self, prefix: str, config_class: type[T]) -> dict[str, Any]:
         """Extract nested environment variables for complex configurations."""
         nested_vars = {}
         prefix_upper = f"{config_class.__name__.upper()}_{prefix.upper()}"
@@ -168,9 +160,7 @@ class ConfigLoader:
 
         return self._convert_string_value(value)
 
-    def _convert_string_value(
-        self, value: str, target_type: type | None = None
-    ) -> Any:
+    def _convert_string_value(self, value: str, target_type: type | None = None) -> Any:
         """Convert string value to target type."""
         if target_type is None:
             # Try to infer type from value
@@ -212,9 +202,7 @@ class ConfigLoader:
         else:
             return value
 
-    def _merge_configs(
-        self, base: dict[str, Any], override: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _merge_configs(self, base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
         """Deep merge configuration dictionaries."""
         if not override:
             return base.copy()
@@ -225,11 +213,7 @@ class ConfigLoader:
         result = base.copy()
 
         for key, value in override.items():
-            if (
-                key in result
-                and isinstance(result[key], dict)
-                and isinstance(value, dict)
-            ):
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
                 # Recursively merge nested dictionaries
                 result[key] = self._merge_configs(result[key], value)
             else:
@@ -288,17 +272,13 @@ class ConfigLoader:
                 if "error_handling" in config_data:
                     return error_loader.load_from_dict(config_data["error_handling"])
             except Exception as e:
-                print(
-                    f"Warning: Failed to load error handling config from main config: {e}"
-                )
+                print(f"Warning: Failed to load error handling config from main config: {e}")
 
         # Fall back to environment variables
         try:
             return error_loader.load_from_env()
         except Exception as e:
-            print(
-                f"Warning: Failed to load error handling config from environment: {e}"
-            )
+            print(f"Warning: Failed to load error handling config from environment: {e}")
 
         # Return default configuration
         return error_loader.load_default()

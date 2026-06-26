@@ -24,10 +24,10 @@ class StructuredFileHandler(logging.FileHandler):
         mode: str = "a",
         encoding: str | None = None,
         delay: bool = False,
-        formatter_type: str = "json"
+        formatter_type: str = "json",
     ):
         """Initialize the structured file handler.
-        
+
         Args:
             filename: Log file path.
             mode: File mode.
@@ -55,10 +55,10 @@ class RotatingStructuredFileHandler(logging.handlers.RotatingFileHandler):
         backupCount: int = 0,
         encoding: str | None = None,
         delay: bool = False,
-        formatter_type: str = "json"
+        formatter_type: str = "json",
     ):
         """Initialize the rotating structured file handler.
-        
+
         Args:
             filename: Log file path.
             mode: File mode.
@@ -90,10 +90,10 @@ class TimedRotatingStructuredFileHandler(logging.handlers.TimedRotatingFileHandl
         delay: bool = False,
         utc: bool = False,
         atTime: Any | None = None,
-        formatter_type: str = "json"
+        formatter_type: str = "json",
     ):
         """Initialize the timed rotating structured file handler.
-        
+
         Args:
             filename: Log file path.
             when: When to rotate (h, d, w, etc.).
@@ -118,13 +118,10 @@ class ConsoleHandler(logging.StreamHandler):
     """Console handler with structured output."""
 
     def __init__(
-        self,
-        stream: Any | None = None,
-        formatter_type: str = "structured",
-        colorize: bool = True
+        self, stream: Any | None = None, formatter_type: str = "structured", colorize: bool = True
     ):
         """Initialize the console handler.
-        
+
         Args:
             stream: Output stream (defaults to stderr).
             formatter_type: Type of formatter to use.
@@ -151,10 +148,10 @@ class MemoryHandler(logging.handlers.MemoryHandler):
         flushLevel: int = logging.ERROR,
         target: logging.Handler | None = None,
         flushOnClose: bool = True,
-        formatter_type: str = "json"
+        formatter_type: str = "json",
     ):
         """Initialize the memory handler.
-        
+
         Args:
             capacity: Buffer capacity.
             flushLevel: Level at which to flush.
@@ -176,7 +173,7 @@ class QueueHandler(logging.handlers.QueueHandler):
 
     def __init__(self, queue, formatter_type: str = "json"):
         """Initialize the queue handler.
-        
+
         Args:
             queue: Queue to send logs to.
             formatter_type: Type of formatter to use.
@@ -201,10 +198,10 @@ class HTTPHandler(logging.Handler):
         secure: bool = False,
         credentials: tuple | None = None,
         context: Any | None = None,
-        formatter_type: str = "json"
+        formatter_type: str = "json",
     ):
         """Initialize the HTTP handler.
-        
+
         Args:
             host: Target host.
             url: Target URL.
@@ -231,7 +228,7 @@ class HTTPHandler(logging.Handler):
 
     def emit(self, record: logging.LogRecord) -> None:
         """Emit a log record via HTTP.
-        
+
         Args:
             record: Log record to emit.
         """
@@ -248,7 +245,7 @@ class HTTPHandler(logging.Handler):
             raise HandlerError(
                 f"Failed to emit log record via HTTP: {e!s}",
                 handler_name="HTTPHandler",
-                handler_type="http"
+                handler_type="http",
             ) from e
 
 
@@ -256,13 +253,10 @@ class DatabaseHandler(logging.Handler):
     """Database handler for storing logs in a database."""
 
     def __init__(
-        self,
-        connection_string: str,
-        table_name: str = "logs",
-        formatter_type: str = "json"
+        self, connection_string: str, table_name: str = "logs", formatter_type: str = "json"
     ):
         """Initialize the database handler.
-        
+
         Args:
             connection_string: Database connection string.
             table_name: Table name to store logs in.
@@ -281,7 +275,7 @@ class DatabaseHandler(logging.Handler):
 
     def emit(self, record: logging.LogRecord) -> None:
         """Emit a log record to the database.
-        
+
         Args:
             record: Log record to emit.
         """
@@ -297,7 +291,7 @@ class DatabaseHandler(logging.Handler):
             raise HandlerError(
                 f"Failed to emit log record to database: {e!s}",
                 handler_name="DatabaseHandler",
-                handler_type="database"
+                handler_type="database",
             ) from e
 
 
@@ -306,7 +300,7 @@ class MultiHandler(logging.Handler):
 
     def __init__(self, handlers: list[logging.Handler]):
         """Initialize the multi handler.
-        
+
         Args:
             handlers: List of handlers to forward to.
         """
@@ -315,7 +309,7 @@ class MultiHandler(logging.Handler):
 
     def emit(self, record: logging.LogRecord) -> None:
         """Emit a log record to all handlers.
-        
+
         Args:
             record: Log record to emit.
         """
@@ -341,16 +335,16 @@ def create_file_handler(
     filename: str | Path,
     formatter_type: str = "json",
     max_bytes: int | None = None,
-    backup_count: int | None = None
+    backup_count: int | None = None,
 ) -> logging.Handler:
     """Create a file handler with appropriate configuration.
-    
+
     Args:
         filename: Log file path.
         formatter_type: Type of formatter to use.
         max_bytes: Maximum file size for rotation.
         backup_count: Number of backup files.
-        
+
     Returns:
         Configured file handler.
     """
@@ -360,41 +354,35 @@ def create_file_handler(
                 filename,
                 maxBytes=max_bytes,
                 backupCount=backup_count,
-                formatter_type=formatter_type
+                formatter_type=formatter_type,
             )
         else:
             return StructuredFileHandler(filename, formatter_type=formatter_type)
     except Exception as e:
         raise HandlerError(
-            f"Failed to create file handler: {e!s}",
-            handler_name="FileHandler",
-            handler_type="file"
+            f"Failed to create file handler: {e!s}", handler_name="FileHandler", handler_type="file"
         ) from e
 
 
 def create_console_handler(
-    formatter_type: str = "structured",
-    colorize: bool = True
+    formatter_type: str = "structured", colorize: bool = True
 ) -> logging.Handler:
     """Create a console handler with appropriate configuration.
-    
+
     Args:
         formatter_type: Type of formatter to use.
         colorize: Whether to add color to output.
-        
+
     Returns:
         Configured console handler.
     """
     try:
-        return ConsoleHandler(
-            formatter_type=formatter_type,
-            colorize=colorize
-        )
+        return ConsoleHandler(formatter_type=formatter_type, colorize=colorize)
     except Exception as e:
         raise HandlerError(
             f"Failed to create console handler: {e!s}",
             handler_name="ConsoleHandler",
-            handler_type="console"
+            handler_type="console",
         ) from e
 
 
@@ -402,29 +390,26 @@ def create_memory_handler(
     capacity: int = 1000,
     flush_level: int = logging.ERROR,
     target: logging.Handler | None = None,
-    formatter_type: str = "json"
+    formatter_type: str = "json",
 ) -> logging.Handler:
     """Create a memory handler with appropriate configuration.
-    
+
     Args:
         capacity: Buffer capacity.
         flush_level: Level at which to flush.
         target: Target handler for flushing.
         formatter_type: Type of formatter to use.
-        
+
     Returns:
         Configured memory handler.
     """
     try:
         return MemoryHandler(
-            capacity=capacity,
-            flushLevel=flush_level,
-            target=target,
-            formatter_type=formatter_type
+            capacity=capacity, flushLevel=flush_level, target=target, formatter_type=formatter_type
         )
     except Exception as e:
         raise HandlerError(
             f"Failed to create memory handler: {e!s}",
             handler_name="MemoryHandler",
-            handler_type="memory"
+            handler_type="memory",
         ) from e

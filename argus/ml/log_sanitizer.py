@@ -82,10 +82,7 @@ class LogSanitizer:
         Returns:
             True if sensitive information is detected
         """
-        for pattern in self.compiled_patterns:
-            if pattern.search(text):
-                return True
-        return False
+        return any(pattern.search(text) for pattern in self.compiled_patterns)
 
     def get_sensitive_fields(self, log_entry: str) -> list[str]:
         """

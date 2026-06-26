@@ -13,9 +13,7 @@ def mock_pubsub_subscriber_client() -> None:
     Mock Pubsub Subscriber Client.
 
     """
-    with patch(
-        "argus.log_subscriber.pubsub_v1.SubscriberClient"
-    ) as MockSubscriberClient:
+    with patch("argus.log_subscriber.pubsub_v1.SubscriberClient") as MockSubscriberClient:
         mock_instance = MockSubscriberClient.return_value
         mock_instance.subscription_path.return_value = (
             "projects/test-project/subscriptions/test-subscription"
@@ -40,10 +38,7 @@ async def test_log_subscriber_init(mock_pubsub_subscriber_client):
     mock_pubsub_subscriber_client.subscription_path.assert_called_with(
         "test-project", "test-subscription"
     )
-    assert (
-        subscriber.subscription_path
-        == "projects/test-project/subscriptions/test-subscription"
-    )
+    assert subscriber.subscription_path == "projects/test-project/subscriptions/test-subscription"
 
 
 @pytest.mark.asyncio

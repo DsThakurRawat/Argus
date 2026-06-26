@@ -47,9 +47,7 @@ def mock_llm_provider() -> None:
     mock_provider.supports_streaming = AsyncMock(return_value=True)
     mock_provider.supports_tools = AsyncMock(return_value=False)
 
-    async def mock_generate_text(
-        prompt: str, model: str | None = None, **kwargs: Any
-    ) -> str:
+    async def mock_generate_text(prompt: str, model: str | None = None, **kwargs: Any) -> str:
         if model == "gemini-pro":
             if "cat" in prompt:  # For success test
                 return "This is a test about a cat."
@@ -157,9 +155,7 @@ async def test_capability_tester_run_all_tests(mock_llm_providers):
     assert "gemini/gemini-code" in results
 
     assert results["gemini/gemini-pro"]["text_generation"] is True
-    assert (
-        results["gemini/gemini-pro"]["code_generation"] is False
-    )  # This should be False
+    assert results["gemini/gemini-pro"]["code_generation"] is False  # This should be False
 
     assert results["gemini/gemini-code"]["text_generation"] is True
     assert results["gemini/gemini-code"]["code_generation"] is True

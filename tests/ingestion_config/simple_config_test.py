@@ -142,19 +142,13 @@ class IngestionConfig:
                 errors.append("Source name cannot be empty")
 
             if source.priority < 1 or source.priority > 100:
-                errors.append(
-                    f"Source '{source.name}' priority must be between 1 and 100"
-                )
+                errors.append(f"Source '{source.name}' priority must be between 1 and 100")
 
             if source.max_retries < 0:
-                errors.append(
-                    f"Source '{source.name}' max_retries must be non-negative"
-                )
+                errors.append(f"Source '{source.name}' max_retries must be non-negative")
 
             if source.retry_delay < 0:
-                errors.append(
-                    f"Source '{source.name}' retry_delay must be non-negative"
-                )
+                errors.append(f"Source '{source.name}' retry_delay must be non-negative")
 
             if source.timeout <= 0:
                 errors.append(f"Source '{source.name}' timeout must be positive")
@@ -399,13 +393,9 @@ def test_config_file_loading() -> None:
             enable_flow_tracking=loaded_data["global_config"]["enable_flow_tracking"],
             default_buffer_size=loaded_data["global_config"]["default_buffer_size"],
             max_memory_mb=loaded_data["global_config"]["max_memory_mb"],
-            backpressure_threshold=loaded_data["global_config"][
-                "backpressure_threshold"
-            ],
+            backpressure_threshold=loaded_data["global_config"]["backpressure_threshold"],
             drop_oldest_on_full=loaded_data["global_config"]["drop_oldest_on_full"],
-            buffer_strategy=BufferStrategy(
-                loaded_data["global_config"]["buffer_strategy"]
-            ),
+            buffer_strategy=BufferStrategy(loaded_data["global_config"]["buffer_strategy"]),
         )
 
         sources = []
@@ -420,9 +410,7 @@ def test_config_file_loading() -> None:
                     credentials_path=source_config.get("credentials_path"),
                     max_messages=source_config.get("max_messages", 100),
                     ack_deadline_seconds=source_config.get("ack_deadline_seconds", 60),
-                    flow_control_max_messages=source_config.get(
-                        "flow_control_max_messages", 1000
-                    ),
+                    flow_control_max_messages=source_config.get("flow_control_max_messages", 1000),
                     flow_control_max_bytes=source_config.get(
                         "flow_control_max_bytes", 10 * 1024 * 1024
                     ),
@@ -431,9 +419,7 @@ def test_config_file_loading() -> None:
                     max_retries=source_data.get("max_retries", 3),
                     retry_delay=source_data.get("retry_delay", 1.0),
                     timeout=source_data.get("timeout", 30.0),
-                    circuit_breaker_enabled=source_data.get(
-                        "circuit_breaker_enabled", True
-                    ),
+                    circuit_breaker_enabled=source_data.get("circuit_breaker_enabled", True),
                     rate_limit_per_second=source_data.get("rate_limit_per_second"),
                 )
                 sources.append(source)

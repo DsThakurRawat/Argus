@@ -86,16 +86,12 @@ class PerformanceRepositoryAnalyzer:
                     str(self.repo_path), analysis_depth
                 )
                 if cached_context:
-                    self.logger.info(
-                        f"Using cached repository context for {self.repo_path}"
-                    )
+                    self.logger.info(f"Using cached repository context for {self.repo_path}")
                     # Convert cached dict back to RepositoryContext
                     return RepositoryContext(**cached_context)
 
             # Perform analysis
-            self.logger.info(
-                f"Starting {analysis_depth} repository analysis for {self.repo_path}"
-            )
+            self.logger.info(f"Starting {analysis_depth} repository analysis for {self.repo_path}")
 
             config = self.analysis_configs[analysis_depth]
 
@@ -158,9 +154,7 @@ class PerformanceRepositoryAnalyzer:
                 dependency_structure=dependencies,
                 recent_changes=await self._get_recent_changes(),
                 historical_fixes=await self._get_historical_fixes(),
-                code_quality_metrics=await self._calculate_quality_metrics(
-                    file_structure
-                ),
+                code_quality_metrics=await self._calculate_quality_metrics(file_structure),
             )
 
             # Cache the result
@@ -361,9 +355,7 @@ class PerformanceRepositoryAnalyzer:
             self.logger.error(f"Testing pattern analysis failed: {e}")
             return []
 
-    async def _analyze_dependency_structure(
-        self, config: dict[str, Any]
-    ) -> dict[str, Any]:
+    async def _analyze_dependency_structure(self, config: dict[str, Any]) -> dict[str, Any]:
         """Analyze dependency structure of the project."""
         try:
             dependencies = {}
@@ -478,9 +470,7 @@ class PerformanceRepositoryAnalyzer:
             return "microservices"
         elif "package.json" in str(file_structure) and "src" in str(file_structure):
             return "frontend"
-        elif "requirements.txt" in str(file_structure) or "pyproject.toml" in str(
-            file_structure
-        ):
+        elif "requirements.txt" in str(file_structure) or "pyproject.toml" in str(file_structure):
             return "python_backend"
         else:
             return "monolith"
@@ -580,9 +570,7 @@ class PerformanceRepositoryAnalyzer:
         # This would analyze git history for fix patterns
         return []
 
-    async def _calculate_quality_metrics(
-        self, file_structure: dict[str, Any]
-    ) -> dict[str, Any]:
+    async def _calculate_quality_metrics(self, file_structure: dict[str, Any]) -> dict[str, Any]:
         """Calculate code quality metrics."""
         if not file_structure:
             return {}

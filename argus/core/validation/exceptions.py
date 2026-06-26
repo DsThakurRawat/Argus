@@ -6,9 +6,7 @@ from typing import Any
 class ValidationError(Exception):
     """Base exception for validation errors."""
 
-    def __init__(
-        self, message: str, field: str | None = None, value: Any | None = None
-    ):
+    def __init__(self, message: str, field: str | None = None, value: Any | None = None):
         """Initialize the validation error.
 
         Args:

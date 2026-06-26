@@ -26,10 +26,7 @@ def injectable(
     def decorator(cls: type[T]) -> type[T]:
         # Register the service
         container = get_container()
-        if service_type is None:
-            service_type_to_register = cls
-        else:
-            service_type_to_register = service_type
+        service_type_to_register = cls if service_type is None else service_type
 
         if lifetime == "singleton":
             container.register_singleton(service_type_to_register, cls)
@@ -180,7 +177,7 @@ def factory(func: Callable[[], T]) -> Callable[[], T]:
     hints = get_type_hints(func)
     return_type = hints.get("return", type(None))
 
-    if return_type != type(None):
+    if return_type is not type(None):
         container.register_transient(return_type, func)
 
     return func

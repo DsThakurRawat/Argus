@@ -34,9 +34,7 @@ class LogSubscriber:
                                                                  to process received log data.
         """
         self.subscriber = pubsub_v1.SubscriberClient()
-        self.subscription_path = self.subscriber.subscription_path(
-            project_id, subscription_id
-        )
+        self.subscription_path = self.subscriber.subscription_path(project_id, subscription_id)
         self.triage_callback = triage_callback
         self._executor = ThreadPoolExecutor(max_workers=4)
         self._loop = None
@@ -56,23 +54,17 @@ class LogSubscriber:
                 logger.error("[LOG_INGESTION] Event loop not initialized")
                 message.nack()
                 return
-            future = asyncio.run_coroutine_threadsafe(
-                self._process_message(message), self._loop
-            )
+            future = asyncio.run_coroutine_threadsafe(self._process_message(message), self._loop)
             try:
                 future.result(timeout=30)
             except Exception as e:
-                logger.error(
-                    f"[ERROR_HANDLING] Failed to process message in callback wrapper: {e}"
-                )
+                logger.error(f"[ERROR_HANDLING] Failed to process message in callback wrapper: {e}")
                 message.nack()
 
         streaming_pull_future = self.subscriber.subscribe(
             self.subscription_path, callback=_callback_wrapper
         )
-        logger.info(
-            f"[LOG_INGESTION] Listening for messages on {self.subscription_path}..\n"
-        )
+        logger.info(f"[LOG_INGESTION] Listening for messages on {self.subscription_path}..\n")
 
         try:
             # Run continuously without timeout for production log ingestion
@@ -83,9 +75,7 @@ class LogSubscriber:
             )
             streaming_pull_future.cancel()
         except Exception as e:
-            logger.error(
-                f"[ERROR_HANDLING] An error occurred during Pub/Sub subscription: {e}"
-            )
+            logger.error(f"[ERROR_HANDLING] An error occurred during Pub/Sub subscription: {e}")
             streaming_pull_future.cancel()
             raise  # Re-raise to let the calling code handle the error
         finally:
@@ -113,7 +103,5 @@ class LogSubscriber:
             )
             message.nack()
         except Exception as e:
-            logger.error(
-                f"[ERROR_HANDLING] Failed to process message {message.message_id}: {e}"
-            )
+            logger.error(f"[ERROR_HANDLING] Failed to process message {message.message_id}: {e}")
             message.nack()

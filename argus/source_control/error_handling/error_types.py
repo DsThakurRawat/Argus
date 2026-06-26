@@ -1,4 +1,3 @@
-from typing import Any
 # argus/source_control/error_handling/error_types.py
 
 """
@@ -1414,9 +1413,7 @@ class ErrorTypeRegistry:
     def get_retryable_errors(self) -> set[str]:
         """Get all retryable error types."""
         return {
-            error_type
-            for error_type, metadata in self._metadata.items()
-            if metadata.is_retryable
+            error_type for error_type, metadata in self._metadata.items() if metadata.is_retryable
         }
 
     def get_circuit_breaker_errors(self) -> set[str]:

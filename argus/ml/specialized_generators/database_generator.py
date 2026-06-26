@@ -47,9 +47,7 @@ class DatabaseCodeGenerator(BaseCodeGenerator):
                     "Implement proper rollback on errors",
                     "Set appropriate isolation levels",
                 ],
-                examples=[
-                    "with connection.begin() as transaction:\n    # operations\n    pass"
-                ],
+                examples=["with connection.begin() as transaction:\n    # operations\n    pass"],
             ),
             CodePattern(
                 pattern_id="db_error_handling",
@@ -100,9 +98,7 @@ class DatabaseCodeGenerator(BaseCodeGenerator):
                     "Set maximum retry attempts",
                     "Log retry attempts for monitoring",
                 ],
-                examples=[
-                    "import tenacity\n@tenacity.retry(stop=tenacity.stop_after_attempt(3))"
-                ],
+                examples=["import tenacity\n@tenacity.retry(stop=tenacity.stop_after_attempt(3))"],
             ),
         ]
 

@@ -89,8 +89,7 @@ class ProviderMetrics:
 
         # Factor 3: Availability (weighted at 30%)
         # Check if any errors in the last 5 minutes
-        if self.last_error_time:
-            if (datetime.now() - self.last_error_time).total_seconds() < 300:
-                score -= 0.3
+        if self.last_error_time and (datetime.now() - self.last_error_time).total_seconds() < 300:
+            score -= 0.3
 
         return max(0, min(1, score))  # Ensure score is between 0 and 1

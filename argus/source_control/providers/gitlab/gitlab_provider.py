@@ -95,9 +95,7 @@ class GitLabProvider(BaseSourceControlProvider):
                 raise ValueError("Project name is required for GitLab provider")
 
             # Initialize error handling system
-            self._initialize_error_handling(
-                "gitlab", self.repo_config.error_handling.model_dump()
-            )
+            self._initialize_error_handling("gitlab", self.repo_config.error_handling.model_dump())
 
             # Initialize sub-modules with error handling components
             self.file_ops = GitLabFileOperations(
@@ -202,9 +200,7 @@ class GitLabProvider(BaseSourceControlProvider):
             raise RuntimeError("Provider not initialized")
         return await self.file_ops.get_file_info(path, ref)
 
-    async def list_files(
-        self, path: str = "", ref: str | None = None
-    ) -> list[FileInfo]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[FileInfo]:
         """List files in a directory."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -285,9 +281,7 @@ class GitLabProvider(BaseSourceControlProvider):
         base_branch = "main"  # This should be configurable
 
         try:
-            conflict_info = await self.branch_ops.check_conflicts(
-                path, base_branch, feature_branch
-            )
+            conflict_info = await self.branch_ops.check_conflicts(path, base_branch, feature_branch)
             return conflict_info.has_conflicts
         except Exception as e:
             self.logger.error(f"Failed to check conflicts: {e}")
@@ -368,9 +362,7 @@ class GitLabProvider(BaseSourceControlProvider):
         )
 
     # Batch operations (simplified implementation)
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute multiple operations in batch."""
         results = []
         for operation in operations:
@@ -400,9 +392,7 @@ class GitLabProvider(BaseSourceControlProvider):
                         message=f"Executed {operation.operation_type} for {operation.file_path}",
                         file_path=operation.file_path,
                         error_details=(
-                            ""
-                            if success
-                            else f"Failed to execute {operation.operation_type}"
+                            "" if success else f"Failed to execute {operation.operation_type}"
                         ),
                         additional_info={},
                     )

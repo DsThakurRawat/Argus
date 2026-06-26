@@ -13,7 +13,7 @@ from .exceptions import OperationTimeoutError
 @dataclass
 class TimeoutConfig:
     """Configuration for timeout manager.
-    
+
     Attributes:
         default_timeout: Default timeout in seconds
         max_timeout: Maximum allowed timeout in seconds
@@ -31,14 +31,14 @@ class TimeoutConfig:
 
 class TimeoutManager:
     """Timeout manager implementation for fault tolerance.
-    
+
     Provides timeout handling for operations with configurable
     timeout values and handlers.
     """
 
     def __init__(self, config: TimeoutConfig | None = None):
         """Initialize the timeout manager.
-        
+
         Args:
             config: Timeout configuration
         """
@@ -54,20 +54,20 @@ class TimeoutManager:
         timeout: float | None = None,
         operation_name: str | None = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """Execute a function with timeout.
-        
+
         Args:
             func: Function to execute
             timeout: Timeout in seconds (uses default if None)
             operation_name: Name of the operation for logging
             *args: Function arguments
             **kwargs: Function keyword arguments
-            
+
         Returns:
             Function result
-            
+
         Raises:
             OperationTimeoutError: If operation times out
             Exception: If the function raises an exception
@@ -87,7 +87,7 @@ class TimeoutManager:
                 "operation_name": operation_name,
                 "timeout": timeout,
                 "start_time": time.time(),
-                "thread_id": threading.get_ident()
+                "thread_id": threading.get_ident(),
             }
 
         try:
@@ -116,28 +116,24 @@ class TimeoutManager:
                 self._active_timeouts.pop(timeout_id, None)
 
     def _execute_with_signal_timeout(
-        self,
-        func: Callable[..., Any],
-        timeout: float,
-        operation_name: str,
-        *args,
-        **kwargs
+        self, func: Callable[..., Any], timeout: float, operation_name: str, *args, **kwargs
     ) -> Any:
         """Execute function with signal-based timeout.
-        
+
         Args:
             func: Function to execute
             timeout: Timeout in seconds
             operation_name: Name of the operation
             *args: Function arguments
             **kwargs: Function keyword arguments
-            
+
         Returns:
             Function result
-            
+
         Raises:
             OperationTimeoutError: If operation times out
         """
+
         # Set up timeout handler
         def timeout_handler(signum, frame):
             raise OperationTimeoutError(operation_name, timeout)
@@ -161,14 +157,9 @@ class TimeoutManager:
             # Restore original handler
             signal.signal(signal.SIGALRM, original_handler)
 
-    def _record_timeout(
-        self,
-        timeout_id: str,
-        success: bool,
-        error: str | None
-    ) -> None:
+    def _record_timeout(self, timeout_id: str, success: bool, error: str | None) -> None:
         """Record a timeout operation.
-        
+
         Args:
             timeout_id: Unique timeout identifier
             success: Whether the operation succeeded
@@ -186,18 +177,18 @@ class TimeoutManager:
                 "duration": time.time() - timeout_info.get("start_time", time.time()),
                 "success": success,
                 "error": error,
-                "thread_id": timeout_info.get("thread_id", threading.get_ident())
+                "thread_id": timeout_info.get("thread_id", threading.get_ident()),
             }
 
             self._timeout_history.append(timeout_record)
 
             # Trim history if needed
             if len(self._timeout_history) > self._max_history:
-                self._timeout_history = self._timeout_history[-self._max_history:]
+                self._timeout_history = self._timeout_history[-self._max_history :]
 
     def get_stats(self) -> dict[str, Any]:
         """Get timeout manager statistics.
-        
+
         Returns:
             Dictionary containing timeout manager statistics
         """
@@ -207,8 +198,7 @@ class TimeoutManager:
             failed_operations = total_operations - successful_operations
 
             success_rate = (
-                (successful_operations / total_operations * 100)
-                if total_operations > 0 else 0.0
+                (successful_operations / total_operations * 100) if total_operations > 0 else 0.0
             )
 
             # Calculate average duration
@@ -217,12 +207,12 @@ class TimeoutManager:
 
             # Calculate timeout rate
             timeout_operations = sum(
-                1 for op in self._timeout_history
+                1
+                for op in self._timeout_history
                 if not op["success"] and "timeout" in (op["error"] or "").lower()
             )
             timeout_rate = (
-                (timeout_operations / total_operations * 100)
-                if total_operations > 0 else 0.0
+                (timeout_operations / total_operations * 100) if total_operations > 0 else 0.0
             )
 
             return {
@@ -238,16 +228,16 @@ class TimeoutManager:
                 "config": {
                     "default_timeout": self._config.default_timeout,
                     "max_timeout": self._config.max_timeout,
-                    "min_timeout": self._config.min_timeout
-                }
+                    "min_timeout": self._config.min_timeout,
+                },
             }
 
     def get_timeout_history(self, limit: int | None = None) -> list[dict[str, Any]]:
         """Get timeout history.
-        
+
         Args:
             limit: Optional limit on number of records to return
-            
+
         Returns:
             List of timeout operation records
         """
@@ -258,7 +248,7 @@ class TimeoutManager:
 
     def get_active_timeouts(self) -> dict[str, dict[str, Any]]:
         """Get currently active timeouts.
-        
+
         Returns:
             Dictionary of active timeout information
         """
@@ -267,10 +257,10 @@ class TimeoutManager:
 
     def cancel_timeout(self, timeout_id: str) -> bool:
         """Cancel an active timeout.
-        
+
         Args:
             timeout_id: Timeout identifier to cancel
-            
+
         Returns:
             True if timeout was cancelled, False if not found
         """
@@ -282,7 +272,7 @@ class TimeoutManager:
 
     def reset(self) -> Any:
         """Reset the timeout manager.
-        
+
         Clears all history and active timeouts.
         """
         with self._lock:
@@ -291,25 +281,26 @@ class TimeoutManager:
 
     def __call__(self, timeout: float | None = None, operation_name: str | None = None):
         """Make timeout manager callable as a decorator.
-        
+
         Args:
             timeout: Timeout in seconds
             operation_name: Name of the operation
-            
+
         Returns:
             Decorator function
         """
+
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             def wrapper(*args, **kwargs):
-                return self.execute_with_timeout(
-                    func, timeout, operation_name, *args, **kwargs
-                )
+                return self.execute_with_timeout(func, timeout, operation_name, *args, **kwargs)
+
             return wrapper
+
         return decorator
 
     def __enter__(self):
         """Context manager entry.
-        
+
         Returns:
             Self
         """
@@ -317,7 +308,7 @@ class TimeoutManager:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit.
-        
+
         Args:
             exc_type: Exception type
             exc_val: Exception value

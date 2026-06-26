@@ -36,25 +36,16 @@ class LocalBatchOperations:
         self.logger = logger
         self.error_handling_components = error_handling_components
 
-    async def _execute_with_error_handling(
-        self, operation_name: str, func, *args, **kwargs
-    ):
+    async def _execute_with_error_handling(self, operation_name: str, func, *args, **kwargs):
         """Execute a function with error handling if available."""
-        if (
-            self.error_handling_components
-            and "resilient_manager" in self.error_handling_components
-        ):
+        if self.error_handling_components and "resilient_manager" in self.error_handling_components:
             resilient_manager = self.error_handling_components["resilient_manager"]
-            return await resilient_manager.execute_with_retry(
-                operation_name, func, *args, **kwargs
-            )
+            return await resilient_manager.execute_with_retry(operation_name, func, *args, **kwargs)
 
         # Fall back to direct execution
         return await func(*args, **kwargs)
 
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute multiple operations in batch."""
 
         async def _batch():
@@ -80,9 +71,7 @@ class LocalBatchOperations:
 
                     results.append(result)
                 except Exception as e:
-                    self.logger.error(
-                        f"Failed to execute operation {operation.operation_id}: {e}"
-                    )
+                    self.logger.error(f"Failed to execute operation {operation.operation_id}: {e}")
                     results.append(
                         OperationResult(
                             operation_id=operation.operation_id,
@@ -216,10 +205,7 @@ class LocalBatchOperations:
                 return
 
             backup_dir = self.backup_directory
-            if backup_dir is None:
-                backup_dir = self.root_path / ".backups"
-            else:
-                backup_dir = Path(backup_dir)
+            backup_dir = self.root_path / ".backups" if backup_dir is None else Path(backup_dir)
 
             backup_dir.mkdir(parents=True, exist_ok=True)
 

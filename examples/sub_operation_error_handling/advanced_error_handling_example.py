@@ -67,9 +67,7 @@ class FailingFileOperations(LocalFileOperations):
         await self._simulate_failure("get_file_content")
         return await super().get_file_content(path)
 
-    async def apply_remediation(
-        self, file_path: str, remediation: str, commit_message: str
-    ) -> Any:
+    async def apply_remediation(self, file_path: str, remediation: str, commit_message: str) -> Any:
         """Override to add failure simulation."""
         await self._simulate_failure("apply_remediation")
         return await super().apply_remediation(file_path, remediation, commit_message)
@@ -144,7 +142,7 @@ async def circuit_breaker_example():
         # Try to perform operations that will fail
         for i in range(5):
             try:
-                print(f"   Attempt {i+1}: ", end="")
+                print(f"   Attempt {i + 1}: ", end="")
                 result = await file_ops.get_file_content("test.txt")
                 print(f"SUCCESS - Content: '{result}'")
             except Exception as e:
@@ -161,7 +159,7 @@ async def circuit_breaker_example():
 
         for i in range(3):
             try:
-                print(f"   Recovery attempt {i+1}: ", end="")
+                print(f"   Recovery attempt {i + 1}: ", end="")
                 result = await file_ops.get_file_content("test.txt")
                 print(f"SUCCESS - Content: '{result}'")
             except Exception as e:
@@ -285,9 +283,7 @@ async def retry_strategies_example():
                 print(f"   Result: SUCCESS after {elapsed:.2f}s - {result.success}")
             except Exception as e:
                 elapsed = time.time() - start_time
-                print(
-                    f"   Result: FAILED after {elapsed:.2f}s - {type(e).__name__}: {e}"
-                )
+                print(f"   Result: FAILED after {elapsed:.2f}s - {type(e).__name__}: {e}")
 
             # Show performance stats
             stats = file_ops.get_performance_stats()

@@ -225,9 +225,7 @@ class BaseLLMService(ABC):
         # Update average latency
         total = self._service_metrics.total_requests
         current_avg = self._service_metrics.average_latency_ms
-        self._service_metrics.average_latency_ms = (
-            current_avg * (total - 1) + latency_ms
-        ) / total
+        self._service_metrics.average_latency_ms = (current_avg * (total - 1) + latency_ms) / total
 
         # Update usage counts
         if self._service_metrics.model_usage_counts is not None:
@@ -245,9 +243,7 @@ class BaseLLMService(ABC):
 
         self._service_metrics.last_updated = datetime.now()
 
-    def _update_selection_stats(
-        self, model_name: str, strategy: SelectionStrategy
-    ) -> None:
+    def _update_selection_stats(self, model_name: str, strategy: SelectionStrategy) -> None:
         """Update selection statistics.
 
         Args:
@@ -299,18 +295,14 @@ class BaseLLMService(ABC):
             ),
             "average_latency_ms": self._service_metrics.average_latency_ms,
             "available_models": len(self._service_metrics.model_usage_counts or {}),
-            "available_providers": len(
-                self._service_metrics.provider_usage_counts or {}
-            ),
+            "available_providers": len(self._service_metrics.provider_usage_counts or {}),
         }
 
 
 # Additional classes needed for service management
-from enum import Enum
-
-
 class ServiceStatus(Enum):
     """Service health status enumeration."""
+
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     UNHEALTHY = "unhealthy"
@@ -320,6 +312,7 @@ class ServiceStatus(Enum):
 @dataclass
 class ServiceConfig:
     """Configuration for a service instance."""
+
     service_id: str
     max_connections: int = 100
     timeout_seconds: float = 30.0
@@ -330,6 +323,7 @@ class ServiceConfig:
 @dataclass
 class ServiceHealth:
     """Health status information for a service."""
+
     status: ServiceStatus
     score: float
     message: str

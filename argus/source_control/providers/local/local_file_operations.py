@@ -70,9 +70,7 @@ class LocalFileOperations(BaseSubOperation):
                 self.logger.error(f"Failed to read file {path}: {e}")
                 return ""
 
-        return await self._execute_with_error_handling(
-            "get_file_content", _get_file, "file"
-        )
+        return await self._execute_with_error_handling("get_file_content", _get_file, "file")
 
     async def apply_remediation(
         self,
@@ -118,9 +116,7 @@ class LocalFileOperations(BaseSubOperation):
                     additional_info={},
                 )
 
-        return await self._execute_with_error_handling(
-            "apply_remediation", _apply, "file"
-        )
+        return await self._execute_with_error_handling("apply_remediation", _apply, "file")
 
     async def file_exists(self, path: str) -> bool:
         """Check if a file exists."""
@@ -168,9 +164,7 @@ class LocalFileOperations(BaseSubOperation):
                     last_modified=None,
                 )
 
-        return await self._execute_with_error_handling(
-            "get_file_info", _get_info, "file"
-        )
+        return await self._execute_with_error_handling("get_file_info", _get_info, "file")
 
     async def list_files(self, path: str = "") -> list[FileInfo]:
         """List files in a directory."""
@@ -218,10 +212,7 @@ class LocalFileOperations(BaseSubOperation):
                 return
 
             backup_dir = self.backup_directory
-            if backup_dir is None:
-                backup_dir = self.root_path / ".backups"
-            else:
-                backup_dir = Path(backup_dir)
+            backup_dir = self.root_path / ".backups" if backup_dir is None else Path(backup_dir)
 
             backup_dir.mkdir(parents=True, exist_ok=True)
 
@@ -254,9 +245,7 @@ class LocalFileOperations(BaseSubOperation):
                 self.logger.error(f"Failed to generate patch: {e}")
                 return ""
 
-        return await self._execute_with_error_handling(
-            "generate_patch", _generate, "file"
-        )
+        return await self._execute_with_error_handling("generate_patch", _generate, "file")
 
     async def apply_patch(self, patch: str, file_path: str) -> bool:
         """Apply a patch to a file."""
@@ -281,9 +270,7 @@ class LocalFileOperations(BaseSubOperation):
                         f.write(patch)
                     return True
                 except Exception as patch_error:
-                    self.logger.error(
-                        f"Failed to apply patch to {file_path}: {patch_error}"
-                    )
+                    self.logger.error(f"Failed to apply patch to {file_path}: {patch_error}")
                     return False
             except Exception as e:
                 self.logger.error(f"Failed to apply patch to {file_path}: {e}")
@@ -317,9 +304,7 @@ class LocalFileOperations(BaseSubOperation):
                 self.logger.error(f"Failed to commit changes to {file_path}: {e}")
                 return False
 
-        return await self._execute_with_error_handling(
-            "commit_changes", _commit, "file"
-        )
+        return await self._execute_with_error_handling("commit_changes", _commit, "file")
 
     async def health_check(self) -> bool:
         """Check if the file operations are healthy."""

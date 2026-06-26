@@ -64,9 +64,7 @@ class MetaPromptGenerator:
         Returns:
             Optimized prompt string for the main code generation model
         """
-        self.logger.info(
-            f"[META-PROMPT] Generating optimized prompt for flow_id={context.flow_id}"
-        )
+        self.logger.info(f"[META-PROMPT] Generating optimized prompt for flow_id={context.flow_id}")
 
         try:
             # 1. Build meta-prompt for prompt generation
@@ -78,9 +76,7 @@ class MetaPromptGenerator:
 
             # 3. Validate and refine the generated prompt
             if self.config.enable_validation:
-                validated_prompt = await self._validate_and_refine_prompt(
-                    optimized_prompt, context
-                )
+                validated_prompt = await self._validate_and_refine_prompt(optimized_prompt, context)
             else:
                 validated_prompt = optimized_prompt
 
@@ -185,9 +181,7 @@ Provide only the optimized prompt that will be used by the main code generation 
 
 The generated prompt should be ready to use immediately without any additional formatting or modification."""
 
-    async def _validate_and_refine_prompt(
-        self, prompt: str, context: MetaPromptContext
-    ) -> str:
+    async def _validate_and_refine_prompt(self, prompt: str, context: MetaPromptContext) -> str:
         """Validate and refine the generated prompt."""
 
         # Basic validation checks
@@ -204,9 +198,7 @@ The generated prompt should be ready to use immediately without any additional f
             validation_results.append(result)
 
             if not result.success:
-                self.logger.warning(
-                    f"[META-PROMPT] Prompt validation failed: {check.__name__}"
-                )
+                self.logger.warning(f"[META-PROMPT] Prompt validation failed: {check.__name__}")
 
         # If validation fails, attempt refinement
         if not all(result.success for result in validation_results):
@@ -230,9 +222,7 @@ The generated prompt should be ready to use immediately without any additional f
         ]
 
         prompt_lower = prompt.lower()
-        missing_components = [
-            comp for comp in required_components if comp not in prompt_lower
-        ]
+        missing_components = [comp for comp in required_components if comp not in prompt_lower]
 
         return ValidationResult(
             success=len(missing_components) == 0,
@@ -250,40 +240,26 @@ The generated prompt should be ready to use immediately without any additional f
     ) -> ValidationResult:
         """Check if the prompt includes accurate technical information."""
         # Implementation would validate technical accuracy
-        return ValidationResult(
-            success=True, issues=[], suggestions=[], confidence_score=0.8
-        )
+        return ValidationResult(success=True, issues=[], suggestions=[], confidence_score=0.8)
 
-    def _check_output_format(
-        self, prompt: str, context: MetaPromptContext
-    ) -> ValidationResult:
+    def _check_output_format(self, prompt: str, context: MetaPromptContext) -> ValidationResult:
         """Check if the prompt specifies a clear output format."""
         has_json = "json" in prompt.lower()
         has_schema = "schema" in prompt.lower()
 
         return ValidationResult(
             success=has_json and has_schema,
-            issues=(
-                []
-                if (has_json and has_schema)
-                else ["Missing JSON schema specification"]
-            ),
+            issues=([] if (has_json and has_schema) else ["Missing JSON schema specification"]),
             suggestions=(
-                ["Specify exact JSON output format"]
-                if not (has_json and has_schema)
-                else []
+                ["Specify exact JSON output format"] if not (has_json and has_schema) else []
             ),
             confidence_score=0.9 if (has_json and has_schema) else 0.4,
         )
 
-    def _check_context_relevance(
-        self, prompt: str, context: MetaPromptContext
-    ) -> ValidationResult:
+    def _check_context_relevance(self, prompt: str, context: MetaPromptContext) -> ValidationResult:
         """Check if the prompt is relevant to the given context."""
         # Implementation would check context relevance
-        return ValidationResult(
-            success=True, issues=[], suggestions=[], confidence_score=0.8
-        )
+        return ValidationResult(success=True, issues=[], suggestions=[], confidence_score=0.8)
 
     async def _refine_prompt_with_validation(
         self,

@@ -32,13 +32,9 @@ class ProviderFactory:
                     module.register_providers(self)
                     self.logger.info(f"Registered providers from module: {module_name}")
             except ImportError as e:
-                self.logger.error(
-                    f"Failed to import provider module {module_name}: {e!s}"
-                )
+                self.logger.error(f"Failed to import provider module {module_name}: {e!s}")
 
-    async def create_provider(
-        self, repo_config: RepositoryConfig
-    ) -> SourceControlProvider:
+    async def create_provider(self, repo_config: RepositoryConfig) -> SourceControlProvider:
         """Create a provider instance based on repository configuration."""
         provider_type = repo_config.type
 

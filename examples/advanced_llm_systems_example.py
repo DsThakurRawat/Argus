@@ -77,17 +77,13 @@ async def enhanced_monitoring_example():
     logger.info("\n--- Health Status ---")
     health_status = dashboard_api.get_health_status()
     for provider, health in health_status["providers"].items():
-        logger.info(
-            f"{provider}: {health['status']} (Success Rate: {health['success_rate']:.1%})"
-        )
+        logger.info(f"{provider}: {health['status']} (Success Rate: {health['success_rate']:.1%})")
 
     # Get metrics
     logger.info("\n--- Metrics ---")
     metrics = dashboard_api.get_metrics()
     logger.info(f"Total Cost: ${metrics['summary']['total_cost']:.2f}")
-    logger.info(
-        f"Overall Success Rate: {metrics['summary']['overall_success_rate']:.1%}"
-    )
+    logger.info(f"Overall Success Rate: {metrics['summary']['overall_success_rate']:.1%}")
 
     # Get alerts
     logger.info("\n--- Alerts ---")
@@ -118,15 +114,12 @@ async def model_mixing_example():
     session_id = f"mixing_session_{int(time.time())}"
 
     # Set request context
-    set_request_context(
-        request_id="mixing_example_001", session_id=session_id, user_id="demo_user"
-    )
+    set_request_context(request_id="mixing_example_001", session_id=session_id, user_id="demo_user")
 
     # Example 1: Parallel mixing for code generation
     logger.info("\n--- Parallel Code Generation ---")
     code_prompt = (
-        "Write a Python function to calculate the factorial of a number "
-        "with error handling."
+        "Write a Python function to calculate the factorial of a number with error handling."
     )
 
     try:
@@ -152,8 +145,7 @@ async def model_mixing_example():
     # Example 2: Sequential mixing for analysis
     logger.info("\n--- Sequential Analysis ---")
     analysis_prompt = (
-        "Analyze the pros and cons of microservices architecture for a "
-        "large e-commerce platform."
+        "Analyze the pros and cons of microservices architecture for a large e-commerce platform."
     )
 
     try:
@@ -239,7 +231,7 @@ async def model_mixing_example():
         logger.info(f"Decomposed into {len(results)} subtasks")
         for i, result in enumerate(results):
             logger.info(
-                f"Subtask {i+1}: {result.execution_time_ms:.2f}ms, "
+                f"Subtask {i + 1}: {result.execution_time_ms:.2f}ms, "
                 f"${result.total_cost:.4f}, confidence: {result.confidence_score:.2f}"
             )
 
@@ -295,7 +287,7 @@ async def integrated_systems_example():
     ]
 
     for i, (prompt, task_type) in enumerate(tasks):
-        logger.info(f"\n--- Task {i+1}: {task_type.value} ---")
+        logger.info(f"\n--- Task {i + 1}: {task_type.value} ---")
 
         try:
             # Record request start
@@ -329,9 +321,7 @@ async def integrated_systems_example():
                 estimated_cost=result.total_cost,
                 input_tokens=len(prompt) // 4,  # Rough estimation
                 output_tokens=(
-                    len(result.aggregated_result) // 4
-                    if result.aggregated_result
-                    else 0
+                    len(result.aggregated_result) // 4 if result.aggregated_result else 0
                 ),
             )
 

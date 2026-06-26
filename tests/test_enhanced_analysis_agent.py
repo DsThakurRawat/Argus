@@ -12,9 +12,11 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from argus.ml.enhanced_analysis_agent import (
-    EnhancedAnalysisAgent,
+from argus.ml.ml_analysis_agent import (
     EnhancedAnalysisConfig,
+)
+from argus.ml.ml_analysis_agent import (
+    MLAnalysisAgent as EnhancedAnalysisAgent,
 )
 from argus.ml.prompt_context_models import IssueType
 
@@ -24,9 +26,7 @@ class TestEnhancedAnalysisConfig:
 
     def test_config_creation(self) -> None:
         """Test creating an enhanced analysis config."""
-        config = EnhancedAnalysisConfig(
-            project_id="test-project", location="us-central1"
-        )
+        config = EnhancedAnalysisConfig(project_id="test-project", location="us-central1")
 
         assert config.project_id == "test-project"
         assert config.location == "us-central1"
@@ -71,19 +71,19 @@ class TestEnhancedAnalysisAgent:
     @pytest.fixture
     def agent(self, config: str) -> None:
         """Create test agent with mocked dependencies."""
-        with patch("argus.ml.enhanced_analysis_agent.GenerativeModel"), patch(
-            "argus.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
-        ), patch(
-            "argus.ml.enhanced_analysis_agent.MetaPromptGenerator"
+        with (
+            patch("argus.ml.ml_analysis_agent.GenerativeModel"),
+            patch("argus.ml.ml_analysis_agent.AdaptivePromptStrategy"),
+            patch("argus.ml.ml_analysis_agent.MetaPromptGenerator"),
         ):
             return EnhancedAnalysisAgent(config)
 
     def test_agent_initialization(self, config: str) -> None:
         """Test agent initialization."""
-        with patch("argus.ml.enhanced_analysis_agent.GenerativeModel"), patch(
-            "argus.ml.enhanced_analysis_agent.AdaptivePromptStrategy"
-        ), patch(
-            "argus.ml.enhanced_analysis_agent.MetaPromptGenerator"
+        with (
+            patch("argus.ml.ml_analysis_agent.GenerativeModel"),
+            patch("argus.ml.ml_analysis_agent.AdaptivePromptStrategy"),
+            patch("argus.ml.ml_analysis_agent.MetaPromptGenerator"),
         ):
             agent = EnhancedAnalysisAgent(config)
 
@@ -304,9 +304,7 @@ class TestEnhancedAnalysisAgent:
         configs = {"test": "config"}
         flow_id = "test_flow_123"
 
-        result = await agent.analyze_issue(
-            triage_packet, historical_logs, configs, flow_id
-        )
+        result = await agent.analyze_issue(triage_packet, historical_logs, configs, flow_id)
 
         assert result["success"] is True
         assert "analysis" in result
@@ -336,9 +334,7 @@ class TestEnhancedAnalysisAgent:
         configs = {"test": "config"}
         flow_id = "test_flow_123"
 
-        result = await agent.analyze_issue(
-            triage_packet, historical_logs, configs, flow_id
-        )
+        result = await agent.analyze_issue(triage_packet, historical_logs, configs, flow_id)
 
         assert result["success"] is True
         assert result["fallback"] is True
@@ -453,9 +449,7 @@ class TestEnhancedAnalysisAgent:
     async def test_fallback_analysis_failure(self, agent):
         """Test fallback analysis failure."""
         # Mock the model to raise an exception
-        agent.main_model.generate_content_async = AsyncMock(
-            side_effect=Exception("Model error")
-        )
+        agent.main_model.generate_content_async = AsyncMock(side_effect=Exception("Model error"))
 
         triage_packet = {"error_patterns": ["test error"]}
         historical_logs = ["log1", "log2"]

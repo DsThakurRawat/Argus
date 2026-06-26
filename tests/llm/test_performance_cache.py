@@ -55,9 +55,7 @@ class TestModelPerformanceStats:
 
     def test_stats_creation(self) -> None:
         """Test creating performance stats."""
-        stats = ModelPerformanceStats(
-            model_name="test-model", provider=ProviderType.OPENAI
-        )
+        stats = ModelPerformanceStats(model_name="test-model", provider=ProviderType.OPENAI)
 
         assert stats.model_name == "test-model"
         assert stats.provider == ProviderType.OPENAI
@@ -66,9 +64,7 @@ class TestModelPerformanceStats:
 
     def test_add_metric(self) -> None:
         """Test adding metrics to stats."""
-        stats = ModelPerformanceStats(
-            model_name="test-model", provider=ProviderType.OPENAI
-        )
+        stats = ModelPerformanceStats(model_name="test-model", provider=ProviderType.OPENAI)
 
         metric1 = PerformanceMetric(
             metric_type=MetricType.LATENCY, value=100.0, model_name="test-model"
@@ -89,9 +85,7 @@ class TestModelPerformanceStats:
 
     def test_get_average(self) -> None:
         """Test getting average metric values."""
-        stats = ModelPerformanceStats(
-            model_name="test-model", provider=ProviderType.OPENAI
-        )
+        stats = ModelPerformanceStats(model_name="test-model", provider=ProviderType.OPENAI)
 
         # Add some metrics
         for value in [100.0, 200.0, 300.0]:
@@ -109,9 +103,7 @@ class TestModelPerformanceStats:
 
     def test_get_percentile(self) -> None:
         """Test getting percentile values."""
-        stats = ModelPerformanceStats(
-            model_name="test-model", provider=ProviderType.OPENAI
-        )
+        stats = ModelPerformanceStats(model_name="test-model", provider=ProviderType.OPENAI)
 
         # Add metrics with known values
         for value in [100.0, 200.0, 300.0]:
@@ -208,9 +200,7 @@ class TestPerformanceCache:
         assert len(openai_metrics) == 2
 
         # Combined filter
-        model1_latency = cache.get_metrics(
-            model_name="model1", metric_type=MetricType.LATENCY
-        )
+        model1_latency = cache.get_metrics(model_name="model1", metric_type=MetricType.LATENCY)
         assert len(model1_latency) == 1
         assert model1_latency[0].value == 100.0
 
@@ -494,9 +484,7 @@ class TestPerformanceMonitor:
             monitor.record_latency(model_name, latency, ProviderType.OPENAI)
             monitor.record_throughput(model_name, throughput, ProviderType.OPENAI)
 
-        rankings = monitor.get_model_rankings(
-            [MetricType.LATENCY, MetricType.THROUGHPUT]
-        )
+        rankings = monitor.get_model_rankings([MetricType.LATENCY, MetricType.THROUGHPUT])
 
         assert len(rankings) == 2
         # Should be sorted by combined score

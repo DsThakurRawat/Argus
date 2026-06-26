@@ -132,9 +132,7 @@ class MetricsCollector:
         return {
             "counters": dict(self.counters),
             "gauges": dict(self.gauges),
-            "histograms": {
-                name: self.get_histogram_stats(name) for name in self.histograms
-            },
+            "histograms": {name: self.get_histogram_stats(name) for name in self.histograms},
             "timers": {name: self.get_timer_stats(name) for name in self.timers},
             "total_metrics": len(self.metrics),
         }
@@ -157,9 +155,7 @@ class HealthChecker:
         """Register a custom health check."""
         self.health_checks[name] = check_func
 
-    async def run_health_checks(
-        self, provider: SourceControlProvider
-    ) -> list[HealthCheck]:
+    async def run_health_checks(self, provider: SourceControlProvider) -> list[HealthCheck]:
         """Run all registered health checks on a provider."""
         results = []
 
@@ -204,9 +200,7 @@ class HealthChecker:
             return HealthCheck(
                 name="connectivity",
                 status=HealthStatus.HEALTHY if is_connected else HealthStatus.UNHEALTHY,
-                message=(
-                    "Connection successful" if is_connected else "Connection failed"
-                ),
+                message=("Connection successful" if is_connected else "Connection failed"),
                 timestamp=datetime.now(),
                 duration_ms=duration_ms,
                 details={"connected": is_connected},
@@ -412,9 +406,7 @@ class MonitoringManager:
 
             # Record metrics
             operation_tags = tags or {}
-            operation_tags.update(
-                {"provider": provider_name, "operation": operation_name}
-            )
+            operation_tags.update({"provider": provider_name, "operation": operation_name})
 
             # Record timer metric
             self.metrics_collector.record_metric(
@@ -491,9 +483,7 @@ class MonitoringManager:
         # Check for alerts
         return self.alert_manager.check_alerts(derived_metrics)
 
-    def _calculate_derived_metrics(
-        self, metrics_summary: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _calculate_derived_metrics(self, metrics_summary: dict[str, Any]) -> dict[str, Any]:
         """Calculate derived metrics from raw metrics."""
         derived = {}
 
@@ -504,9 +494,7 @@ class MonitoringManager:
         for counter_name, value in metrics_summary.get("counters", {}).items():
             if counter_name == "operation_count":
                 total_operations += value
-            elif (
-                counter_name.startswith("operation_count") and "success" in counter_name
-            ):
+            elif counter_name.startswith("operation_count") and "success" in counter_name:
                 successful_operations += value
 
         if total_operations > 0:
@@ -516,9 +504,7 @@ class MonitoringManager:
         # Calculate average response time
         timer_stats = metrics_summary.get("timers", {})
         if "operation_duration" in timer_stats:
-            derived["avg_response_time_ms"] = timer_stats["operation_duration"].get(
-                "mean", 0
-            )
+            derived["avg_response_time_ms"] = timer_stats["operation_duration"].get("mean", 0)
 
         return derived
 

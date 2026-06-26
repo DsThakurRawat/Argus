@@ -118,9 +118,7 @@ class StructuredResponseGenerator:
             # Generate the response using regular generate method
             # Convert prompt to LLMRequest format with structured output instruction
             if isinstance(prompt, str):
-                structured_prompt = self._create_structured_prompt(
-                    prompt, response_model
-                )
+                structured_prompt = self._create_structured_prompt(prompt, response_model)
                 request = LLMRequest(
                     prompt=structured_prompt,
                     temperature=kwargs.get("temperature", 0.7),
@@ -146,9 +144,7 @@ class StructuredResponseGenerator:
                 provider=selected_model.provider,
                 context={
                     "task_type": "structured_generation",
-                    "model_type": (
-                        context.model_type.value if context.model_type else "unknown"
-                    ),
+                    "model_type": (context.model_type.value if context.model_type else "unknown"),
                     "selection_strategy": context.selection_strategy.value,
                     "response_model": response_model.__name__,
                 },
@@ -281,9 +277,7 @@ Respond only with the JSON object, no additional text."""
             )
         elif response_model.__name__ == "RemediationResponse":
             return response_model(
-                root_cause_analysis=(
-                    content[:200] + "..." if len(content) > 200 else content
-                ),
+                root_cause_analysis=(content[:200] + "..." if len(content) > 200 else content),
                 proposed_fix="Manual review required",
                 code_patch="# TODO: Generate proper code patch\n# " + content[:100],
                 priority="medium",
@@ -348,18 +342,14 @@ Respond only with the JSON object, no additional text."""
             max_cost=context.max_cost,
             min_performance=context.min_performance,
             min_reliability=context.min_reliability,
-            provider_preference=(
-                ProviderType(context.provider) if context.provider else None
-            ),
+            provider_preference=(ProviderType(context.provider) if context.provider else None),
             strategy=context.selection_strategy,
             custom_weights=context.custom_weights,
             allow_fallback=True,
         )
 
         # Select model with fallback support
-        selected_model, selection_result = (
-            self.model_selector.select_model_with_fallback(criteria)
-        )
+        selected_model, selection_result = self.model_selector.select_model_with_fallback(criteria)
 
         return selected_model, selection_result
 
@@ -430,9 +420,7 @@ class TextResponseGenerator:
             )
 
             # Generate the response using the correct interface
-            request = LLMRequest(
-                prompt=prompt, model_type=selected_model.semantic_type, **kwargs
-            )
+            request = LLMRequest(prompt=prompt, model_type=selected_model.semantic_type, **kwargs)
             response = await provider_instance.generate(request)
             result = response.content
 
@@ -446,9 +434,7 @@ class TextResponseGenerator:
                 provider=selected_model.provider,
                 context={
                     "task_type": "text_generation",
-                    "model_type": (
-                        context.model_type.value if context.model_type else "unknown"
-                    ),
+                    "model_type": (context.model_type.value if context.model_type else "unknown"),
                     "selection_strategy": context.selection_strategy.value,
                 },
             )
@@ -531,18 +517,14 @@ class TextResponseGenerator:
             max_cost=context.max_cost,
             min_performance=context.min_performance,
             min_reliability=context.min_reliability,
-            provider_preference=(
-                ProviderType(context.provider) if context.provider else None
-            ),
+            provider_preference=(ProviderType(context.provider) if context.provider else None),
             strategy=context.selection_strategy,
             custom_weights=context.custom_weights,
             allow_fallback=True,
         )
 
         # Select model with fallback support
-        selected_model, selection_result = (
-            self.model_selector.select_model_with_fallback(criteria)
-        )
+        selected_model, selection_result = self.model_selector.select_model_with_fallback(criteria)
 
         return selected_model, selection_result
 
@@ -612,7 +594,7 @@ class FallbackResponseGenerator:
 
             try:
                 self.logger.info(
-                    f"Attempting model: {model_info.name} (attempt {i+1}/{context.max_attempts})"
+                    f"Attempting model: {model_info.name} (attempt {i + 1}/{context.max_attempts})"
                 )
 
                 # Get the provider for this model
@@ -626,9 +608,7 @@ class FallbackResponseGenerator:
                 provider_instance = self.providers[provider_name]
 
                 # Generate response using the correct interface
-                request = LLMRequest(
-                    prompt=prompt, model_type=model_info.semantic_type, **kwargs
-                )
+                request = LLMRequest(prompt=prompt, model_type=model_info.semantic_type, **kwargs)
                 response = await provider_instance.generate(request)
                 result = response.content
 
@@ -644,9 +624,7 @@ class FallbackResponseGenerator:
                     context={"task_type": "fallback_generation", "attempt": i + 1},
                 )
 
-                self.logger.info(
-                    f"Successfully generated response using model: {model_info.name}"
-                )
+                self.logger.info(f"Successfully generated response using model: {model_info.name}")
                 return result
 
             except Exception as e:
@@ -717,9 +695,7 @@ class FallbackResponseGenerator:
             )
         elif response_model.__name__ == "RemediationResponse":
             return response_model(
-                root_cause_analysis=(
-                    content[:200] + "..." if len(content) > 200 else content
-                ),
+                root_cause_analysis=(content[:200] + "..." if len(content) > 200 else content),
                 proposed_fix="Manual review required",
                 code_patch="# TODO: Generate proper code patch\n# " + content[:100],
                 priority="medium",

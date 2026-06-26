@@ -21,6 +21,7 @@ logger = get_logger(__name__)
 @dataclass
 class ValidationResult:
     """Result of a validation check."""
+
     success: bool
     message: str
     details: dict[str, Any]
@@ -37,10 +38,10 @@ class StaticAnalysisValidator:
 
     async def run_pyright(self, config: QualityGateConfig) -> ValidationResult:
         """Run pyright static analysis.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Validation result from pyright.
         """
@@ -52,18 +53,16 @@ class StaticAnalysisValidator:
                 cmd.append("--strict")
 
             result = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
             )
 
-            stdout, stderr = await result.communicate()
+            stdout, _stderr = await result.communicate()
 
             if result.returncode == 0:
                 return ValidationResult(
                     success=True,
                     message="Pyright analysis passed",
-                    details={"returncode": result.returncode}
+                    details={"returncode": result.returncode},
                 )
             else:
                 # Parse pyright output
@@ -80,23 +79,21 @@ class StaticAnalysisValidator:
                             "returncode": result.returncode,
                             "error_count": error_count,
                             "warning_count": warning_count,
-                            "errors": errors
+                            "errors": errors,
                         },
                         errors=[
-                            e.get("message", "")
-                            for e in errors if e.get("severity") == "error"
+                            e.get("message", "") for e in errors if e.get("severity") == "error"
                         ],
                         warnings=[
-                            e.get("message", "")
-                            for e in errors if e.get("severity") == "warning"
-                        ]
+                            e.get("message", "") for e in errors if e.get("severity") == "warning"
+                        ],
                     )
                 except json.JSONDecodeError:
                     return ValidationResult(
                         success=False,
                         message="Pyright analysis failed",
                         details={"returncode": result.returncode, "output": stdout.decode()},
-                        errors=[stdout.decode()]
+                        errors=[stdout.decode()],
                     )
 
         except Exception as e:
@@ -105,15 +102,15 @@ class StaticAnalysisValidator:
                 success=False,
                 message=f"Pyright execution failed: {e!s}",
                 details={"error": str(e)},
-                errors=[str(e)]
+                errors=[str(e)],
             )
 
     async def run_ruff(self, config: QualityGateConfig) -> ValidationResult:
         """Run ruff linting and formatting.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Validation result from ruff.
         """
@@ -125,18 +122,16 @@ class StaticAnalysisValidator:
                 cmd.append("--select=ALL")
 
             result = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
             )
 
-            stdout, stderr = await result.communicate()
+            stdout, _stderr = await result.communicate()
 
             if result.returncode == 0:
                 return ValidationResult(
                     success=True,
                     message="Ruff linting passed",
-                    details={"returncode": result.returncode}
+                    details={"returncode": result.returncode},
                 )
             else:
                 try:
@@ -153,16 +148,16 @@ class StaticAnalysisValidator:
                         details={
                             "returncode": result.returncode,
                             "violation_count": len(violations),
-                            "violations": violations
+                            "violations": violations,
                         },
-                        errors=[v.get("message", "") for v in violations]
+                        errors=[v.get("message", "") for v in violations],
                     )
                 except json.JSONDecodeError:
                     return ValidationResult(
                         success=False,
                         message="Ruff linting failed",
                         details={"returncode": result.returncode, "output": stdout.decode()},
-                        errors=[stdout.decode()]
+                        errors=[stdout.decode()],
                     )
 
         except Exception as e:
@@ -171,7 +166,7 @@ class StaticAnalysisValidator:
                 success=False,
                 message=f"Ruff execution failed: {e!s}",
                 details={"error": str(e)},
-                errors=[str(e)]
+                errors=[str(e)],
             )
 
 
@@ -184,10 +179,10 @@ class TestCoverageValidator:
 
     async def check_coverage(self, config: QualityGateConfig) -> ValidationResult:
         """Check test coverage.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Validation result for coverage.
         """
@@ -200,29 +195,27 @@ class TestCoverageValidator:
                 "--cov=argus",
                 "--cov-report=xml",
                 "--cov-report=term-missing",
-                f"--cov-fail-under={config.min_coverage}"
+                f"--cov-fail-under={config.min_coverage}",
             ]
 
             result = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
             )
 
-            stdout, stderr = await result.communicate()
+            stdout, _stderr = await result.communicate()
 
             if result.returncode == 0:
                 return ValidationResult(
                     success=True,
                     message=f"Test coverage meets minimum requirement ({config.min_coverage}%)",
-                    details={"returncode": result.returncode}
+                    details={"returncode": result.returncode},
                 )
             else:
                 return ValidationResult(
                     success=False,
                     message=f"Test coverage below minimum requirement ({config.min_coverage}%)",
                     details={"returncode": result.returncode, "output": stdout.decode()},
-                    errors=[stdout.decode()]
+                    errors=[stdout.decode()],
                 )
 
         except Exception as e:
@@ -231,7 +224,7 @@ class TestCoverageValidator:
                 success=False,
                 message=f"Coverage check failed: {e!s}",
                 details={"error": str(e)},
-                errors=[str(e)]
+                errors=[str(e)],
             )
 
 
@@ -244,10 +237,10 @@ class SecurityValidator:
 
     async def run_bandit(self, config: QualityGateConfig) -> ValidationResult:
         """Run bandit security analysis.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Validation result from bandit.
         """
@@ -257,12 +250,10 @@ class SecurityValidator:
             cmd = ["bandit", "-r", "argus", "-f", "json"]
 
             result = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
             )
 
-            stdout, stderr = await result.communicate()
+            stdout, _stderr = await result.communicate()
 
             try:
                 output = json.loads(stdout.decode())
@@ -274,7 +265,7 @@ class SecurityValidator:
                     return ValidationResult(
                         success=True,
                         message="Bandit security analysis passed",
-                        details={"returncode": result.returncode, "issues": len(issues)}
+                        details={"returncode": result.returncode, "issues": len(issues)},
                     )
                 else:
                     return ValidationResult(
@@ -287,9 +278,9 @@ class SecurityValidator:
                             "returncode": result.returncode,
                             "high_severity": len(high_severity),
                             "medium_severity": len(medium_severity),
-                            "issues": issues
+                            "issues": issues,
                         },
-                        errors=[i.get("issue_text", "") for i in high_severity + medium_severity]
+                        errors=[i.get("issue_text", "") for i in high_severity + medium_severity],
                     )
 
             except json.JSONDecodeError:
@@ -297,7 +288,7 @@ class SecurityValidator:
                     success=False,
                     message="Bandit analysis failed to parse output",
                     details={"returncode": result.returncode, "output": stdout.decode()},
-                    errors=[stdout.decode()]
+                    errors=[stdout.decode()],
                 )
 
         except Exception as e:
@@ -306,7 +297,7 @@ class SecurityValidator:
                 success=False,
                 message=f"Bandit execution failed: {e!s}",
                 details={"error": str(e)},
-                errors=[str(e)]
+                errors=[str(e)],
             )
 
 
@@ -319,10 +310,10 @@ class PerformanceValidator:
 
     async def check_performance(self, config: QualityGateConfig) -> ValidationResult:
         """Check performance metrics.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Validation result for performance.
         """
@@ -351,8 +342,8 @@ class PerformanceValidator:
                         "memory_usage_mb": memory_usage_mb,
                         "cpu_percent": cpu_percent,
                         "max_memory_mb": config.max_memory_mb,
-                        "max_cpu_percent": config.max_cpu_percent
-                    }
+                        "max_cpu_percent": config.max_cpu_percent,
+                    },
                 )
             else:
                 errors = []
@@ -363,8 +354,7 @@ class PerformanceValidator:
                     )
                 if not cpu_ok:
                     errors.append(
-                        f"CPU usage {cpu_percent:.1f}% exceeds limit "
-                        f"{config.max_cpu_percent}%"
+                        f"CPU usage {cpu_percent:.1f}% exceeds limit {config.max_cpu_percent}%"
                     )
 
                 return ValidationResult(
@@ -374,9 +364,9 @@ class PerformanceValidator:
                         "memory_usage_mb": memory_usage_mb,
                         "cpu_percent": cpu_percent,
                         "max_memory_mb": config.max_memory_mb,
-                        "max_cpu_percent": config.max_cpu_percent
+                        "max_cpu_percent": config.max_cpu_percent,
                     },
-                    errors=errors
+                    errors=errors,
                 )
 
         except Exception as e:
@@ -385,7 +375,7 @@ class PerformanceValidator:
                 success=False,
                 message=f"Performance check failed: {e!s}",
                 details={"error": str(e)},
-                errors=[str(e)]
+                errors=[str(e)],
             )
 
 
@@ -398,10 +388,10 @@ class DocumentationValidator:
 
     async def check_documentation(self, config: QualityGateConfig) -> ValidationResult:
         """Check documentation quality.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Validation result for documentation.
         """
@@ -450,8 +440,8 @@ class DocumentationValidator:
                         "docstring_coverage": docstring_coverage,
                         "total_functions": total_functions,
                         "documented_functions": documented_functions,
-                        "min_required": config.min_docstring_coverage
-                    }
+                        "min_required": config.min_docstring_coverage,
+                    },
                 )
             else:
                 return ValidationResult(
@@ -461,12 +451,12 @@ class DocumentationValidator:
                         "docstring_coverage": docstring_coverage,
                         "total_functions": total_functions,
                         "documented_functions": documented_functions,
-                        "min_required": config.min_docstring_coverage
+                        "min_required": config.min_docstring_coverage,
                     },
                     errors=[
                         f"Documentation coverage {docstring_coverage:.1f}% below required "
                         f"{config.min_docstring_coverage}%"
-                    ]
+                    ],
                 )
 
         except Exception as e:
@@ -475,7 +465,7 @@ class DocumentationValidator:
                 success=False,
                 message=f"Documentation check failed: {e!s}",
                 details={"error": str(e)},
-                errors=[str(e)]
+                errors=[str(e)],
             )
 
 
@@ -488,10 +478,10 @@ class StyleValidator:
 
     async def check_style(self, config: QualityGateConfig) -> ValidationResult:
         """Check code style.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Validation result for style.
         """
@@ -517,8 +507,8 @@ class StyleValidator:
                     message="Code style checks passed",
                     details={
                         "max_line_length": config.max_line_length,
-                        "files_checked": len(python_files)
-                    }
+                        "files_checked": len(python_files),
+                    },
                 )
             else:
                 return ValidationResult(
@@ -530,9 +520,9 @@ class StyleValidator:
                     details={
                         "max_line_length": config.max_line_length,
                         "files_checked": len(python_files),
-                        "long_lines": long_lines[:10]  # Limit output
+                        "long_lines": long_lines[:10],  # Limit output
                     },
-                    errors=[f"Line too long: {line}" for line in long_lines[:10]]
+                    errors=[f"Line too long: {line}" for line in long_lines[:10]],
                 )
 
         except Exception as e:
@@ -541,7 +531,7 @@ class StyleValidator:
                 success=False,
                 message=f"Style check failed: {e!s}",
                 details={"error": str(e)},
-                errors=[str(e)]
+                errors=[str(e)],
             )
 
 
@@ -556,10 +546,10 @@ class StaticAnalysisGate:
 
     async def check(self, config: QualityGateConfig) -> QualityGateResult:
         """Run static analysis checks.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Result of static analysis checks.
         """
@@ -567,7 +557,7 @@ class StaticAnalysisGate:
             return QualityGateResult(
                 gate_name="static_analysis",
                 status=QualityGateStatus.SKIPPED,
-                message="Static analysis disabled"
+                message="Static analysis disabled",
             )
 
         results = []
@@ -588,14 +578,14 @@ class StaticAnalysisGate:
                 gate_name="static_analysis",
                 status=QualityGateStatus.PASSED,
                 message="All static analysis checks passed",
-                details={name: result.details for name, result in results}
+                details={name: result.details for name, result in results},
             )
         else:
             return QualityGateResult(
                 gate_name="static_analysis",
                 status=QualityGateStatus.FAILED,
                 message=f"Static analysis failed: {', '.join(failed_checks)}",
-                details={name: result.details for name, result in results}
+                details={name: result.details for name, result in results},
             )
 
 
@@ -609,10 +599,10 @@ class TestCoverageGate:
 
     async def check(self, config: QualityGateConfig) -> QualityGateResult:
         """Run test coverage checks.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Result of test coverage checks.
         """
@@ -620,7 +610,7 @@ class TestCoverageGate:
             return QualityGateResult(
                 gate_name="test_coverage",
                 status=QualityGateStatus.SKIPPED,
-                message="Test coverage checks disabled"
+                message="Test coverage checks disabled",
             )
 
         result = await self.validator.check_coverage(config)
@@ -630,14 +620,14 @@ class TestCoverageGate:
                 gate_name="test_coverage",
                 status=QualityGateStatus.PASSED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
         else:
             return QualityGateResult(
                 gate_name="test_coverage",
                 status=QualityGateStatus.FAILED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
 
 
@@ -651,10 +641,10 @@ class SecurityGate:
 
     async def check(self, config: QualityGateConfig) -> QualityGateResult:
         """Run security checks.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Result of security checks.
         """
@@ -662,7 +652,7 @@ class SecurityGate:
             return QualityGateResult(
                 gate_name="security",
                 status=QualityGateStatus.SKIPPED,
-                message="Security checks disabled"
+                message="Security checks disabled",
             )
 
         result = await self.validator.run_bandit(config)
@@ -672,14 +662,14 @@ class SecurityGate:
                 gate_name="security",
                 status=QualityGateStatus.PASSED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
         else:
             return QualityGateResult(
                 gate_name="security",
                 status=QualityGateStatus.FAILED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
 
 
@@ -693,10 +683,10 @@ class PerformanceGate:
 
     async def check(self, config: QualityGateConfig) -> QualityGateResult:
         """Run performance checks.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Result of performance checks.
         """
@@ -704,7 +694,7 @@ class PerformanceGate:
             return QualityGateResult(
                 gate_name="performance",
                 status=QualityGateStatus.SKIPPED,
-                message="Performance checks disabled"
+                message="Performance checks disabled",
             )
 
         result = await self.validator.check_performance(config)
@@ -714,14 +704,14 @@ class PerformanceGate:
                 gate_name="performance",
                 status=QualityGateStatus.PASSED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
         else:
             return QualityGateResult(
                 gate_name="performance",
                 status=QualityGateStatus.FAILED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
 
 
@@ -735,10 +725,10 @@ class DocumentationGate:
 
     async def check(self, config: QualityGateConfig) -> QualityGateResult:
         """Run documentation checks.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Result of documentation checks.
         """
@@ -746,7 +736,7 @@ class DocumentationGate:
             return QualityGateResult(
                 gate_name="documentation",
                 status=QualityGateStatus.SKIPPED,
-                message="Documentation checks disabled"
+                message="Documentation checks disabled",
             )
 
         result = await self.validator.check_documentation(config)
@@ -756,14 +746,14 @@ class DocumentationGate:
                 gate_name="documentation",
                 status=QualityGateStatus.PASSED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
         else:
             return QualityGateResult(
                 gate_name="documentation",
                 status=QualityGateStatus.FAILED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
 
 
@@ -777,18 +767,16 @@ class StyleGate:
 
     async def check(self, config: QualityGateConfig) -> QualityGateResult:
         """Run style checks.
-        
+
         Args:
             config: Quality gate configuration.
-            
+
         Returns:
             Result of style checks.
         """
         if not config.enable_style:
             return QualityGateResult(
-                gate_name="style",
-                status=QualityGateStatus.SKIPPED,
-                message="Style checks disabled"
+                gate_name="style", status=QualityGateStatus.SKIPPED, message="Style checks disabled"
             )
 
         result = await self.validator.check_style(config)
@@ -798,12 +786,12 @@ class StyleGate:
                 gate_name="style",
                 status=QualityGateStatus.PASSED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )
         else:
             return QualityGateResult(
                 gate_name="style",
                 status=QualityGateStatus.FAILED,
                 message=result.message,
-                details=result.details
+                details=result.details,
             )

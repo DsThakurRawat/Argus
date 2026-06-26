@@ -20,9 +20,7 @@ class MetricsCalculator:
         return round(sum(recent) / len(recent), 7)
 
     @staticmethod
-    def calculate_pattern_accuracy(
-        accuracies: list[float], recent_samples: int
-    ) -> dict[str, Any]:
+    def calculate_pattern_accuracy(accuracies: list[float], recent_samples: int) -> dict[str, Any]:
         """Calculates accuracy metric summary for specific pattern histories."""
         total_samples = len(accuracies)
         if not accuracies:

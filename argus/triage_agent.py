@@ -15,6 +15,7 @@ from tenacity import (
     stop_after_attempt,
     wait_exponential,
 )
+
 try:
     from vertexai.preview.generative_models import GenerativeModel
 except ImportError:
@@ -54,12 +55,12 @@ class TriageAgent:
         self.project_id: str = project_id
         self.location: str = location
         self.triage_model: str = triage_model
-        
+
         if aiplatform is None:
             raise ImportError("google.cloud.aiplatform is not installed")
         if GenerativeModel is None:
             raise ImportError("vertexai.preview.generative_models is not installed")
-            
+
         aiplatform.init(project=project_id, location=location)
         self.model: Any = GenerativeModel(triage_model)
         logger.info(
@@ -82,9 +83,7 @@ class TriageAgent:
         Returns:
             TriagePacket: A structured packet containing triage information.
         """
-        logger.info(
-            f"[TRIAGE] Analyzing {len(logs)} log entries for triage: flow_id={flow_id}"
-        )
+        logger.info(f"[TRIAGE] Analyzing {len(logs)} log entries for triage: flow_id={flow_id}")
 
         # Construct the prompt for the Gemini model
         prompt_template: str = """

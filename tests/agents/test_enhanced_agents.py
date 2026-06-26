@@ -1,5 +1,6 @@
 """Tests for Enhanced Agent Classes with Multi-Provider Support."""
 
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -26,6 +27,9 @@ from argus.llm.base import ModelType, ProviderType
 from argus.llm.config import LLMConfig, LLMProviderConfig, ModelConfig
 from argus.llm.strategy_manager import OptimizationGoal
 
+if TYPE_CHECKING:
+    from argus.agents.base import BaseAgent
+
 
 @pytest.fixture
 def mock_llm_config() -> None:
@@ -40,12 +44,7 @@ def mock_llm_config() -> None:
         timeout=30,
         max_retries=3,
         rate_limit=100,
-        models={
-            "default": ModelConfig(
-                name="gemini-pro",
-                model_type=ModelType.FAST
-            )
-        }
+        models={"default": ModelConfig(name="gemini-pro", model_type=ModelType.FAST)},
     )
 
     return LLMConfig(
@@ -223,10 +222,10 @@ class TestEnhancedBaseAgent:
 
     def test_conversation_context_management(self, mock_llm_config: str) -> None:
         """Test conversation context management."""
-        with patch("argus.agents.enhanced_base.EnhancedLLMService"), patch(
-            "argus.agents.enhanced_base.StrategyManager"
+        with (
+            patch("argus.agents.enhanced_base.EnhancedLLMService"),
+            patch("argus.agents.enhanced_base.StrategyManager"),
         ):
-
             agent = EnhancedBaseAgent(
                 llm_config=mock_llm_config,
                 response_model=TextResponse,
@@ -254,10 +253,10 @@ class TestEnhancedBaseAgent:
 
     def test_configuration_updates(self, mock_llm_config: str) -> None:
         """Test configuration update methods."""
-        with patch("argus.agents.enhanced_base.EnhancedLLMService"), patch(
-            "argus.agents.enhanced_base.StrategyManager"
+        with (
+            patch("argus.agents.enhanced_base.EnhancedLLMService"),
+            patch("argus.agents.enhanced_base.StrategyManager"),
         ):
-
             agent = EnhancedBaseAgent(
                 llm_config=mock_llm_config,
                 response_model=TextResponse,
@@ -281,10 +280,10 @@ class TestEnhancedBaseAgent:
 
     def test_stats_summary(self, mock_llm_config: str) -> None:
         """Test comprehensive stats summary."""
-        with patch("argus.agents.enhanced_base.EnhancedLLMService"), patch(
-            "argus.agents.enhanced_base.StrategyManager"
-        ) as mock_strategy_manager_class:
-
+        with (
+            patch("argus.agents.enhanced_base.EnhancedLLMService"),
+            patch("argus.agents.enhanced_base.StrategyManager") as mock_strategy_manager_class,
+        ):
             mock_strategy_manager = MagicMock()
             mock_strategy_manager.get_all_performance_metrics.return_value = {
                 "cost": {"total_selections": 10},
@@ -326,9 +325,7 @@ class TestEnhancedSpecializedAgents:
         assert call_args[1]["optimization_goal"] == OptimizationGoal.QUALITY
 
     @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
-    def test_enhanced_analysis_agent(
-        self, mock_init: str, mock_llm_config: str
-    ) -> None:
+    def test_enhanced_analysis_agent(self, mock_init: str, mock_llm_config: str) -> None:
         """Test EnhancedAnalysisAgent initialization."""
         mock_init.return_value = None
 
@@ -373,9 +370,7 @@ class TestEnhancedSpecializedAgents:
         assert call_args[1]["optimization_goal"] == OptimizationGoal.PERFORMANCE
 
     @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
-    def test_enhanced_remediation_agent(
-        self, mock_init: str, mock_llm_config: str
-    ) -> None:
+    def test_enhanced_remediation_agent(self, mock_init: str, mock_llm_config: str) -> None:
         """Test EnhancedRemediationAgent initialization."""
         mock_init.return_value = None
 
@@ -413,9 +408,7 @@ class TestEnhancedAgentAdapter:
             assert adapter.enable_enhancements is True
 
     @patch("argus.agents.enhanced_adapter.EnhancedTextAgent")
-    async def test_adapter_execute_enhanced(
-        self, mock_enhanced_agent_class, mock_llm_config
-    ):
+    async def test_adapter_execute_enhanced(self, mock_enhanced_agent_class, mock_llm_config):
         """Test adapter execution with enhanced features enabled."""
         # Create a mock legacy agent
         legacy_agent = MagicMock()
@@ -447,9 +440,7 @@ class TestEnhancedAgentAdapter:
         mock_enhanced_agent.execute.assert_called_once()
 
     @patch("argus.agents.enhanced_adapter.EnhancedTextAgent")
-    async def test_adapter_execute_legacy(
-        self, mock_enhanced_agent_class, mock_llm_config
-    ):
+    async def test_adapter_execute_legacy(self, mock_enhanced_agent_class, mock_llm_config):
         """Test adapter execution with enhanced features disabled."""
         # Create a mock legacy agent
         legacy_agent = MagicMock()
@@ -518,9 +509,7 @@ class TestAgentMigrationHelper:
         legacy_agent.collect_stats = True
         legacy_agent.__class__.__name__ = "TextAgent"
 
-        with patch(
-            "argus.agents.enhanced_adapter.EnhancedTextAgent"
-        ) as mock_enhanced_class:
+        with patch("argus.agents.enhanced_adapter.EnhancedTextAgent") as mock_enhanced_class:
             AgentMigrationHelper.create_enhanced_agent_from_legacy(
                 legacy_agent=legacy_agent,
                 llm_config=mock_llm_config,
@@ -575,8 +564,6 @@ class TestAgentMigrationHelper:
         # Cast to proper type for testing
         from typing import cast
 
-        from argus.agents.base import BaseAgent
-
         agents = cast("list[BaseAgent]", [compatible_agent, incompatible_agent])
 
         report = AgentMigrationHelper.generate_migration_report(agents, mock_llm_config)
@@ -593,9 +580,7 @@ class TestBackwardCompatibilityWrapper:
 
     def test_wrapper_initialization(self, mock_llm_config: str) -> None:
         """Test wrapper initialization."""
-        with patch(
-            "argus.agents.enhanced_base.EnhancedBaseAgent"
-        ) as mock_enhanced_class:
+        with patch("argus.agents.enhanced_base.EnhancedBaseAgent") as mock_enhanced_class:
             mock_enhanced_agent = MagicMock()
             mock_enhanced_agent.llm_service = MagicMock()
             mock_enhanced_agent.response_model = TextResponse
@@ -621,9 +606,7 @@ class TestBackwardCompatibilityWrapper:
 
     async def test_wrapper_execute(self, mock_llm_config):
         """Test wrapper execute method."""
-        with patch(
-            "argus.agents.enhanced_base.EnhancedBaseAgent"
-        ) as mock_enhanced_class:
+        with patch("argus.agents.enhanced_base.EnhancedBaseAgent") as mock_enhanced_class:
             mock_enhanced_agent = MagicMock()
             mock_enhanced_agent.execute = AsyncMock(
                 return_value=TextResponse(text="Wrapped response", confidence=0.9)
@@ -651,9 +634,7 @@ class TestBackwardCompatibilityWrapper:
 
     def test_wrapper_stats_summary(self, mock_llm_config: str) -> None:
         """Test wrapper stats summary method."""
-        with patch(
-            "argus.agents.enhanced_base.EnhancedBaseAgent"
-        ) as mock_enhanced_class:
+        with patch("argus.agents.enhanced_base.EnhancedBaseAgent") as mock_enhanced_class:
             mock_enhanced_agent = MagicMock()
             mock_enhanced_agent.get_stats_summary.return_value = {"enhanced": "stats"}
             mock_enhanced_agent.llm_service = MagicMock()

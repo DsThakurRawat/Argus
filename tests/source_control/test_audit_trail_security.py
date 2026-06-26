@@ -202,8 +202,7 @@ class TestAuditTrailSecurity:
         assert security_headers["X-Frame-Options"] == "DENY"
         assert security_headers["X-XSS-Protection"] == "1; mode=block"
         assert (
-            security_headers["Strict-Transport-Security"]
-            == "max-age=31536000; includeSubDomains"
+            security_headers["Strict-Transport-Security"] == "max-age=31536000; includeSubDomains"
         )
 
     def test_audit_log_csrf_protection(self, mock_github_provider: str) -> None:

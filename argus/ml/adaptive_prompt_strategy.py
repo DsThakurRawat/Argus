@@ -102,9 +102,7 @@ class AdaptivePromptStrategy:
         self.meta_prompt_threshold = config.meta_prompt_threshold
         self.static_template_threshold = config.static_template_threshold
 
-        self.logger.info(
-            "[ADAPTIVE-STRATEGY] Initialized with adaptive prompt selection"
-        )
+        self.logger.info("[ADAPTIVE-STRATEGY] Initialized with adaptive prompt selection")
 
     async def get_optimal_prompt(
         self,
@@ -210,21 +208,13 @@ class AdaptivePromptStrategy:
             Generated prompt string
         """
         if strategy == "meta_prompt":
-            return await self._use_meta_prompt(
-                task_context, issue_context, repository_context
-            )
+            return await self._use_meta_prompt(task_context, issue_context, repository_context)
         elif strategy == "static_template":
-            return await self._use_static_template(
-                task_context, issue_context, repository_context
-            )
+            return await self._use_static_template(task_context, issue_context, repository_context)
         elif strategy == "cached_prompt":
-            return await self._use_cached_prompt(
-                task_context, issue_context, repository_context
-            )
+            return await self._use_cached_prompt(task_context, issue_context, repository_context)
         elif strategy == "hybrid":
-            return await self._use_hybrid_approach(
-                task_context, issue_context, repository_context
-            )
+            return await self._use_hybrid_approach(task_context, issue_context, repository_context)
         else:
             raise ValueError(f"Unknown strategy: {strategy}")
 

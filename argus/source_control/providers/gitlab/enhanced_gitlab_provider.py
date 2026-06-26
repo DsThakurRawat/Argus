@@ -57,12 +57,8 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
             # Initialize sub-modules
             if self.gl and self.project:
                 self.file_ops = GitLabFileOperations(self.gl, self.project, self.logger)
-                self.branch_ops = GitLabBranchOperations(
-                    self.gl, self.project, self.logger
-                )
-                self.mr_ops = GitLabMergeRequestOperations(
-                    self.gl, self.project, self.logger
-                )
+                self.branch_ops = GitLabBranchOperations(self.gl, self.project, self.logger)
+                self.mr_ops = GitLabMergeRequestOperations(self.gl, self.project, self.logger)
 
             self.logger.info(
                 f"Enhanced GitLab provider initialized for project: {self.repo_config.name}"
@@ -197,9 +193,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
             "get_file_info", self.file_ops.get_file_info, path, ref
         )
 
-    async def list_files(
-        self, path: str = "", ref: str | None = None
-    ) -> list[FileInfo]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[FileInfo]:
         """List files with error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")
@@ -297,9 +291,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
             "get_repository_info", self.branch_ops.get_repository_info
         )
 
-    async def check_conflicts(
-        self, path: str, content: str, branch: str | None = None
-    ) -> bool:
+    async def check_conflicts(self, path: str, content: str, branch: str | None = None) -> bool:
         """Check conflicts with error handling."""
         if not self.branch_ops:
             raise RuntimeError("Provider not initialized")
@@ -308,9 +300,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
             "check_conflicts", self.branch_ops.check_conflicts, path, content, branch
         )
 
-    async def resolve_conflicts(
-        self, path: str, content: str, strategy: str = "manual"
-    ) -> bool:
+    async def resolve_conflicts(self, path: str, content: str, strategy: str = "manual") -> bool:
         """Resolve conflicts with error handling."""
         if not self.branch_ops:
             raise RuntimeError("Provider not initialized")
@@ -403,9 +393,7 @@ class EnhancedGitLabProvider(EnhancedBaseSourceControlProvider):
         )
 
     # Enhanced batch operations with error handling
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute batch operations with comprehensive error handling."""
         if not self.file_ops:
             raise RuntimeError("Provider not initialized")

@@ -303,9 +303,7 @@ class TestOpenAIProvider:
     @pytest.mark.asyncio
     async def test_generate_error_handling(self, provider):
         """Test error handling in generate method."""
-        provider.client.chat.completions.create = AsyncMock(
-            side_effect=Exception("API error")
-        )
+        provider.client.chat.completions.create = AsyncMock(side_effect=Exception("API error"))
 
         request = LLMRequest(
             messages=[{"role": "user", "content": "Test prompt"}],
@@ -318,9 +316,7 @@ class TestOpenAIProvider:
     @pytest.mark.asyncio
     async def test_embeddings_error_handling(self, provider):
         """Test error handling in embeddings method."""
-        provider.client.embeddings.create = AsyncMock(
-            side_effect=Exception("Embeddings error")
-        )
+        provider.client.embeddings.create = AsyncMock(side_effect=Exception("Embeddings error"))
 
         with pytest.raises(Exception, match="Embeddings error"):
             await provider.embeddings("Test text")

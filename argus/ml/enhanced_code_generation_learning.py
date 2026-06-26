@@ -18,9 +18,7 @@ class EnhancedCodeGenerationLearning:
         self.generation_history: list[dict[str, Any]] = []
         self.learning_data: dict[str, Any] = {}
 
-    def record_generation_history(
-        self, issue_context, code_generation_result, start_time: float
-    ):
+    def record_generation_history(self, issue_context, code_generation_result, start_time: float):
         """Record generation history for analysis and learning"""
         generation_record = {
             "timestamp": datetime.now().isoformat(),
@@ -32,22 +30,18 @@ class EnhancedCodeGenerationLearning:
             "generation_time_ms": code_generation_result.get("generation_time_ms", 0),
             "iteration_count": code_generation_result.get("iteration_count", 1),
             "validation_passed": (
-                code_generation_result.get("validation_result", {}).get(
-                    "is_valid", False
-                )
+                code_generation_result.get("validation_result", {}).get("is_valid", False)
             ),
             "validation_score": (
-                code_generation_result.get("validation_result", {}).get(
-                    "overall_score", 0.0
-                )
+                code_generation_result.get("validation_result", {}).get("overall_score", 0.0)
             ),
             "critical_issues_count": (
                 len(
                     [
                         issue
-                        for issue in code_generation_result.get(
-                            "validation_result", {}
-                        ).get("issues", [])
+                        for issue in code_generation_result.get("validation_result", {}).get(
+                            "issues", []
+                        )
                         if issue.get("level") == "critical"
                     ]
                 )
@@ -92,9 +86,7 @@ class EnhancedCodeGenerationLearning:
             domain_data["total_generations"] - 1
         )
         new_total = current_total + quality_score
-        domain_data["average_quality_score"] = (
-            new_total / domain_data["total_generations"]
-        )
+        domain_data["average_quality_score"] = new_total / domain_data["total_generations"]
 
         # Update average validation score
         validation_score = code_generation_result.get("validation_result", {}).get(
@@ -112,9 +104,7 @@ class EnhancedCodeGenerationLearning:
         validation_result = code_generation_result.get("validation_result", {})
         if validation_result:
             for issue in validation_result.get("issues", []):
-                issue_key = (
-                    f"{issue.get('type', 'unknown')}_{issue.get('level', 'unknown')}"
-                )
+                issue_key = f"{issue.get('type', 'unknown')}_{issue.get('level', 'unknown')}"
                 if issue_key not in domain_data["validation_issues"]:
                     domain_data["validation_issues"][issue_key] = 0
                 domain_data["validation_issues"][issue_key] += 1
@@ -124,17 +114,13 @@ class EnhancedCodeGenerationLearning:
             "is_valid", False
         ):
             # Record successful patterns
-            pattern_key = (
-                f"{issue_context.issue_type.value}_{len(issue_context.affected_files)}"
-            )
+            pattern_key = f"{issue_context.issue_type.value}_{len(issue_context.affected_files)}"
             if pattern_key not in domain_data["successful_patterns"]:
                 domain_data["successful_patterns"][pattern_key] = 0
             domain_data["successful_patterns"][pattern_key] += 1
         else:
             # Record failed patterns for improvement
-            pattern_key = (
-                f"{issue_context.issue_type.value}_{len(issue_context.affected_files)}"
-            )
+            pattern_key = f"{issue_context.issue_type.value}_{len(issue_context.affected_files)}"
             if pattern_key not in domain_data["failed_patterns"]:
                 domain_data["failed_patterns"][pattern_key] = 0
             domain_data["failed_patterns"][pattern_key] += 1
@@ -149,8 +135,7 @@ class EnhancedCodeGenerationLearning:
             1 for record in self.generation_history if record["generation_success"]
         )
         average_quality = (
-            sum(record["quality_score"] for record in self.generation_history)
-            / total_generations
+            sum(record["quality_score"] for record in self.generation_history) / total_generations
         )
         average_time = (
             sum(record["generation_time_ms"] for record in self.generation_history)
@@ -171,16 +156,12 @@ class EnhancedCodeGenerationLearning:
         # Calculate success rates and average quality per domain
         for domain in domain_stats:
             domain_data = domain_stats[domain]
-            domain_data["success_rate"] = (
-                domain_data["success_rate"] / domain_data["count"]
-            )
+            domain_data["success_rate"] = domain_data["success_rate"] / domain_data["count"]
 
-            domain_records = [
-                r for r in self.generation_history if r["domain"] == domain
-            ]
-            domain_data["avg_quality"] = sum(
-                r["quality_score"] for r in domain_records
-            ) / len(domain_records)
+            domain_records = [r for r in self.generation_history if r["domain"] == domain]
+            domain_data["avg_quality"] = sum(r["quality_score"] for r in domain_records) / len(
+                domain_records
+            )
 
         return {
             "total_generations": total_generations,
@@ -246,9 +227,7 @@ class EnhancedCodeGenerationLearning:
 
     def get_feedback_for_generator(self, generator_type: str) -> dict[str, Any]:
         """Get specific feedback for a generator type"""
-        domain = (
-            generator_type.split("_")[0] if "_" in generator_type else generator_type
-        )
+        domain = generator_type.split("_")[0] if "_" in generator_type else generator_type
 
         if domain not in self.learning_data:
             return {"message": f"No learning data available for {domain}"}
@@ -307,9 +286,7 @@ class EnhancedCodeGenerationLearning:
 
         # Check for specific validation issues
         critical_issues = [
-            issue
-            for issue in data["validation_issues"].items()
-            if "critical" in issue[0]
+            issue for issue in data["validation_issues"].items() if "critical" in issue[0]
         ]
         if critical_issues:
             recommendations.append(

@@ -4,9 +4,11 @@ Lightweight notifier for routing alerts to external bots (Slack, Discord, Telegr
 
 import logging
 from typing import Any
+
 import httpx
 
 logger = logging.getLogger(__name__)
+
 
 class Notifier:
     """Lightweight notifier for Slack, Discord, and Telegram."""
@@ -25,15 +27,29 @@ class Notifier:
             if "telegram" in bots:
                 await self._notify_telegram(client, bots["telegram"], packet)
 
-    async def _notify_slack(self, client: httpx.AsyncClient, token_or_url: str, packet: Any) -> None:
+    async def _notify_slack(
+        self, client: httpx.AsyncClient, token_or_url: str, packet: Any
+    ) -> None:
         if not token_or_url:
             logger.error("Slack notification failed: Token or URL is empty or missing.")
             return
 
-        issue_id = packet.get("issue_id") if isinstance(packet, dict) else getattr(packet, "issue_id", "N/A")
-        pattern = packet.get("detected_pattern") if isinstance(packet, dict) else getattr(packet, "detected_pattern", "N/A")
-        summary = packet.get("natural_language_summary") if isinstance(packet, dict) else getattr(packet, "natural_language_summary", "N/A")
-        
+        issue_id = (
+            packet.get("issue_id")
+            if isinstance(packet, dict)
+            else getattr(packet, "issue_id", "N/A")
+        )
+        pattern = (
+            packet.get("detected_pattern")
+            if isinstance(packet, dict)
+            else getattr(packet, "detected_pattern", "N/A")
+        )
+        summary = (
+            packet.get("natural_language_summary")
+            if isinstance(packet, dict)
+            else getattr(packet, "natural_language_summary", "N/A")
+        )
+
         payload = {
             "text": f"🚨 *Argus Alert* 🚨\n*Issue ID*: {issue_id}\n*Pattern*: {pattern}\n*Summary*: {summary}"
         }
@@ -45,21 +61,38 @@ class Notifier:
             else:
                 # Fallback to chat.postMessage if they provided a token
                 url = "https://slack.com/api/chat.postMessage"
-                headers = {"Authorization": f"Bearer {token_or_url}", "Content-Type": "application/json"}
+                headers = {
+                    "Authorization": f"Bearer {token_or_url}",
+                    "Content-Type": "application/json",
+                }
                 payload["channel"] = "#general"
                 response = await client.post(url, headers=headers, json=payload)
             response.raise_for_status()
         except Exception as e:
             logger.error(f"Slack notification failed: {e}")
 
-    async def _notify_discord(self, client: httpx.AsyncClient, webhook_url: str, packet: Any) -> None:
+    async def _notify_discord(
+        self, client: httpx.AsyncClient, webhook_url: str, packet: Any
+    ) -> None:
         if not webhook_url or not webhook_url.startswith("http"):
             logger.error("Discord notification failed: Invalid or missing webhook URL.")
             return
-        issue_id = packet.get("issue_id") if isinstance(packet, dict) else getattr(packet, "issue_id", "N/A")
-        pattern = packet.get("detected_pattern") if isinstance(packet, dict) else getattr(packet, "detected_pattern", "N/A")
-        summary = packet.get("natural_language_summary") if isinstance(packet, dict) else getattr(packet, "natural_language_summary", "N/A")
-        
+        issue_id = (
+            packet.get("issue_id")
+            if isinstance(packet, dict)
+            else getattr(packet, "issue_id", "N/A")
+        )
+        pattern = (
+            packet.get("detected_pattern")
+            if isinstance(packet, dict)
+            else getattr(packet, "detected_pattern", "N/A")
+        )
+        summary = (
+            packet.get("natural_language_summary")
+            if isinstance(packet, dict)
+            else getattr(packet, "natural_language_summary", "N/A")
+        )
+
         payload = {
             "content": f"🚨 **Argus Alert** 🚨\n**Issue ID**: {issue_id}\n**Pattern**: {pattern}\n**Summary**: {summary}"
         }
@@ -82,23 +115,38 @@ class Notifier:
             chat_id = "0"
 
         if chat_id == "0":
-            logger.error("Telegram notification failed: Chat ID is missing. Please provide the token in the format 'bot_token:chat_id'.")
+            logger.error(
+                "Telegram notification failed: Chat ID is missing. Please provide the token in the format 'bot_token:chat_id'."
+            )
             return
 
-        issue_id = packet.get("issue_id") if isinstance(packet, dict) else getattr(packet, "issue_id", "N/A")
-        pattern = packet.get("detected_pattern") if isinstance(packet, dict) else getattr(packet, "detected_pattern", "N/A")
-        summary = packet.get("natural_language_summary") if isinstance(packet, dict) else getattr(packet, "natural_language_summary", "N/A")
+        issue_id = (
+            packet.get("issue_id")
+            if isinstance(packet, dict)
+            else getattr(packet, "issue_id", "N/A")
+        )
+        pattern = (
+            packet.get("detected_pattern")
+            if isinstance(packet, dict)
+            else getattr(packet, "detected_pattern", "N/A")
+        )
+        summary = (
+            packet.get("natural_language_summary")
+            if isinstance(packet, dict)
+            else getattr(packet, "natural_language_summary", "N/A")
+        )
 
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         payload = {
             "chat_id": chat_id,
-            "text": f"🚨 Argus Alert 🚨\nIssue ID: {issue_id}\nPattern: {pattern}\nSummary: {summary}"
+            "text": f"🚨 Argus Alert 🚨\nIssue ID: {issue_id}\nPattern: {pattern}\nSummary: {summary}",
         }
         try:
             response = await client.post(url, json=payload)
             response.raise_for_status()
         except Exception as e:
             logger.error(f"Telegram notification failed: {e}")
+
 
 async def notify(packet: Any, configs: dict) -> None:
     """Helper function to send notifications."""

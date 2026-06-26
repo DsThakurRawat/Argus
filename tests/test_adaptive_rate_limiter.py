@@ -64,9 +64,7 @@ class TestAdaptiveRateLimiter:
         self, rate_limiter: AdaptiveRateLimiter, cost_tracker: AsyncMock
     ):
         """Test normal request allowing when no issues."""
-        result = await rate_limiter.should_allow_request(
-            UrgencyLevel.MEDIUM, cost_tracker
-        )
+        result = await rate_limiter.should_allow_request(UrgencyLevel.MEDIUM, cost_tracker)
         assert result is True
         assert rate_limiter.total_requests == 1
 
@@ -77,9 +75,7 @@ class TestAdaptiveRateLimiter:
         """Test that critical requests are allowed even when budget exceeded."""
         cost_tracker.check_budget.return_value = False
 
-        result = await rate_limiter.should_allow_request(
-            UrgencyLevel.CRITICAL, cost_tracker
-        )
+        result = await rate_limiter.should_allow_request(UrgencyLevel.CRITICAL, cost_tracker)
         assert result is True
 
     @pytest.mark.asyncio
@@ -100,9 +96,7 @@ class TestAdaptiveRateLimiter:
         # Force circuit to open
         rate_limiter.circuit_state = CircuitState.OPEN
 
-        result = await rate_limiter.should_allow_request(
-            UrgencyLevel.CRITICAL, cost_tracker
-        )
+        result = await rate_limiter.should_allow_request(UrgencyLevel.CRITICAL, cost_tracker)
         assert result is True
 
     @pytest.mark.asyncio
@@ -113,9 +107,7 @@ class TestAdaptiveRateLimiter:
         # Force circuit to open
         rate_limiter.circuit_state = CircuitState.OPEN
 
-        result = await rate_limiter.should_allow_request(
-            UrgencyLevel.MEDIUM, cost_tracker
-        )
+        result = await rate_limiter.should_allow_request(UrgencyLevel.MEDIUM, cost_tracker)
         assert result is False
 
     @pytest.mark.asyncio
@@ -139,9 +131,7 @@ class TestAdaptiveRateLimiter:
         rate_limiter.rate_limit_hit = True
         rate_limiter.last_rate_limit_time = datetime.now()
 
-        result = await rate_limiter.should_allow_request(
-            UrgencyLevel.HIGH, cost_tracker
-        )
+        result = await rate_limiter.should_allow_request(UrgencyLevel.HIGH, cost_tracker)
         assert result is True
 
     @pytest.mark.asyncio
@@ -153,17 +143,13 @@ class TestAdaptiveRateLimiter:
         rate_limiter.current_backoff_seconds = 2
 
         with patch("asyncio.sleep") as mock_sleep:
-            result = await rate_limiter.should_allow_request(
-                UrgencyLevel.MEDIUM, cost_tracker
-            )
+            result = await rate_limiter.should_allow_request(UrgencyLevel.MEDIUM, cost_tracker)
 
         assert result is True
         mock_sleep.assert_called_once_with(2)
 
     @pytest.mark.asyncio
-    async def test_record_success_resets_errors(
-        self, rate_limiter: AdaptiveRateLimiter
-    ):
+    async def test_record_success_resets_errors(self, rate_limiter: AdaptiveRateLimiter):
         """Test that recording success resets error counters."""
         rate_limiter.consecutive_errors = 3
         rate_limiter.current_backoff_seconds = 8
@@ -176,9 +162,7 @@ class TestAdaptiveRateLimiter:
         assert rate_limiter.rate_limit_hit is False
 
     @pytest.mark.asyncio
-    async def test_record_success_closes_half_open_circuit(
-        self, rate_limiter: AdaptiveRateLimiter
-    ):
+    async def test_record_success_closes_half_open_circuit(self, rate_limiter: AdaptiveRateLimiter):
         """Test that success closes a half-open circuit."""
         rate_limiter.circuit_state = CircuitState.HALF_OPEN
         rate_limiter.circuit_opened_at = datetime.now()
@@ -207,9 +191,7 @@ class TestAdaptiveRateLimiter:
         assert rate_limiter.current_backoff_seconds == 2
 
     @pytest.mark.asyncio
-    async def test_circuit_breaker_opens_on_max_errors(
-        self, rate_limiter: AdaptiveRateLimiter
-    ):
+    async def test_circuit_breaker_opens_on_max_errors(self, rate_limiter: AdaptiveRateLimiter):
         """Test that circuit breaker opens after max consecutive errors."""
         assert rate_limiter.config.max_consecutive_errors == 2
 
@@ -264,9 +246,7 @@ class TestAdaptiveRateLimiter:
         assert rate_limiter._is_rate_limit_active() is False
         assert rate_limiter._get_rate_limit_reset_seconds() == 0
 
-    def test_rate_limit_reset_calculation(
-        self, rate_limiter: AdaptiveRateLimiter
-    ) -> None:
+    def test_rate_limit_reset_calculation(self, rate_limiter: AdaptiveRateLimiter) -> None:
         """Test rate limit reset time calculation."""
         # Set rate limit as recently active
         rate_limiter.rate_limit_hit = True
@@ -315,15 +295,11 @@ class TestAdaptiveRateLimiter:
         rate_limiter.circuit_state = CircuitState.OPEN
 
         # Critical should still be allowed
-        result = await rate_limiter.should_allow_request(
-            UrgencyLevel.CRITICAL, cost_tracker
-        )
+        result = await rate_limiter.should_allow_request(UrgencyLevel.CRITICAL, cost_tracker)
         assert result is True
 
         # Medium should be rejected
-        result = await rate_limiter.should_allow_request(
-            UrgencyLevel.MEDIUM, cost_tracker
-        )
+        result = await rate_limiter.should_allow_request(UrgencyLevel.MEDIUM, cost_tracker)
         assert result is False
 
     def test_success_rate_calculation_edge_cases(self) -> None:

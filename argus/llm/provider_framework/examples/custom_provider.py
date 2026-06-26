@@ -30,9 +30,7 @@ class CustomProvider(BaseProviderTemplate):
     def _initialize_provider(self) -> None:
         """Initialize provider-specific components."""
         # Custom initialization logic
-        self.custom_config = self._get_provider_specific_config(
-            "custom_setting", "default"
-        )
+        self.custom_config = self._get_provider_specific_config("custom_setting", "default")
         self.rate_limit = self._get_provider_specific_config("rate_limit", 100)
 
         # Initialize custom client or components here
@@ -120,9 +118,7 @@ class CustomProvider(BaseProviderTemplate):
 
         # Custom validation
         custom_setting = (
-            config.provider_specific.get("custom_setting")
-            if config.provider_specific
-            else None
+            config.provider_specific.get("custom_setting") if config.provider_specific else None
         )
         if custom_setting and custom_setting not in ["option1", "option2", "option3"]:
             raise ValueError("custom_setting must be one of: option1, option2, option3")

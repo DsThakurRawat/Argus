@@ -1,6 +1,7 @@
 """Alerting system for the logging framework."""
 
 from collections.abc import Callable
+import contextlib
 from dataclasses import dataclass, field
 from enum import Enum
 from threading import Lock
@@ -127,9 +128,7 @@ class AlertManager:
             with self._lock:
                 self._rules[rule.name] = rule
         except Exception as e:
-            raise AlertingError(
-                f"Failed to add alert rule: {e!s}", alert_name=rule.name
-            ) from e
+            raise AlertingError(f"Failed to add alert rule: {e!s}", alert_name=rule.name) from e
 
     def remove_rule(self, rule_name: str) -> None:
         """Remove an alert rule.
@@ -178,12 +177,11 @@ class AlertManager:
             for rule_name, rule in self._rules.items():
                 try:
                     # Check cooldown
-                    if rule_name in self._last_triggered:
-                        if (
-                            current_time - self._last_triggered[rule_name]
-                            < rule.cooldown_seconds
-                        ):
-                            continue
+                    if (
+                        rule_name in self._last_triggered
+                        and current_time - self._last_triggered[rule_name] < rule.cooldown_seconds
+                    ):
+                        continue
 
                     # Evaluate rule
                     if rule.evaluate(data):
@@ -219,10 +217,8 @@ class AlertManager:
 
                         # Notify handlers
                         for handler in self._alert_handlers:
-                            try:
+                            with contextlib.suppress(Exception):
                                 handler(alert)
-                            except Exception:
-                                pass  # Ignore handler errors
 
                 except Exception:
                     # Log error but continue with other rules
@@ -381,10 +377,8 @@ class AlertManager:
         Args:
             handler: Handler to remove
         """
-        try:
+        with contextlib.suppress(ValueError):
             self._alert_handlers.remove(handler)
-        except ValueError:
-            pass  # Handler not found
 
     def enable(self) -> Any:
         """Enable alerting."""
@@ -414,11 +408,7 @@ class AlertManager:
                 [a for a in self._alerts.values() if a.status == AlertStatus.ACTIVE]
             )
             acknowledged_alerts = len(
-                [
-                    a
-                    for a in self._alerts.values()
-                    if a.status == AlertStatus.ACKNOWLEDGED
-                ]
+                [a for a in self._alerts.values() if a.status == AlertStatus.ACKNOWLEDGED]
             )
             resolved_alerts = len(
                 [a for a in self._alerts.values() if a.status == AlertStatus.RESOLVED]

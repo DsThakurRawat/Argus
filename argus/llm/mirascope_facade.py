@@ -112,8 +112,7 @@ class AnalyticsCollector:
             self.metrics.average_response_time_ms = response_time_ms
         else:
             self.metrics.average_response_time_ms = (
-                self.metrics.average_response_time_ms
-                * (self.metrics.total_requests - 1)
+                self.metrics.average_response_time_ms * (self.metrics.total_requests - 1)
                 + response_time_ms
             ) / self.metrics.total_requests
 
@@ -139,14 +138,10 @@ class AnalyticsCollector:
         # Update error rates
         if not success and error_message:
             error_type = self._categorize_error(error_message)
-            self.metrics.error_rates[error_type] = (
-                self.metrics.error_rates.get(error_type, 0) + 1
-            )
+            self.metrics.error_rates[error_type] = self.metrics.error_rates.get(error_type, 0) + 1
 
         self.metrics.last_request_time = datetime.now()
-        self.metrics.uptime_seconds = (
-            datetime.now() - self._start_time
-        ).total_seconds()
+        self.metrics.uptime_seconds = (datetime.now() - self._start_time).total_seconds()
 
         # Store request history
         self.request_history.append(
@@ -221,9 +216,7 @@ class AnalyticsCollector:
             ]
 
             if provider_requests:
-                success_count = sum(
-                    1 for req in provider_requests if req.get("success", False)
-                )
+                success_count = sum(1 for req in provider_requests if req.get("success", False))
                 success_rate = success_count / len(provider_requests)
                 avg_response_time = sum(
                     req.get("response_time_ms", 0) for req in provider_requests
@@ -315,9 +308,7 @@ class MirascopeIntegrationFacade:
 
             success = processed_response.status.value == "success"
             if not success:
-                error_message = (
-                    f"Processing failed: {processed_response.metadata.errors}"
-                )
+                error_message = f"Processing failed: {processed_response.metadata.errors}"
 
             # Record analytics
             response_time = (datetime.now() - start_time).total_seconds() * 1000
@@ -386,13 +377,11 @@ class MirascopeIntegrationFacade:
 
         try:
             # Generate structured response
-            structured_data = (
-                await self.client_manager.generate_structured_with_fallback(
-                    prompt=prompt,
-                    response_model=response_model,
-                    preferred_provider=provider,
-                    **kwargs,
-                )
+            structured_data = await self.client_manager.generate_structured_with_fallback(
+                prompt=prompt,
+                response_model=response_model,
+                preferred_provider=provider,
+                **kwargs,
             )
 
             # Create a mock ClientResponse for processing
@@ -404,18 +393,15 @@ class MirascopeIntegrationFacade:
             )
 
             # Process response
-            processed_response, parsed_structured_data = (
-                self.response_processor.process_structured_response(
-                    mock_response, response_model
-                )
+            processed_response, _parsed_structured_data = (
+                self.response_processor.process_structured_response(mock_response, response_model)
             )
 
-            success = (
-                processed_response.status.value == "success"
-                and structured_data is not None
-            )
+            success = processed_response.status.value == "success" and structured_data is not None
             if not success:
-                error_message = f"Structured generation failed: {processed_response.metadata.errors}"
+                error_message = (
+                    f"Structured generation failed: {processed_response.metadata.errors}"
+                )
 
             # Record analytics
             response_time = (datetime.now() - start_time).total_seconds() * 1000
@@ -585,6 +571,4 @@ def create_integration_facade(
     response_processor: ResponseProcessor | None = None,
 ) -> MirascopeIntegrationFacade:
     """Create a new integration facade instance."""
-    return MirascopeIntegrationFacade(
-        config_manager, client_manager, response_processor
-    )
+    return MirascopeIntegrationFacade(config_manager, client_manager, response_processor)

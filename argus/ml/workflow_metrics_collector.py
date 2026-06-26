@@ -70,12 +70,10 @@ class WorkflowMetricsCollector:
             if total_workflows > 0:
                 success_rate = successful_workflows / total_workflows
                 avg_duration = (
-                    sum(w.metrics.total_duration for w in self.workflow_history)
-                    / total_workflows
+                    sum(w.metrics.total_duration for w in self.workflow_history) / total_workflows
                 )
                 avg_cache_hit_rate = (
-                    sum(w.metrics.cache_hit_rate for w in self.workflow_history)
-                    / total_workflows
+                    sum(w.metrics.cache_hit_rate for w in self.workflow_history) / total_workflows
                 )
             else:
                 success_rate = 0.0
@@ -114,8 +112,8 @@ class WorkflowMetricsCollector:
                 "code_generation",
             ]:
                 try:
-                    trends[operation] = (
-                        await self.performance_monitor.get_performance_trends(operation)
+                    trends[operation] = await self.performance_monitor.get_performance_trends(
+                        operation
                     )
                 except Exception:
                     # Operation might not have data yet

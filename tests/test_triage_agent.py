@@ -35,9 +35,7 @@ def mock_gemini_response() -> None:
 
 @patch("argus.triage_agent.GenerativeModel")
 @pytest.mark.asyncio
-async def test_analyze_logs(
-    mock_generative_model, mock_aiplatform, mock_gemini_response
-):
+async def test_analyze_logs(mock_generative_model, mock_aiplatform, mock_gemini_response):
     # Arrange
     # Configure the mock GenerativeModel to return a predefined response
     mock_instance = MagicMock()
@@ -63,12 +61,9 @@ async def test_analyze_logs(
         == mock_gemini_response["preliminary_severity_score"]
     )
     assert triage_packet.affected_services == mock_gemini_response["affected_services"]
+    assert triage_packet.sample_log_entries == mock_gemini_response["sample_log_entries"]
     assert (
-        triage_packet.sample_log_entries == mock_gemini_response["sample_log_entries"]
-    )
-    assert (
-        triage_packet.natural_language_summary
-        == mock_gemini_response["natural_language_summary"]
+        triage_packet.natural_language_summary == mock_gemini_response["natural_language_summary"]
     )
 
     # Verify that generate_content was called with the correct prompt

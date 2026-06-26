@@ -37,7 +37,7 @@ class OptimizationPriority(Enum):
 @dataclass
 class OptimizationRecommendation:
     """Performance optimization recommendation.
-    
+
     Attributes:
         id: Unique recommendation identifier
         title: Recommendation title
@@ -76,7 +76,7 @@ class OptimizationRecommendation:
 @dataclass
 class OptimizationConfig:
     """Configuration for performance optimization.
-    
+
     Attributes:
         enable_auto_analysis: Whether to enable automatic analysis
         analysis_interval: Analysis interval in seconds
@@ -98,7 +98,7 @@ class OptimizationConfig:
 
 class PerformanceAnalyzer:
     """Performance analyzer for identifying optimization opportunities.
-    
+
     Analyzes performance metrics to identify bottlenecks,
     inefficiencies, and optimization opportunities.
     """
@@ -112,20 +112,18 @@ class PerformanceAnalyzer:
             "high_error_rate": self._detect_high_error_rate,
             "resource_contention": self._detect_resource_contention,
             "inefficient_algorithm": self._detect_inefficient_algorithm,
-            "configuration_issue": self._detect_configuration_issue
+            "configuration_issue": self._detect_configuration_issue,
         }
 
     def analyze_metrics(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> list[str]:
         """Analyze performance metrics for issues.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             List of detected issue patterns
         """
@@ -138,25 +136,21 @@ class PerformanceAnalyzer:
         return detected_patterns
 
     def _detect_memory_leak(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> bool:
         """Detect memory leak patterns.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             True if memory leak is detected
         """
         if not historical_data or len(historical_data) < 10:
             return False
 
-        memory_values = [
-            data.get("memory_usage", 0) for data in historical_data[-10:]
-        ]
+        memory_values = [data.get("memory_usage", 0) for data in historical_data[-10:]]
 
         # Check for consistent upward trend
         if len(memory_values) >= 5:
@@ -166,16 +160,14 @@ class PerformanceAnalyzer:
         return False
 
     def _detect_cpu_spike(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> bool:
         """Detect CPU spike patterns.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             True if CPU spike is detected
         """
@@ -183,16 +175,14 @@ class PerformanceAnalyzer:
         return current_cpu > 80.0  # 80% CPU usage threshold
 
     def _detect_slow_operation(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> bool:
         """Detect slow operation patterns.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             True if slow operation is detected
         """
@@ -200,16 +190,14 @@ class PerformanceAnalyzer:
         return avg_response_time > 1000.0  # 1 second threshold
 
     def _detect_high_error_rate(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> bool:
         """Detect high error rate patterns.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             True if high error rate is detected
         """
@@ -217,16 +205,14 @@ class PerformanceAnalyzer:
         return error_rate > 5.0  # 5% error rate threshold
 
     def _detect_resource_contention(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> bool:
         """Detect resource contention patterns.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             True if resource contention is detected
         """
@@ -237,25 +223,21 @@ class PerformanceAnalyzer:
         return cpu_usage > 70.0 and memory_usage > 1000000000  # 1GB
 
     def _detect_inefficient_algorithm(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> bool:
         """Detect inefficient algorithm patterns.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             True if inefficient algorithm is detected
         """
         if not historical_data or len(historical_data) < 5:
             return False
 
-        response_times = [
-            data.get("avg_response_time", 0) for data in historical_data[-5:]
-        ]
+        response_times = [data.get("avg_response_time", 0) for data in historical_data[-5:]]
 
         # Check for exponential growth in response time
         if len(response_times) >= 3:
@@ -265,16 +247,14 @@ class PerformanceAnalyzer:
         return False
 
     def _detect_configuration_issue(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> bool:
         """Detect configuration issue patterns.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             True if configuration issue is detected
         """
@@ -284,10 +264,10 @@ class PerformanceAnalyzer:
 
     def _calculate_trend(self, values: list[float]) -> float:
         """Calculate trend of a series of values.
-        
+
         Args:
             values: Series of values
-            
+
         Returns:
             Trend value (positive = increasing, negative = decreasing)
         """
@@ -306,10 +286,10 @@ class PerformanceAnalyzer:
 
     def _calculate_growth_rate(self, values: list[float]) -> float:
         """Calculate growth rate of a series of values.
-        
+
         Args:
             values: Series of values
-            
+
         Returns:
             Growth rate as percentage
         """
@@ -327,14 +307,14 @@ class PerformanceAnalyzer:
 
 class OptimizationEngine:
     """Performance optimization recommendations engine.
-    
+
     Analyzes performance patterns and generates intelligent
     recommendations for system optimization.
     """
 
     def __init__(self, config: OptimizationConfig | None = None):
         """Initialize the optimization engine.
-        
+
         Args:
             config: Optimization configuration
         """
@@ -362,16 +342,14 @@ class OptimizationEngine:
                 await asyncio.sleep(60)
 
     def analyze_performance(
-        self,
-        metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        self, metrics: dict[str, Any], historical_data: list[dict[str, Any]] | None = None
     ) -> list[OptimizationRecommendation]:
         """Analyze performance and generate recommendations.
-        
+
         Args:
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             List of optimization recommendations
         """
@@ -388,12 +366,13 @@ class OptimizationEngine:
 
         # Filter by confidence threshold
         recommendations = [
-            rec for rec in recommendations
+            rec
+            for rec in recommendations
             if rec.confidence >= self._config.min_confidence_threshold
         ]
 
         # Limit number of recommendations
-        recommendations = recommendations[:self._config.max_recommendations]
+        recommendations = recommendations[: self._config.max_recommendations]
 
         # Store recommendations
         for recommendation in recommendations:
@@ -405,15 +384,15 @@ class OptimizationEngine:
         self,
         pattern: str,
         metrics: dict[str, Any],
-        historical_data: list[dict[str, Any]] | None = None
+        historical_data: list[dict[str, Any]] | None = None,
     ) -> list[OptimizationRecommendation]:
         """Generate recommendations for a specific pattern.
-        
+
         Args:
             pattern: Detected pattern name
             metrics: Current performance metrics
             historical_data: Historical performance data
-            
+
         Returns:
             List of recommendations for the pattern
         """
@@ -440,10 +419,10 @@ class OptimizationEngine:
         self, metrics: dict[str, Any]
     ) -> OptimizationRecommendation:
         """Create memory leak optimization recommendation.
-        
+
         Args:
             metrics: Current performance metrics
-            
+
         Returns:
             Memory leak optimization recommendation
         """
@@ -462,24 +441,24 @@ class OptimizationEngine:
                 "Implement proper resource cleanup in finally blocks",
                 "Use context managers for resource management",
                 "Add memory monitoring and alerting",
-                "Consider implementing garbage collection tuning"
+                "Consider implementing garbage collection tuning",
             ],
             expected_improvement={
                 "memory_usage": "Reduce by 20-50%",
-                "stability": "Improve system stability"
+                "stability": "Improve system stability",
             },
             prerequisites=["Code review access", "Memory profiling tools"],
-            risks=["Potential performance impact during cleanup", "Code changes required"]
+            risks=["Potential performance impact during cleanup", "Code changes required"],
         )
 
     def _create_cpu_spike_recommendation(
         self, metrics: dict[str, Any]
     ) -> OptimizationRecommendation:
         """Create CPU spike optimization recommendation.
-        
+
         Args:
             metrics: Current performance metrics
-            
+
         Returns:
             CPU spike optimization recommendation
         """
@@ -487,8 +466,7 @@ class OptimizationEngine:
             id=f"cpu_spike_{int(time.time())}",
             title="Optimize CPU Usage",
             description=(
-                "High CPU usage detected, investigate and optimize "
-                "CPU-intensive operations"
+                "High CPU usage detected, investigate and optimize CPU-intensive operations"
             ),
             category=OptimizationCategory.CPU,
             priority=OptimizationPriority.HIGH,
@@ -501,24 +479,24 @@ class OptimizationEngine:
                 "Optimize algorithms and data structures",
                 "Implement caching for expensive operations",
                 "Consider async/await for I/O operations",
-                "Scale horizontally if needed"
+                "Scale horizontally if needed",
             ],
             expected_improvement={
                 "cpu_usage": "Reduce by 30-60%",
-                "response_time": "Improve by 20-40%"
+                "response_time": "Improve by 20-40%",
             },
             prerequisites=["CPU profiling tools", "Performance testing"],
-            risks=["Code refactoring required", "Potential functionality changes"]
+            risks=["Code refactoring required", "Potential functionality changes"],
         )
 
     def _create_slow_operation_recommendation(
         self, metrics: dict[str, Any]
     ) -> OptimizationRecommendation:
         """Create slow operation optimization recommendation.
-        
+
         Args:
             metrics: Current performance metrics
-            
+
         Returns:
             Slow operation optimization recommendation
         """
@@ -537,24 +515,24 @@ class OptimizationEngine:
                 "Optimize database queries and add indexes",
                 "Implement connection pooling",
                 "Add caching for frequently accessed data",
-                "Consider async operations for I/O"
+                "Consider async operations for I/O",
             ],
             expected_improvement={
                 "avg_response_time": "Reduce by 40-70%",
-                "p95_response_time": "Reduce by 30-60%"
+                "p95_response_time": "Reduce by 30-60%",
             },
             prerequisites=["Profiling tools", "Database access"],
-            risks=["Database schema changes", "Caching complexity"]
+            risks=["Database schema changes", "Caching complexity"],
         )
 
     def _create_high_error_rate_recommendation(
         self, metrics: dict[str, Any]
     ) -> OptimizationRecommendation:
         """Create high error rate optimization recommendation.
-        
+
         Args:
             metrics: Current performance metrics
-            
+
         Returns:
             High error rate optimization recommendation
         """
@@ -573,24 +551,24 @@ class OptimizationEngine:
                 "Implement proper error handling and validation",
                 "Add retry mechanisms with exponential backoff",
                 "Improve input validation and sanitization",
-                "Add circuit breakers for external dependencies"
+                "Add circuit breakers for external dependencies",
             ],
             expected_improvement={
                 "error_rate": "Reduce by 80-95%",
-                "successful_requests": "Increase by 20-50%"
+                "successful_requests": "Increase by 20-50%",
             },
             prerequisites=["Error logging", "Monitoring tools"],
-            risks=["Potential service disruption during fixes"]
+            risks=["Potential service disruption during fixes"],
         )
 
     def _create_resource_contention_recommendation(
         self, metrics: dict[str, Any]
     ) -> OptimizationRecommendation:
         """Create resource contention optimization recommendation.
-        
+
         Args:
             metrics: Current performance metrics
-            
+
         Returns:
             Resource contention optimization recommendation
         """
@@ -609,25 +587,25 @@ class OptimizationEngine:
                 "Optimize resource allocation",
                 "Add load balancing",
                 "Implement resource pooling",
-                "Consider microservices architecture"
+                "Consider microservices architecture",
             ],
             expected_improvement={
                 "cpu_usage": "Reduce by 40-60%",
                 "memory_usage": "Reduce by 30-50%",
-                "throughput": "Increase by 50-100%"
+                "throughput": "Increase by 50-100%",
             },
             prerequisites=["Infrastructure changes", "Load balancer"],
-            risks=["Architecture changes", "Deployment complexity"]
+            risks=["Architecture changes", "Deployment complexity"],
         )
 
     def _create_inefficient_algorithm_recommendation(
         self, metrics: dict[str, Any]
     ) -> OptimizationRecommendation:
         """Create inefficient algorithm optimization recommendation.
-        
+
         Args:
             metrics: Current performance metrics
-            
+
         Returns:
             Inefficient algorithm optimization recommendation
         """
@@ -646,24 +624,24 @@ class OptimizationEngine:
                 "Replace O(n²) algorithms with O(n log n) or O(n)",
                 "Implement memoization for repeated calculations",
                 "Use appropriate data structures",
-                "Consider parallel processing where applicable"
+                "Consider parallel processing where applicable",
             ],
             expected_improvement={
                 "avg_response_time": "Reduce by 50-80%",
-                "cpu_usage": "Reduce by 30-50%"
+                "cpu_usage": "Reduce by 30-50%",
             },
             prerequisites=["Algorithm analysis", "Performance testing"],
-            risks=["Code complexity", "Potential bugs"]
+            risks=["Code complexity", "Potential bugs"],
         )
 
     def _create_configuration_issue_recommendation(
         self, metrics: dict[str, Any]
     ) -> OptimizationRecommendation:
         """Create configuration issue optimization recommendation.
-        
+
         Args:
             metrics: Current performance metrics
-            
+
         Returns:
             Configuration issue optimization recommendation
         """
@@ -682,27 +660,27 @@ class OptimizationEngine:
                 "Optimize thread pool configurations",
                 "Adjust timeout values",
                 "Review resource limits",
-                "Check for rate limiting issues"
+                "Check for rate limiting issues",
             ],
             expected_improvement={
                 "throughput": "Increase by 100-300%",
-                "response_time": "Improve by 20-40%"
+                "response_time": "Improve by 20-40%",
             },
             prerequisites=["Configuration access", "Performance testing"],
-            risks=["Service disruption during changes"]
+            risks=["Service disruption during changes"],
         )
 
     def get_recommendations(
         self,
         category: OptimizationCategory | None = None,
-        priority: OptimizationPriority | None = None
+        priority: OptimizationPriority | None = None,
     ) -> list[OptimizationRecommendation]:
         """Get optimization recommendations.
-        
+
         Args:
             category: Filter by category (optional)
             priority: Filter by priority (optional)
-            
+
         Returns:
             List of optimization recommendations
         """
@@ -718,10 +696,10 @@ class OptimizationEngine:
 
     def get_recommendation(self, recommendation_id: str) -> OptimizationRecommendation | None:
         """Get a specific optimization recommendation.
-        
+
         Args:
             recommendation_id: ID of the recommendation
-            
+
         Returns:
             Optimization recommendation or None
         """
@@ -729,7 +707,7 @@ class OptimizationEngine:
 
     def remove_recommendation(self, recommendation_id: str) -> None:
         """Remove an optimization recommendation.
-        
+
         Args:
             recommendation_id: ID of the recommendation to remove
         """
@@ -737,7 +715,7 @@ class OptimizationEngine:
 
     def get_optimization_summary(self) -> dict[str, Any]:
         """Get optimization summary.
-        
+
         Returns:
             Optimization summary
         """
@@ -756,27 +734,30 @@ class OptimizationEngine:
             "by_priority": dict(by_priority),
             "avg_impact_score": (
                 sum(rec.impact_score for rec in recommendations) / len(recommendations)
-                if recommendations else 0
+                if recommendations
+                else 0
             ),
             "avg_effort_score": (
                 sum(rec.effort_score for rec in recommendations) / len(recommendations)
-                if recommendations else 0
+                if recommendations
+                else 0
             ),
             "avg_confidence": (
                 sum(rec.confidence for rec in recommendations) / len(recommendations)
-                if recommendations else 0
+                if recommendations
+                else 0
             ),
             "config": {
                 "enable_auto_analysis": self._config.enable_auto_analysis,
                 "analysis_interval": self._config.analysis_interval,
                 "min_confidence_threshold": self._config.min_confidence_threshold,
-                "max_recommendations": self._config.max_recommendations
-            }
+                "max_recommendations": self._config.max_recommendations,
+            },
         }
 
     def __enter__(self):
         """Context manager entry.
-        
+
         Returns:
             Self
         """
@@ -784,7 +765,7 @@ class OptimizationEngine:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit.
-        
+
         Args:
             exc_type: Exception type
             exc_val: Exception value

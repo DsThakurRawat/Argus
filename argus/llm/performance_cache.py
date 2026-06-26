@@ -64,37 +64,26 @@ class ModelPerformanceStats:
 
         # Update counts and sums
         self.metric_counts[metric_type] = self.metric_counts.get(metric_type, 0) + 1
-        self.metric_sums[metric_type] = (
-            self.metric_sums.get(metric_type, 0.0) + metric.value
-        )
+        self.metric_sums[metric_type] = self.metric_sums.get(metric_type, 0.0) + metric.value
 
         # Update min/max
         if metric_type not in self.metric_mins:
             self.metric_mins[metric_type] = metric.value
             self.metric_maxs[metric_type] = metric.value
         else:
-            self.metric_mins[metric_type] = min(
-                self.metric_mins[metric_type], metric.value
-            )
-            self.metric_maxs[metric_type] = max(
-                self.metric_maxs[metric_type], metric.value
-            )
+            self.metric_mins[metric_type] = min(self.metric_mins[metric_type], metric.value)
+            self.metric_maxs[metric_type] = max(self.metric_maxs[metric_type], metric.value)
 
         self.last_updated = time.time()
         self.sample_count += 1
 
     def get_average(self, metric_type: MetricType) -> float | None:
         """Get average value for a metric type."""
-        if (
-            metric_type not in self.metric_counts
-            or self.metric_counts[metric_type] == 0
-        ):
+        if metric_type not in self.metric_counts or self.metric_counts[metric_type] == 0:
             return None
         return self.metric_sums[metric_type] / self.metric_counts[metric_type]
 
-    def get_percentile(
-        self, metric_type: MetricType, percentile: float
-    ) -> float | None:
+    def get_percentile(self, metric_type: MetricType, percentile: float) -> float | None:
         """Get percentile value for a metric type (simplified implementation)."""
         # This is a simplified implementation - in production, you'd want to store
         # individual values and calculate proper percentiles
@@ -291,9 +280,7 @@ class PerformanceCache:
         """Get model rankings based on weighted combination of metrics."""
         if weights is None:
             # Equal weights
-            weights = {
-                metric_type: 1.0 / len(metric_types) for metric_type in metric_types
-            }
+            weights = {metric_type: 1.0 / len(metric_types) for metric_type in metric_types}
 
         model_scores = {}
 
@@ -337,9 +324,7 @@ class PerformanceCache:
 
         # Update time index
         self._time_index = [
-            (timestamp, idx)
-            for timestamp, idx in self._time_index
-            if idx not in expired_indices
+            (timestamp, idx) for timestamp, idx in self._time_index if idx not in expired_indices
         ]
 
         self._last_cleanup = current_time
@@ -360,9 +345,7 @@ class PerformanceCache:
         """Get cache statistics."""
         current_time = time.time()
         valid_metrics = sum(
-            1
-            for metric in self._metrics
-            if current_time - metric.timestamp <= self.default_ttl
+            1 for metric in self._metrics if current_time - metric.timestamp <= self.default_ttl
         )
 
         return {
@@ -482,15 +465,11 @@ class PerformanceMonitor:
         """Get performance summary for a model."""
         return self.cache.get_performance_summary(model_name, metric_types)
 
-    def get_best_models(
-        self, metric_type: MetricType, limit: int = 5
-    ) -> list[tuple[str, float]]:
+    def get_best_models(self, metric_type: MetricType, limit: int = 5) -> list[tuple[str, float]]:
         """Get best performing models for a metric."""
         return self.cache.get_top_models(metric_type, limit, ascending=True)
 
-    def get_worst_models(
-        self, metric_type: MetricType, limit: int = 5
-    ) -> list[tuple[str, float]]:
+    def get_worst_models(self, metric_type: MetricType, limit: int = 5) -> list[tuple[str, float]]:
         """Get worst performing models for a metric."""
         return self.cache.get_top_models(metric_type, limit, ascending=False)
 

@@ -26,7 +26,7 @@ class AlertSeverity(Enum):
 @dataclass
 class AlertThreshold:
     """Alert threshold configuration.
-    
+
     Attributes:
         metric_name: Name of the metric to monitor
         threshold_value: Threshold value
@@ -47,7 +47,7 @@ class AlertThreshold:
 @dataclass
 class AlertRule:
     """Alert rule definition.
-    
+
     Attributes:
         name: Name of the alert rule
         description: Description of the alert rule
@@ -66,7 +66,7 @@ class AlertRule:
 @dataclass
 class Alert:
     """Alert instance.
-    
+
     Attributes:
         rule_name: Name of the alert rule
         metric_name: Name of the metric that triggered the alert
@@ -91,7 +91,7 @@ class Alert:
 @dataclass
 class AlertConfig:
     """Configuration for performance alerts.
-    
+
     Attributes:
         max_alerts: Maximum number of alerts to store
         alert_retention: How long to keep alerts in seconds
@@ -111,14 +111,14 @@ class AlertConfig:
 
 class PerformanceAlerts:
     """Performance alerting and threshold management system.
-    
+
     Monitors performance metrics against configurable thresholds
     and triggers alerts when thresholds are exceeded.
     """
 
     def __init__(self, config: AlertConfig | None = None):
         """Initialize the performance alerts system.
-        
+
         Args:
             config: Alert configuration
         """
@@ -157,7 +157,7 @@ class PerformanceAlerts:
 
     def add_alert_rule(self, rule: AlertRule) -> None:
         """Add an alert rule.
-        
+
         Args:
             rule: Alert rule to add
         """
@@ -167,7 +167,7 @@ class PerformanceAlerts:
 
     def remove_alert_rule(self, rule_name: str) -> None:
         """Remove an alert rule.
-        
+
         Args:
             rule_name: Name of the rule to remove
         """
@@ -178,7 +178,7 @@ class PerformanceAlerts:
 
     def add_alert_handler(self, handler: Callable[[Alert], None]) -> None:
         """Add an alert handler.
-        
+
         Args:
             handler: Function to call when an alert is triggered
         """
@@ -187,7 +187,7 @@ class PerformanceAlerts:
 
     def remove_alert_handler(self, handler: Callable[[Alert], None]) -> None:
         """Remove an alert handler.
-        
+
         Args:
             handler: Handler to remove
         """
@@ -200,16 +200,16 @@ class PerformanceAlerts:
         metric_name: str,
         value: int | float,
         operation: str | None = None,
-        tags: dict[str, str] | None = None
+        tags: dict[str, str] | None = None,
     ) -> list[Alert]:
         """Check a metric value against all applicable rules.
-        
+
         Args:
             metric_name: Name of the metric
             value: Current value of the metric
             operation: Operation name (optional)
             tags: Additional metadata tags
-            
+
         Returns:
             List of triggered alerts
         """
@@ -223,7 +223,8 @@ class PerformanceAlerts:
 
                 # Check if rule applies to this metric
                 applicable_thresholds = [
-                    threshold for threshold in rule.thresholds
+                    threshold
+                    for threshold in rule.thresholds
                     if threshold.metric_name == metric_name
                 ]
 
@@ -233,13 +234,7 @@ class PerformanceAlerts:
                 # Check each threshold
                 for threshold in applicable_thresholds:
                     if self._should_trigger_alert(rule_name, threshold, value, current_time):
-                        alert = self._create_alert(
-                            rule_name,
-                            threshold,
-                            value,
-                            operation,
-                            tags
-                        )
+                        alert = self._create_alert(rule_name, threshold, value, operation, tags)
                         triggered_alerts.append(alert)
                         self._alerts.append(alert)
                         self._alert_history[rule_name] = current_time
@@ -255,20 +250,16 @@ class PerformanceAlerts:
         return triggered_alerts
 
     def _should_trigger_alert(
-        self,
-        rule_name: str,
-        threshold: AlertThreshold,
-        value: int | float,
-        current_time: float
+        self, rule_name: str, threshold: AlertThreshold, value: int | float, current_time: float
     ) -> bool:
         """Check if an alert should be triggered.
-        
+
         Args:
             rule_name: Name of the alert rule
             threshold: Alert threshold
             value: Current metric value
             current_time: Current timestamp
-            
+
         Returns:
             True if alert should be triggered
         """
@@ -299,17 +290,17 @@ class PerformanceAlerts:
         threshold: AlertThreshold,
         value: int | float,
         operation: str | None,
-        tags: dict[str, str] | None
+        tags: dict[str, str] | None,
     ) -> Alert:
         """Create an alert instance.
-        
+
         Args:
             rule_name: Name of the alert rule
             threshold: Alert threshold
             value: Current metric value
             operation: Operation name (optional)
             tags: Additional metadata tags
-            
+
         Returns:
             Alert instance
         """
@@ -328,22 +319,22 @@ class PerformanceAlerts:
             threshold_value=threshold.threshold_value,
             severity=threshold.severity,
             message=message,
-            tags={**(tags or {}), "operation": operation or "unknown"}
+            tags={**(tags or {}), "operation": operation or "unknown"},
         )
 
     def get_alerts(
         self,
         rule_name: str | None = None,
         severity: AlertSeverity | None = None,
-        since: float | None = None
+        since: float | None = None,
     ) -> list[Alert]:
         """Get alerts matching the specified criteria.
-        
+
         Args:
             rule_name: Filter by rule name (optional)
             severity: Filter by severity (optional)
             since: Filter by timestamp (optional)
-            
+
         Returns:
             List of matching alerts
         """
@@ -363,7 +354,7 @@ class PerformanceAlerts:
 
     def get_alert_summary(self) -> dict[str, Any]:
         """Get a summary of alerts.
-        
+
         Returns:
             Alert summary
         """
@@ -391,13 +382,13 @@ class PerformanceAlerts:
                     "max_alerts": self._config.max_alerts,
                     "alert_retention": self._config.alert_retention,
                     "enable_alert_deduplication": self._config.enable_alert_deduplication,
-                    "enable_alert_escalation": self._config.enable_alert_escalation
-                }
+                    "enable_alert_escalation": self._config.enable_alert_escalation,
+                },
             }
 
     def clear_alerts(self, rule_name: str | None = None) -> None:
         """Clear alerts.
-        
+
         Args:
             rule_name: Clear alerts for specific rule (optional)
         """
@@ -405,14 +396,14 @@ class PerformanceAlerts:
             if rule_name:
                 self._alerts = deque(
                     [alert for alert in self._alerts if alert.rule_name != rule_name],
-                    maxlen=self._config.max_alerts
+                    maxlen=self._config.max_alerts,
                 )
             else:
                 self._alerts.clear()
 
     def enable_rule(self, rule_name: str) -> None:
         """Enable an alert rule.
-        
+
         Args:
             rule_name: Name of the rule to enable
         """
@@ -422,7 +413,7 @@ class PerformanceAlerts:
 
     def disable_rule(self, rule_name: str) -> None:
         """Disable an alert rule.
-        
+
         Args:
             rule_name: Name of the rule to disable
         """
@@ -432,7 +423,7 @@ class PerformanceAlerts:
 
     def get_rules(self) -> dict[str, AlertRule]:
         """Get all alert rules.
-        
+
         Returns:
             Dictionary of rule names to alert rules
         """
@@ -441,7 +432,7 @@ class PerformanceAlerts:
 
     def __enter__(self):
         """Context manager entry.
-        
+
         Returns:
             Self
         """
@@ -449,7 +440,7 @@ class PerformanceAlerts:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit.
-        
+
         Args:
             exc_type: Exception type
             exc_val: Exception value

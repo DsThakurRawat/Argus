@@ -34,8 +34,7 @@ class DashboardDataGenerator:
             "avg_latency": self._calculate_global_avg_latency(),
             "total_cost": self._calculate_total_cost(),
             "provider_health": {
-                p: m.health_score
-                for p, m in self.metrics_manager.provider_metrics.items()
+                p: m.health_score for p, m in self.metrics_manager.provider_metrics.items()
             },
         }
 
@@ -61,11 +60,7 @@ class DashboardDataGenerator:
         return sum(all_latencies) / len(all_latencies)
 
     def _calculate_total_cost(self) -> float:
-        return sum(
-            cost
-            for m in self.metrics_manager.provider_metrics.values()
-            for cost in m.costs
-        )
+        return sum(cost for m in self.metrics_manager.provider_metrics.values() for cost in m.costs)
 
     def generate_provider_comparison(self) -> dict[str, Any]:
         """

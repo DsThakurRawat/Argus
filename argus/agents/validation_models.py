@@ -11,8 +11,8 @@ severity levels, and comprehensive error reporting.
 from collections.abc import Callable
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any
-from uuid import UUID, uuid4
+from typing import Any, ClassVar
+from uuid import UUID
 
 from pydantic import (
     BaseModel,
@@ -32,9 +32,7 @@ class ValidationError(BaseModel):
     field: str = Field(..., description="Field that failed validation")
     message: str = Field(..., description="Error message")
     value: Any | None = Field(None, description="Value that caused the error")
-    code: str | None = Field(
-        None, description="Error code for programmatic handling"
-    )
+    code: str | None = Field(None, description="Error code for programmatic handling")
     severity: str = Field("error", description="Severity of the validation error")
     context: dict[str, Any] = Field(
         default_factory=dict, description="Additional context for the error"
@@ -46,7 +44,7 @@ class ValidationError(BaseModel):
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 class ValidationWarning(BaseModel):
@@ -64,33 +62,25 @@ class ValidationWarning(BaseModel):
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 class ValidationResult(BaseModel):
     """Comprehensive validation result with errors and warnings."""
 
     is_valid: bool = Field(..., description="Whether validation passed")
-    errors: list[ValidationError] = Field(
-        default_factory=list, description="Validation errors"
-    )
+    errors: list[ValidationError] = Field(default_factory=list, description="Validation errors")
     warnings: list[ValidationWarning] = Field(
         default_factory=list, description="Validation warnings"
     )
-    validated_data: dict[str, Any] | None = Field(
-        None, description="Validated and cleaned data"
-    )
-    validation_time_ms: float = Field(
-        ..., description="Time taken for validation in milliseconds"
-    )
+    validated_data: dict[str, Any] | None = Field(None, description="Validated and cleaned data")
+    validation_time_ms: float = Field(..., description="Time taken for validation in milliseconds")
     validator_used: str | None = Field(None, description="Validator that was used")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Validation metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Validation metadata")
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 # ============================================================================
@@ -125,9 +115,7 @@ def validate_confidence_threshold(value: float, threshold: float = 0.3) -> float
     """Validate confidence score meets minimum threshold."""
     validated_value = validate_confidence_score(value)
     if validated_value < threshold:
-        raise ValueError(
-            f"Confidence score {validated_value} below threshold {threshold}"
-        )
+        raise ValueError(f"Confidence score {validated_value} below threshold {threshold}")
     return validated_value
 
 
@@ -158,8 +146,8 @@ def validate_uuid_format(value: str) -> str:
     try:
         UUID(value)
         return value
-    except ValueError:
-        raise ValueError("Invalid UUID format")
+    except ValueError as err:
+        raise ValueError("Invalid UUID format") from err
 
 
 def validate_timestamp(value: str | datetime) -> datetime:
@@ -169,8 +157,8 @@ def validate_timestamp(value: str | datetime) -> datetime:
     if isinstance(value, str):
         try:
             return datetime.fromisoformat(value.replace("Z", "+00:00"))
-        except ValueError:
-            raise ValueError("Invalid timestamp format")
+        except ValueError as err:
+            raise ValueError("Invalid timestamp format") from err
     raise ValueError("Timestamp must be a string or datetime object")
 
 
@@ -180,8 +168,8 @@ def validate_enum_value(value: Any, enum_class: type) -> Any:
         if isinstance(value, str):
             try:
                 return enum_class(value)
-            except ValueError:
-                raise ValueError(f"Invalid {enum_class.__name__} value: {value}")
+            except ValueError as err:
+                raise ValueError(f"Invalid {enum_class.__name__} value: {value}") from err
         else:
             raise ValueError(f"Value must be a {enum_class.__name__} or string")
     return value
@@ -391,7 +379,7 @@ def validate_with_schema(schema_class: type) -> Callable:
                 validated_data = schema_class(**kwargs)
                 return func(*args, **validated_data.model_dump())
             except PydanticValidationError as e:
-                raise ValueError(f"Validation failed: {e}")
+                raise ValueError(f"Validation failed: {e}") from e
 
         return wrapper
 
@@ -632,8 +620,8 @@ class ValidationUtils:
 class ValidationRegistry:
     """Registry for validation functions and schemas."""
 
-    _validators: dict[str, Callable] = {}
-    _schemas: dict[str, type] = {}
+    _validators: ClassVar[dict[str, Callable]] = {}
+    _schemas: ClassVar[dict[str, type]] = {}
 
     @classmethod
     def register_validator(cls, name: str, validator: Callable) -> None:

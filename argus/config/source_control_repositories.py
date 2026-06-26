@@ -23,12 +23,8 @@ class RepositoryConfig(BaseConfig):
     type: str = Field(..., description="Repository type (github, gitlab, local, etc.)")
     name: str = Field(..., description="Unique name for this repository configuration")
     branch: str = Field(default="main", description="Default branch for operations")
-    paths: list[str] = Field(
-        default=["/"], description="Paths to consider within the repository"
-    )
-    credentials: CredentialConfig | None = Field(
-        None, description="Repository credentials"
-    )
+    paths: list[str] = Field(default=["/"], description="Paths to consider within the repository")
+    credentials: CredentialConfig | None = Field(None, description="Repository credentials")
     remediation: RemediationStrategyConfig = Field(
         default_factory=lambda: RemediationStrategyConfig(),
         description="Remediation configuration",
@@ -87,10 +83,7 @@ class RepositoryConfig(BaseConfig):
 
     def matches_path(self, file_path: str) -> bool:
         """Check if a file path matches any of the configured paths."""
-        for path in self.paths:
-            if file_path.startswith(path):
-                return True
-        return False
+        return any(file_path.startswith(path) for path in self.paths)
 
 
 class GitHubRepositoryConfig(RepositoryConfig):
@@ -102,9 +95,7 @@ class GitHubRepositoryConfig(RepositoryConfig):
         super().__init__(**data)
 
     url: str = Field(..., description="GitHub repository URL (e.g., 'owner/repo')")
-    api_base_url: str = Field(
-        default="https://api.github.com", description="GitHub API base URL"
-    )
+    api_base_url: str = Field(default="https://api.github.com", description="GitHub API base URL")
 
     @field_validator("url")
     @classmethod
@@ -226,9 +217,7 @@ class GitLabRepositoryConfig(RepositoryConfig):
     api_base_url: str = Field(
         default="https://gitlab.com/api/v4", description="GitLab API base URL"
     )
-    project_id: str | None = Field(
-        None, description="GitLab project ID (if different from URL)"
-    )
+    project_id: str | None = Field(None, description="GitLab project ID (if different from URL)")
 
     @field_validator("url")
     @classmethod
@@ -247,9 +236,7 @@ class GitLabRepositoryConfig(RepositoryConfig):
             raise ValueError("GitLab URL must use http or https protocol")
 
         # Check if it looks like a GitLab URL
-        if "gitlab.com" not in parsed.netloc and not parsed.netloc.endswith(
-            ".gitlab.io"
-        ):
+        if "gitlab.com" not in parsed.netloc and not parsed.netloc.endswith(".gitlab.io"):
             # Allow custom GitLab instances
             pass
 
@@ -338,9 +325,7 @@ class LocalRepositoryConfig(RepositoryConfig):
     backup_files: bool = Field(
         default=True, description="Whether to create backups before modifications"
     )
-    backup_directory: str | None = Field(
-        default=None, description="Directory for file backups"
-    )
+    backup_directory: str | None = Field(default=None, description="Directory for file backups")
 
     @field_validator("path")
     @classmethod

@@ -7,6 +7,7 @@ This module contains all credential storage backend implementations.
 """
 
 from abc import ABC, abstractmethod
+import contextlib
 import os
 
 
@@ -73,14 +74,10 @@ class FileBackend(CredentialBackend):
             with open(file_path, "w") as f:
                 f.write(value)
         except OSError as e:
-            raise RuntimeError(
-                f"Failed to write credential file {file_path}: {e}"
-            ) from e
+            raise RuntimeError(f"Failed to write credential file {file_path}: {e}") from e
 
     async def delete(self, key: str) -> None:
         file_path = self._get_file_path(key)
         if os.path.exists(file_path):
-            try:
+            with contextlib.suppress(OSError):
                 os.remove(file_path)
-            except OSError:
-                pass

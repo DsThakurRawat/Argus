@@ -44,9 +44,7 @@ def cli(ctx, verbose: bool, config: str | None):
 @click.option("--coverage/--no-coverage", default=True, help="Enable/disable coverage checks")
 @click.option("--security/--no-security", default=True, help="Enable/disable security checks")
 @click.option(
-    "--performance/--no-performance",
-    default=True,
-    help="Enable/disable performance checks"
+    "--performance/--no-performance", default=True, help="Enable/disable performance checks"
 )
 @click.option("--docs/--no-docs", default=True, help="Enable/disable documentation checks")
 @click.option("--style/--no-style", default=True, help="Enable/disable style checks")
@@ -61,7 +59,7 @@ def cli(ctx, verbose: bool, config: str | None):
     "output_format",
     type=click.Choice(["json", "html", "markdown", "console"]),
     default="console",
-    help="Output format"
+    help="Output format",
 )
 @click.option("--gates", help="Comma-separated list of gates to run (default: all)")
 def run(
@@ -79,26 +77,28 @@ def run(
     timeout: int,
     output: str | None,
     output_format: str,
-    gates: str | None
+    gates: str | None,
 ):
     """Run quality gates."""
-    asyncio.run(_run_quality_gates(
-        pyright=pyright,
-        ruff=ruff,
-        coverage=coverage,
-        security=security,
-        performance=performance,
-        docs=docs,
-        style=style,
-        min_coverage=min_coverage,
-        max_line_length=max_line_length,
-        fail_on_warning=fail_on_warning,
-        parallel=parallel,
-        timeout=timeout,
-        output=output,
-        output_format=output_format,
-        gates=gates
-    ))
+    asyncio.run(
+        _run_quality_gates(
+            pyright=pyright,
+            ruff=ruff,
+            coverage=coverage,
+            security=security,
+            performance=performance,
+            docs=docs,
+            style=style,
+            min_coverage=min_coverage,
+            max_line_length=max_line_length,
+            fail_on_warning=fail_on_warning,
+            parallel=parallel,
+            timeout=timeout,
+            output=output,
+            output_format=output_format,
+            gates=gates,
+        )
+    )
 
 
 async def _run_quality_gates(
@@ -116,7 +116,7 @@ async def _run_quality_gates(
     timeout: int,
     output: str | None,
     output_format: str,
-    gates: str | None
+    gates: str | None,
 ):
     """Run quality gates with the specified configuration."""
     try:
@@ -133,7 +133,7 @@ async def _run_quality_gates(
             max_line_length=max_line_length,
             fail_on_warning=fail_on_warning,
             parallel_execution=parallel,
-            timeout_seconds=timeout
+            timeout_seconds=timeout,
         )
 
         # Create quality gate manager
@@ -151,8 +151,7 @@ async def _run_quality_gates(
         if gates:
             gate_names = [name.strip() for name in gates.split(",")]
             manager.gates = {
-                name: manager.gates[name]
-                for name in gate_names if name in manager.gates
+                name: manager.gates[name] for name in gate_names if name in manager.gates
             }
 
         # Run gates
@@ -258,7 +257,7 @@ timeout_seconds = {config.timeout_seconds}
     "output_format",
     type=click.Choice(["json", "html", "markdown", "console"]),
     default="console",
-    help="Output format"
+    help="Output format",
 )
 def list_gates(output_format: str):
     """List available quality gates."""
@@ -266,37 +265,38 @@ def list_gates(output_format: str):
         {
             "name": "static_analysis",
             "description": "Static analysis using pyright and ruff",
-            "tools": ["pyright", "ruff"]
+            "tools": ["pyright", "ruff"],
         },
         {
             "name": "test_coverage",
             "description": "Test coverage validation",
-            "tools": ["pytest", "coverage"]
+            "tools": ["pytest", "coverage"],
         },
         {
             "name": "security",
             "description": "Security vulnerability scanning",
-            "tools": ["bandit", "safety"]
+            "tools": ["bandit", "safety"],
         },
         {
             "name": "performance",
             "description": "Performance metrics validation",
-            "tools": ["psutil", "custom benchmarks"]
+            "tools": ["psutil", "custom benchmarks"],
         },
         {
             "name": "documentation",
             "description": "Documentation quality checks",
-            "tools": ["pydocstyle", "custom checks"]
+            "tools": ["pydocstyle", "custom checks"],
         },
         {
             "name": "style",
             "description": "Code style validation",
-            "tools": ["ruff", "custom checks"]
-        }
+            "tools": ["ruff", "custom checks"],
+        },
     ]
 
     if output_format == "json":
         import json
+
         click.echo(json.dumps(gates_info, indent=2))
     elif output_format == "html":
         html = "<html><body><h1>Available Quality Gates</h1><ul>"

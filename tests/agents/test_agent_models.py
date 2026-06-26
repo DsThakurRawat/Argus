@@ -323,9 +323,7 @@ class TestAnalysisResult:
         )
 
         assert result.root_cause_analysis is not None
-        assert (
-            result.root_cause_analysis.primary_cause == "Unclosed database connections"
-        )
+        assert result.root_cause_analysis.primary_cause == "Unclosed database connections"
         assert result.root_cause_analysis.confidence == 0.9
 
     def test_analysis_result_confidence_validation(self) -> None:

@@ -163,9 +163,7 @@ async def test_create_pull_request_github_exception(
     # Act & Assert
     flow_id = "test-flow-003"
     issue_id = "test-issue-003"
-    with pytest.raises(
-        RuntimeError, match="Failed to create pull request due to GitHub API error"
-    ):
+    with pytest.raises(RuntimeError, match="Failed to create pull request due to GitHub API error"):
         await agent.create_pull_request(
             remediation_plan_with_code_iac, branch_name, base_branch, flow_id, issue_id
         )  # Added await

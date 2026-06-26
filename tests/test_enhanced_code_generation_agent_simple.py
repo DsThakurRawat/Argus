@@ -168,9 +168,7 @@ class TestEnhancedCodeGenerationAgent:
             def __init__(self) -> None:
                 self.learning_data = {}
 
-            def update_learning_data(
-                self, domain: str, success: str, quality_score: str
-            ) -> None:
+            def update_learning_data(self, domain: str, success: str, quality_score: str) -> None:
                 """
                 Update Learning Data.
 
@@ -198,9 +196,7 @@ class TestEnhancedCodeGenerationAgent:
                     domain_data["total_generations"] - 1
                 )
                 new_total = current_total + quality_score
-                domain_data["average_quality_score"] = (
-                    new_total / domain_data["total_generations"]
-                )
+                domain_data["average_quality_score"] = new_total / domain_data["total_generations"]
 
             def get_domain_stats(self, domain: str) -> None:
                 """
@@ -225,9 +221,7 @@ class TestEnhancedCodeGenerationAgent:
         db_stats = agent.get_domain_stats("database")
         assert db_stats["total_generations"] == 3
         assert db_stats["successful_generations"] == 2
-        assert (
-            abs(db_stats["average_quality_score"] - 7.17) < 0.01
-        )  # (8.5 + 4.0 + 9.0) / 3
+        assert abs(db_stats["average_quality_score"] - 7.17) < 0.01  # (8.5 + 4.0 + 9.0) / 3
 
         # Test another domain
         agent.update_learning_data("api", True, 7.5)
@@ -257,8 +251,7 @@ class TestEnhancedCodeGenerationAgent:
 
                 """
                 return (
-                    quality_score < self.config.human_review_threshold
-                    or critical_issues_count > 0
+                    quality_score < self.config.human_review_threshold or critical_issues_count > 0
                 )
 
         agent = MockAgent(human_review_threshold=7.0)
@@ -315,10 +308,7 @@ class TestEnhancedCodeGenerationAgent:
                     / total_generations
                 )
                 average_time = (
-                    sum(
-                        record["generation_time_ms"]
-                        for record in self.generation_history
-                    )
+                    sum(record["generation_time_ms"] for record in self.generation_history)
                     / total_generations
                 )
 

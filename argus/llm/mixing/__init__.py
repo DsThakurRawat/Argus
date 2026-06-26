@@ -33,26 +33,26 @@ from .model_mixer import (
 )
 
 __all__ = [
-    # Model mixing
-    "MixingStrategy",
-    "TaskType",
-    "ModelConfig",
-    "MixingResult",
-    "TaskDecomposition",
-    "TaskDecomposer",
-    "SimpleTaskDecomposer",
-    "ResultAggregator",
-    "SimpleResultAggregator",
-    "ModelMixer",
+    "ContextEntry",
     # Context sharing
     "ContextManager",
     "ContextPropagator",
     "FeedbackLoop",
+    # Intelligent caching
+    "IntelligentCache",
+    "MixingResult",
+    # Model mixing
+    "MixingStrategy",
+    "ModelConfig",
+    "ModelMixer",
+    "ResultAggregator",
     "SharedContext",
-    "ContextEntry",
+    "SimpleResultAggregator",
+    "SimpleTaskDecomposer",
+    "TaskDecomposer",
+    "TaskDecomposition",
+    "TaskType",
     "context_manager",
     "context_propagator",
     "feedback_loop",
-    # Intelligent caching
-    "IntelligentCache",
 ]

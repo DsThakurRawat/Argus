@@ -172,9 +172,7 @@ class CapabilityConfig:
         # Add model-specific capabilities if model is specified
         if model_name:
             model_specific = provider_data.get("model_specific", {})
-            model_caps = model_specific.get(model_name, {}).get(
-                "additional_capabilities", []
-            )
+            model_caps = model_specific.get(model_name, {}).get("additional_capabilities", [])
             capabilities.extend(model_caps)
 
         return list(set(capabilities))  # Remove duplicates
@@ -251,9 +249,7 @@ class CapabilityConfig:
             "missing_required": list(missing_required),
             "available_optional": list(available_optional),
             "missing_optional": list(missing_optional),
-            "coverage_score": (
-                len(available_optional) / len(optional) if optional else 1.0
-            ),
+            "coverage_score": (len(available_optional) / len(optional) if optional else 1.0),
         }
 
     def get_performance_thresholds(self) -> dict[str, float]:

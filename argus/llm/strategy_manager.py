@@ -69,27 +69,27 @@ from .strategy_selector import StrategyManager
 
 # Re-export everything for backward compatibility
 __all__ = [
-    # Base classes and types
-    "OptimizationGoal",
-    "StrategyContext",
-    "StrategyResult",
-    "ScoringWeights",
-    "ModelScore",
-    "ModelSelectionStrategy",
     # Strategy implementations
     "CostOptimizedStrategy",
-    "PerformanceOptimizedStrategy",
-    "QualityOptimizedStrategy",
-    "TimeBasedStrategy",
     "HybridStrategy",
+    "ModelScore",
+    "ModelSelectionStrategy",
+    # Base classes and types
+    "OptimizationGoal",
+    "PerformanceOptimizedStrategy",
+    "PerformanceSnapshot",
+    "QualityOptimizedStrategy",
+    "ScoringWeights",
+    "StrategyContext",
     # Main manager
     "StrategyManager",
     # Metrics and monitoring
     "StrategyMetrics",
-    "PerformanceSnapshot",
     "StrategyMetricsCollector",
     "StrategyPerformanceAnalyzer",
     "StrategyRecommendationEngine",
+    "StrategyResult",
+    "TimeBasedStrategy",
 ]
 
 # For backward compatibility, create a default strategy manager instance

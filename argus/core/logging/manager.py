@@ -1,4 +1,3 @@
-from typing import Any
 # argus/core/logging/manager.py
 """
 Logging manager for centralized logging configuration.
@@ -10,6 +9,7 @@ configuration, setup, and management of all logging components.
 import logging
 import logging.config
 from pathlib import Path
+from typing import Any
 
 from .config import LoggingConfig
 from .exceptions import ConfigurationError
@@ -21,7 +21,7 @@ class LoggingManager:
 
     def __init__(self, config: LoggingConfig | None = None):
         """Initialize the logging manager.
-        
+
         Args:
             config: Logging configuration. Uses default if None.
         """
@@ -39,14 +39,15 @@ class LoggingManager:
             root_logger = logging.getLogger()
             level = self.config.level
             from enum import Enum
+
             if isinstance(level, Enum):
                 level = level.name
-            
+
             if isinstance(level, str):
                 level_val = getattr(logging, level.upper(), logging.INFO)
             else:
                 level_val = level  # type: ignore
-                
+
             root_logger.setLevel(level_val)
 
             # Add handlers
@@ -59,16 +60,15 @@ class LoggingManager:
 
         except Exception as e:
             raise ConfigurationError(
-                f"Failed to configure logging: {e!s}",
-                config_key="logging_config"
+                f"Failed to configure logging: {e!s}", config_key="logging_config"
             ) from e
 
     def _create_handler(self, handler_config) -> logging.Handler | None:
         """Create a handler from configuration.
-        
+
         Args:
             handler_config: Handler configuration.
-            
+
         Returns:
             Configured handler or None if creation fails.
         """
@@ -82,7 +82,7 @@ class LoggingManager:
                         if hasattr(handler_config.format, "value")
                         else "structured"
                     ),
-                    colorize=handler_config.colorize
+                    colorize=handler_config.colorize,
                 )
 
             elif handler_config.destination == OutputDestination.FILE:
@@ -94,7 +94,7 @@ class LoggingManager:
                         else "json"
                     ),
                     max_bytes=handler_config.max_file_size_mb * 1024 * 1024,
-                    backup_count=handler_config.backup_count
+                    backup_count=handler_config.backup_count,
                 )
 
             elif handler_config.destination == OutputDestination.SYSLOG:
@@ -115,10 +115,10 @@ class LoggingManager:
 
     def get_logger(self, name: str) -> logging.Logger:
         """Get a logger by name.
-        
+
         Args:
             name: Logger name.
-            
+
         Returns:
             Logger instance.
         """
@@ -132,7 +132,7 @@ class LoggingManager:
 
     def add_handler(self, handler: logging.Handler) -> None:
         """Add a handler to all loggers.
-        
+
         Args:
             handler: Handler to add.
         """
@@ -145,7 +145,7 @@ class LoggingManager:
 
     def remove_handler(self, handler: logging.Handler) -> None:
         """Remove a handler from all loggers.
-        
+
         Args:
             handler: Handler to remove.
         """
@@ -158,11 +158,12 @@ class LoggingManager:
 
     def set_level(self, level: str | int) -> None:
         """Set the logging level for all loggers.
-        
+
         Args:
             level: Logging level.
         """
         from enum import Enum
+
         if isinstance(level, Enum):
             level = level.name
 
@@ -180,7 +181,7 @@ class LoggingManager:
 
     def get_loggers(self) -> dict[str, logging.Logger]:
         """Get all configured loggers.
-        
+
         Returns:
             Dictionary of logger names to logger instances.
         """
@@ -203,7 +204,7 @@ _logging_manager: LoggingManager | None = None
 
 def get_logging_manager() -> LoggingManager:
     """Get the global logging manager.
-    
+
     Returns:
         Global logging manager instance.
     """
@@ -215,7 +216,7 @@ def get_logging_manager() -> LoggingManager:
 
 def configure_logging(config: LoggingConfig | None = None) -> None:
     """Configure the global logging system.
-    
+
     Args:
         config: Logging configuration. Uses default if None.
     """
@@ -226,10 +227,10 @@ def configure_logging(config: LoggingConfig | None = None) -> None:
 
 def get_logger(name: str) -> logging.Logger:
     """Get a logger by name.
-    
+
     Args:
         name: Logger name.
-        
+
     Returns:
         Logger instance.
     """
@@ -239,7 +240,7 @@ def get_logger(name: str) -> logging.Logger:
 
 def set_logging_level(level: str | int) -> None:
     """Set the logging level for all loggers.
-    
+
     Args:
         level: Logging level.
     """
@@ -249,7 +250,7 @@ def set_logging_level(level: str | int) -> None:
 
 def add_logging_handler(handler: logging.Handler) -> None:
     """Add a handler to all loggers.
-    
+
     Args:
         handler: Handler to add.
     """
@@ -259,7 +260,7 @@ def add_logging_handler(handler: logging.Handler) -> None:
 
 def remove_logging_handler(handler: logging.Handler) -> None:
     """Remove a handler from all loggers.
-    
+
     Args:
         handler: Handler to remove.
     """
@@ -278,78 +279,80 @@ def shutdown_logging() -> None:
 def setup_basic_logging(
     level: str | int = logging.INFO,
     format_string: str | None = None,
-    filename: str | Path | None = None
+    filename: str | Path | None = None,
 ) -> None:
     """Set up basic logging configuration.
-    
+
     Args:
         level: Logging level.
         format_string: Log format string.
         filename: Log file path.
     """
     from enum import Enum
+
     if isinstance(level, Enum):
         level = level.name
 
-    if isinstance(level, str):
-        level_val = getattr(logging, level.upper(), logging.INFO)
-    else:
-        level_val = level  # type: ignore
+    level_val = getattr(logging, level.upper(), logging.INFO) if isinstance(level, str) else level
 
     if format_string is None:
         format_string = "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
 
     # Configure basic logging
-    logging.basicConfig(
-        level=level_val,
-        format=format_string,
-        filename=filename,
-        filemode="a"
-    )
+    logging.basicConfig(level=level_val, format=format_string, filename=filename, filemode="a")
 
 
 def setup_structured_logging(
     level: str | int = logging.INFO,
     formatter_type: str = "json",
-    filename: str | Path | None = None
+    filename: str | Path | None = None,
 ) -> None:
     """Set up structured logging configuration.
-    
+
     Args:
         level: Logging level.
         formatter_type: Type of formatter to use.
         filename: Log file path.
     """
     from enum import Enum
+
     if isinstance(level, Enum):
         level_str = level.name
     elif isinstance(level, str):
         level_str = level
     else:
         level_str = "INFO"
-        
-    from .config import LogLevel, HandlerConfig, OutputDestination, LogFormat
+
+    from .config import HandlerConfig, LogFormat, LogLevel, OutputDestination
 
     # Create configuration
     config = LoggingConfig(
-        level=LogLevel(level_str.lower()) if level_str.lower() in [e.value for e in LogLevel] else LogLevel.INFO,
+        level=LogLevel(level_str.lower())
+        if level_str.lower() in [e.value for e in LogLevel]
+        else LogLevel.INFO,
         handlers=[
             HandlerConfig(
                 name="console",
                 destination=OutputDestination.CONSOLE,
-                format=LogFormat(formatter_type) if formatter_type in [e.value for e in LogFormat] else LogFormat.JSON,
-                colorize=True
+                format=LogFormat(formatter_type)
+                if formatter_type in [e.value for e in LogFormat]
+                else LogFormat.JSON,
+                colorize=True,
             )
-        ]
+        ],
     )
 
     if filename:
-        config.handlers.append(HandlerConfig(
-            name="file",
-            destination=OutputDestination.FILE,
-            file_path=str(filename),
-            format=LogFormat(formatter_type) if formatter_type in [e.value for e in LogFormat] else LogFormat.JSON,
-        ))
+        config.handlers.append(
+            HandlerConfig(
+                name="file",
+                destination=OutputDestination.FILE,
+                file_path=str(filename),
+                format=LogFormat(formatter_type)
+                if formatter_type in [e.value for e in LogFormat]
+                else LogFormat.JSON,
+            )
+        )
 
     # Configure logging
     configure_logging(config)
@@ -358,24 +361,17 @@ def setup_structured_logging(
 def setup_development_logging() -> None:
     """Set up logging for development environment."""
     setup_structured_logging(
-        level=logging.DEBUG,
-        formatter_type="structured",
-        filename="logs/development.log"
+        level=logging.DEBUG, formatter_type="structured", filename="logs/development.log"
     )
 
 
 def setup_production_logging() -> None:
     """Set up logging for production environment."""
     setup_structured_logging(
-        level=logging.INFO,
-        formatter_type="json",
-        filename="logs/production.log"
+        level=logging.INFO, formatter_type="json", filename="logs/production.log"
     )
 
 
 def setup_test_logging() -> None:
     """Set up logging for test environment."""
-    setup_structured_logging(
-        level=logging.WARNING,
-        formatter_type="compact"
-    )
+    setup_structured_logging(level=logging.WARNING, formatter_type="compact")

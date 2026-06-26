@@ -91,9 +91,7 @@ class RetryHandler:
         # Don't retry circuit breaker exceptions
         if CircuitBreakerOpenException in retryable_exceptions:
             retryable_exceptions = tuple(
-                exc
-                for exc in retryable_exceptions
-                if exc != CircuitBreakerOpenException
+                exc for exc in retryable_exceptions if exc != CircuitBreakerOpenException
             )
 
         last_exception = None
@@ -195,9 +193,7 @@ class RetryHandler:
     def get_stats(self) -> dict:
         """Get retry handler statistics."""
         success_rate = (
-            self._total_successes / self._total_attempts * 100
-            if self._total_attempts > 0
-            else 0
+            self._total_successes / self._total_attempts * 100 if self._total_attempts > 0 else 0
         )
 
         return {

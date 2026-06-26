@@ -11,9 +11,11 @@ from unittest.mock import patch
 
 import pytest
 
-from argus.ml.enhanced_analysis_agent import (
-    EnhancedAnalysisAgent,
+from argus.ml.ml_analysis_agent import (
     EnhancedAnalysisConfig,
+)
+from argus.ml.ml_analysis_agent import (
+    MLAnalysisAgent as EnhancedAnalysisAgent,
 )
 from argus.ml.prompt_context_models import (
     IssueContext,

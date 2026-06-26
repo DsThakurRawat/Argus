@@ -22,10 +22,10 @@ class StructuredFormatter(logging.Formatter):
         fmt: str | None = None,
         datefmt: str | None = None,
         include_context: bool = True,
-        include_metadata: bool = True
+        include_metadata: bool = True,
     ):
         """Initialize the structured formatter.
-        
+
         Args:
             fmt: Log format string.
             datefmt: Date format string.
@@ -41,10 +41,10 @@ class StructuredFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record.
-        
+
         Args:
             record: Log record to format.
-            
+
         Returns:
             Formatted log message.
         """
@@ -97,7 +97,7 @@ class StructuredFormatter(logging.Formatter):
             raise FormatterError(
                 f"Failed to format log record: {e!s}",
                 formatter_name="StructuredFormatter",
-                formatter_type="structured"
+                formatter_type="structured",
             ) from e
 
 
@@ -108,10 +108,10 @@ class JSONFormatter(logging.Formatter):
         self,
         include_context: bool = True,
         include_metadata: bool = True,
-        include_exception: bool = True
+        include_exception: bool = True,
     ):
         """Initialize the JSON formatter.
-        
+
         Args:
             include_context: Whether to include logging context.
             include_metadata: Whether to include metadata.
@@ -124,10 +124,10 @@ class JSONFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record as JSON.
-        
+
         Args:
             record: Log record to format.
-            
+
         Returns:
             JSON formatted log message.
         """
@@ -150,7 +150,7 @@ class JSONFormatter(logging.Formatter):
                 log_data["exception"] = {
                     "type": record.exc_info[0].__name__ if record.exc_info[0] else None,
                     "message": str(record.exc_info[1]) if record.exc_info[1] else None,
-                    "traceback": self.formatException(record.exc_info) if record.exc_info else None
+                    "traceback": self.formatException(record.exc_info) if record.exc_info else None,
                 }
 
             # Add context information
@@ -174,7 +174,7 @@ class JSONFormatter(logging.Formatter):
             raise FormatterError(
                 f"Failed to format log record as JSON: {e!s}",
                 formatter_name="JSONFormatter",
-                formatter_type="json"
+                formatter_type="json",
             ) from e
 
 
@@ -182,13 +182,10 @@ class FlowFormatter(logging.Formatter):
     """Formatter optimized for flow tracking."""
 
     def __init__(
-        self,
-        fmt: str | None = None,
-        datefmt: str | None = None,
-        include_flow_details: bool = True
+        self, fmt: str | None = None, datefmt: str | None = None, include_flow_details: bool = True
     ):
         """Initialize the flow formatter.
-        
+
         Args:
             fmt: Log format string.
             datefmt: Date format string.
@@ -202,10 +199,10 @@ class FlowFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record for flow tracking.
-        
+
         Args:
             record: Log record to format.
-            
+
         Returns:
             Formatted log message.
         """
@@ -259,21 +256,16 @@ class FlowFormatter(logging.Formatter):
             raise FormatterError(
                 f"Failed to format log record for flow tracking: {e!s}",
                 formatter_name="FlowFormatter",
-                formatter_type="flow"
+                formatter_type="flow",
             ) from e
 
 
 class TextFormatter(logging.Formatter):
     """Simple text formatter for human-readable logs."""
 
-    def __init__(
-        self,
-        fmt: str | None = None,
-        datefmt: str | None = None,
-        colorize: bool = False
-    ):
+    def __init__(self, fmt: str | None = None, datefmt: str | None = None, colorize: bool = False):
         """Initialize the text formatter.
-        
+
         Args:
             fmt: Log format string.
             datefmt: Date format string.
@@ -287,20 +279,20 @@ class TextFormatter(logging.Formatter):
 
         # Color codes for different log levels
         self.colors = {
-            "DEBUG": "\033[36m",    # Cyan
-            "INFO": "\033[32m",     # Green
+            "DEBUG": "\033[36m",  # Cyan
+            "INFO": "\033[32m",  # Green
             "WARNING": "\033[33m",  # Yellow
-            "ERROR": "\033[31m",    # Red
-            "CRITICAL": "\033[35m", # Magenta
-            "RESET": "\033[0m"      # Reset
+            "ERROR": "\033[31m",  # Red
+            "CRITICAL": "\033[35m",  # Magenta
+            "RESET": "\033[0m",  # Reset
         }
 
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record as text.
-        
+
         Args:
             record: Log record to format.
-            
+
         Returns:
             Text formatted log message.
         """
@@ -318,8 +310,7 @@ class TextFormatter(logging.Formatter):
             if level_color:
                 # Colorize the level name
                 message = message.replace(
-                    f"[{record.levelname:8s}]",
-                    f"{level_color}[{record.levelname:8s}]{reset_color}"
+                    f"[{record.levelname:8s}]", f"{level_color}[{record.levelname:8s}]{reset_color}"
                 )
 
             return message
@@ -328,20 +319,16 @@ class TextFormatter(logging.Formatter):
             raise FormatterError(
                 f"Failed to format log record as text: {e!s}",
                 formatter_name="TextFormatter",
-                formatter_type="text"
+                formatter_type="text",
             ) from e
 
 
 class CompactFormatter(logging.Formatter):
     """Compact formatter for high-volume logging."""
 
-    def __init__(
-        self,
-        fmt: str | None = None,
-        datefmt: str | None = None
-    ):
+    def __init__(self, fmt: str | None = None, datefmt: str | None = None):
         """Initialize the compact formatter.
-        
+
         Args:
             fmt: Log format string.
             datefmt: Date format string.
@@ -353,10 +340,10 @@ class CompactFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record in compact format.
-        
+
         Args:
             record: Log record to format.
-            
+
         Returns:
             Compact formatted log message.
         """
@@ -366,20 +353,20 @@ class CompactFormatter(logging.Formatter):
             raise FormatterError(
                 f"Failed to format log record in compact format: {e!s}",
                 formatter_name="CompactFormatter",
-                formatter_type="compact"
+                formatter_type="compact",
             ) from e
 
 
 def get_formatter(formatter_type: str, **kwargs: Any) -> logging.Formatter:
     """Get a formatter by type.
-    
+
     Args:
         formatter_type: Type of formatter to get.
         **kwargs: Additional arguments for the formatter.
-        
+
     Returns:
         Configured formatter instance.
-        
+
     Raises:
         FormatterError: If formatter type is not supported.
     """
@@ -388,13 +375,12 @@ def get_formatter(formatter_type: str, **kwargs: Any) -> logging.Formatter:
         "json": JSONFormatter,
         "flow": FlowFormatter,
         "text": TextFormatter,
-        "compact": CompactFormatter
+        "compact": CompactFormatter,
     }
 
     if formatter_type not in formatters:
         raise FormatterError(
-            f"Unsupported formatter type: {formatter_type}",
-            formatter_type=formatter_type
+            f"Unsupported formatter type: {formatter_type}", formatter_type=formatter_type
         )
 
     try:
@@ -403,5 +389,5 @@ def get_formatter(formatter_type: str, **kwargs: Any) -> logging.Formatter:
         raise FormatterError(
             f"Failed to create formatter: {e!s}",
             formatter_name=formatter_type,
-            formatter_type=formatter_type
+            formatter_type=formatter_type,
         ) from e

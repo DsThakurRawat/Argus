@@ -192,9 +192,7 @@ class ValidationEngine:
                 "timeout_seconds": self.timeout_seconds,
             }
 
-    def _get_validators_to_use(
-        self, validator_names: list[str] | None
-    ) -> list[ValidationRule]:
+    def _get_validators_to_use(self, validator_names: list[str] | None) -> list[ValidationRule]:
         """Get validators to use for validation.
 
         Args:
@@ -261,9 +259,7 @@ class ValidationEngine:
             }
 
             # Collect results
-            for future in as_completed(
-                future_to_validator, timeout=self.timeout_seconds
-            ):
+            for future in as_completed(future_to_validator, timeout=self.timeout_seconds):
                 validator = future_to_validator[future]
                 try:
                     validator_result = future.result()

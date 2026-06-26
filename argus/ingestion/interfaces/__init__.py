@@ -29,24 +29,24 @@ from .resilience import (
 )
 
 __all__ = [
-    # Core interfaces
-    "LogIngestionInterface",
-    "LogEntry",
-    "LogSeverity",
-    "SourceHealth",
-    "SourceConfig",
-    "LogSourceType",
-    # Error handling
-    "LogIngestionError",
-    "SourceConnectionError",
-    "LogParsingError",
-    "ConfigurationError",
-    "SourceNotFoundError",
-    "SourceAlreadyRunningError",
-    "SourceNotRunningError",
     # Resilience patterns
     "BackpressureManager",
+    "ConfigurationError",
     "HyxResilientClient",
-    "create_resilience_config",
+    "LogEntry",
+    # Error handling
+    "LogIngestionError",
+    # Core interfaces
+    "LogIngestionInterface",
+    "LogParsingError",
+    "LogSeverity",
+    "LogSourceType",
     "ResilienceConfig",
+    "SourceAlreadyRunningError",
+    "SourceConfig",
+    "SourceConnectionError",
+    "SourceHealth",
+    "SourceNotFoundError",
+    "SourceNotRunningError",
+    "create_resilience_config",
 ]

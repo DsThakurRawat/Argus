@@ -32,7 +32,7 @@ class TestCircuitBreaker:
         assert breaker.name == "test"
         assert breaker.failure_threshold == 5
         assert breaker.recovery_timeout == 60.0
-        assert breaker.expected_exception == Exception
+        assert breaker.expected_exception is Exception
         assert breaker.state == CircuitState.CLOSED
         assert breaker._failure_count == 0
         assert breaker._last_failure_time is None
@@ -43,7 +43,7 @@ class TestCircuitBreaker:
         assert circuit_breaker.name == "test_breaker"
         assert circuit_breaker.failure_threshold == 3
         assert circuit_breaker.recovery_timeout == 1.0
-        assert circuit_breaker.expected_exception == Exception
+        assert circuit_breaker.expected_exception is Exception
         assert circuit_breaker.state == CircuitState.CLOSED
 
     @pytest.mark.asyncio
@@ -325,9 +325,7 @@ class TestCircuitBreaker:
         assert circuit_breaker._failure_count == 1
         assert circuit_breaker._state == CircuitState.CLOSED
 
-    def test_on_failure_closed_state_threshold_reached(
-        self, circuit_breaker: str
-    ) -> None:
+    def test_on_failure_closed_state_threshold_reached(self, circuit_breaker: str) -> None:
         """Test _on_failure in CLOSED state reaching threshold."""
         circuit_breaker._failure_count = 2  # One less than threshold
 

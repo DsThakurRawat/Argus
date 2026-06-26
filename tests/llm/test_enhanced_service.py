@@ -10,9 +10,7 @@ from pydantic import BaseModel
 import pytest
 
 # Mock external dependencies
-with patch.dict(
-    "sys.modules", {"mirascope": Mock(), "instructor": Mock(), "litellm": Mock()}
-):
+with patch.dict("sys.modules", {"mirascope": Mock(), "instructor": Mock(), "litellm": Mock()}):
     from argus.llm.enhanced_service import EnhancedLLMService
 
 from argus.llm.base import ModelType, ProviderType
@@ -132,9 +130,7 @@ class TestEnhancedLLMService:
         service.model_registry.register_model(test_model)
 
         # Mock the model selector
-        service.model_selector.select_model_with_fallback = Mock(
-            return_value=(test_model, Mock())
-        )
+        service.model_selector.select_model_with_fallback = Mock(return_value=(test_model, Mock()))
 
         result = await service.generate_structured(
             prompt="Test prompt", response_model=MockResponse, model_type=ModelType.FAST
@@ -166,13 +162,9 @@ class TestEnhancedLLMService:
         service.model_registry.register_model(test_model)
 
         # Mock the model selector
-        service.model_selector.select_model_with_fallback = Mock(
-            return_value=(test_model, Mock())
-        )
+        service.model_selector.select_model_with_fallback = Mock(return_value=(test_model, Mock()))
 
-        result = await service.generate_text(
-            prompt="Test prompt", model_type=ModelType.FAST
-        )
+        result = await service.generate_text(prompt="Test prompt", model_type=ModelType.FAST)
 
         assert result == "Test response"
 
@@ -330,15 +322,11 @@ class TestEnhancedLLMService:
         service.model_registry.register_model(test_model)
 
         # Mock the model selector
-        service.model_selector.select_model_with_fallback = Mock(
-            return_value=(test_model, Mock())
-        )
+        service.model_selector.select_model_with_fallback = Mock(return_value=(test_model, Mock()))
 
         custom_weights = ScoringWeights(cost=0.8, performance=0.2)
 
-        result = await service.generate_text(
-            prompt="Test prompt", custom_weights=custom_weights
-        )
+        result = await service.generate_text(prompt="Test prompt", custom_weights=custom_weights)
 
         assert result == "Test response"
 
@@ -357,20 +345,17 @@ class TestEnhancedLLMService:
         service.providers = {"openai": mock_provider}
 
         # Add test models with different costs
-        cheap_model = self.create_test_model_info(
-            "gpt-3.5-turbo", cost_per_1k_tokens=0.001
-        )
+        cheap_model = self.create_test_model_info("gpt-3.5-turbo", cost_per_1k_tokens=0.001)
         expensive_model = self.create_test_model_info("gpt-4", cost_per_1k_tokens=0.01)
         service.model_registry.register_model(cheap_model)
         service.model_registry.register_model(expensive_model)
 
         # Mock the model selector
-        service.model_selector.select_model_with_fallback = Mock(
-            return_value=(cheap_model, Mock())
-        )
+        service.model_selector.select_model_with_fallback = Mock(return_value=(cheap_model, Mock()))
 
         result = await service.generate_text(
-            prompt="Test prompt", max_cost=0.005  # Should select cheap model
+            prompt="Test prompt",
+            max_cost=0.005,  # Should select cheap model
         )
 
         assert result == "Test response"
@@ -447,9 +432,7 @@ class TestEnhancedLLMService:
         service = EnhancedLLMService(config)
 
         # Add performance data for different models
-        service.performance_monitor.record_latency(
-            "gpt-3.5-turbo", 100.0, ProviderType.OPENAI
-        )
+        service.performance_monitor.record_latency("gpt-3.5-turbo", 100.0, ProviderType.OPENAI)
         service.performance_monitor.record_latency("gpt-4", 200.0, ProviderType.OPENAI)
 
         best_models = service.get_best_models(MetricType.LATENCY, limit=2)
@@ -481,13 +464,9 @@ class TestEnhancedLLMService:
 
         # Add performance data
         service.performance_monitor.record_latency("gpt-4", 150.0, ProviderType.OPENAI)
-        service.performance_monitor.record_throughput(
-            "gpt-4", 25.0, ProviderType.OPENAI
-        )
+        service.performance_monitor.record_throughput("gpt-4", 25.0, ProviderType.OPENAI)
 
-        rankings = service.get_model_rankings(
-            [MetricType.LATENCY, MetricType.THROUGHPUT]
-        )
+        rankings = service.get_model_rankings([MetricType.LATENCY, MetricType.THROUGHPUT])
 
         assert isinstance(rankings, list)
         if rankings:
@@ -510,9 +489,7 @@ class TestEnhancedLLMService:
         service.model_registry.register_model(test_model)
 
         # Mock the model selector
-        service.model_selector.select_model_with_fallback = Mock(
-            return_value=(test_model, Mock())
-        )
+        service.model_selector.select_model_with_fallback = Mock(return_value=(test_model, Mock()))
 
         # Should raise the error
         with pytest.raises(Exception, match="Test error"):

@@ -182,9 +182,7 @@ class EnhancedBaseAgent(Generic[T]):
                 model_type=self.model_type_preference,
                 provider=provider.value if provider else None,
                 selection_strategy=SelectionStrategy(
-                    self._convert_optimization_goal(
-                        optimization_goal or self.optimization_goal
-                    )
+                    self._convert_optimization_goal(optimization_goal or self.optimization_goal)
                 ),
                 max_cost=self.max_cost,
                 min_performance=self.min_performance,
@@ -202,9 +200,7 @@ class EnhancedBaseAgent(Generic[T]):
                 )
 
             # Update conversation context
-            self._update_conversation_context(
-                prompt_name, prompt_args, selected_model, response
-            )
+            self._update_conversation_context(prompt_name, prompt_args, selected_model, response)
 
             return response
 
@@ -218,11 +214,7 @@ class EnhancedBaseAgent(Generic[T]):
                 )
 
             # Try fallback model if available and enabled
-            if (
-                use_fallback
-                and self.fallback_model
-                and selected_model != self.fallback_model
-            ):
+            if use_fallback and self.fallback_model and selected_model != self.fallback_model:
                 logger.warning(
                     f"Primary model {selected_model} failed, trying fallback {self.fallback_model}"
                 )
@@ -305,12 +297,16 @@ class EnhancedBaseAgent(Generic[T]):
 
             # Create strategy context
             strategy_context = StrategyContext(
-                task_type=self.model_type_preference.value if self.model_type_preference else "smart",
+                task_type=self.model_type_preference.value
+                if self.model_type_preference
+                else "smart",
                 max_cost=self.max_cost,
                 min_performance=self.min_performance,
                 min_quality=self.min_quality,
                 business_hours_only=self.business_hours_only,
-                provider_preference=[p.value for p in self.provider_preference] if self.provider_preference else None,
+                provider_preference=[p.value for p in self.provider_preference]
+                if self.provider_preference
+                else None,
             )
 
             # Select model using strategy manager
@@ -475,7 +471,7 @@ Focus on providing actionable, specific solutions with actual code when applicab
 
     def get_available_providers(self) -> list[ProviderType]:
         """Get list of available providers."""
-        return [ProviderType(key) for key in self.llm_service.providers.keys()]
+        return [ProviderType(key) for key in self.llm_service.providers]
 
     def update_optimization_goal(self, goal: OptimizationGoal) -> None:
         """Update the default optimization goal for model selection."""

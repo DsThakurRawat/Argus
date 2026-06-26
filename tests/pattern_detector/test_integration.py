@@ -49,8 +49,7 @@ class TestPatternDetectorIntegration:
             logs = [
                 {
                     "insertId": f"test-{i}",
-                    "timestamp": (base_time + timedelta(seconds=i * 10)).isoformat()
-                    + "Z",
+                    "timestamp": (base_time + timedelta(seconds=i * 10)).isoformat() + "Z",
                     "severity": "ERROR" if i % 2 == 0 else "INFO",
                     "textPayload": f"Test message {i}",
                     "resource": {"labels": {"service_name": f"service-{i % 2}"}},
@@ -81,9 +80,7 @@ class TestPatternDetectorIntegration:
             """
             received_windows.append(window)
 
-        manager = WindowManager(
-            fast_window_minutes=5, pattern_callback=pattern_callback
-        )
+        manager = WindowManager(fast_window_minutes=5, pattern_callback=pattern_callback)
 
         realistic_log = {
             "insertId": "1234567890abcdef",
@@ -106,7 +103,7 @@ class TestPatternDetectorIntegration:
         manager.add_log(realistic_log)
 
         assert len(manager.fast_accumulator.windows) == 1
-        window = list(manager.fast_accumulator.windows.values())[0]
+        window = next(iter(manager.fast_accumulator.windows.values()))
         assert len(window.logs) == 1
         log_entry = window.logs[0]
         assert log_entry.service_name == "billing-service"
@@ -149,9 +146,7 @@ class TestSmartThresholdsIntegration:
             if triggered:
                 triggered_results.extend(triggered)
 
-        manager = WindowManager(
-            fast_window_minutes=5, pattern_callback=pattern_callback
-        )
+        manager = WindowManager(fast_window_minutes=5, pattern_callback=pattern_callback)
 
         base_time = datetime.now(UTC)
         for i in range(8):
@@ -171,7 +166,7 @@ class TestSmartThresholdsIntegration:
 
         assert len(manager.fast_accumulator.windows) > 0
 
-        window = list(manager.fast_accumulator.windows.values())[0]
+        window = next(iter(manager.fast_accumulator.windows.values()))
         results = evaluator.evaluate_window(window)
 
         triggered = [r for r in results if r.triggered]
@@ -189,9 +184,7 @@ class TestSmartThresholdsIntegration:
         error_rates = [0.1, 0.1, 0.2, 0.4, 0.6]
 
         for i, error_rate in enumerate(error_rates):
-            window = TimeWindow(
-                start_time=base_time + timedelta(minutes=i * 5), duration_minutes=5
-            )
+            window = TimeWindow(start_time=base_time + timedelta(minutes=i * 5), duration_minutes=5)
             total_logs = 10
             error_count = int(total_logs * error_rate)
             for j in range(total_logs):
@@ -273,9 +266,7 @@ class TestPatternClassificationIntegration:
 
         completed_window = pattern_callback_results[0]
         threshold_results = threshold_evaluator.evaluate_window(completed_window)
-        patterns = pattern_classifier.classify_patterns(
-            completed_window, threshold_results
-        )
+        patterns = pattern_classifier.classify_patterns(completed_window, threshold_results)
 
         assert len(patterns) >= 1
 
@@ -286,8 +277,6 @@ class TestPatternClassificationIntegration:
 
         # At least one pattern should have meaningful priority
         prioritized_patterns = [
-            p
-            for p in patterns
-            if p.remediation_priority in ["IMMEDIATE", "HIGH", "MEDIUM"]
+            p for p in patterns if p.remediation_priority in ["IMMEDIATE", "HIGH", "MEDIUM"]
         ]
         assert len(prioritized_patterns) >= 1

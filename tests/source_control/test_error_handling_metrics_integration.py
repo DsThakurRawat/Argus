@@ -28,9 +28,7 @@ class TestErrorHandlingMetrics:
         """Create an ErrorHandlingMetrics instance for testing."""
         return ErrorHandlingMetrics(mock_metrics_collector)
 
-    def test_error_handling_metrics_initialization(
-        self, mock_metrics_collector: str
-    ) -> None:
+    def test_error_handling_metrics_initialization(self, mock_metrics_collector: str) -> None:
         """Test ErrorHandlingMetrics initialization."""
         metrics = ErrorHandlingMetrics(mock_metrics_collector)
         assert metrics.metrics_collector == mock_metrics_collector
@@ -43,9 +41,7 @@ class TestErrorHandlingMetrics:
         assert metrics.logger.name == "ErrorHandlingMetrics"
 
     @pytest.mark.asyncio
-    async def test_record_error_basic(
-        self, error_handling_metrics, mock_metrics_collector
-    ):
+    async def test_record_error_basic(self, error_handling_metrics, mock_metrics_collector):
         """Test recording a basic error."""
         await error_handling_metrics.record_error(
             error_type=ErrorType.NETWORK_ERROR,
@@ -85,9 +81,7 @@ class TestErrorHandlingMetrics:
         assert mock_metrics_collector.record_metric.call_count == 2
 
     @pytest.mark.asyncio
-    async def test_record_error_with_details(
-        self, error_handling_metrics, mock_metrics_collector
-    ):
+    async def test_record_error_with_details(self, error_handling_metrics, mock_metrics_collector):
         """Test recording an error with details."""
         error_details = {"status_code": 500, "message": "Internal server error"}
 
@@ -118,9 +112,7 @@ class TestErrorHandlingMetrics:
         assert mock_metrics_collector.record_metric.call_count == 2
 
     @pytest.mark.asyncio
-    async def test_record_retry_attempt(
-        self, error_handling_metrics, mock_metrics_collector
-    ):
+    async def test_record_retry_attempt(self, error_handling_metrics, mock_metrics_collector):
         """Test recording a retry attempt."""
         await error_handling_metrics.record_retry_attempt(
             operation_name="test_operation",
@@ -134,9 +126,7 @@ class TestErrorHandlingMetrics:
         assert mock_metrics_collector.record_metric.call_count == 2
 
     @pytest.mark.asyncio
-    async def test_record_operation_success(
-        self, error_handling_metrics, mock_metrics_collector
-    ):
+    async def test_record_operation_success(self, error_handling_metrics, mock_metrics_collector):
         """Test recording a successful operation."""
         await error_handling_metrics.record_operation_success(
             operation_name="test_operation", provider="github", duration_seconds=2.5
@@ -161,9 +151,7 @@ class TestErrorHandlingMetrics:
         assert mock_metrics_collector.record_metric.call_count == 3
 
     @pytest.mark.asyncio
-    async def test_record_operation_failure(
-        self, error_handling_metrics, mock_metrics_collector
-    ):
+    async def test_record_operation_failure(self, error_handling_metrics, mock_metrics_collector):
         """Test recording a failed operation."""
         await error_handling_metrics.record_operation_failure(
             operation_name="test_operation",
@@ -210,9 +198,7 @@ class TestErrorHandlingMetrics:
         assert mock_metrics_collector.record_metric.call_count == 4
 
     @pytest.mark.asyncio
-    async def test_record_health_check(
-        self, error_handling_metrics, mock_metrics_collector
-    ):
+    async def test_record_health_check(self, error_handling_metrics, mock_metrics_collector):
         """Test recording health check results."""
         await error_handling_metrics.record_health_check(
             provider="github", is_healthy=True, response_time_ms=150.0
@@ -251,9 +237,7 @@ class TestErrorHandlingMetrics:
     def test_get_operation_metrics(self, error_handling_metrics: str) -> None:
         """Test getting operation metrics."""
         # This method currently returns empty dict as a placeholder
-        metrics = error_handling_metrics.get_operation_metrics(
-            "test_operation", "github", 5
-        )
+        metrics = error_handling_metrics.get_operation_metrics("test_operation", "github", 5)
         assert metrics == {}
 
     @pytest.mark.asyncio
@@ -311,9 +295,7 @@ class TestErrorHandlingMetrics:
         )
 
     @pytest.mark.asyncio
-    async def test_record_operation_success_handles_exception(
-        self, error_handling_metrics
-    ):
+    async def test_record_operation_success_handles_exception(self, error_handling_metrics):
         """Test that record_operation_success handles exceptions gracefully."""
         # Create a metrics collector that raises an exception
         mock_collector = MagicMock()
@@ -327,9 +309,7 @@ class TestErrorHandlingMetrics:
         )
 
     @pytest.mark.asyncio
-    async def test_record_operation_failure_handles_exception(
-        self, error_handling_metrics
-    ):
+    async def test_record_operation_failure_handles_exception(self, error_handling_metrics):
         """Test that record_operation_failure handles exceptions gracefully."""
         # Create a metrics collector that raises an exception
         mock_collector = MagicMock()
@@ -346,9 +326,7 @@ class TestErrorHandlingMetrics:
         )
 
     @pytest.mark.asyncio
-    async def test_record_circuit_breaker_stats_handles_exception(
-        self, error_handling_metrics
-    ):
+    async def test_record_circuit_breaker_stats_handles_exception(self, error_handling_metrics):
         """Test that record_circuit_breaker_stats handles exceptions gracefully."""
         # Create a metrics collector that raises an exception
         mock_collector = MagicMock()

@@ -125,9 +125,7 @@ class LLMMetricsCollector:
         self._model_metrics: dict[str, ModelMetrics] = {}
 
         # Performance tracking
-        self._latency_samples: dict[str, deque] = defaultdict(
-            lambda: deque(maxlen=1000)
-        )
+        self._latency_samples: dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
         self._cost_samples: dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
 
         # Rate limiting tracking
@@ -135,9 +133,7 @@ class LLMMetricsCollector:
             lambda: deque(maxlen=3600)
         )  # 1 hour of seconds
 
-        logger.info(
-            f"LLMMetricsCollector initialized with {retention_hours}h retention"
-        )
+        logger.info(f"LLMMetricsCollector initialized with {retention_hours}h retention")
 
     def _get_metric_key(self, provider: str, model: str) -> str:
         """Get a unique key for provider-model combination."""
@@ -254,9 +250,7 @@ class LLMMetricsCollector:
         else:
             model_metric.failed_requests += 1
 
-        model_metric.success_rate = (
-            model_metric.successful_requests / model_metric.total_requests
-        )
+        model_metric.success_rate = model_metric.successful_requests / model_metric.total_requests
 
         # Record latency sample
         self._latency_samples[model_key].append((timestamp, duration_ms))
@@ -337,24 +331,16 @@ class LLMMetricsCollector:
 
     def get_metrics_summary(self) -> dict[str, Any]:
         """Get a summary of all metrics."""
-        total_requests = sum(
-            pm.total_requests for pm in self._provider_metrics.values()
-        )
+        total_requests = sum(pm.total_requests for pm in self._provider_metrics.values())
         total_cost = sum(pm.total_cost for pm in self._provider_metrics.values())
         total_tokens = sum(pm.total_tokens for pm in self._provider_metrics.values())
 
         # Calculate overall success rate
-        total_successful = sum(
-            pm.successful_requests for pm in self._provider_metrics.values()
-        )
-        overall_success_rate = (
-            total_successful / total_requests if total_requests > 0 else 0.0
-        )
+        total_successful = sum(pm.successful_requests for pm in self._provider_metrics.values())
+        overall_success_rate = total_successful / total_requests if total_requests > 0 else 0.0
 
         # Calculate average latency
-        total_duration = sum(
-            pm.total_duration_ms for pm in self._provider_metrics.values()
-        )
+        total_duration = sum(pm.total_duration_ms for pm in self._provider_metrics.values())
         avg_latency = total_duration / total_requests if total_requests > 0 else 0.0
 
         return {
@@ -369,17 +355,13 @@ class LLMMetricsCollector:
             "last_updated": datetime.now().isoformat(),
         }
 
-    def get_throughput_metrics(
-        self, provider: str, window_minutes: int = 5
-    ) -> dict[str, float]:
+    def get_throughput_metrics(self, provider: str, window_minutes: int = 5) -> dict[str, float]:
         """Get throughput metrics for a provider."""
         if provider not in self._request_counts:
             return {"requests_per_minute": 0.0, "requests_per_second": 0.0}
 
         cutoff_time = datetime.now() - timedelta(minutes=window_minutes)
-        recent_requests = [
-            req for req in self._request_counts[provider] if req[0] >= cutoff_time
-        ]
+        recent_requests = [req for req in self._request_counts[provider] if req[0] >= cutoff_time]
 
         requests_per_minute = len(recent_requests) / window_minutes
         requests_per_second = requests_per_minute / 60

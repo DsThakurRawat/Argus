@@ -54,10 +54,11 @@ def mock_llm_config() -> None:
 @pytest.fixture
 def mock_llm_service(mock_llm_config: str) -> None:
     """Create a mock LLM service for testing."""
-    with patch("argus.llm.service.instructor") as mock_instructor, patch(
-        "argus.llm.service.litellm"
-    ), patch("argus.llm.service.PromptManager"):
-
+    with (
+        patch("argus.llm.service.instructor") as mock_instructor,
+        patch("argus.llm.service.litellm"),
+        patch("argus.llm.service.PromptManager"),
+    ):
         mock_client = MagicMock()
         mock_instructor.patch.return_value = mock_client
 
@@ -71,10 +72,11 @@ class TestLLMService:
 
     def test_initialization(self, mock_llm_config: str) -> None:
         """Test LLMService initialization."""
-        with patch("argus.llm.service.instructor") as mock_instructor, patch(
-            "argus.llm.service.litellm"
-        ) as mock_litellm, patch("argus.llm.service.PromptManager"):
-
+        with (
+            patch("argus.llm.service.instructor") as mock_instructor,
+            patch("argus.llm.service.litellm") as mock_litellm,
+            patch("argus.llm.service.PromptManager"),
+        ):
             mock_client = MagicMock()
             mock_instructor.patch.return_value = mock_client
 
@@ -103,9 +105,7 @@ class TestLLMService:
     @pytest.mark.asyncio
     async def test_generate_text(self, mock_llm_service):
         """Test text response generation."""
-        with patch(
-            "argus.llm.service.litellm.acompletion"
-        ) as mock_completion:
+        with patch("argus.llm.service.litellm.acompletion") as mock_completion:
             # Arrange
             mock_response = MagicMock()
             mock_response.choices[0].message.content = "test response"
@@ -129,9 +129,7 @@ class TestLLMService:
         assert model == "gpt-3.5-turbo"
 
         # Test with provider
-        model = mock_llm_service._resolve_model(
-            provider="openai", model_type=ModelType.SMART
-        )
+        model = mock_llm_service._resolve_model(provider="openai", model_type=ModelType.SMART)
         assert model == "gpt-3.5-turbo"
 
     def test_resolve_model_error(self, mock_llm_service: str) -> None:
@@ -187,9 +185,7 @@ class TestLLMService:
         all_models = mock_llm_service.get_available_models()
         assert "openai" in all_models
 
-    def test_get_available_models_nonexistent_provider(
-        self, mock_llm_service: str
-    ) -> None:
+    def test_get_available_models_nonexistent_provider(self, mock_llm_service: str) -> None:
         """Test getting models for nonexistent provider."""
         models = mock_llm_service.get_available_models(provider="nonexistent")
         assert models == {}
@@ -200,10 +196,11 @@ class TestFactoryFunction:
 
     def test_create_llm_service(self, mock_llm_config: str) -> None:
         """Test the create_llm_service factory function."""
-        with patch("argus.llm.service.instructor") as mock_instructor, patch(
-            "argus.llm.service.litellm"
-        ), patch("argus.llm.service.PromptManager"):
-
+        with (
+            patch("argus.llm.service.instructor") as mock_instructor,
+            patch("argus.llm.service.litellm"),
+            patch("argus.llm.service.PromptManager"),
+        ):
             mock_client = MagicMock()
             mock_instructor.patch.return_value = mock_client
 
@@ -218,9 +215,8 @@ class TestImportErrors:
 
     def test_missing_dependencies(self) -> None:
         """Test behavior when required dependencies are missing."""
-        with patch.dict(
-            "sys.modules", {"instructor": None, "litellm": None, "mirascope": None}
-        ), pytest.raises(
-            ImportError, match="Required dependencies not installed"
+        with (
+            patch.dict("sys.modules", {"instructor": None, "litellm": None, "mirascope": None}),
+            pytest.raises(ImportError, match="Required dependencies not installed"),
         ):
             pass

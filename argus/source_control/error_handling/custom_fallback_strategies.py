@@ -31,9 +31,7 @@ class FallbackStrategyBase(ABC):
         """Check if this strategy can handle the given operation and error."""
 
     @abstractmethod
-    async def execute(
-        self, operation_type: str, original_func: Any, *args, **kwargs
-    ) -> Any:
+    async def execute(self, operation_type: str, original_func: Any, *args, **kwargs) -> Any:
         """Execute the fallback strategy."""
 
     def get_priority(self) -> int:
@@ -59,9 +57,7 @@ class CachedResponseStrategy(FallbackStrategyBase):
         cache_key = self._generate_cache_key(operation_type, context)
         return cache_key in self.cache and not self._is_cache_expired(cache_key)
 
-    async def execute(
-        self, operation_type: str, original_func: Any, *args, **kwargs
-    ) -> Any:
+    async def execute(self, operation_type: str, original_func: Any, *args, **kwargs) -> Any:
         """Return cached response."""
         context = {"args": args, "kwargs": kwargs}
         cache_key = self._generate_cache_key(operation_type, context)
@@ -90,9 +86,7 @@ class CachedResponseStrategy(FallbackStrategyBase):
         cached_time = self.cache[cache_key]["timestamp"]
         return datetime.now() - cached_time > timedelta(seconds=self.cache_ttl)
 
-    def cache_response(
-        self, operation_type: str, context: dict[str, Any], data: Any
-    ) -> None:
+    def cache_response(self, operation_type: str, context: dict[str, Any], data: Any) -> None:
         """Cache a successful response."""
         cache_key = self._generate_cache_key(operation_type, context)
         self.cache[cache_key] = {
@@ -118,9 +112,7 @@ class SimplifiedOperationStrategy(FallbackStrategyBase):
             "get_file_info",
         ]
 
-    async def execute(
-        self, operation_type: str, original_func: Any, *args, **kwargs
-    ) -> Any:
+    async def execute(self, operation_type: str, original_func: Any, *args, **kwargs) -> Any:
         """Execute simplified version of the operation."""
         self.logger.info(f"Using simplified operation for {operation_type}")
 
@@ -133,20 +125,14 @@ class SimplifiedOperationStrategy(FallbackStrategyBase):
         elif operation_type == "get_file_info":
             return await self._simplified_get_file_info(*args, **kwargs)
         else:
-            raise NotImplementedError(
-                f"Simplified operation not implemented for {operation_type}"
-            )
+            raise NotImplementedError(f"Simplified operation not implemented for {operation_type}")
 
-    async def _simplified_get_file_content(
-        self, path: str, ref: str | None = None
-    ) -> str:
+    async def _simplified_get_file_content(self, path: str, ref: str | None = None) -> str:
         """Simplified file content retrieval."""
         # Return empty string as fallback
         return ""
 
-    async def _simplified_file_exists(
-        self, path: str, ref: str | None = None
-    ) -> bool:
+    async def _simplified_file_exists(self, path: str, ref: str | None = None) -> bool:
         """Simplified file existence check."""
         # Assume file exists as fallback
         return True
@@ -158,9 +144,7 @@ class SimplifiedOperationStrategy(FallbackStrategyBase):
         # Return empty list as fallback
         return []
 
-    async def _simplified_get_file_info(
-        self, path: str, ref: str | None = None
-    ) -> FileInfo:
+    async def _simplified_get_file_info(self, path: str, ref: str | None = None) -> FileInfo:
         """Simplified file info retrieval."""
         return FileInfo(
             path=path,
@@ -188,9 +172,7 @@ class OfflineModeStrategy(FallbackStrategyBase):
             ErrorType.SERVER_ERROR,
         ]
 
-    async def execute(
-        self, operation_type: str, original_func: Any, *args, **kwargs
-    ) -> Any:
+    async def execute(self, operation_type: str, original_func: Any, *args, **kwargs) -> Any:
         """Execute in offline mode."""
         self.logger.info(f"Using offline mode for {operation_type}")
 
@@ -247,13 +229,9 @@ class ProviderSpecificStrategy(FallbackStrategyBase):
         """Check if this provider-specific strategy can handle the operation."""
         return self._has_provider_specific_fallback(operation_type, error_type)
 
-    async def execute(
-        self, operation_type: str, original_func: Any, *args, **kwargs
-    ) -> Any:
+    async def execute(self, operation_type: str, original_func: Any, *args, **kwargs) -> Any:
         """Execute provider-specific fallback."""
-        self.logger.info(
-            f"Using {self.provider_name} specific fallback for {operation_type}"
-        )
+        self.logger.info(f"Using {self.provider_name} specific fallback for {operation_type}")
 
         if self.provider_name == "github":
             return await self._github_fallback(operation_type, *args, **kwargs)
@@ -264,9 +242,7 @@ class ProviderSpecificStrategy(FallbackStrategyBase):
         else:
             return await self._generic_fallback(operation_type, *args, **kwargs)
 
-    def _has_provider_specific_fallback(
-        self, operation_type: str, error_type: ErrorType
-    ) -> bool:
+    def _has_provider_specific_fallback(self, operation_type: str, error_type: ErrorType) -> bool:
         """Check if we have a provider-specific fallback."""
         if self.provider_name == "github":
             return operation_type in ["create_pull_request", "get_file_content"]
@@ -375,9 +351,7 @@ class CustomFallbackManager:
         for strategy in applicable_strategies:
             try:
                 self.logger.info(f"Trying fallback strategy: {strategy.name}")
-                result = await strategy.execute(
-                    operation_type, original_func, *args, **kwargs
-                )
+                result = await strategy.execute(operation_type, original_func, *args, **kwargs)
                 self.logger.info(f"Fallback strategy {strategy.name} succeeded")
                 return result
             except Exception as e:
@@ -391,9 +365,7 @@ class CustomFallbackManager:
         else:
             raise RuntimeError("All fallback strategies failed")
 
-    def get_available_strategies(
-        self, operation_type: str, error_type: ErrorType
-    ) -> list[str]:
+    def get_available_strategies(self, operation_type: str, error_type: ErrorType) -> list[str]:
         """Get list of available strategies for an operation and error type."""
         strategies = []
         for strategy in self.strategies:

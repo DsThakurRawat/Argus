@@ -65,9 +65,7 @@ class LLMService(Generic[T]):
                 raise ValueError(f"Provider '{provider_name}' not available")
 
             provider_instance = self.providers[provider_name]
-            self.logger.info(
-                f"Generating structured response using provider: {provider_name}"
-            )
+            self.logger.info(f"Generating structured response using provider: {provider_name}")
 
             request = LLMRequest(
                 prompt=prompt,
@@ -97,9 +95,7 @@ class LLMService(Generic[T]):
                 raise ValueError(f"Provider '{provider_name}' not available")
 
             provider_instance = self.providers[provider_name]
-            self.logger.info(
-                f"Generating text response using provider: {provider_name}"
-            )
+            self.logger.info(f"Generating text response using provider: {provider_name}")
 
             request = LLMRequest(
                 prompt=prompt,
@@ -127,26 +123,18 @@ class LLMService(Generic[T]):
             self.logger.error(f"Health check failed for provider {provider}: {e!s}")
             return False
 
-    def get_available_models(
-        self, provider: str | None = None
-    ) -> dict[str, list[str]]:
+    def get_available_models(self, provider: str | None = None) -> dict[str, list[str]]:
         """Get available models for the specified provider or all providers."""
         if provider:
             if provider in self.providers:
                 models = self.providers[provider].get_available_models()
-                return {
-                    provider: (
-                        list(models.values()) if isinstance(models, dict) else models
-                    )
-                }
+                return {provider: (list(models.values()) if isinstance(models, dict) else models)}
             return {}
 
         result = {}
         for provider_name, provider_instance in self.providers.items():
             models = provider_instance.get_available_models()
-            result[provider_name] = (
-                list(models.values()) if isinstance(models, dict) else models
-            )
+            result[provider_name] = list(models.values()) if isinstance(models, dict) else models
         return result
 
 

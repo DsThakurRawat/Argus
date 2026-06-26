@@ -71,9 +71,7 @@ class HyxResilientClient:
 
         self._bulkhead = bulkhead(
             max_concurrency=config.bulkhead["limit"],
-            max_capacity=config.bulkhead[
-                "limit"
-            ],  # Changed from config.bulkhead['queue']
+            max_capacity=config.bulkhead["limit"],  # Changed from config.bulkhead['queue']
         )
         logger.debug(f"Bulkhead configured: {config.bulkhead}")
 
@@ -126,9 +124,7 @@ class HyxResilientClient:
         except builtins.TimeoutError:  # Catch asyncio.TimeoutError
             self._stats["failed_operations"] += 1
             self._stats["timeouts"] += 1  # Increment timeouts stat
-            logger.error(
-                f"Resilient operation timed out after {self.config.timeout} seconds."
-            )
+            logger.error(f"Resilient operation timed out after {self.config.timeout} seconds.")
             raise  # Re-raise the TimeoutError
         except Exception as e:
             self._stats["failed_operations"] += 1

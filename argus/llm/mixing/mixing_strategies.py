@@ -13,7 +13,7 @@ import asyncio
 from dataclasses import dataclass
 from enum import Enum
 import logging
-from typing import Any
+from typing import Any, ClassVar
 
 from ..base import LLMRequest, LLMResponse, ModelType
 
@@ -89,9 +89,7 @@ class ParallelStrategyExecutor(MixingStrategyExecutor):
         """Execute models in parallel."""
         tasks = []
         for config in model_configs:
-            task = self._execute_single_model(
-                config, prompt, context, provider_factory, semaphore
-            )
+            task = self._execute_single_model(config, prompt, context, provider_factory, semaphore)
             tasks.append(task)
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -224,9 +222,7 @@ class CascadeStrategyExecutor(MixingStrategyExecutor):
 
                 # Use result as input for next model (with some context)
                 if result and result.content:
-                    current_prompt = (
-                        f"Previous result: {result.content}\n\nOriginal task: {prompt}"
-                    )
+                    current_prompt = f"Previous result: {result.content}\n\nOriginal task: {prompt}"
             except Exception as e:
                 logger.error(f"Model {config.provider}:{config.model} failed: {e}")
                 results.append(None)
@@ -357,7 +353,7 @@ class HierarchicalStrategyExecutor(MixingStrategyExecutor):
 class MixingStrategyFactory:
     """Factory for creating mixing strategy executors."""
 
-    _executors = {
+    _executors: ClassVar[dict[MixingStrategy, type[MixingStrategyExecutor]]] = {
         MixingStrategy.PARALLEL: ParallelStrategyExecutor,
         MixingStrategy.SEQUENTIAL: SequentialStrategyExecutor,
         MixingStrategy.CASCADE: CascadeStrategyExecutor,
@@ -467,10 +463,7 @@ class StrategyPerformanceMonitor:
         Returns:
             Dictionary containing metrics for all strategies
         """
-        return {
-            strategy: metrics.copy()
-            for strategy, metrics in self.strategy_metrics.items()
-        }
+        return {strategy: metrics.copy() for strategy, metrics in self.strategy_metrics.items()}
 
     def get_best_strategy(self) -> MixingStrategy | None:
         """
@@ -479,10 +472,7 @@ class StrategyPerformanceMonitor:
         Returns:
             Best performing strategy or None if no data available
         """
-        if not any(
-            metrics["total_executions"] > 0
-            for metrics in self.strategy_metrics.values()
-        ):
+        if not any(metrics["total_executions"] > 0 for metrics in self.strategy_metrics.values()):
             return None
 
         # Score strategies based on success rate and inverse execution time

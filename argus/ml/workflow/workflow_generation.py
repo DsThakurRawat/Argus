@@ -12,11 +12,12 @@ import logging
 import time
 from typing import Any
 
+from argus.agents.enhanced_specialized import EnhancedRemediationAgentV2
+
 from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
 from ...llm.base import ModelType
 from ...llm.config import LLMConfig
-from argus.agents.enhanced_specialized import EnhancedRemediationAgentV2
 from ..prompt_context_models import IssueContext, RepositoryContext
 
 logger = logging.getLogger(__name__)
@@ -134,9 +135,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
         generation_id = f"code_gen_{workflow_id}_{int(time.time())}"
 
         try:
-            logger.info(
-                f"Starting {generation_type} code generation for workflow {workflow_id}"
-            )
+            logger.info(f"Starting {generation_type} code generation for workflow {workflow_id}")
 
             # Create triage data from issue context
             triage_data = {
@@ -158,7 +157,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
             }
 
             # Perform code generation using the enhanced remediation agent
-            remediation_response = await self.remediation_agent.generate_remediation( # type: ignore
+            remediation_response = await self.remediation_agent.generate_remediation(  # type: ignore
                 triage_data=triage_data,
                 historical_logs=historical_logs,
                 configs=configs,
@@ -194,9 +193,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
             self.total_generation_time += generation_duration
             self.successful_generations += 1
 
-            logger.info(
-                f"Completed code generation {generation_id} in {generation_duration:.3f}s"
-            )
+            logger.info(f"Completed code generation {generation_id} in {generation_duration:.3f}s")
             return result
 
         except Exception as e:
@@ -246,9 +243,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
         generation_id = f"prompt_gen_{workflow_id}_{int(time.time())}"
 
         try:
-            logger.info(
-                f"Starting {prompt_type} prompt generation for workflow {workflow_id}"
-            )
+            logger.info(f"Starting {prompt_type} prompt generation for workflow {workflow_id}")
 
             # Create triage data from context
             triage_data = {
@@ -264,7 +259,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
             configs = {}
 
             # Perform prompt generation using the enhanced remediation agent
-            remediation_response = await self.remediation_agent.generate_remediation( # type: ignore
+            remediation_response = await self.remediation_agent.generate_remediation(  # type: ignore
                 triage_data=triage_data,
                 historical_logs=historical_logs,
                 configs=configs,
@@ -441,10 +436,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
                 return remediation_response.content
             elif hasattr(remediation_response, "description"):
                 return remediation_response.description
-            elif (
-                isinstance(remediation_response, dict)
-                and "content" in remediation_response
-            ):
+            elif isinstance(remediation_response, dict) and "content" in remediation_response:
                 return remediation_response["content"]
             else:
                 return str(remediation_response)
@@ -467,10 +459,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
                 return remediation_response.code_patches
             elif hasattr(remediation_response, "patches"):
                 return remediation_response.patches
-            elif (
-                isinstance(remediation_response, dict)
-                and "code_patches" in remediation_response
-            ):
+            elif isinstance(remediation_response, dict) and "code_patches" in remediation_response:
                 return remediation_response["code_patches"]
             else:
                 return []
@@ -493,10 +482,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
                 return remediation_response.prompts
             elif hasattr(remediation_response, "suggested_prompts"):
                 return remediation_response.suggested_prompts
-            elif (
-                isinstance(remediation_response, dict)
-                and "prompts" in remediation_response
-            ):
+            elif isinstance(remediation_response, dict) and "prompts" in remediation_response:
                 return remediation_response["prompts"]
             else:
                 return []
@@ -519,10 +505,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
                 return remediation_response.solutions
             elif hasattr(remediation_response, "recommended_solutions"):
                 return remediation_response.recommended_solutions
-            elif (
-                isinstance(remediation_response, dict)
-                and "solutions" in remediation_response
-            ):
+            elif isinstance(remediation_response, dict) and "solutions" in remediation_response:
                 return remediation_response["solutions"]
             else:
                 return []
@@ -545,10 +528,7 @@ class WorkflowGenerationEngine(ProcessableComponent[dict[str, Any], GenerationRe
                 return float(remediation_response.confidence)
             elif hasattr(remediation_response, "confidence_score"):
                 return float(remediation_response.confidence_score)
-            elif (
-                isinstance(remediation_response, dict)
-                and "confidence" in remediation_response
-            ):
+            elif isinstance(remediation_response, dict) and "confidence" in remediation_response:
                 return float(remediation_response["confidence"])
             else:
                 return 0.5  # Default confidence

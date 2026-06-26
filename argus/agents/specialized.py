@@ -8,7 +8,6 @@ and are tailored for specific types of tasks like text generation, analysis,
 and code generation.
 """
 
-
 from ..llm.service import LLMService
 from .base import BaseAgent
 from .response_models import AnalysisResult, CodeResponse, TextResponse
@@ -53,9 +52,7 @@ class AnalysisAgent(BaseAgent[AnalysisResult]):
             fallback_model=fallback_model,
         )
 
-    async def analyze(
-        self, content: str, criteria: list[str], **kwargs
-    ) -> AnalysisResult:
+    async def analyze(self, content: str, criteria: list[str], **kwargs) -> AnalysisResult:
         """Analyze content based on provided criteria."""
         return await self.execute(
             prompt_name="analyze_content",
@@ -79,9 +76,7 @@ class CodeAgent(BaseAgent[CodeResponse]):
             fallback_model=fallback_model,
         )
 
-    async def generate_code(
-        self, description: str, language: str, **kwargs
-    ) -> CodeResponse:
+    async def generate_code(self, description: str, language: str, **kwargs) -> CodeResponse:
         """Generate code based on description and language."""
         return await self.execute(
             prompt_name="generate_code",

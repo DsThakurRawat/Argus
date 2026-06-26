@@ -16,9 +16,7 @@ class ConfigDevUtils:
     """Development utilities for configuration."""
 
     @staticmethod
-    def generate_config_template(
-        config_class: type, environment: str = "production"
-    ) -> str:
+    def generate_config_template(config_class: type, environment: str = "production") -> str:
         """Generate configuration template from Pydantic model."""
         template = f"""# Gemini SRE Agent Configuration Template
 # Generated for environment: {environment}
@@ -185,9 +183,7 @@ monitoring:
                 new_config["ml"] = {
                     "models": {
                         "triage": {
-                            "name": model_selection.get(
-                                "triage_model", "gemini-1.5-flash-001"
-                            ),
+                            "name": model_selection.get("triage_model", "gemini-1.5-flash-001"),
                             "max_tokens": 4096,
                             "temperature": 0.3,
                             "timeout_seconds": 15,
@@ -195,9 +191,7 @@ monitoring:
                             "cost_per_1k_tokens": 0.0,
                         },
                         "analysis": {
-                            "name": model_selection.get(
-                                "analysis_model", "gemini-1.5-pro-001"
-                            ),
+                            "name": model_selection.get("analysis_model", "gemini-1.5-pro-001"),
                             "max_tokens": 8192,
                             "temperature": 0.7,
                             "timeout_seconds": 30,
@@ -243,9 +237,7 @@ monitoring:
                 logging_config = old_monitor_config["logging"]
                 new_config["logging"] = {
                     "level": logging_config.get("log_level", "INFO"),
-                    "format": (
-                        "json" if logging_config.get("json_format", False) else "text"
-                    ),
+                    "format": ("json" if logging_config.get("json_format", False) else "text"),
                     "file": logging_config.get("log_file"),
                     "max_size_mb": 100,
                     "backup_count": 5,
@@ -293,9 +285,7 @@ monitoring:
     ) -> str:
         """Compare two configurations and return differences."""
 
-        def find_differences(
-            d1: dict[str, Any], d2: dict[str, Any], path: str = ""
-        ) -> list[str]:
+        def find_differences(d1: dict[str, Any], d2: dict[str, Any], path: str = "") -> list[str]:
             """Find differences between two dictionaries."""
             differences = []
 
@@ -311,9 +301,7 @@ monitoring:
                 elif isinstance(d1[key], dict) and isinstance(d2[key], dict):
                     differences.extend(find_differences(d1[key], d2[key], current_path))
                 elif d1[key] != d2[key]:
-                    differences.append(
-                        f"~ {current_path}: {d1[key]} → {d2[key]} (changed)"
-                    )
+                    differences.append(f"~ {current_path}: {d1[key]} → {d2[key]} (changed)")
 
             return differences
 

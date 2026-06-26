@@ -1,6 +1,5 @@
 """Core module tests."""
 
-
 from argus.core.exceptions import *
 from argus.core.interfaces import *
 from argus.core.types import *

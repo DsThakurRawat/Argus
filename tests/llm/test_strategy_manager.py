@@ -128,9 +128,7 @@ class TestStrategyManager:
         assert OptimizationGoal.TIME_BASED in strategy_manager._strategies
         assert OptimizationGoal.HYBRID in strategy_manager._strategies
 
-    def test_select_model_cost_optimized(
-        self, strategy_manager, mock_model_info, strategy_context
-    ):
+    def test_select_model_cost_optimized(self, strategy_manager, mock_model_info, strategy_context):
         """Test cost-optimized model selection."""
         result = strategy_manager.select_model(
             mock_model_info, OptimizationGoal.COST, strategy_context
@@ -207,9 +205,7 @@ class TestStrategyManager:
         assert result.metadata["is_business_hours"] is False
         assert "off hours" in result.reasoning
 
-    def test_select_model_hybrid(
-        self, strategy_manager, mock_model_info, strategy_context
-    ):
+    def test_select_model_hybrid(self, strategy_manager, mock_model_info, strategy_context):
         """Test hybrid model selection."""
         result = strategy_manager.select_model(
             mock_model_info, OptimizationGoal.HYBRID, strategy_context
@@ -237,9 +233,7 @@ class TestStrategyManager:
             ),
         )
 
-        result = strategy_manager.select_model(
-            mock_model_info, OptimizationGoal.HYBRID, context
-        )
+        result = strategy_manager.select_model(mock_model_info, OptimizationGoal.HYBRID, context)
 
         assert isinstance(result, StrategyResult)
         assert result.metadata["weights_used"]["cost"] == 0.5
@@ -319,14 +313,10 @@ class TestStrategyManager:
         stats = strategy_manager.get_usage_statistics()
         assert stats[OptimizationGoal.COST.value] == 0
 
-    def test_unknown_optimization_goal(
-        self, strategy_manager, mock_model_info, strategy_context
-    ):
+    def test_unknown_optimization_goal(self, strategy_manager, mock_model_info, strategy_context):
         """Test handling of unknown optimization goal."""
         with pytest.raises(ValueError, match="Unknown optimization goal"):
-            strategy_manager.select_model(
-                mock_model_info, "unknown_goal", strategy_context
-            )
+            strategy_manager.select_model(mock_model_info, "unknown_goal", strategy_context)
 
     def test_no_candidates_meet_constraints(
         self, strategy_manager: str, strategy_context: str
@@ -340,9 +330,7 @@ class TestStrategyManager:
         expensive_model.capabilities = []
         expensive_model.provider = ProviderType.GEMINI
 
-        with pytest.raises(
-            ValueError, match="No models meet the specified constraints"
-        ):
+        with pytest.raises(ValueError, match="No models meet the specified constraints"):
             strategy_manager.select_model(
                 [expensive_model], OptimizationGoal.COST, strategy_context
             )
@@ -445,9 +433,7 @@ class TestTimeBasedStrategy:
         assert strategy.model_scorer == mock_model_scorer
 
     @patch("argus.llm.strategy_manager.datetime")
-    def test_is_business_hours(
-        self, mock_datetime: str, mock_model_scorer: str
-    ) -> None:
+    def test_is_business_hours(self, mock_datetime: str, mock_model_scorer: str) -> None:
         """Test business hours detection."""
         strategy = TimeBasedStrategy(mock_model_scorer)
 

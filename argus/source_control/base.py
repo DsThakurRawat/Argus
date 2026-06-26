@@ -125,16 +125,12 @@ class SourceControlProvider(ABC):
 
     # Conflict resolution
     @abstractmethod
-    async def check_conflicts(
-        self, path: str, content: str, branch: str | None = None
-    ) -> bool:
+    async def check_conflicts(self, path: str, content: str, branch: str | None = None) -> bool:
         """Check if applying content to a file would cause conflicts."""
         pass
 
     @abstractmethod
-    async def resolve_conflicts(
-        self, path: str, content: str, strategy: str = "manual"
-    ) -> bool:
+    async def resolve_conflicts(self, path: str, content: str, strategy: str = "manual") -> bool:
         """Attempt to resolve conflicts for a file."""
         pass
 
@@ -145,9 +141,7 @@ class SourceControlProvider(ABC):
 
     # Batch operations
     @abstractmethod
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute multiple operations as a batch."""
         pass
 

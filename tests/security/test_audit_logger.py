@@ -60,9 +60,7 @@ class TestAuditLogger:
     @pytest.mark.asyncio
     async def test_log_event(self, audit_logger):
         """Test logging an audit event."""
-        with patch.object(
-            audit_logger, "_write_event", new_callable=MagicMock
-        ) as mock_write:
+        with patch.object(audit_logger, "_write_event", new_callable=MagicMock) as mock_write:
             event_id = await audit_logger.log_event(
                 event_type=AuditEventType.PROVIDER_REQUEST,
                 user_id="user123",
@@ -87,9 +85,7 @@ class TestAuditLogger:
     @pytest.mark.asyncio
     async def test_log_provider_request(self, audit_logger):
         """Test logging a provider request."""
-        with patch.object(
-            audit_logger, "log_event", new_callable=MagicMock
-        ) as mock_log:
+        with patch.object(audit_logger, "log_event", new_callable=MagicMock) as mock_log:
             await audit_logger.log_provider_request(
                 provider="gemini",
                 model="gemini-pro",
@@ -113,9 +109,7 @@ class TestAuditLogger:
     @pytest.mark.asyncio
     async def test_log_provider_response(self, audit_logger):
         """Test logging a provider response."""
-        with patch.object(
-            audit_logger, "log_event", new_callable=MagicMock
-        ) as mock_log:
+        with patch.object(audit_logger, "log_event", new_callable=MagicMock) as mock_log:
             await audit_logger.log_provider_response(
                 provider="gemini",
                 model="gemini-pro",
@@ -140,9 +134,7 @@ class TestAuditLogger:
     @pytest.mark.asyncio
     async def test_log_config_change(self, audit_logger):
         """Test logging a configuration change."""
-        with patch.object(
-            audit_logger, "log_event", new_callable=MagicMock
-        ) as mock_log:
+        with patch.object(audit_logger, "log_event", new_callable=MagicMock) as mock_log:
             await audit_logger.log_config_change(
                 change_type="model_update",
                 old_value="gemini-pro",
@@ -171,9 +163,7 @@ class TestAuditLogger:
     @pytest.mark.asyncio
     async def test_log_key_rotation(self, audit_logger):
         """Test logging a key rotation event."""
-        with patch.object(
-            audit_logger, "log_event", new_callable=MagicMock
-        ) as mock_log:
+        with patch.object(audit_logger, "log_event", new_callable=MagicMock) as mock_log:
             await audit_logger.log_key_rotation(
                 provider="gemini",
                 key_id="key-123",
@@ -200,9 +190,7 @@ class TestAuditLogger:
     @pytest.mark.asyncio
     async def test_log_access_attempt_granted(self, audit_logger):
         """Test logging a granted access attempt."""
-        with patch.object(
-            audit_logger, "log_event", new_callable=MagicMock
-        ) as mock_log:
+        with patch.object(audit_logger, "log_event", new_callable=MagicMock) as mock_log:
             await audit_logger.log_access_attempt(
                 resource="config",
                 action="read",
@@ -231,9 +219,7 @@ class TestAuditLogger:
     @pytest.mark.asyncio
     async def test_log_access_attempt_denied(self, audit_logger):
         """Test logging a denied access attempt."""
-        with patch.object(
-            audit_logger, "log_event", new_callable=MagicMock
-        ) as mock_log:
+        with patch.object(audit_logger, "log_event", new_callable=MagicMock) as mock_log:
             await audit_logger.log_access_attempt(
                 resource="config",
                 action="write",
@@ -287,13 +273,9 @@ class TestAuditLogger:
         assert len(all_events) == 3
 
         # Filter by event type
-        request_events = audit_logger.get_recent_events(
-            event_type=AuditEventType.PROVIDER_REQUEST
-        )
+        request_events = audit_logger.get_recent_events(event_type=AuditEventType.PROVIDER_REQUEST)
         assert len(request_events) == 2
-        assert all(
-            e.event_type == AuditEventType.PROVIDER_REQUEST for e in request_events
-        )
+        assert all(e.event_type == AuditEventType.PROVIDER_REQUEST for e in request_events)
 
         # Filter by provider
         gemini_events = audit_logger.get_recent_events(provider="gemini")
@@ -439,9 +421,7 @@ class TestAuditLogger:
             event_type=AuditEventType.PROVIDER_REQUEST,
         )
 
-        with patch.object(
-            audit_logger.logger, "info", side_effect=Exception("Test error")
-        ):
+        with patch.object(audit_logger.logger, "info", side_effect=Exception("Test error")):
             # Should not raise an exception
             await audit_logger._write_event(event)
 

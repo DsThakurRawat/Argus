@@ -32,9 +32,7 @@ class MockProvider(LLMProvider):
     async def generate(self, request: LLMRequest) -> LLMResponse:
         if self.mock_responses:
             return self.mock_responses.pop(0)
-        return LLMResponse(
-            content="Mock response", provider=self.provider_name, model="mock-model"
-        )
+        return LLMResponse(content="Mock response", provider=self.provider_name, model="mock-model")
 
     async def generate_stream(self, request: LLMRequest):
         for response in self.mock_stream_responses:
@@ -161,9 +159,7 @@ class TestLLMProviderError:
 
     def test_error_with_severity(self) -> None:
         """Test error with custom severity."""
-        error = LLMProviderError(
-            "Critical error", severity=ErrorSeverity.CRITICAL, retry_after=60
-        )
+        error = LLMProviderError("Critical error", severity=ErrorSeverity.CRITICAL, retry_after=60)
 
         assert error.severity == ErrorSeverity.CRITICAL
         assert error.retry_after == 60

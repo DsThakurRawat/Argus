@@ -44,9 +44,7 @@ class ErrorHandlingConfigValidator:
 
         return issues
 
-    def _validate_circuit_breaker_config(
-        self, config: ErrorHandlingConfig
-    ) -> list[str]:
+    def _validate_circuit_breaker_config(self, config: ErrorHandlingConfig) -> list[str]:
         """Validate circuit breaker configuration."""
         issues = []
 
@@ -62,18 +60,14 @@ class ErrorHandlingConfigValidator:
             ("default", cb_config.default),
         ]:
             if cb.failure_threshold <= 0:
-                issues.append(
-                    f"Circuit breaker failure_threshold for {operation} must be positive"
-                )
+                issues.append(f"Circuit breaker failure_threshold for {operation} must be positive")
             if cb.failure_threshold > 100:
                 issues.append(
                     f"Circuit breaker failure_threshold for {operation} is too high (>100)"
                 )
 
             if cb.success_threshold <= 0:
-                issues.append(
-                    f"Circuit breaker success_threshold for {operation} must be positive"
-                )
+                issues.append(f"Circuit breaker success_threshold for {operation} must be positive")
             if cb.success_threshold > cb.failure_threshold:
                 issues.append(
                     f"Circuit breaker success_threshold for {operation} should not "
@@ -81,22 +75,16 @@ class ErrorHandlingConfigValidator:
                 )
 
             if cb.recovery_timeout <= 0:
-                issues.append(
-                    f"Circuit breaker recovery_timeout for {operation} must be positive"
-                )
+                issues.append(f"Circuit breaker recovery_timeout for {operation} must be positive")
             if cb.recovery_timeout > 3600:  # 1 hour
                 issues.append(
                     f"Circuit breaker recovery_timeout for {operation} is too high (>1 hour)"
                 )
 
             if cb.timeout <= 0:
-                issues.append(
-                    f"Circuit breaker timeout for {operation} must be positive"
-                )
+                issues.append(f"Circuit breaker timeout for {operation} must be positive")
             if cb.timeout > 300:  # 5 minutes
-                issues.append(
-                    f"Circuit breaker timeout for {operation} is too high (>5 minutes)"
-                )
+                issues.append(f"Circuit breaker timeout for {operation} is too high (>5 minutes)")
 
         return issues
 
@@ -118,10 +106,7 @@ class ErrorHandlingConfigValidator:
 
         if retry_config.max_delay <= 0:
             issues.append("Retry max_delay must be positive")
-        if (
-            retry_config.base_delay > 0
-            and retry_config.max_delay < retry_config.base_delay
-        ):
+        if retry_config.base_delay > 0 and retry_config.max_delay < retry_config.base_delay:
             issues.append("Retry max_delay must be >= base_delay")
 
         if retry_config.backoff_factor <= 1.0:
@@ -131,9 +116,7 @@ class ErrorHandlingConfigValidator:
 
         return issues
 
-    def _validate_graceful_degradation_config(
-        self, config: ErrorHandlingConfig
-    ) -> list[str]:
+    def _validate_graceful_degradation_config(self, config: ErrorHandlingConfig) -> list[str]:
         """Validate graceful degradation configuration."""
         issues = []
 
@@ -150,9 +133,7 @@ class ErrorHandlingConfigValidator:
             issues.append("Graceful degradation cache_ttl is too high (>24 hours)")
 
         if gd_config.simplified_operation_timeout <= 0:
-            issues.append(
-                "Graceful degradation simplified_operation_timeout must be positive"
-            )
+            issues.append("Graceful degradation simplified_operation_timeout must be positive")
         if gd_config.simplified_operation_timeout > 300:  # 5 minutes
             issues.append(
                 "Graceful degradation simplified_operation_timeout is too high (>5 minutes)"
@@ -184,9 +165,7 @@ class ErrorHandlingConfigValidator:
         if hc_config.success_threshold <= 0:
             issues.append("Health check success_threshold must be positive")
         if hc_config.success_threshold > hc_config.failure_threshold:
-            issues.append(
-                "Health check success_threshold should not exceed failure_threshold"
-            )
+            issues.append("Health check success_threshold should not exceed failure_threshold")
 
         return issues
 
@@ -237,11 +216,9 @@ class ErrorHandlingConfigValidator:
             if provider not in valid_providers:
                 issues.append(f"Invalid provider in overrides: {provider}")
 
-            for key in overrides.keys():
+            for key in overrides:
                 if key not in valid_override_keys:
-                    issues.append(
-                        f"Invalid override key '{key}' for provider '{provider}'"
-                    )
+                    issues.append(f"Invalid override key '{key}' for provider '{provider}'")
 
             # Validate disabled_operations if present
             if "disabled_operations" in overrides:
@@ -265,9 +242,7 @@ class ErrorHandlingConfigValidator:
 
         return issues
 
-    def validate_provider_config(
-        self, provider_name: str, config: dict[str, Any]
-    ) -> list[str]:
+    def validate_provider_config(self, provider_name: str, config: dict[str, Any]) -> list[str]:
         """Validate a specific provider's error handling configuration."""
         issues = []
 
@@ -282,15 +257,11 @@ class ErrorHandlingConfigValidator:
         ]
         for field in required_fields:
             if field not in config:
-                issues.append(
-                    f"Missing required field '{field}' in {provider_name} configuration"
-                )
+                issues.append(f"Missing required field '{field}' in {provider_name} configuration")
 
         # Validate enabled field
         if "enabled" in config and not isinstance(config["enabled"], bool):
-            issues.append(
-                f"enabled field in {provider_name} configuration must be boolean"
-            )
+            issues.append(f"enabled field in {provider_name} configuration must be boolean")
 
         # Validate circuit breaker configuration
         if "circuit_breaker" in config:
@@ -310,9 +281,7 @@ class ErrorHandlingConfigValidator:
 
         return issues
 
-    def get_configuration_recommendations(
-        self, config: ErrorHandlingConfig
-    ) -> list[str]:
+    def get_configuration_recommendations(self, config: ErrorHandlingConfig) -> list[str]:
         """Get recommendations for improving the configuration."""
         recommendations = []
 
@@ -329,20 +298,14 @@ class ErrorHandlingConfigValidator:
 
         # Retry recommendations
         if config.retry.max_retries > 10:
-            recommendations.append(
-                "Consider reducing max_retries to avoid excessive delays"
-            )
+            recommendations.append("Consider reducing max_retries to avoid excessive delays")
 
         if config.retry.max_delay > 120:
-            recommendations.append(
-                "Consider reducing max_delay to avoid long wait times"
-            )
+            recommendations.append("Consider reducing max_delay to avoid long wait times")
 
         # Health check recommendations
         if config.health_checks.check_interval < 10:
-            recommendations.append(
-                "Consider increasing health check interval to reduce overhead"
-            )
+            recommendations.append("Consider increasing health check interval to reduce overhead")
 
         if config.health_checks.timeout > 30:
             recommendations.append(
@@ -356,8 +319,6 @@ class ErrorHandlingConfigValidator:
             )
 
         if config.metrics.max_series > 10000:
-            recommendations.append(
-                "Consider reducing max_series to avoid memory issues"
-            )
+            recommendations.append("Consider reducing max_series to avoid memory issues")
 
         return recommendations
