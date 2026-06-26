@@ -19,7 +19,7 @@ from argus.agents.enhanced_specialized import (
     EnhancedTriageAgent,
 )
 from argus.agents.response_models import (
-    AnalysisResponse,
+    AnalysisResult,
     CodeResponse,
     TextResponse,
 )
@@ -336,7 +336,7 @@ class TestEnhancedSpecializedAgents:
 
         mock_init.assert_called_once()
         call_args = mock_init.call_args
-        assert call_args[1]["response_model"] == AnalysisResponse
+        assert call_args[1]["response_model"] == AnalysisResult
         assert call_args[1]["optimization_goal"] == OptimizationGoal.QUALITY
 
     @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
@@ -366,7 +366,7 @@ class TestEnhancedSpecializedAgents:
 
         mock_init.assert_called_once()
         call_args = mock_init.call_args
-        assert call_args[1]["response_model"] == AnalysisResponse
+        assert call_args[1]["response_model"] == AnalysisResult
         assert call_args[1]["optimization_goal"] == OptimizationGoal.PERFORMANCE
 
     @patch("argus.agents.enhanced_specialized.EnhancedBaseAgent.__init__")
@@ -381,7 +381,7 @@ class TestEnhancedSpecializedAgents:
 
         mock_init.assert_called_once()
         call_args = mock_init.call_args
-        assert call_args[1]["response_model"] == AnalysisResponse
+        assert call_args[1]["response_model"] == AnalysisResult
         assert call_args[1]["optimization_goal"] == OptimizationGoal.QUALITY
 
 

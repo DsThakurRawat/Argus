@@ -160,13 +160,21 @@ def run(
     async def _run_daemon():
         console.print("[dim]Initializing LLM agents and caches...[/dim]")
 
-        # We pass provider to run_pipeline.
-        # run_pipeline will start the log manager and process logs.
-        # Since we don't have a real log source passed from CLI yet (it defaults to mock),
-        # run_pipeline can just run the initialization and process one mock log,
-        # or we can pass a mock_packet to the Notifier directly.
+        # No real log source is wired in from the CLI yet, so drive one mock log
+        # entry through the pipeline to produce a triage packet we can notify on.
+        from datetime import UTC, datetime
 
-        mock_packet = await run_pipeline(provider_override=provider)
+        from argus.ingestion.interfaces.core import LogEntry, LogSeverity
+
+        mock_entry = LogEntry(
+            id="cli-run-mock",
+            timestamp=datetime.now(UTC),
+            message="argus run: simulated ERROR log entry for triage and notification.",
+            severity=LogSeverity.ERROR,
+            source="cli",
+        )
+
+        mock_packet = await run_pipeline(provider_override=provider, mock_log_entry=mock_entry)
 
         if bot_tokens and mock_packet:
             console.print("[dim]Sending notifications...[/dim]")

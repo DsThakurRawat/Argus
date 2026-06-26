@@ -28,6 +28,7 @@ from argus.ingestion.adapters.file_system import FileSystemAdapter
 from argus.ingestion.interfaces.core import LogEntry, LogSeverity
 from argus.ingestion.manager.log_manager import LogManager
 from argus.llm.capabilities.discovery import CapabilityDiscovery
+from argus.llm.common.enums import ProviderType
 from argus.llm.config_manager import ConfigManager
 from argus.llm.factory import LLMProviderFactory
 from argus.llm.monitoring.llm_metrics import get_llm_metrics_collector
@@ -74,7 +75,10 @@ def get_feature_flags() -> dict:
 
 
 async def initialize_enhanced_agents(
-    llm_config, feature_flags: dict[str, bool], logger
+    llm_config,
+    feature_flags: dict[str, bool],
+    logger,
+    provider_preference: list[ProviderType] | None = None,
 ) -> dict[str, Any]:
     """Initialize enhanced agents with full multi-provider support."""
 
@@ -122,6 +126,7 @@ async def initialize_enhanced_agents(
         triage_agent = EnhancedTriageAgent(
             llm_config=llm_config,
             optimization_goal=triage_optimization,
+            provider_preference=provider_preference,
             min_performance=None,
             max_cost=None,
             collect_stats=True,
@@ -130,6 +135,7 @@ async def initialize_enhanced_agents(
         analysis_agent = EnhancedAnalysisAgent(
             llm_config=llm_config,
             optimization_goal=analysis_optimization,
+            provider_preference=provider_preference,
             min_quality=None,
             max_cost=None,
             collect_stats=True,
@@ -138,6 +144,7 @@ async def initialize_enhanced_agents(
         remediation_agent = EnhancedRemediationAgentV2(
             llm_config=llm_config,
             optimization_goal=remediation_optimization,
+            provider_preference=provider_preference,
             min_quality=None,
             max_cost=None,
             collect_stats=True,
@@ -385,8 +392,19 @@ async def run_pipeline(
         f"[STARTUP] Discovered capabilities for {len(capability_discovery.model_capabilities)} models."
     )
 
+    # Honor a CLI/programmatic provider override by constraining model selection
+    # to that provider (the strategy manager filters candidate models by provider).
+    provider_preference: list[ProviderType] | None = None
+    if provider_override:
+        try:
+            provider_preference = [ProviderType(provider_override.lower())]
+        except ValueError:
+            logger.warning(f"[STARTUP] Unknown provider override '{provider_override}'; ignoring.")
+
     # Initialize enhanced agents
-    agents = await initialize_enhanced_agents(llm_config, feature_flags, logger)
+    agents = await initialize_enhanced_agents(
+        llm_config, feature_flags, logger, provider_preference
+    )
 
     # Initialize patch manager
     patch_dir = tempfile.mkdtemp(prefix="enhanced_patches-")
