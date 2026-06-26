@@ -160,9 +160,7 @@ class TestRepositoryContextCache:
         }
 
     @pytest.mark.asyncio
-    async def test_set_and_get_repository_context(
-        self, repo_cache, sample_repo_context
-    ):
+    async def test_set_and_get_repository_context(self, repo_cache, sample_repo_context):
         """Test setting and getting repository context."""
         # Set context
         await repo_cache.set_repository_context(
@@ -233,13 +231,9 @@ class TestRepositoryContextCache:
     async def test_repository_summary(self, repo_cache, sample_repo_context):
         """Test repository summary generation."""
         # Set multiple contexts
-        await repo_cache.set_repository_context(
-            "/path/to/repo", "shallow", {"depth": "shallow"}
-        )
+        await repo_cache.set_repository_context("/path/to/repo", "shallow", {"depth": "shallow"})
 
-        await repo_cache.set_repository_context(
-            "/path/to/repo", "standard", sample_repo_context
-        )
+        await repo_cache.set_repository_context("/path/to/repo", "standard", sample_repo_context)
 
         # Get summary
         summary = await repo_cache.get_repository_summary("/path/to/repo")
@@ -366,7 +360,10 @@ class TestPerformanceMonitor:
     async def test_record_metric(self, monitor):
         """Test recording performance metrics."""
         await monitor.record_metric(
-            "test_operation", 1500.0, True, {"test": "data"}  # Above threshold
+            "test_operation",
+            1500.0,
+            True,
+            {"test": "data"},  # Above threshold
         )
 
         # Check if metric was recorded
@@ -381,7 +378,9 @@ class TestPerformanceMonitor:
         """Test performance alerting system."""
         # Record operation above threshold
         await monitor.record_metric(
-            "slow_operation", 2000.0, True  # Above 1000ms threshold
+            "slow_operation",
+            2000.0,
+            True,  # Above 1000ms threshold
         )
 
         # Check if alert was triggered
@@ -407,7 +406,9 @@ class TestPerformanceMonitor:
         # Record multiple metrics over time
         for i in range(10):
             await monitor.record_metric(
-                "trend_test", 100.0 + i * 10.0, True  # Increasing duration
+                "trend_test",
+                100.0 + i * 10.0,
+                True,  # Increasing duration
             )
             await asyncio.sleep(0.01)
 

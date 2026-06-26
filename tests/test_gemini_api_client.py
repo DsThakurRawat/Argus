@@ -77,9 +77,7 @@ class TestGeminiResponse:
 
     def test_error_response(self) -> None:
         """Test error response creation."""
-        response = GeminiResponse(
-            success=False, error_message="API error", model_used="gemini-pro"
-        )
+        response = GeminiResponse(success=False, error_message="API error", model_used="gemini-pro")
         assert response.success is False
         assert response.error_message == "API error"
         assert response.tokens_used == 0  # Default
@@ -102,9 +100,7 @@ class TestGeminiAPIClientInit:
     @patch("argus.ml.gemini_api_client.GENAI_AVAILABLE", False)
     def test_init_without_genai(self) -> None:
         """Test initialization when google-generativeai not available."""
-        with pytest.raises(
-            ImportError, match="google-generativeai package is required"
-        ):
+        with pytest.raises(ImportError, match="google-generativeai package is required"):
             GeminiAPIClient(api_key="test_key")
 
     @patch("argus.ml.gemini_api_client.GENAI_AVAILABLE", True)
@@ -190,9 +186,7 @@ class TestGeminiAPIClientGeneration:
         assert response.latency_ms > 0
 
         # Verify rate limiting was checked
-        rate_limiter.should_allow_request.assert_called_once_with(
-            UrgencyLevel.MEDIUM, cost_tracker
-        )
+        rate_limiter.should_allow_request.assert_called_once_with(UrgencyLevel.MEDIUM, cost_tracker)
 
         # Verify cost tracking
         cost_tracker.record_actual_cost.assert_called_once()
@@ -200,7 +194,7 @@ class TestGeminiAPIClientGeneration:
     @pytest.mark.asyncio
     async def test_rate_limited_request(self, mock_client_setup):
         """Test request blocked by rate limiter."""
-        client, mock_genai, cost_tracker, rate_limiter = mock_client_setup
+        client, _mock_genai, _cost_tracker, rate_limiter = mock_client_setup
 
         # Setup rate limiter to block request
         rate_limiter.should_allow_request.return_value = False
@@ -218,7 +212,7 @@ class TestGeminiAPIClientGeneration:
     @pytest.mark.asyncio
     async def test_structured_output_parsing(self, mock_client_setup):
         """Test structured JSON output parsing."""
-        client, mock_genai, cost_tracker, rate_limiter = mock_client_setup
+        client, mock_genai, _cost_tracker, rate_limiter = mock_client_setup
 
         # Setup mocks for structured output
         rate_limiter.should_allow_request.return_value = True
@@ -283,7 +277,7 @@ class TestGeminiAPIClientGeneration:
     @pytest.mark.asyncio
     async def test_no_candidates_response(self, mock_client_setup):
         """Test handling when API returns no candidates."""
-        client, mock_genai, cost_tracker, rate_limiter = mock_client_setup
+        client, mock_genai, _cost_tracker, rate_limiter = mock_client_setup
 
         rate_limiter.should_allow_request.return_value = True
 
@@ -362,11 +356,7 @@ class TestGeminiAPIClientHelpers:
 
         formatted = self.client._format_messages(messages)
 
-        expected = (
-            "SYSTEM: You are a helpful assistant\n\n"
-            "USER: Hello\n\n"
-            "ASSISTANT: Hi there!"
-        )
+        expected = "SYSTEM: You are a helpful assistant\n\nUSER: Hello\n\nASSISTANT: Hi there!"
         assert formatted == expected
 
     def test_parse_structured_output_json(self) -> None:

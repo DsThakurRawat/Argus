@@ -34,15 +34,9 @@ class ComplianceReport(BaseModel):
     period_start: datetime = Field(..., description="Report period start")
     period_end: datetime = Field(..., description="Report period end")
     summary: dict[str, Any] = Field(default_factory=dict, description="Report summary")
-    findings: list[dict[str, Any]] = Field(
-        default_factory=list, description="Compliance findings"
-    )
-    recommendations: list[str] = Field(
-        default_factory=list, description="Recommendations"
-    )
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    findings: list[dict[str, Any]] = Field(default_factory=list, description="Compliance findings")
+    recommendations: list[str] = Field(default_factory=list, description="Recommendations")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
 
 class ComplianceReporter:
@@ -58,7 +52,7 @@ class ComplianceReporter:
         self._compliance_rules: dict[ComplianceStandard, list[dict[str, Any]]] = {}
         self._initialize_default_rules()
 
-    def _initialize_default_rules(self) -> None:
+    def _initialize_default_rules(self) -> Any:
         """Initialize default compliance rules."""
         # SOC2 Type II rules
         self._compliance_rules[ComplianceStandard.SOC2] = [
@@ -172,9 +166,7 @@ class ComplianceReporter:
 
         for rule in rules:
             try:
-                check_result = await rule["check_function"](
-                    events, period_start, period_end
-                )
+                check_result = await rule["check_function"](events, period_start, period_end)
                 findings.append(
                     {
                         "rule_id": rule["rule_id"],
@@ -234,18 +226,14 @@ class ComplianceReporter:
         provider_counts = {}
         for event in events:
             if event.provider:
-                provider_counts[event.provider] = (
-                    provider_counts.get(event.provider, 0) + 1
-                )
+                provider_counts[event.provider] = provider_counts.get(event.provider, 0) + 1
 
         return {
             "total_checks": total_checks,
             "passed_checks": passed_checks,
             "failed_checks": failed_checks,
             "error_checks": error_checks,
-            "compliance_score": (
-                (passed_checks / total_checks * 100) if total_checks > 0 else 0
-            ),
+            "compliance_score": ((passed_checks / total_checks * 100) if total_checks > 0 else 0),
             "total_events": len(events),
             "event_counts": event_counts,
             "provider_counts": provider_counts,
@@ -264,9 +252,7 @@ class ComplianceReporter:
                         "Implement stronger access controls and multi-factor authentication"
                     )
                 elif finding["rule_id"] == "data_encryption":
-                    recommendations.append(
-                        "Ensure all data is encrypted in transit and at rest"
-                    )
+                    recommendations.append("Ensure all data is encrypted in transit and at rest")
                 elif finding["rule_id"] == "audit_logging":
                     recommendations.append(
                         "Implement comprehensive audit logging for all system activities"
@@ -301,8 +287,7 @@ class ComplianceReporter:
         access_events = [
             e
             for e in events
-            if e.event_type
-            in [AuditEventType.ACCESS_GRANTED, AuditEventType.ACCESS_DENIED]
+            if e.event_type in [AuditEventType.ACCESS_GRANTED, AuditEventType.ACCESS_DENIED]
         ]
 
         if not access_events:
@@ -312,9 +297,7 @@ class ComplianceReporter:
                 "evidence": [],
             }
 
-        denied_attempts = [
-            e for e in access_events if e.event_type == AuditEventType.ACCESS_DENIED
-        ]
+        denied_attempts = [e for e in access_events if e.event_type == AuditEventType.ACCESS_DENIED]
         granted_attempts = [
             e for e in access_events if e.event_type == AuditEventType.ACCESS_GRANTED
         ]
@@ -355,13 +338,9 @@ class ComplianceReporter:
             }
 
         # Check if events have encryption metadata
-        encrypted_events = [
-            e for e in provider_events if e.metadata.get("encrypted", False)
-        ]
+        encrypted_events = [e for e in provider_events if e.metadata.get("encrypted", False)]
 
-        if (
-            len(encrypted_events) < len(provider_events) * 0.8
-        ):  # Less than 80% encrypted
+        if len(encrypted_events) < len(provider_events) * 0.8:  # Less than 80% encrypted
             return {
                 "status": "fail",
                 "details": "Not all provider interactions are encrypted",
@@ -374,9 +353,7 @@ class ComplianceReporter:
         return {
             "status": "pass",
             "details": "Data encryption is properly implemented",
-            "evidence": [
-                f"Encrypted events: {len(encrypted_events)}/{len(provider_events)}"
-            ],
+            "evidence": [f"Encrypted events: {len(encrypted_events)}/{len(provider_events)}"],
         }
 
     async def _check_audit_logging(
@@ -408,7 +385,7 @@ class ComplianceReporter:
                 "details": f"Missing audit event types: {', '.join(missing_types)}",
                 "evidence": [
                     f"Total events: {len(events)}",
-                    f"Event types found: {set(e.event_type.value for e in events)}",
+                    f"Event types found: { {e.event_type.value for e in events} }",
                 ],
             }
 
@@ -417,7 +394,7 @@ class ComplianceReporter:
             "details": "Comprehensive audit logging is in place",
             "evidence": [
                 f"Total events: {len(events)}",
-                f"Event types: {len(set(e.event_type for e in events))}",
+                f"Event types: {len({e.event_type for e in events})}",
             ],
         }
 
@@ -435,9 +412,7 @@ class ComplianceReporter:
             }
 
         # Check if errors are properly logged and handled
-        high_severity_errors = [
-            e for e in error_events if e.metadata.get("severity") == "high"
-        ]
+        high_severity_errors = [e for e in error_events if e.metadata.get("severity") == "high"]
 
         if high_severity_errors:
             return {
@@ -477,15 +452,11 @@ class ComplianceReporter:
             e for e in provider_events if e.metadata.get("request_size", 0) > 10000
         ]  # 10KB
 
-        if (
-            len(large_requests) > len(provider_events) * 0.2
-        ):  # More than 20% large requests
+        if len(large_requests) > len(provider_events) * 0.2:  # More than 20% large requests
             return {
                 "status": "fail",
                 "details": "Potential excessive data collection detected",
-                "evidence": [
-                    f"Large requests: {len(large_requests)}/{len(provider_events)}"
-                ],
+                "evidence": [f"Large requests: {len(large_requests)}/{len(provider_events)}"],
             }
 
         return {
@@ -533,9 +504,7 @@ class ComplianceReporter:
     ) -> dict[str, Any]:
         """Check GDPR right to erasure compliance."""
         # This would check for data deletion events
-        deletion_events = [
-            e for e in events if e.event_type == AuditEventType.DATA_DELETION
-        ]
+        deletion_events = [e for e in events if e.event_type == AuditEventType.DATA_DELETION]
 
         return {
             "status": "pass",
@@ -552,9 +521,7 @@ class ComplianceReporter:
 
         if phi_events:
             # Check if PHI events have proper protections
-            protected_events = [
-                e for e in phi_events if e.metadata.get("encrypted", False)
-            ]
+            protected_events = [e for e in phi_events if e.metadata.get("encrypted", False)]
 
             if len(protected_events) < len(phi_events):
                 return {
@@ -586,9 +553,7 @@ class ComplianceReporter:
         # Similar to general audit logging but with HIPAA-specific requirements
         return await self._check_audit_logging(events, period_start, period_end)
 
-    def add_custom_rule(
-        self, standard: ComplianceStandard, rule: dict[str, Any]
-    ) -> None:
+    def add_custom_rule(self, standard: ComplianceStandard, rule: dict[str, Any]) -> None:
         """Add a custom compliance rule."""
         if standard not in self._compliance_rules:
             self._compliance_rules[standard] = []
@@ -599,8 +564,6 @@ class ComplianceReporter:
         """Get list of supported compliance standards."""
         return list(self._compliance_rules.keys())
 
-    def get_rules_for_standard(
-        self, standard: ComplianceStandard
-    ) -> list[dict[str, Any]]:
+    def get_rules_for_standard(self, standard: ComplianceStandard) -> list[dict[str, Any]]:
         """Get rules for a specific compliance standard."""
         return self._compliance_rules.get(standard, [])

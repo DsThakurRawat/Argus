@@ -242,3 +242,14 @@ tmp_repos_files/
 sre_comparison_report.html
 config/llm_config.yaml
 scratch/
+
+# Tooling artifacts / one-off codemod scripts (do not commit)
+pyright_*.txt
+pyright_*.json
+fix_init.py
+fix_type.py
+fix_validators.py
+collect_errors.txt
+pytest_output.txt
+mirascope_config.json
+mirascope_data/

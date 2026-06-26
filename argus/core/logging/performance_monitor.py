@@ -86,9 +86,7 @@ class PerformanceMonitor:
         self._lock = threading.RLock()
         self._enabled = self._config.get("enabled", True)
         self._sampling_rate = self._config.get("sampling_rate", 1.0)
-        self._aggregation_window = self._config.get(
-            "aggregation_window", 60.0
-        )  # seconds
+        self._aggregation_window = self._config.get("aggregation_window", 60.0)  # seconds
         self._last_aggregation = time.time()
 
     def record_metric(
@@ -114,9 +112,7 @@ class PerformanceMonitor:
 
         try:
             # Apply sampling rate
-            if self._sampling_rate < 1.0 and hash(name) % 1000 >= int(
-                self._sampling_rate * 1000
-            ):
+            if self._sampling_rate < 1.0 and hash(name) % 1000 >= int(self._sampling_rate * 1000):
                 return
 
             metric = PerformanceMetric(
@@ -134,7 +130,7 @@ class PerformanceMonitor:
             raise PerformanceMonitoringError(
                 f"Failed to record metric: {e!s}",
                 metric_name=name,
-                metric_value=value,
+                context={"metric_value": value},
             ) from e
 
     def record_timing(
@@ -214,9 +210,7 @@ class PerformanceMonitor:
                 # Filter by tags if provided
                 if tags:
                     metrics = [
-                        m
-                        for m in metrics
-                        if all(m.tags.get(k) == v for k, v in tags.items())
+                        m for m in metrics if all(m.tags.get(k) == v for k, v in tags.items())
                     ]
 
                 # Filter by time window if provided
@@ -273,9 +267,7 @@ class PerformanceMonitor:
         with self._lock:
             return list(self._metrics.keys())
 
-    def get_metrics_by_name(
-        self, name: str, limit: int | None = None
-    ) -> list[PerformanceMetric]:
+    def get_metrics_by_name(self, name: str, limit: int | None = None) -> list[PerformanceMetric]:
         """Get metrics by name.
 
         Args:
@@ -356,7 +348,7 @@ class PerformanceMonitor:
             else:
                 self._metrics.clear()
 
-    def enable(self) -> None:
+    def enable(self) -> Any:
         """Enable performance monitoring."""
         self._enabled = True
 

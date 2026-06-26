@@ -19,7 +19,7 @@ class CodeAnalysisConfig:
     analysis_timeout_seconds: int = 30
     max_recent_commits: int = 10
 
-    def __post_init__(self) -> None:
+    def __post_init__(self) -> Any:
         if self.analysis_timeout_seconds <= 0:
             raise ValueError("analysis_timeout_seconds must be positive")
         if self.max_recent_commits <= 0:

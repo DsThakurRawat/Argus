@@ -32,9 +32,7 @@ class BedrockProvider(LLMProvider):
             else "us-east-1"
         )
         self.profile = (
-            config.provider_specific.get("aws_profile")
-            if config.provider_specific
-            else None
+            config.provider_specific.get("aws_profile") if config.provider_specific else None
         )
 
         # Initialize boto3 clients
@@ -228,9 +226,7 @@ class BedrockProvider(LLMProvider):
             return response_body["content"][0]["text"]
         return ""
 
-    def _extract_usage_from_response(
-        self, response_body: dict[str, Any]
-    ) -> dict[str, int]:
+    def _extract_usage_from_response(self, response_body: dict[str, Any]) -> dict[str, int]:
         """Extract usage information from Bedrock response."""
         usage = response_body.get("usage", {})
         return {
@@ -241,9 +237,7 @@ class BedrockProvider(LLMProvider):
     @classmethod
     def validate_config(cls, config: Any) -> None:
         """Validate Bedrock-specific configuration."""
-        provider_specific = (
-            config.provider_specific if hasattr(config, "provider_specific") else {}
-        )
+        provider_specific = config.provider_specific if hasattr(config, "provider_specific") else {}
         if not provider_specific.get("aws_region"):
             raise ValueError("AWS region is required for Bedrock")
 

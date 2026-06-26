@@ -44,9 +44,7 @@ class IssuePatternCache(ContextCache):
         # Pattern-specific metadata
         self.pattern_domains: dict[str, str] = {}  # pattern_key -> domain
         self.domain_patterns: dict[str, list[str]] = {}  # domain -> pattern_keys
-        self.pattern_similarity: dict[str, list[str]] = (
-            {}
-        )  # pattern_key -> similar_patterns
+        self.pattern_similarity: dict[str, list[str]] = {}  # pattern_key -> similar_patterns
 
     async def get_issue_pattern(
         self, pattern_type: str, pattern_key: str, domain: str | None = None
@@ -135,9 +133,7 @@ class IssuePatternCache(ContextCache):
             f"[PATTERN-CACHE] Stored {pattern_type}:{pattern_key} (TTL: {effective_ttl}s)"
         )
 
-    async def get_similar_patterns(
-        self, pattern_key: str, limit: int = 5
-    ) -> list[dict[str, Any]]:
+    async def get_similar_patterns(self, pattern_key: str, limit: int = 5) -> list[dict[str, Any]]:
         """
         Get patterns similar to the given pattern.
 
@@ -160,9 +156,7 @@ class IssuePatternCache(ContextCache):
 
         return similar_patterns
 
-    async def get_domain_patterns(
-        self, domain: str, limit: int = 10
-    ) -> list[dict[str, Any]]:
+    async def get_domain_patterns(self, domain: str, limit: int = 10) -> list[dict[str, Any]]:
         """
         Get all patterns for a specific domain.
 
@@ -200,7 +194,7 @@ class IssuePatternCache(ContextCache):
 
         for pattern_key in domain_keys:
             # Find and remove patterns for this domain
-            keys_to_remove = [key for key in self.cache.keys() if pattern_key in key]
+            keys_to_remove = [key for key in self.cache if pattern_key in key]
 
             for key in keys_to_remove:
                 del self.cache[key]
@@ -234,24 +228,22 @@ class IssuePatternCache(ContextCache):
             return custom_ttl
 
         # Domain-specific TTL strategies
-        if domain == "security":
-            return 1800  # 30 minutes for security patterns
-        elif domain == "database":
-            return 3600  # 1 hour for database patterns
-        elif domain == "api":
-            return 7200  # 2 hours for API patterns
-        elif domain == "performance":
-            return 5400  # 1.5 hours for performance patterns
+        domain_ttls = {
+            "security": 1800,  # 30 minutes for security patterns
+            "database": 3600,  # 1 hour for database patterns
+            "api": 7200,  # 2 hours for API patterns
+            "performance": 5400,  # 1.5 hours for performance patterns
+        }
+        if domain in domain_ttls:
+            return domain_ttls[domain]
 
         # Pattern type-specific TTL
-        if pattern_type == "error_pattern":
-            return 7200  # 2 hours for error patterns
-        elif pattern_type == "fix_pattern":
-            return 10800  # 3 hours for fix patterns
-        elif pattern_type == "context_pattern":
-            return 3600  # 1 hour for context patterns
-
-        return self.default_ttl_seconds
+        pattern_type_ttls = {
+            "error_pattern": 7200,  # 2 hours for error patterns
+            "fix_pattern": 10800,  # 3 hours for fix patterns
+            "context_pattern": 3600,  # 1 hour for context patterns
+        }
+        return pattern_type_ttls.get(pattern_type, self.default_ttl_seconds)
 
     def _calculate_size(self, value: Any) -> int:
         """Calculate approximate size of data in bytes."""
@@ -273,9 +265,7 @@ class IssuePatternCache(ContextCache):
     def get_cache_stats(self) -> dict[str, Any]:
         """Get cache statistics for monitoring."""
         total_size = sum(entry.size_bytes for entry in self.cache.values())
-        domain_counts = {
-            domain: len(keys) for domain, keys in self.domain_patterns.items()
-        }
+        domain_counts = {domain: len(keys) for domain, keys in self.domain_patterns.items()}
 
         return {
             "total_entries": len(self.cache),

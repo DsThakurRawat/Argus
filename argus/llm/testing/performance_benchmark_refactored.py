@@ -39,9 +39,7 @@ class PerformanceBenchmark:
         self.cost_manager = cost_manager
 
         # Initialize modular components
-        self.benchmark_runner = BenchmarkRunner(
-            provider_factory, model_registry, cost_manager
-        )
+        self.benchmark_runner = BenchmarkRunner(provider_factory, model_registry, cost_manager)
         self.metrics_collector = MetricsCollector()
 
     async def run_latency_benchmarks(
@@ -56,9 +54,7 @@ class PerformanceBenchmark:
 
         # Get providers and models to test
         test_providers = providers or self.provider_factory.list_providers()
-        test_models = models or [
-            model.name for model in self.model_registry.get_all_models()
-        ]
+        test_models = models or [model.name for model in self.model_registry.get_all_models()]
 
         logger.info(
             f"Running latency benchmarks for {len(test_providers)} providers and {len(test_models)} models"
@@ -124,9 +120,7 @@ class PerformanceBenchmark:
 
         # Get providers and models to test
         test_providers = providers or self.provider_factory.list_providers()
-        test_models = models or [
-            model.name for model in self.model_registry.get_all_models()
-        ]
+        test_models = models or [model.name for model in self.model_registry.get_all_models()]
 
         logger.info(
             f"Running throughput benchmarks for {len(test_providers)} providers and {len(test_models)} models"
@@ -192,9 +186,7 @@ class PerformanceBenchmark:
 
         # Get providers and models to test
         test_providers = providers or self.provider_factory.list_providers()
-        test_models = models or [
-            model.name for model in self.model_registry.get_all_models()
-        ]
+        test_models = models or [model.name for model in self.model_registry.get_all_models()]
 
         logger.info(
             f"Running memory benchmarks for {len(test_providers)} providers and {len(test_models)} models"
@@ -260,9 +252,7 @@ class PerformanceBenchmark:
 
         # Get providers and models to test
         test_providers = providers or self.provider_factory.list_providers()
-        test_models = models or [
-            model.name for model in self.model_registry.get_all_models()
-        ]
+        test_models = models or [model.name for model in self.model_registry.get_all_models()]
 
         logger.info(
             f"Running concurrency benchmarks for {len(test_providers)} providers and {len(test_models)} models"

@@ -67,9 +67,7 @@ class TemporalConfidenceCalculator(BaseConfidenceCalculator):
         else:
             return 0.0
 
-    def _calculate_time_concentration(
-        self, logs: list[LogEntry], window: TimeWindow
-    ) -> float:
+    def _calculate_time_concentration(self, logs: list[LogEntry], window: TimeWindow) -> float:
         """Calculate how concentrated errors are in time."""
         if not logs or len(logs) < 2:
             return 0.0
@@ -101,9 +99,7 @@ class TemporalConfidenceCalculator(BaseConfidenceCalculator):
         if len(logs) < 3:
             return False
         sorted_logs = sorted(logs, key=lambda x: x.timestamp)
-        total_time = (
-            sorted_logs[-1].timestamp - sorted_logs[0].timestamp
-        ).total_seconds()
+        total_time = (sorted_logs[-1].timestamp - sorted_logs[0].timestamp).total_seconds()
         if total_time < 60:
             return False
         bucket_size = total_time / 3
@@ -141,9 +137,7 @@ class ServiceConfidenceCalculator(BaseConfidenceCalculator):
         service_counts = {}
         for log in logs:
             if log.service_name:
-                service_counts[log.service_name] = (
-                    service_counts.get(log.service_name, 0) + 1
-                )
+                service_counts[log.service_name] = service_counts.get(log.service_name, 0) + 1
         if len(service_counts) <= 1:
             return 0.0
         counts = list(service_counts.values())
@@ -451,9 +445,7 @@ class ConfidenceScoreProcessor:
         for factor_type, score in top_factors:
             if score > 0.1:
                 raw_value = raw_factors.get(factor_type, 0.0)
-                explanations.append(
-                    f"- {factor_type}: {score:.2f} (raw: {raw_value:.2f})"
-                )
+                explanations.append(f"- {factor_type}: {score:.2f} (raw: {raw_value:.2f})")
         if factor_scores.get(ConfidenceFactors.RAPID_ONSET, 0) > 0:
             explanations.append("- Rapid error onset detected (high confidence)")
         if factor_scores.get(ConfidenceFactors.CROSS_SERVICE_CORRELATION, 0) > 0.5:
@@ -512,17 +504,13 @@ class ConfidenceRuleFactory:
             ],
             PatternType.SPORADIC_ERRORS: [
                 ConfidenceRule(ConfidenceFactors.SERVICE_DISTRIBUTION, 0.3),
-                ConfidenceRule(
-                    ConfidenceFactors.TIME_CORRELATION, 0.25, decay_function="linear"
-                ),
+                ConfidenceRule(ConfidenceFactors.TIME_CORRELATION, 0.25, decay_function="linear"),
                 ConfidenceRule(
                     ConfidenceFactors.ERROR_TYPE_CONSISTENCY,
                     0.2,
                     decay_function="linear",
                 ),
-                ConfidenceRule(
-                    ConfidenceFactors.MESSAGE_SIMILARITY, 0.15, decay_function="linear"
-                ),
+                ConfidenceRule(ConfidenceFactors.MESSAGE_SIMILARITY, 0.15, decay_function="linear"),
                 ConfidenceRule(ConfidenceFactors.BASELINE_DEVIATION, 0.1),
             ],
         }

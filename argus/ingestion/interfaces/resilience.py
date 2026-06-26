@@ -39,7 +39,7 @@ class AsyncCircuitBreaker:
         failure_threshold: int = 5,
         recovery_timeout: float = 60.0,
         expected_exception: type = Exception,
-        **kwargs
+        **kwargs,
     ):
         if CIRCUITBREAKER_AVAILABLE and circuitbreaker:
             self.circuit_breaker = circuitbreaker.CircuitBreaker(
@@ -50,7 +50,7 @@ class AsyncCircuitBreaker:
         else:
             self.circuit_breaker = None
 
-    def __call__(self, func: str) -> None:
+    def __call__(self, func: Any) -> Any:
         if self.circuit_breaker:
             # For async functions, we need to handle them differently
             if asyncio.iscoroutinefunction(func):
@@ -66,7 +66,7 @@ class AsyncCircuitBreaker:
         return func
 
     @property
-    def state(self) -> None:
+    def state(self) -> Any:
         """
         State.
 
@@ -76,7 +76,7 @@ class AsyncCircuitBreaker:
         return "closed"
 
     @property
-    def failure_count(self) -> None:
+    def failure_count(self) -> Any:
         """
         Failure Count.
 
@@ -94,11 +94,7 @@ class AsyncRetry:
     """Retry implementation using the tenacity library."""
 
     def __init__(
-        self,
-        attempts: int = 3,
-        backoff=None,
-        expected_exception: type = Exception,
-        **kwargs
+        self, attempts: int = 3, backoff=None, expected_exception: type = Exception, **kwargs
     ):
         if TENACITY_AVAILABLE and tenacity:
             self.retry = tenacity.retry(
@@ -109,7 +105,7 @@ class AsyncRetry:
         else:
             self.retry = None
 
-    def __call__(self, func: str) -> None:
+    def __call__(self, func: Any) -> Any:
         if self.retry:
             return self.retry(func)
         return func
@@ -210,9 +206,7 @@ class HyxResilientClient:
         self.circuit_breaker = AsyncCircuitBreaker(
             failure_threshold=config.circuit_breaker["failure_threshold"],
             recovery_timeout=config.circuit_breaker["recovery_timeout"],
-            expected_exception=config.circuit_breaker.get(
-                "expected_exception", Exception
-            ),
+            expected_exception=config.circuit_breaker.get("expected_exception", Exception),
         )
 
         self.retry_policy = AsyncRetry(
@@ -265,9 +259,7 @@ class HyxResilientClient:
             # Apply rate limiting and bulkhead
             async with self.rate_limiter, self.bulkhead:
                 # Simple timeout implementation
-                result = await asyncio.wait_for(
-                    operation(), timeout=self.timeout.timeout
-                )
+                result = await asyncio.wait_for(operation(), timeout=self.timeout.timeout)
 
             self._stats["successful_operations"] += 1
             return result
@@ -296,9 +288,7 @@ class HyxResilientClient:
             "circuit_breaker": {
                 "status": self.circuit_breaker.state,
                 "failure_count": self.circuit_breaker.failure_count,
-                "last_failure_time": getattr(
-                    self.circuit_breaker, "last_failure_time", None
-                ),
+                "last_failure_time": getattr(self.circuit_breaker, "last_failure_time", None),
             },
             "bulkhead": {
                 "active_requests": self.bulkhead.active_count,

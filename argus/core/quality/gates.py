@@ -19,6 +19,7 @@ logger = get_logger(__name__)
 
 class QualityGateStatus(Enum):
     """Status of a quality gate check."""
+
     PASSED = "passed"
     FAILED = "failed"
     WARNING = "warning"
@@ -29,6 +30,7 @@ class QualityGateStatus(Enum):
 @dataclass
 class QualityGateResult:
     """Result of a quality gate check."""
+
     gate_name: str
     status: QualityGateStatus
     message: str
@@ -50,6 +52,7 @@ class QualityGateResult:
 @dataclass
 class QualityGateConfig:
     """Configuration for quality gates."""
+
     # Static analysis
     enable_pyright: bool = True
     enable_ruff: bool = True
@@ -99,7 +102,7 @@ class QualityGateManager:
 
     def __init__(self, config: QualityGateConfig | None = None):
         """Initialize the quality gate manager.
-        
+
         Args:
             config: Quality gate configuration. Uses default if None.
         """
@@ -109,7 +112,7 @@ class QualityGateManager:
 
     def register_gate(self, name: str, gate: QualityGate) -> None:
         """Register a quality gate.
-        
+
         Args:
             name: Name of the gate.
             gate: Gate implementation.
@@ -119,13 +122,13 @@ class QualityGateManager:
 
     async def run_gate(self, name: str) -> QualityGateResult:
         """Run a specific quality gate.
-        
+
         Args:
             name: Name of the gate to run.
-            
+
         Returns:
             Result of the gate check.
-            
+
         Raises:
             QualityGateError: If gate is not found or fails to run.
         """
@@ -153,12 +156,12 @@ class QualityGateManager:
                 gate_name=name,
                 status=QualityGateStatus.ERROR,
                 message=f"Gate execution failed: {e!s}",
-                duration=(datetime.now() - start_time).total_seconds()
+                duration=(datetime.now() - start_time).total_seconds(),
             )
 
     async def run_all_gates(self) -> list[QualityGateResult]:
         """Run all registered quality gates.
-        
+
         Returns:
             List of results from all gates.
         """
@@ -169,7 +172,7 @@ class QualityGateManager:
         self.logger.info(f"Running {len(self.gates)} quality gates")
 
         if self.config.parallel_execution:
-            tasks = [self.run_gate(name) for name in self.gates.keys()]
+            tasks = [self.run_gate(name) for name in self.gates]
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
             # Handle exceptions from parallel execution
@@ -177,28 +180,30 @@ class QualityGateManager:
             for i, result in enumerate(results):
                 if isinstance(result, Exception):
                     gate_name = list(self.gates.keys())[i]
-                    processed_results.append(QualityGateResult(
-                        gate_name=gate_name,
-                        status=QualityGateStatus.ERROR,
-                        message=f"Gate execution failed: {result!s}"
-                    ))
+                    processed_results.append(
+                        QualityGateResult(
+                            gate_name=gate_name,
+                            status=QualityGateStatus.ERROR,
+                            message=f"Gate execution failed: {result!s}",
+                        )
+                    )
                 else:
                     processed_results.append(result)
 
             return processed_results
         else:
             results = []
-            for name in self.gates.keys():
+            for name in self.gates:
                 result = await self.run_gate(name)
                 results.append(result)
             return results
 
     def get_failed_gates(self, results: list[QualityGateResult]) -> list[QualityGateResult]:
         """Get gates that failed.
-        
+
         Args:
             results: List of gate results.
-            
+
         Returns:
             List of failed gate results.
         """
@@ -206,10 +211,10 @@ class QualityGateManager:
 
     def get_passed_gates(self, results: list[QualityGateResult]) -> list[QualityGateResult]:
         """Get gates that passed.
-        
+
         Args:
             results: List of gate results.
-            
+
         Returns:
             List of passed gate results.
         """
@@ -217,10 +222,10 @@ class QualityGateManager:
 
     def should_fail_build(self, results: list[QualityGateResult]) -> bool:
         """Determine if the build should fail based on gate results.
-        
+
         Args:
             results: List of gate results.
-            
+
         Returns:
             True if build should fail, False otherwise.
         """
@@ -230,26 +235,22 @@ class QualityGateManager:
             return False
 
         # Check if any failed gates are critical
-        critical_failures = [
-            r for r in failed_gates
-            if r.status == QualityGateStatus.ERROR
-        ]
+        critical_failures = [r for r in failed_gates if r.status == QualityGateStatus.ERROR]
 
         if critical_failures:
             return True
 
         # If fail_on_warning is enabled, fail on any failure
-        if self.config.fail_on_warning:
-            return True
-
-        return False
+        return bool(self.config.fail_on_warning)
 
 
 class QualityGateError(Exception):
     """Base exception for quality gate errors."""
+
     pass
 
 
 class QualityGateFailureError(QualityGateError):
     """Exception raised when a quality gate fails."""
+
     pass

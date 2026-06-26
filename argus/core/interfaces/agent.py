@@ -121,9 +121,7 @@ class BaseAgent(MonitorableComponent[RequestT, ResponseT]):
         """
         pass
 
-    def set_current_request(
-        self, request_id: RequestId, user_id: UserId | None = None
-    ) -> None:
+    def set_current_request(self, request_id: RequestId, user_id: UserId | None = None) -> None:
         """
         Set the current request being processed.
 
@@ -134,7 +132,7 @@ class BaseAgent(MonitorableComponent[RequestT, ResponseT]):
         self._current_request_id = request_id
         self._current_user_id = user_id
 
-    def clear_current_request(self) -> None:
+    def clear_current_request(self) -> Any:
         """Clear the current request."""
         self._current_request_id = None
         self._current_user_id = None
@@ -300,9 +298,7 @@ class AnalysisAgent(BaseAgent[RequestT, ResponseT]):
         pass
 
     @abstractmethod
-    def detect_trends(
-        self, data: Content, context: AgentContext
-    ) -> list[dict[str, Any]]:
+    def detect_trends(self, data: Content, context: AgentContext) -> list[dict[str, Any]]:
         """
         Detect trends in data.
 
@@ -316,9 +312,7 @@ class AnalysisAgent(BaseAgent[RequestT, ResponseT]):
         pass
 
     @abstractmethod
-    def generate_insights(
-        self, analysis_result: Any, context: AgentContext
-    ) -> list[str]:
+    def generate_insights(self, analysis_result: Any, context: AgentContext) -> list[str]:
         """
         Generate insights from analysis results.
 
@@ -387,9 +381,7 @@ class RemediationAgent(BaseAgent[RequestT, ResponseT]):
         pass
 
     @abstractmethod
-    def analyze_impact(
-        self, remediation_action: Any, context: AgentContext
-    ) -> dict[str, Any]:
+    def analyze_impact(self, remediation_action: Any, context: AgentContext) -> dict[str, Any]:
         """
         Analyze the impact of a remediation action.
 
@@ -410,9 +402,7 @@ class AgentCoordinator(MonitorableComponent[RequestT, ResponseT]):
     This class provides functionality for coordinating multiple agents.
     """
 
-    def __init__(
-        self, coordinator_id: str, name: str, config: ConfigDict | None = None
-    ) -> None:
+    def __init__(self, coordinator_id: str, name: str, config: ConfigDict | None = None) -> None:
         """
         Initialize the agent coordinator.
 
@@ -465,9 +455,7 @@ class AgentCoordinator(MonitorableComponent[RequestT, ResponseT]):
         pass
 
     @abstractmethod
-    def coordinate_workflow(
-        self, workflow: dict[str, Any], context: AgentContext
-    ) -> ResponseT:
+    def coordinate_workflow(self, workflow: dict[str, Any], context: AgentContext) -> ResponseT:
         """
         Coordinate a multi-agent workflow.
 
@@ -502,9 +490,7 @@ class AgentCoordinator(MonitorableComponent[RequestT, ResponseT]):
         Returns:
             List of agents with the capability
         """
-        return [
-            agent for agent in self._agents.values() if agent.has_capability(capability)
-        ]
+        return [agent for agent in self._agents.values() if agent.has_capability(capability)]
 
     def get_workflow_state(self) -> dict[str, Any]:
         """

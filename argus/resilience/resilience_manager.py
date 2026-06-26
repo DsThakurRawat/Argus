@@ -238,7 +238,7 @@ class ResilienceManager:
         """Reset circuit breaker for a specific provider."""
         return self.circuit_breaker_manager.reset_breaker(provider)
 
-    def reset_all_circuit_breakers(self) -> None:
+    def reset_all_circuit_breakers(self) -> Any:
         """Reset all circuit breakers."""
         self.circuit_breaker_manager.reset_all()
 

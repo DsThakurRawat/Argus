@@ -13,8 +13,8 @@ import threading
 from typing import Any
 
 # Context variables for thread-local storage
-_logging_context: contextvars.ContextVar[dict[str, Any]] = contextvars.ContextVar(
-    "logging_context", default={}
+_logging_context: contextvars.ContextVar[dict[str, Any] | None] = contextvars.ContextVar(
+    "logging_context", default=None
 )
 _flow_context: contextvars.ContextVar[str | None] = contextvars.ContextVar(
     "flow_context", default=None
@@ -51,7 +51,7 @@ class LoggingContext:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert context to dictionary.
-        
+
         Returns:
             Dictionary representation of the context.
         """
@@ -71,7 +71,7 @@ class LoggingContext:
 
     def update(self, **kwargs: Any) -> None:
         """Update context with new values.
-        
+
         Args:
             **kwargs: Key-value pairs to update in the context.
         """
@@ -83,7 +83,7 @@ class LoggingContext:
 
     def add_tag(self, key: str, value: str) -> None:
         """Add a tag to the context.
-        
+
         Args:
             key: Tag key.
             value: Tag value.
@@ -92,14 +92,14 @@ class LoggingContext:
 
     def add_metadata(self, key: str, value: Any) -> None:
         """Add metadata to the context.
-        
+
         Args:
             key: Metadata key.
             value: Metadata value.
         """
         self.metadata[key] = value
 
-    def finish(self) -> None:
+    def finish(self) -> Any:
         """Mark the context as finished and calculate duration."""
         self.end_time = datetime.now()
         if self.start_time:
@@ -115,16 +115,16 @@ class ContextManager:
 
     def get_context(self) -> LoggingContext:
         """Get the current logging context.
-        
+
         Returns:
             Current logging context.
         """
-        context_data = _logging_context.get({})
+        context_data = _logging_context.get(None) or {}
         return LoggingContext(**context_data)
 
     def set_context(self, context: LoggingContext) -> None:
         """Set the current logging context.
-        
+
         Args:
             context: Logging context to set.
         """
@@ -132,7 +132,7 @@ class ContextManager:
 
     def update_context(self, **kwargs: Any) -> None:
         """Update the current logging context.
-        
+
         Args:
             **kwargs: Key-value pairs to update.
         """
@@ -146,7 +146,7 @@ class ContextManager:
 
     def set_flow_id(self, flow_id: str) -> None:
         """Set the current flow ID.
-        
+
         Args:
             flow_id: Flow ID to set.
         """
@@ -155,7 +155,7 @@ class ContextManager:
 
     def get_flow_id(self) -> str | None:
         """Get the current flow ID.
-        
+
         Returns:
             Current flow ID or None.
         """
@@ -173,7 +173,7 @@ context_manager = ContextManager()
 
 def get_logging_context() -> LoggingContext:
     """Get the current logging context.
-    
+
     Returns:
         Current logging context.
     """
@@ -182,7 +182,7 @@ def get_logging_context() -> LoggingContext:
 
 def set_logging_context(context: LoggingContext) -> None:
     """Set the current logging context.
-    
+
     Args:
         context: Logging context to set.
     """
@@ -191,7 +191,7 @@ def set_logging_context(context: LoggingContext) -> None:
 
 def update_logging_context(**kwargs: Any) -> None:
     """Update the current logging context.
-    
+
     Args:
         **kwargs: Key-value pairs to update.
     """
@@ -205,7 +205,7 @@ def clear_logging_context() -> None:
 
 def set_flow_id(flow_id: str) -> None:
     """Set the current flow ID.
-    
+
     Args:
         flow_id: Flow ID to set.
     """
@@ -214,7 +214,7 @@ def set_flow_id(flow_id: str) -> None:
 
 def get_flow_id() -> str | None:
     """Get the current flow ID.
-    
+
     Returns:
         Current flow ID or None.
     """
@@ -237,7 +237,7 @@ class LoggingContextMixin:
     @property
     def logging_context(self) -> LoggingContext:
         """Get the logging context for this instance.
-        
+
         Returns:
             Logging context for this instance.
         """
@@ -245,7 +245,7 @@ class LoggingContextMixin:
 
     def update_logging_context(self, **kwargs: Any) -> None:
         """Update the logging context for this instance.
-        
+
         Args:
             **kwargs: Key-value pairs to update.
         """
@@ -253,7 +253,7 @@ class LoggingContextMixin:
 
     def add_logging_tag(self, key: str, value: str) -> None:
         """Add a tag to the logging context.
-        
+
         Args:
             key: Tag key.
             value: Tag value.
@@ -262,7 +262,7 @@ class LoggingContextMixin:
 
     def add_logging_metadata(self, key: str, value: Any) -> None:
         """Add metadata to the logging context.
-        
+
         Args:
             key: Metadata key.
             value: Metadata value.
@@ -272,13 +272,14 @@ class LoggingContextMixin:
 
 def with_logging_context(**context_kwargs: Any):
     """Decorator to add logging context to a function.
-    
+
     Args:
         **context_kwargs: Context parameters to set.
-        
+
     Returns:
         Decorated function with logging context.
     """
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             # Create context
@@ -297,24 +298,27 @@ def with_logging_context(**context_kwargs: Any):
                 set_logging_context(old_context)
 
         return wrapper
+
     return decorator
 
 
 def with_flow_tracking(flow_id: str | None = None, operation: str | None = None):
     """Decorator to add flow tracking to a function.
-    
+
     Args:
         flow_id: Flow ID to use (generated if None).
         operation: Operation name.
-        
+
     Returns:
         Decorated function with flow tracking.
     """
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             # Generate flow ID if not provided
             if flow_id is None:
                 import uuid
+
                 current_flow_id = str(uuid.uuid4())
             else:
                 current_flow_id = flow_id
@@ -332,4 +336,5 @@ def with_flow_tracking(flow_id: str | None = None, operation: str | None = None)
                 clear_flow_id()
 
         return wrapper
+
     return decorator

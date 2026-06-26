@@ -72,9 +72,7 @@ class IntegratedCostManager:
                 "google": ProviderType.GEMINI,
                 "gemini": ProviderType.GEMINI,
             }
-            provider_enum = provider_mapping.get(
-                provider.lower(), ProviderType(provider.upper())
-            )
+            provider_enum = provider_mapping.get(provider.lower(), ProviderType(provider.upper()))
             return self.cost_manager.estimate_cost(
                 provider_enum, model, input_tokens, output_tokens
             )
@@ -168,9 +166,7 @@ class IntegratedCostManager:
                 "google": ProviderType.GEMINI,
                 "gemini": ProviderType.GEMINI,
             }
-            provider_enum = provider_mapping.get(
-                provider.lower(), ProviderType(provider.upper())
-            )
+            provider_enum = provider_mapping.get(provider.lower(), ProviderType(provider.upper()))
         except (ValueError, KeyError):
             logger.warning(f"Unknown provider: {provider}")
             return
@@ -214,9 +210,7 @@ class IntegratedCostManager:
         """Get comprehensive cost analytics."""
         return self.analytics.get_cost_summary(start_date, end_date)
 
-    def get_optimization_recommendations(
-        self, lookback_days: int = 30
-    ) -> list[dict[str, Any]]:
+    def get_optimization_recommendations(self, lookback_days: int = 30) -> list[dict[str, Any]]:
         """Get cost optimization recommendations."""
         recommendations = self.analytics.get_optimization_recommendations(lookback_days)
         return [
@@ -292,7 +286,7 @@ class IntegratedCostManager:
             for alert in alerts
         ]
 
-    async def refresh_pricing_data(self) -> None:
+    async def refresh_pricing_data(self) -> Any:
         """Refresh pricing data from all providers."""
         if self.cost_manager:
             await self.cost_manager._refresh_pricing()
@@ -333,16 +327,10 @@ class IntegratedCostManager:
         high_priority_recs = [r for r in recommendations if r.priority == "high"]
 
         if high_priority_recs:
-            issues.append(
-                f"{len(high_priority_recs)} high-priority optimization recommendations"
-            )
+            issues.append(f"{len(high_priority_recs)} high-priority optimization recommendations")
 
         return {
-            "status": (
-                "healthy"
-                if not issues
-                else "warning" if len(issues) < 3 else "critical"
-            ),
+            "status": ("healthy" if not issues else "warning" if len(issues) < 3 else "critical"),
             "budget_status": budget_status.status,
             "issues": issues,
             "recommendations_count": len(recommendations),
@@ -445,9 +433,7 @@ def create_default_cost_manager(
     from .cost_management import BudgetPeriod, CostManagementConfig, EnforcementPolicy
 
     # Cost management config
-    cost_config = CostManagementConfig(
-        budget_limit=100.0, refresh_interval=3600, max_records=10000
-    )
+    cost_config = CostManagementConfig(budget_limit=100.0, refresh_interval=3600, max_records=10000)
 
     # Budget config
     budget_period_enum = BudgetPeriod.MONTHLY

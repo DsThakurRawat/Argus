@@ -161,9 +161,7 @@ class TestModelSelector:
         registry = self.create_mock_registry()
         scorer = self.create_mock_scorer()
 
-        model1 = self.create_test_model(
-            "fast-model", max_tokens=1000, cost_per_1k_tokens=0.001
-        )
+        model1 = self.create_test_model("fast-model", max_tokens=1000, cost_per_1k_tokens=0.001)
         model2 = self.create_test_model(
             "reliable-model", reliability_score=0.95, cost_per_1k_tokens=0.005
         )
@@ -186,9 +184,7 @@ class TestModelSelector:
         # Test fastest strategy
         criteria = SelectionCriteria(strategy=SelectionStrategy.FASTEST)
         result = selector.select_model(criteria)
-        assert (
-            result.selected_model == model1
-        )  # Should select model with lowest max_tokens
+        assert result.selected_model == model1  # Should select model with lowest max_tokens
 
         # Test cheapest strategy
         criteria = SelectionCriteria(strategy=SelectionStrategy.CHEAPEST)
@@ -198,9 +194,7 @@ class TestModelSelector:
         # Test most reliable strategy
         criteria = SelectionCriteria(strategy=SelectionStrategy.MOST_RELIABLE)
         result = selector.select_model(criteria)
-        assert (
-            result.selected_model == model2
-        )  # Should select model with highest reliability
+        assert result.selected_model == model2  # Should select model with highest reliability
 
     def test_select_model_with_fallback(self) -> None:
         """Test model selection with fallback support."""
@@ -303,16 +297,12 @@ class TestModelSelector:
         criteria = SelectionCriteria(allow_fallback=True)
 
         # Mock _is_model_available to return False for primary, True for fallback
-        selector._is_model_available = Mock(
-            side_effect=lambda m: m.name != "primary-model"
-        )
+        selector._is_model_available = Mock(side_effect=lambda m: m.name != "primary-model")
 
         selected_model, result = selector.select_model_with_fallback(criteria)
 
         assert selected_model == fallback_model
-        assert (
-            result.selected_model == primary_model
-        )  # Result still shows primary as selected
+        assert result.selected_model == primary_model  # Result still shows primary as selected
         assert len(result.fallback_chain) >= 2
 
     def test_meets_criteria(self) -> None:
@@ -364,9 +354,7 @@ class TestModelSelector:
 
         # Second call should use cache
         result2 = selector.select_model(criteria)
-        assert (
-            result1.timestamp == result2.timestamp
-        )  # Same timestamp indicates cache hit
+        assert result1.timestamp == result2.timestamp  # Same timestamp indicates cache hit
 
     def test_selection_caching_disabled(self) -> None:
         """Test selection with caching disabled."""
@@ -431,9 +419,7 @@ class TestModelSelector:
         stats = selector.get_selection_stats()
         # Note: stats are tracked per unique criteria, not per strategy
         # Since criteria1 and criteria3 are identical, they share the same cache key
-        assert (
-            stats["selection_counts"]["best_score"] == 1
-        )  # criteria1 and criteria3 are identical
+        assert stats["selection_counts"]["best_score"] == 1  # criteria1 and criteria3 are identical
         assert stats["selection_counts"]["fastest"] == 1
 
     def test_clear_cache(self) -> None:
@@ -532,6 +518,4 @@ class TestModelSelector:
         # Verify scorer was called with custom weights
         scorer.rank_models.assert_called_once()
         call_args = scorer.rank_models.call_args
-        assert (
-            call_args[0][2] == custom_weights
-        )  # Third argument should be custom_weights
+        assert call_args[0][2] == custom_weights  # Third argument should be custom_weights

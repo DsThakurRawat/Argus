@@ -73,9 +73,7 @@ class TestLiteLLMProvider:
     @pytest.mark.asyncio
     async def test_generate_text(self, provider):
         """Test text generation."""
-        with patch(
-            "argus.llm.litellm_provider.litellm.acompletion"
-        ) as mock_completion:
+        with patch("argus.llm.litellm_provider.litellm.acompletion") as mock_completion:
             mock_response = MagicMock()
             mock_response.choices[0].message.content = "Generated text"
             mock_completion.return_value = mock_response
@@ -87,9 +85,7 @@ class TestLiteLLMProvider:
     @pytest.mark.asyncio
     async def test_generate_structured(self, provider):
         """Test structured output generation."""
-        with patch(
-            "argus.llm.litellm_provider.instructor.from_litellm"
-        ) as mock_instructor:
+        with patch("argus.llm.litellm_provider.instructor.from_litellm") as mock_instructor:
             mock_client = MagicMock()
             mock_instructor.return_value = mock_client
             mock_response = TestResponse(message="Test", confidence=0.95)
@@ -103,9 +99,7 @@ class TestLiteLLMProvider:
     @pytest.mark.asyncio
     async def test_generate_stream(self, provider):
         """Test streaming text generation."""
-        with patch(
-            "argus.llm.litellm_provider.litellm.acompletion"
-        ) as mock_completion:
+        with patch("argus.llm.litellm_provider.litellm.acompletion") as mock_completion:
             # Mock streaming response
             mock_chunk1 = MagicMock()
             mock_chunk1.choices[0].delta.content = "Hello"
@@ -128,9 +122,7 @@ class TestLiteLLMProvider:
     @pytest.mark.asyncio
     async def test_health_check(self, provider):
         """Test health check functionality."""
-        with patch.object(
-            provider, "generate_text", return_value="OK"
-        ) as mock_generate:
+        with patch.object(provider, "generate_text", return_value="OK") as mock_generate:
             result = await provider.health_check()
             assert result is True
             mock_generate.assert_called_once_with(prompt="Hello", max_tokens=10)
@@ -154,11 +146,7 @@ class TestLiteLLMProvider:
         invalid_config = LLMProviderConfig(
             provider="openai",
             # Missing API key
-            models={
-                "gpt-3.5-turbo": ModelConfig(
-                    name="gpt-3.5-turbo", model_type=ModelType.FAST
-                )
-            },
+            models={"gpt-3.5-turbo": ModelConfig(name="gpt-3.5-turbo", model_type=ModelType.FAST)},
         )
         provider = LiteLLMProvider(invalid_config)
         assert provider.validate_config() is False

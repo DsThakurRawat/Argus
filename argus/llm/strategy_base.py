@@ -91,9 +91,7 @@ class ModelSelectionStrategy(ABC):
         }
 
     @abstractmethod
-    def select_model(
-        self, candidates: list[ModelInfo], context: StrategyContext
-    ) -> StrategyResult:
+    def select_model(self, candidates: list[ModelInfo], context: StrategyContext) -> StrategyResult:
         """Select the best model from candidates based on strategy.
 
         Args:
@@ -128,21 +126,15 @@ class ModelSelectionStrategy(ABC):
 
         # Filter by performance constraint
         if context.min_performance is not None:
-            filtered = [
-                m for m in filtered if m.performance_score >= context.min_performance
-            ]
+            filtered = [m for m in filtered if m.performance_score >= context.min_performance]
 
         # Filter by quality constraint (using performance_score as proxy)
         if context.min_quality is not None:
-            filtered = [
-                m for m in filtered if m.performance_score >= context.min_quality
-            ]
+            filtered = [m for m in filtered if m.performance_score >= context.min_quality]
 
         # Filter by provider preference
         if context.provider_preference:
-            filtered = [
-                m for m in filtered if m.provider in context.provider_preference
-            ]
+            filtered = [m for m in filtered if m.provider in context.provider_preference]
 
         return filtered
 
@@ -169,9 +161,7 @@ class ModelSelectionStrategy(ABC):
         # Update average score
         current_avg = self._performance_metrics["average_score"]
         total = self._performance_metrics["total_selections"]
-        self._performance_metrics["average_score"] = (
-            current_avg * (total - 1) + score
-        ) / total
+        self._performance_metrics["average_score"] = (current_avg * (total - 1) + score) / total
 
         # Update average latency
         current_avg_latency = self._performance_metrics["average_latency"]

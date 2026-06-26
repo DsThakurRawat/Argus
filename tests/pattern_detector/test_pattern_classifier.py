@@ -26,9 +26,7 @@ class TestPatternClassifier:
     @pytest.fixture
     def cascade_failure_window(self) -> None:
         """Create a window simulating cascade failure."""
-        window = TimeWindow(
-            start_time=datetime(2025, 1, 27, 10, 0, 0), duration_minutes=5
-        )
+        window = TimeWindow(start_time=datetime(2025, 1, 27, 10, 0, 0), duration_minutes=5)
         services = ["auth-service", "billing-service", "notification-service"]
         for i in range(15):
             service = services[i % len(services)]
@@ -47,9 +45,7 @@ class TestPatternClassifier:
     @pytest.fixture
     def service_degradation_window(self) -> None:
         """Create a window simulating service degradation."""
-        window = TimeWindow(
-            start_time=datetime(2025, 1, 27, 10, 5, 0), duration_minutes=5
-        )
+        window = TimeWindow(start_time=datetime(2025, 1, 27, 10, 5, 0), duration_minutes=5)
         for i in range(10):
             service = "billing-service" if i < 8 else "auth-service"
             severity = "ERROR"
@@ -67,9 +63,7 @@ class TestPatternClassifier:
     @pytest.fixture
     def configuration_issue_window(self) -> None:
         """Create a window simulating configuration issues."""
-        window = TimeWindow(
-            start_time=datetime(2025, 1, 27, 10, 10, 0), duration_minutes=5
-        )
+        window = TimeWindow(start_time=datetime(2025, 1, 27, 10, 10, 0), duration_minutes=5)
         config_errors = [
             "Invalid configuration parameter",
             "Missing required setting",
@@ -137,9 +131,7 @@ class TestPatternClassifier:
             assert rule_type in classifier.classification_rules
             assert "min_confidence" in classifier.classification_rules[rule_type]
 
-    def test_no_patterns_when_no_triggered_thresholds(
-        self, classifier, cascade_failure_window
-    ):
+    def test_no_patterns_when_no_triggered_thresholds(self, classifier, cascade_failure_window):
         """Test that no patterns are detected when no thresholds are triggered."""
         threshold_results = [
             ThresholdResult(
@@ -151,9 +143,7 @@ class TestPatternClassifier:
                 affected_services=[],
             )
         ]
-        patterns = classifier.classify_patterns(
-            cascade_failure_window, threshold_results
-        )
+        patterns = classifier.classify_patterns(cascade_failure_window, threshold_results)
         assert len(patterns) == 0
 
     def test_severity_level_calculation(self, classifier: str) -> None:

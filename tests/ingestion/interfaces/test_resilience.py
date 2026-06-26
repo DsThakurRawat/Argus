@@ -4,7 +4,6 @@
 Tests for the resilience system using circuitbreaker and tenacity.
 """
 
-
 import pytest
 
 from argus.ingestion.interfaces.resilience import (

@@ -77,9 +77,7 @@ class LLMPromptService:
                 else:
                     response = response_text
             else:
-                raise ValueError(
-                    "LLM service does not support structured output generation"
-                )
+                raise ValueError("LLM service does not support structured output generation")
 
             # Record metrics if enabled
             if record_metrics:
@@ -89,9 +87,7 @@ class LLMPromptService:
                 metrics = {
                     "duration_seconds": duration,
                     "token_count": getattr(self.llm_service, "last_token_count", 0),
-                    "model_used": getattr(
-                        self.llm_service, "last_model_used", "unknown"
-                    ),
+                    "model_used": getattr(self.llm_service, "last_model_used", "unknown"),
                     "success": True,
                 }
 
@@ -109,10 +105,8 @@ class LLMPromptService:
 
                 metrics = {
                     "duration_seconds": duration,
-                    "token_count": 0,
-                    "model_used": getattr(
-                        self.llm_service, "last_model_used", "unknown"
-                    ),
+                    "token_count": 0,  # nosec B105
+                    "model_used": getattr(self.llm_service, "last_model_used", "unknown"),
                     "success": False,
                     "error": str(e),
                 }
@@ -159,9 +153,7 @@ class LLMPromptService:
                 metrics = {
                     "duration_seconds": duration,
                     "token_count": getattr(self.llm_service, "last_token_count", 0),
-                    "model_used": getattr(
-                        self.llm_service, "last_model_used", "unknown"
-                    ),
+                    "model_used": getattr(self.llm_service, "last_model_used", "unknown"),
                     "success": True,
                 }
 
@@ -179,10 +171,8 @@ class LLMPromptService:
 
                 metrics = {
                     "duration_seconds": duration,
-                    "token_count": 0,
-                    "model_used": getattr(
-                        self.llm_service, "last_model_used", "unknown"
-                    ),
+                    "token_count": 0,  # nosec B105
+                    "model_used": getattr(self.llm_service, "last_model_used", "unknown"),
                     "success": False,
                     "error": str(e),
                 }
@@ -205,9 +195,7 @@ class MirascopeIntegratedLLMService:
         self, prompt_id: str, inputs: dict[str, Any], response_model: type[BaseModel]
     ) -> BaseModel:
         """Execute a managed prompt with full tracking and metrics."""
-        return await self.prompt_service.execute_prompt(
-            prompt_id, inputs, response_model
-        )
+        return await self.prompt_service.execute_prompt(prompt_id, inputs, response_model)
 
     def create_environment(self, name: str) -> PromptEnvironment:
         """Create a new environment for prompt deployment."""

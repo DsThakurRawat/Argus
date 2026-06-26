@@ -57,9 +57,7 @@ class IntelligentCache:
 
         return ":".join(key_components)
 
-    async def get_or_compute(
-        self, key: str, compute_func: Callable, *args, **kwargs
-    ) -> Any:
+    async def get_or_compute(self, key: str, compute_func: Callable, *args, **kwargs) -> Any:
         """Get from cache or compute and cache."""
         # Check if item exists and is not expired
         if key in self.cache:
@@ -118,7 +116,7 @@ class IntelligentCache:
 
     def _cleanup_expired(self) -> None:
         """Remove all expired items from the cache."""
-        expired_keys = [key for key in self.cache.keys() if self._is_expired(key)]
+        expired_keys = [key for key in self.cache if self._is_expired(key)]
 
         for key in expired_keys:
             self._remove_item(key)
@@ -178,7 +176,7 @@ class IntelligentCache:
         pattern_re = re.compile(pattern)
         invalidated = 0
 
-        keys_to_remove = [key for key in self.cache.keys() if pattern_re.search(key)]
+        keys_to_remove = [key for key in self.cache if pattern_re.search(key)]
 
         for key in keys_to_remove:
             self._remove_item(key)

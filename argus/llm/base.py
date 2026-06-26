@@ -19,7 +19,13 @@ from argus.metrics import get_metrics_manager
 from argus.metrics.enums import ErrorCategory
 
 from .capabilities.models import ModelCapability
+
+# ProviderType is re-exported here so callers and tests can import it from
+# argus.llm.base alongside ModelType (its canonical home is common.enums).
+# The `as ProviderType` redundant alias marks it as an intentional re-export
+# so ruff's F401 keeps it.
 from .common.enums import ModelType
+from .common.enums import ProviderType as ProviderType
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +94,7 @@ class CircuitBreaker:
         self.last_failure_time = None
         self.state = "closed"  # closed, open, half-open
 
-    def call_succeeded(self) -> None:
+    def call_succeeded(self) -> Any:
         """Record a successful call."""
         self.failure_count = 0
         self.state = "closed"
@@ -110,19 +116,18 @@ class CircuitBreaker:
         """Check if the circuit breaker allows calls."""
         if self.state == "closed":
             return True
-        if self.state == "open":
-            if self.last_failure_time is not None:
-                try:
-                    current_time = asyncio.get_event_loop().time()
-                except RuntimeError:
-                    # No event loop running, use time.time() as fallback
-                    import time
+        if self.state == "open" and self.last_failure_time is not None:
+            try:
+                current_time = asyncio.get_event_loop().time()
+            except RuntimeError:
+                # No event loop running, use time.time() as fallback
+                import time
 
-                    current_time = time.time()
+                current_time = time.time()
 
-                if current_time - self.last_failure_time >= self.recovery_timeout:
-                    self.state = "half-open"
-                    return True
+            if current_time - self.last_failure_time >= self.recovery_timeout:
+                self.state = "half-open"
+                return True
         return self.state == "half-open"
 
 
@@ -149,12 +154,8 @@ class LLMProvider(ABC):
             response = await self._generate(request)
             latency_ms = (time.time() - start_time) * 1000
 
-            input_tokens = (
-                response.usage.get("input_tokens", 0) if response.usage else 0
-            )
-            output_tokens = (
-                response.usage.get("output_tokens", 0) if response.usage else 0
-            )
+            input_tokens = response.usage.get("input_tokens", 0) if response.usage else 0
+            output_tokens = response.usage.get("output_tokens", 0) if response.usage else 0
             cost = self.cost_estimate(input_tokens, output_tokens)
 
             try:
@@ -262,4 +263,3 @@ class LLMProvider(ABC):
     def provider_name(self) -> str:
         """Get the provider name."""
         return self.provider_type
-

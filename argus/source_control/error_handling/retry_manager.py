@@ -20,9 +20,7 @@ from .metrics_integration import ErrorHandlingMetrics
 class RetryManager:
     """Manages retry logic with exponential backoff and jitter."""
 
-    def __init__(
-        self, config: RetryConfig, metrics: ErrorHandlingMetrics | None = None
-    ) -> None:
+    def __init__(self, config: RetryConfig, metrics: ErrorHandlingMetrics | None = None) -> None:
         self.config = config
         self.logger = logging.getLogger("RetryManager")
         self.error_classifier = ErrorClassifier()
@@ -52,13 +50,8 @@ class RetryManager:
                 classification = self.error_classifier.classify_error(e)
 
                 # Check if we should retry
-                if (
-                    not classification.is_retryable
-                    or attempt >= classification.max_retries
-                ):
-                    self.logger.error(
-                        f"Not retrying error: {e} (attempt {attempt + 1})"
-                    )
+                if not classification.is_retryable or attempt >= classification.max_retries:
+                    self.logger.error(f"Not retrying error: {e} (attempt {attempt + 1})")
                     if self.metrics:
                         duration = asyncio.get_event_loop().time() - start_time
                         await self.metrics.record_operation_failure(
@@ -110,7 +103,7 @@ class RetryManager:
         if self.config.jitter:
             import random
 
-            jitter_factor = random.uniform(0.5, 1.5)
+            jitter_factor = random.uniform(0.5, 1.5)  # nosec B311
             delay *= jitter_factor
 
         return delay

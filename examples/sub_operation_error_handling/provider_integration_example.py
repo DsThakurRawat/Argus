@@ -129,51 +129,41 @@ class ProviderManager:
                 return False
 
             # Create error handling components
-            error_handling_components = (
-                self.error_handling_factory.create_error_handling_system(
-                    provider_name="local",
-                    config={
-                        "circuit_breaker": {
-                            "failure_threshold": (
-                                config.circuit_breaker_config.failure_threshold
-                                if config.circuit_breaker_config
-                                else 5
-                            ),
-                            "recovery_timeout": (
-                                config.circuit_breaker_config.recovery_timeout
-                                if config.circuit_breaker_config
-                                else 30.0
-                            ),
-                            "timeout": (
-                                config.circuit_breaker_config.timeout
-                                if config.circuit_breaker_config
-                                else 10.0
-                            ),
-                        },
-                        "retry": {
-                            "max_retries": (
-                                config.retry_config.max_retries
-                                if config.retry_config
-                                else 3
-                            ),
-                            "base_delay": (
-                                config.retry_config.base_delay
-                                if config.retry_config
-                                else 1.0
-                            ),
-                            "max_delay": (
-                                config.retry_config.max_delay
-                                if config.retry_config
-                                else 10.0
-                            ),
-                            "backoff_factor": (
-                                config.retry_config.backoff_factor
-                                if config.retry_config
-                                else 2.0
-                            ),
-                        },
+            error_handling_components = self.error_handling_factory.create_error_handling_system(
+                provider_name="local",
+                config={
+                    "circuit_breaker": {
+                        "failure_threshold": (
+                            config.circuit_breaker_config.failure_threshold
+                            if config.circuit_breaker_config
+                            else 5
+                        ),
+                        "recovery_timeout": (
+                            config.circuit_breaker_config.recovery_timeout
+                            if config.circuit_breaker_config
+                            else 30.0
+                        ),
+                        "timeout": (
+                            config.circuit_breaker_config.timeout
+                            if config.circuit_breaker_config
+                            else 10.0
+                        ),
                     },
-                )
+                    "retry": {
+                        "max_retries": (
+                            config.retry_config.max_retries if config.retry_config else 3
+                        ),
+                        "base_delay": (
+                            config.retry_config.base_delay if config.retry_config else 1.0
+                        ),
+                        "max_delay": (
+                            config.retry_config.max_delay if config.retry_config else 10.0
+                        ),
+                        "backoff_factor": (
+                            config.retry_config.backoff_factor if config.retry_config else 2.0
+                        ),
+                    },
+                },
             )
 
             # Initialize local file operations
@@ -204,51 +194,41 @@ class ProviderManager:
                 return False
 
             # Create error handling components
-            error_handling_components = (
-                self.error_handling_factory.create_error_handling_system(
-                    provider_name="github",
-                    config={
-                        "circuit_breaker": {
-                            "failure_threshold": (
-                                config.circuit_breaker_config.failure_threshold
-                                if config.circuit_breaker_config
-                                else 5
-                            ),
-                            "recovery_timeout": (
-                                config.circuit_breaker_config.recovery_timeout
-                                if config.circuit_breaker_config
-                                else 30.0
-                            ),
-                            "timeout": (
-                                config.circuit_breaker_config.timeout
-                                if config.circuit_breaker_config
-                                else 10.0
-                            ),
-                        },
-                        "retry": {
-                            "max_retries": (
-                                config.retry_config.max_retries
-                                if config.retry_config
-                                else 3
-                            ),
-                            "base_delay": (
-                                config.retry_config.base_delay
-                                if config.retry_config
-                                else 1.0
-                            ),
-                            "max_delay": (
-                                config.retry_config.max_delay
-                                if config.retry_config
-                                else 10.0
-                            ),
-                            "backoff_factor": (
-                                config.retry_config.backoff_factor
-                                if config.retry_config
-                                else 2.0
-                            ),
-                        },
+            error_handling_components = self.error_handling_factory.create_error_handling_system(
+                provider_name="github",
+                config={
+                    "circuit_breaker": {
+                        "failure_threshold": (
+                            config.circuit_breaker_config.failure_threshold
+                            if config.circuit_breaker_config
+                            else 5
+                        ),
+                        "recovery_timeout": (
+                            config.circuit_breaker_config.recovery_timeout
+                            if config.circuit_breaker_config
+                            else 30.0
+                        ),
+                        "timeout": (
+                            config.circuit_breaker_config.timeout
+                            if config.circuit_breaker_config
+                            else 10.0
+                        ),
                     },
-                )
+                    "retry": {
+                        "max_retries": (
+                            config.retry_config.max_retries if config.retry_config else 3
+                        ),
+                        "base_delay": (
+                            config.retry_config.base_delay if config.retry_config else 1.0
+                        ),
+                        "max_delay": (
+                            config.retry_config.max_delay if config.retry_config else 10.0
+                        ),
+                        "backoff_factor": (
+                            config.retry_config.backoff_factor if config.retry_config else 2.0
+                        ),
+                    },
+                },
             )
 
             # Initialize GitHub file operations
@@ -276,51 +256,41 @@ class ProviderManager:
                 return False
 
             # Create error handling components
-            error_handling_components = (
-                self.error_handling_factory.create_error_handling_system(
-                    provider_name="gitlab",
-                    config={
-                        "circuit_breaker": {
-                            "failure_threshold": (
-                                config.circuit_breaker_config.failure_threshold
-                                if config.circuit_breaker_config
-                                else 5
-                            ),
-                            "recovery_timeout": (
-                                config.circuit_breaker_config.recovery_timeout
-                                if config.circuit_breaker_config
-                                else 30.0
-                            ),
-                            "timeout": (
-                                config.circuit_breaker_config.timeout
-                                if config.circuit_breaker_config
-                                else 10.0
-                            ),
-                        },
-                        "retry": {
-                            "max_retries": (
-                                config.retry_config.max_retries
-                                if config.retry_config
-                                else 3
-                            ),
-                            "base_delay": (
-                                config.retry_config.base_delay
-                                if config.retry_config
-                                else 1.0
-                            ),
-                            "max_delay": (
-                                config.retry_config.max_delay
-                                if config.retry_config
-                                else 10.0
-                            ),
-                            "backoff_factor": (
-                                config.retry_config.backoff_factor
-                                if config.retry_config
-                                else 2.0
-                            ),
-                        },
+            error_handling_components = self.error_handling_factory.create_error_handling_system(
+                provider_name="gitlab",
+                config={
+                    "circuit_breaker": {
+                        "failure_threshold": (
+                            config.circuit_breaker_config.failure_threshold
+                            if config.circuit_breaker_config
+                            else 5
+                        ),
+                        "recovery_timeout": (
+                            config.circuit_breaker_config.recovery_timeout
+                            if config.circuit_breaker_config
+                            else 30.0
+                        ),
+                        "timeout": (
+                            config.circuit_breaker_config.timeout
+                            if config.circuit_breaker_config
+                            else 10.0
+                        ),
                     },
-                )
+                    "retry": {
+                        "max_retries": (
+                            config.retry_config.max_retries if config.retry_config else 3
+                        ),
+                        "base_delay": (
+                            config.retry_config.base_delay if config.retry_config else 1.0
+                        ),
+                        "max_delay": (
+                            config.retry_config.max_delay if config.retry_config else 10.0
+                        ),
+                        "backoff_factor": (
+                            config.retry_config.backoff_factor if config.retry_config else 2.0
+                        ),
+                    },
+                },
             )
 
             # Initialize GitLab file operations
@@ -338,9 +308,7 @@ class ProviderManager:
             self.logger.error(f"Failed to initialize GitLab provider: {e}")
             return False
 
-    async def perform_operation(
-        self, provider_name: str, operation: str, *args, **kwargs
-    ) -> Any:
+    async def perform_operation(self, provider_name: str, operation: str, *args, **kwargs) -> Any:
         """Perform an operation on a specific provider."""
         if provider_name not in self.providers:
             raise ValueError(f"Provider {provider_name} not initialized")
@@ -440,9 +408,7 @@ async def local_provider_example():
                     print(f"     - Success: {result.success}")
                     print(f"     - Message: {result.message}")
                 elif isinstance(result, str):
-                    print(
-                        f"     - Content: '{result[:50]}{'...' if len(result) > 50 else ''}'"
-                    )
+                    print(f"     - Content: '{result[:50]}{'...' if len(result) > 50 else ''}'")
                 elif isinstance(result, bool) or hasattr(result, "__dict__"):
                     print(f"     - Result: {result}")
             except Exception as e:
@@ -498,9 +464,7 @@ async def multi_provider_example():
 
         # Initialize local provider
         local_success = await manager.initialize_local_provider(temp_dir)
-        print(
-            f"Local provider initialization: {'SUCCESS' if local_success else 'FAILED'}"
-        )
+        print(f"Local provider initialization: {'SUCCESS' if local_success else 'FAILED'}")
 
         # Note: GitHub and GitLab providers would require actual API credentials
         # For this example, we'll just show the configuration setup
@@ -643,9 +607,7 @@ async def configuration_management_example():
         print("\n4. Testing configuration retrieval...")
 
         # Test getting specific configuration
-        retrieved_config = manager.config_manager.get_config(
-            "custom", "file_operations"
-        )
+        retrieved_config = manager.config_manager.get_config("custom", "file_operations")
         if retrieved_config:
             print(f"   Retrieved custom config: {retrieved_config.operation_name}")
             print(f"   - Custom settings: {retrieved_config.custom_settings}")
@@ -680,18 +642,12 @@ async def configuration_management_example():
         print("   Local configuration updated")
 
         # Verify update
-        updated_retrieved = manager.config_manager.get_config(
-            "local", "file_operations"
-        )
+        updated_retrieved = manager.config_manager.get_config("local", "file_operations")
         if updated_retrieved:
             retries = updated_retrieved.get_operation_retries("file")
             print(f"   Updated config - Max retries: {retries}")
-            print(
-                f"   Updated config - Timeout: {updated_retrieved.get_operation_timeout('file')}"
-            )
-            print(
-                f"   Updated config - Performance logging: {updated_retrieved.log_performance}"
-            )
+            print(f"   Updated config - Timeout: {updated_retrieved.get_operation_timeout('file')}")
+            print(f"   Updated config - Performance logging: {updated_retrieved.log_performance}")
 
     except Exception as e:
         print(f"Error in configuration management example: {e}")

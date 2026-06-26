@@ -88,9 +88,7 @@ class TestPromptManager:
 
     def test_create_version(self, prompt_manager: str) -> None:
         """Test creating a new version of a prompt."""
-        prompt_id = prompt_manager.create_prompt(
-            name="Test Prompt", template="Version 1"
-        )
+        prompt_id = prompt_manager.create_prompt(name="Test Prompt", template="Version 1")
 
         version = prompt_manager.create_version(prompt_id, "Version 2")
         assert version == "1.0.1"
@@ -119,9 +117,7 @@ class TestPromptManager:
 
     def test_record_metrics(self, prompt_manager: str) -> None:
         """Test recording metrics for a prompt."""
-        prompt_id = prompt_manager.create_prompt(
-            name="Test Prompt", template="Test template"
-        )
+        prompt_id = prompt_manager.create_prompt(name="Test Prompt", template="Test template")
 
         metrics = {"duration_seconds": 1.5, "token_count": 100, "success": True}
 
@@ -202,9 +198,7 @@ class TestPromptEnvironment:
 
     def test_environment_fallback(self, prompt_manager: str) -> None:
         """Test environment fallback to current version."""
-        prompt_id = prompt_manager.create_prompt(
-            name="Fallback Test", template="Current version"
-        )
+        prompt_id = prompt_manager.create_prompt(name="Fallback Test", template="Current version")
 
         env = PromptEnvironment("test", prompt_manager)
 
@@ -335,21 +329,15 @@ class TestLLMPromptService:
 
         prompt_service = LLMPromptService(mock_llm_service, prompt_manager)
 
-        prompt_id = prompt_manager.create_prompt(
-            name="Text Test", template="Generate: {{topic}}"
-        )
+        prompt_id = prompt_manager.create_prompt(name="Text Test", template="Generate: {{topic}}")
 
-        result = await prompt_service.execute_prompt_text(
-            prompt_id, {"topic": "test content"}
-        )
+        result = await prompt_service.execute_prompt_text(prompt_id, {"topic": "test content"})
 
         assert result == "Test response"
         mock_llm_service.generate_text.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_execute_prompt_with_environment(
-        self, prompt_manager, mock_llm_service
-    ):
+    async def test_execute_prompt_with_environment(self, prompt_manager, mock_llm_service):
         """Test executing a prompt with environment-specific version."""
         mock_llm_service.generate_text.return_value = "Environment response"
 
@@ -366,9 +354,7 @@ class TestLLMPromptService:
         assert result == "Environment response"
 
     @pytest.mark.asyncio
-    async def test_execute_prompt_error_handling(
-        self, prompt_manager, mock_llm_service
-    ):
+    async def test_execute_prompt_error_handling(self, prompt_manager, mock_llm_service):
         """Test error handling in prompt execution."""
         mock_llm_service.generate_text.side_effect = Exception("LLM service error")
 
@@ -389,25 +375,17 @@ class TestLLMPromptService:
 class TestMirascopeIntegratedLLMService:
     """Test the MirascopeIntegratedLLMService class."""
 
-    def test_integrated_service_creation(
-        self, prompt_manager: str, mock_llm_service: str
-    ) -> None:
+    def test_integrated_service_creation(self, prompt_manager: str, mock_llm_service: str) -> None:
         """Test creating an integrated LLM service."""
-        integrated_service = MirascopeIntegratedLLMService(
-            mock_llm_service, prompt_manager
-        )
+        integrated_service = MirascopeIntegratedLLMService(mock_llm_service, prompt_manager)
 
         assert integrated_service.llm_service == mock_llm_service
         assert integrated_service.prompt_manager == prompt_manager
         assert isinstance(integrated_service.prompt_service, LLMPromptService)
 
-    def test_create_environment(
-        self, prompt_manager: str, mock_llm_service: str
-    ) -> None:
+    def test_create_environment(self, prompt_manager: str, mock_llm_service: str) -> None:
         """Test creating a new environment."""
-        integrated_service = MirascopeIntegratedLLMService(
-            mock_llm_service, prompt_manager
-        )
+        integrated_service = MirascopeIntegratedLLMService(mock_llm_service, prompt_manager)
 
         env = integrated_service.create_environment("test-env")
         assert isinstance(env, PromptEnvironment)
@@ -415,9 +393,7 @@ class TestMirascopeIntegratedLLMService:
 
     def test_get_managers(self, prompt_manager: str, mock_llm_service: str) -> None:
         """Test getting manager instances."""
-        integrated_service = MirascopeIntegratedLLMService(
-            mock_llm_service, prompt_manager
-        )
+        integrated_service = MirascopeIntegratedLLMService(mock_llm_service, prompt_manager)
 
         assert integrated_service.get_prompt_manager() == prompt_manager
         assert isinstance(integrated_service.get_prompt_service(), LLMPromptService)

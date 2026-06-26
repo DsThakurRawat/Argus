@@ -14,9 +14,7 @@ from typing import Any
 
 from ...core.interfaces import ProcessableComponent
 from ...core.types import ConfigDict, Timestamp
-from ...llm.base import ModelType
-from ...llm.config import LLMConfig
-from ..enhanced_analysis_agent import EnhancedAnalysisAgent
+from ..ml_analysis_agent import EnhancedAnalysisConfig, MLAnalysisAgent
 from ..prompt_context_models import IssueContext, RepositoryContext
 
 logger = logging.getLogger(__name__)
@@ -92,14 +90,13 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
         super().__init__(component_id, name, config)
 
         # Initialize analysis agent with default config
-        llm_config = LLMConfig(
-            default_provider="gemini",
-            default_model_type=ModelType.SMART,
-            enable_fallback=True,
-            enable_monitoring=True,
-        )
-        self.analysis_agent = EnhancedAnalysisAgent(
-            llm_config=llm_config, agent_name="workflow_analysis_agent"
+        self.analysis_agent = MLAnalysisAgent(
+            config=EnhancedAnalysisConfig(
+                project_id="argus",
+                location="global",
+                main_model="gemini-1.5-pro-001",
+                meta_model="gemini-1.5-flash-001",
+            )
         )
 
         # Analysis tracking
@@ -155,7 +152,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
 
             # Perform analysis using the enhanced analysis agent
             analysis_response = await self.analysis_agent.analyze_issue(
-                triage_data=triage_data,
+                triage_packet=triage_data,
                 historical_logs=historical_logs,
                 configs=configs,
                 flow_id=workflow_id,
@@ -257,7 +254,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
 
             # Perform pattern analysis using the enhanced analysis agent
             analysis_response = await self.analysis_agent.analyze_issue(
-                triage_data=triage_data,
+                triage_packet=triage_data,
                 historical_logs=historical_logs,
                 configs=configs,
                 flow_id=workflow_id,
@@ -290,9 +287,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
             self.total_analysis_time += analysis_duration
             self.successful_analyses += 1
 
-            logger.info(
-                f"Completed pattern analysis {analysis_id} in {analysis_duration:.3f}s"
-            )
+            logger.info(f"Completed pattern analysis {analysis_id} in {analysis_duration:.3f}s")
             return result
 
         except Exception as e:
@@ -337,7 +332,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
         # In practice, this would be called from an async context
         raise NotImplementedError("Use async methods for analysis operations")
 
-    def initialize(self) -> None:
+    def initialize(self) -> Any:
         """Initialize the component."""
         self._status = "initialized"
         logger.info(f"Initialized {self.name}")
@@ -428,9 +423,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
                 return analysis_response.patterns
             elif hasattr(analysis_response, "detected_patterns"):
                 return analysis_response.detected_patterns
-            elif (
-                isinstance(analysis_response, dict) and "patterns" in analysis_response
-            ):
+            elif isinstance(analysis_response, dict) and "patterns" in analysis_response:
                 return analysis_response["patterns"]
             else:
                 return []
@@ -453,9 +446,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
                 return analysis_response.insights
             elif hasattr(analysis_response, "key_insights"):
                 return analysis_response.key_insights
-            elif (
-                isinstance(analysis_response, dict) and "insights" in analysis_response
-            ):
+            elif isinstance(analysis_response, dict) and "insights" in analysis_response:
                 return analysis_response["insights"]
             else:
                 return []
@@ -478,10 +469,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
                 return analysis_response.recommendations
             elif hasattr(analysis_response, "suggestions"):
                 return analysis_response.suggestions
-            elif (
-                isinstance(analysis_response, dict)
-                and "recommendations" in analysis_response
-            ):
+            elif isinstance(analysis_response, dict) and "recommendations" in analysis_response:
                 return analysis_response["recommendations"]
             else:
                 return []
@@ -504,10 +492,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
                 return float(analysis_response.confidence)
             elif hasattr(analysis_response, "confidence_score"):
                 return float(analysis_response.confidence_score)
-            elif (
-                isinstance(analysis_response, dict)
-                and "confidence" in analysis_response
-            ):
+            elif isinstance(analysis_response, dict) and "confidence" in analysis_response:
                 return float(analysis_response["confidence"])
             else:
                 return 0.5  # Default confidence
@@ -533,9 +518,7 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
             ),
             "total_analysis_time": self.total_analysis_time,
             "average_analysis_time": (
-                (self.total_analysis_time / self.analysis_count)
-                if self.analysis_count > 0
-                else 0.0
+                (self.total_analysis_time / self.analysis_count) if self.analysis_count > 0 else 0.0
             ),
         }
 
@@ -568,6 +551,5 @@ class WorkflowAnalysisEngine(ProcessableComponent[dict[str, Any], AnalysisResult
         return (
             self.status != "error"
             and self.error_count == 0
-            and self.failed_analyses
-            < self.successful_analyses  # More successes than failures
+            and self.failed_analyses < self.successful_analyses  # More successes than failures
         )

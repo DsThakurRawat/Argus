@@ -75,9 +75,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
                 # Git operations are initialized in the constructor
                 pass
 
-            self.logger.info(
-                f"Enhanced Local provider initialized for path: {self.root_path}"
-            )
+            self.logger.info(f"Enhanced Local provider initialized for path: {self.root_path}")
         except Exception as e:
             self.logger.error(f"Failed to initialize enhanced Local provider: {e}")
             raise
@@ -187,15 +185,11 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
             "get_file_info", self.file_ops.get_file_info, path
         )
 
-    async def list_files(
-        self, path: str = "", ref: str | None = None
-    ) -> list[FileInfo]:
+    async def list_files(self, path: str = "", ref: str | None = None) -> list[FileInfo]:
         """List files with error handling."""
         if not self.file_ops:
             raise RuntimeError("File operations not initialized")
-        return await self._execute_with_error_handling(
-            "list_files", self.file_ops.list_files, path
-        )
+        return await self._execute_with_error_handling("list_files", self.file_ops.list_files, path)
 
     async def generate_patch(self, original: str, modified: str) -> str:
         """Generate patch with error handling."""
@@ -266,9 +260,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         if not self.git_ops:
             raise RuntimeError("Git operations not initialized")
 
-        return await self._execute_with_error_handling(
-            "list_branches", self.git_ops.list_branches
-        )
+        return await self._execute_with_error_handling("list_branches", self.git_ops.list_branches)
 
     async def get_branch_info(self, name: str) -> BranchInfo | None:
         """Get branch info with error handling."""
@@ -308,9 +300,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
             "get_repository_info", self.git_ops.get_repository_info
         )
 
-    async def check_conflicts(
-        self, path: str, content: str, branch: str | None = None
-    ) -> bool:
+    async def check_conflicts(self, path: str, content: str, branch: str | None = None) -> bool:
         """Check conflicts with error handling."""
         if not self.git_enabled:
             return False  # No conflicts for non-Git operations
@@ -321,9 +311,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
             "check_conflicts", self.git_ops.check_conflicts, path, content, branch
         )
 
-    async def resolve_conflicts(
-        self, path: str, content: str, strategy: str = "manual"
-    ) -> bool:
+    async def resolve_conflicts(self, path: str, content: str, strategy: str = "manual") -> bool:
         """Resolve conflicts with error handling."""
         if not self.git_enabled:
             return True  # No conflicts to resolve for non-Git operations
@@ -403,9 +391,7 @@ class EnhancedLocalProvider(EnhancedBaseSourceControlProvider):
         )
 
     # Enhanced batch operations with error handling
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute batch operations with comprehensive error handling."""
         if not self.batch_ops:
             raise RuntimeError("Batch operations not initialized")

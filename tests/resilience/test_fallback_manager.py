@@ -98,9 +98,7 @@ class TestFallbackManager:
         assert mock_provider_func.call_count == 2
 
     @pytest.mark.asyncio
-    async def test_execute_with_fallback_all_fail(
-        self, fallback_manager, mock_provider_func
-    ):
+    async def test_execute_with_fallback_all_fail(self, fallback_manager, mock_provider_func):
         """Test when all providers fail."""
         mock_provider_func.side_effect = Exception("all_fail")
 
@@ -117,9 +115,7 @@ class TestFallbackManager:
         assert mock_provider_func.call_count == 3
 
     @pytest.mark.asyncio
-    async def test_execute_with_fallback_timeout(
-        self, fallback_manager, mock_provider_func
-    ):
+    async def test_execute_with_fallback_timeout(self, fallback_manager, mock_provider_func):
         """Test timeout handling in fallback."""
 
         # Make the function hang
@@ -351,18 +347,14 @@ class TestFallbackManager:
         assert fallback_manager._provider_usage["gemini"] == 10
 
     @pytest.mark.asyncio
-    async def test_concurrent_fallback_executions(
-        self, fallback_manager, mock_provider_func
-    ):
+    async def test_concurrent_fallback_executions(self, fallback_manager, mock_provider_func):
         """Test concurrent fallback executions."""
         mock_provider_func.return_value = "success"
 
         provider_funcs = {"gemini": mock_provider_func}
 
         # Execute multiple concurrent calls
-        tasks = [
-            fallback_manager.execute_with_fallback(provider_funcs) for _ in range(5)
-        ]
+        tasks = [fallback_manager.execute_with_fallback(provider_funcs) for _ in range(5)]
         results = await asyncio.gather(*tasks)
 
         assert len(results) == 5
@@ -391,9 +383,7 @@ class TestFallbackManager:
         }
 
         # Execute multiple concurrent calls
-        tasks = [
-            fallback_manager.execute_with_fallback(provider_funcs) for _ in range(3)
-        ]
+        tasks = [fallback_manager.execute_with_fallback(provider_funcs) for _ in range(3)]
         results = await asyncio.gather(*tasks)
 
         assert len(results) == 3
@@ -413,9 +403,7 @@ class TestFallbackManager:
 
         for primary in primary_providers:
             provider_funcs = {primary: mock_provider_func}
-            result, provider = await fallback_manager.execute_with_fallback(
-                provider_funcs
-            )
+            result, provider = await fallback_manager.execute_with_fallback(provider_funcs)
             assert result == "success"
             assert provider == primary
 
@@ -431,9 +419,7 @@ class TestFallbackManager:
         assert stats["usage"] == 10
         assert stats["failures"] == 0
 
-    def test_provider_stats_success_rate_calculation(
-        self, fallback_manager: str
-    ) -> None:
+    def test_provider_stats_success_rate_calculation(self, fallback_manager: str) -> None:
         """Test success rate calculation."""
         # Test with no requests
         stats = fallback_manager.get_provider_stats("gemini")

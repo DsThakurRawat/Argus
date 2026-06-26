@@ -12,10 +12,22 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 import logging
-from typing import Any
+from typing import Any, Protocol
 
 from ..core.exceptions import ServiceError
-from .service_base import BaseService, ServiceConfig, ServiceHealth, ServiceStatus
+from .service_base import ServiceConfig, ServiceHealth, ServiceStatus
+
+
+class ManagedService(Protocol):
+    service_id: str
+
+    async def initialize(self) -> None: ...
+    async def shutdown(self) -> None: ...
+    async def check_health(self) -> ServiceHealth: ...
+    async def process_request(self, request: Any, context: Any = None) -> Any: ...
+
+
+BaseService = ManagedService  # Alias to minimize changes
 
 # from .service_implementations import (
 #     CacheService,
@@ -77,12 +89,8 @@ class ServiceMetrics:
             ) / self.request_count
 
         self.last_request_time = datetime.now()
-        self.error_rate = (
-            self.error_count / self.request_count if self.request_count > 0 else 0.0
-        )
-        self.health_score = max(
-            0.0, 1.0 - self.error_rate - (self.avg_response_time / 1000.0)
-        )
+        self.error_rate = self.error_count / self.request_count if self.request_count > 0 else 0.0
+        self.health_score = max(0.0, 1.0 - self.error_rate - (self.avg_response_time / 1000.0))
 
 
 @dataclass
@@ -141,21 +149,17 @@ class ServiceHealthChecker:
     async def start_health_monitoring(self, registry: ServiceRegistry) -> None:
         """Start health monitoring for all registered services."""
         for service_id in registry.services:
-            task = asyncio.create_task(
-                self._monitor_service_health(service_id, registry)
-            )
+            task = asyncio.create_task(self._monitor_service_health(service_id, registry))
             self.health_checks[service_id] = task
 
-    async def stop_health_monitoring(self) -> None:
+    async def stop_health_monitoring(self) -> Any:
         """Stop all health monitoring tasks."""
         for task in self.health_checks.values():
             task.cancel()
         await asyncio.gather(*self.health_checks.values(), return_exceptions=True)
         self.health_checks.clear()
 
-    async def _monitor_service_health(
-        self, service_id: str, registry: ServiceRegistry
-    ) -> None:
+    async def _monitor_service_health(self, service_id: str, registry: ServiceRegistry) -> None:
         """Monitor health of a specific service."""
         while True:
             try:
@@ -165,9 +169,7 @@ class ServiceHealthChecker:
                     registry.service_metrics[service_id].health_score = health.score
 
                     if health.status != ServiceStatus.HEALTHY:
-                        self.logger.warning(
-                            f"Service {service_id} is unhealthy: {health.status}"
-                        )
+                        self.logger.warning(f"Service {service_id} is unhealthy: {health.status}")
                 else:
                     self.logger.error(f"Service {service_id} not found in registry")
 
@@ -180,9 +182,7 @@ class ServiceHealthChecker:
 class LoadBalancer:
     """Load balancer for distributing requests across services."""
 
-    def __init__(
-        self, strategy: LoadBalancingStrategy = LoadBalancingStrategy.ROUND_ROBIN
-    ):
+    def __init__(self, strategy: LoadBalancingStrategy = LoadBalancingStrategy.ROUND_ROBIN):
         self.strategy = strategy
         self.current_index = 0
         self.logger = logging.getLogger(__name__)
@@ -232,9 +232,11 @@ class LoadBalancer:
         """Select service with least active connections."""
         return min(
             services,
-            key=lambda s: registry.service_metrics.get(
-                s.service_id, ServiceMetrics(service_id="")
-            ).request_count,
+            key=lambda s: (
+                registry.service_metrics.get(
+                    s.service_id, ServiceMetrics(service_id="")
+                ).request_count
+            ),
         )
 
     def _weighted_selection(
@@ -242,9 +244,7 @@ class LoadBalancer:
     ) -> BaseService:
         """Select service based on weighted health score."""
         weights = [
-            registry.service_metrics.get(
-                s.service_id, ServiceMetrics(service_id="")
-            ).health_score
+            registry.service_metrics.get(s.service_id, ServiceMetrics(service_id="")).health_score
             for s in services
         ]
         total_weight = sum(weights)
@@ -254,7 +254,7 @@ class LoadBalancer:
         # Simple weighted selection
         import random
 
-        rand = random.uniform(0, total_weight)
+        rand = random.uniform(0, total_weight)  # nosec B311
         cumulative = 0
         for i, weight in enumerate(weights):
             cumulative += weight
@@ -266,7 +266,7 @@ class LoadBalancer:
         """Select service randomly."""
         import random
 
-        return random.choice(services)
+        return random.choice(services)  # nosec B311
 
     def _health_based_selection(
         self, services: list[BaseService], registry: ServiceRegistry
@@ -274,9 +274,11 @@ class LoadBalancer:
         """Select service with highest health score."""
         return max(
             services,
-            key=lambda s: registry.service_metrics.get(
-                s.service_id, ServiceMetrics(service_id="")
-            ).health_score,
+            key=lambda s: (
+                registry.service_metrics.get(
+                    s.service_id, ServiceMetrics(service_id="")
+                ).health_score
+            ),
         )
 
 
@@ -294,15 +296,12 @@ class ServiceManager:
         self.logger = logging.getLogger(__name__)
         self._initialized = False
 
-    async def initialize(self) -> None:
+    async def initialize(self) -> Any:
         """Initialize the service manager and start health monitoring."""
         if self._initialized:
             return
 
         try:
-            # Register default services
-            # await self._register_default_services()
-
             # Start health monitoring
             await self.health_checker.start_health_monitoring(self.registry)
 
@@ -310,7 +309,7 @@ class ServiceManager:
             self.logger.info("Service manager initialized successfully")
         except Exception as e:
             self.logger.error(f"Failed to initialize service manager: {e}")
-            raise ServiceError(f"Service manager initialization failed: {e}")
+            raise ServiceError(f"Service manager initialization failed: {e}") from e
 
     async def shutdown(self) -> None:
         """Shutdown the service manager and all services."""
@@ -327,76 +326,6 @@ class ServiceManager:
             self.logger.info("Service manager shutdown completed")
         except Exception as e:
             self.logger.error(f"Error during service manager shutdown: {e}")
-
-    async def _register_default_services(self) -> None:
-        """Register default service implementations."""
-        # Model Service
-        model_config = ServiceConfig(
-            service_id="model_service",
-            max_connections=100,
-            timeout_seconds=30,
-            retry_attempts=3,
-        )
-        model_service = ModelService(model_config)
-        await model_service.initialize()
-        self.registry.register_service(
-            "model_service", model_service, model_config, ServiceType.MODEL
-        )
-
-        # Context Service
-        context_config = ServiceConfig(
-            service_id="context_service",
-            max_connections=50,
-            timeout_seconds=15,
-            retry_attempts=2,
-        )
-        context_service = ContextService(context_config)
-        await context_service.initialize()
-        self.registry.register_service(
-            "context_service", context_service, context_config, ServiceType.CONTEXT
-        )
-
-        # Validation Service
-        validation_config = ServiceConfig(
-            service_id="validation_service",
-            max_connections=75,
-            timeout_seconds=20,
-            retry_attempts=2,
-        )
-        validation_service = ValidationService(validation_config)
-        await validation_service.initialize()
-        self.registry.register_service(
-            "validation_service",
-            validation_service,
-            validation_config,
-            ServiceType.VALIDATION,
-        )
-
-        # Metrics Service
-        metrics_config = ServiceConfig(
-            service_id="metrics_service",
-            max_connections=25,
-            timeout_seconds=10,
-            retry_attempts=1,
-        )
-        metrics_service = MetricsService(metrics_config)
-        await metrics_service.initialize()
-        self.registry.register_service(
-            "metrics_service", metrics_service, metrics_config, ServiceType.METRICS
-        )
-
-        # Cache Service
-        cache_config = ServiceConfig(
-            service_id="cache_service",
-            max_connections=200,
-            timeout_seconds=5,
-            retry_attempts=1,
-        )
-        cache_service = CacheService(cache_config)
-        await cache_service.initialize()
-        self.registry.register_service(
-            "cache_service", cache_service, cache_config, ServiceType.CACHE
-        )
 
     async def get_service(
         self, service_type: ServiceType, service_id: str | None = None

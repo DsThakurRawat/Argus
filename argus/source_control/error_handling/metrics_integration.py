@@ -330,9 +330,7 @@ class ErrorHandlingMetrics:
         except Exception as e:
             self.logger.error(f"Failed to record health check metrics: {e}")
 
-    def get_error_rate_by_provider(
-        self, provider: str, time_window_minutes: int = 5
-    ) -> float:
+    def get_error_rate_by_provider(self, provider: str, time_window_minutes: int = 5) -> float:
         """Get error rate for a specific provider over a time window."""
         try:
             # This would need to be implemented based on the metrics collector's query capabilities
@@ -349,9 +347,7 @@ class ErrorHandlingMetrics:
             # For now, return empty dict as a placeholder
             return {}
         except Exception as e:
-            self.logger.error(
-                f"Failed to get circuit breaker health for {circuit_name}: {e}"
-            )
+            self.logger.error(f"Failed to get circuit breaker health for {circuit_name}: {e}")
             return {}
 
     def get_operation_metrics(
@@ -363,7 +359,5 @@ class ErrorHandlingMetrics:
             # For now, return empty dict as a placeholder
             return {}
         except Exception as e:
-            self.logger.error(
-                f"Failed to get operation metrics for {operation_name}: {e}"
-            )
+            self.logger.error(f"Failed to get operation metrics for {operation_name}: {e}")
             return {}

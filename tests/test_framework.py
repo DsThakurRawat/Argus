@@ -39,9 +39,7 @@ class TestTestingFramework:
         return registry
 
     @pytest.fixture
-    def testing_framework(
-        self, mock_provider_factory: str, mock_model_registry: str
-    ) -> None:
+    def testing_framework(self, mock_provider_factory: str, mock_model_registry: str) -> None:
         """Create a testing framework instance."""
         return TestingFramework(
             provider_factory=mock_provider_factory,
@@ -85,9 +83,7 @@ class TestTestingFramework:
         ) as mock_test:
             mock_test.return_value = True
 
-            result = await testing_framework._run_single_test(
-                "test_provider_connectivity", 30
-            )
+            result = await testing_framework._run_single_test("test_provider_connectivity", 30)
 
             assert result.test_name == "test_provider_connectivity"
             assert result.result == TestResult.PASSED
@@ -103,9 +99,7 @@ class TestTestingFramework:
         ) as mock_test:
             mock_test.return_value = False
 
-            result = await testing_framework._run_single_test(
-                "test_provider_connectivity", 30
-            )
+            result = await testing_framework._run_single_test("test_provider_connectivity", 30)
 
             assert result.test_name == "test_provider_connectivity"
             assert result.result == TestResult.FAILED
@@ -120,9 +114,7 @@ class TestTestingFramework:
         ) as mock_test:
             mock_test.side_effect = Exception("Test failed")
 
-            result = await testing_framework._run_single_test(
-                "test_provider_connectivity", 30
-            )
+            result = await testing_framework._run_single_test("test_provider_connectivity", 30)
 
             assert result.test_name == "test_provider_connectivity"
             assert result.result == TestResult.ERROR
@@ -137,12 +129,8 @@ class TestTestingFramework:
             await asyncio.sleep(2)
             return True
 
-        with patch.object(
-            testing_framework, "test_provider_connectivity", side_effect=slow_test
-        ):
-            result = await testing_framework._run_single_test(
-                "test_provider_connectivity", 1
-            )
+        with patch.object(testing_framework, "test_provider_connectivity", side_effect=slow_test):
+            result = await testing_framework._run_single_test("test_provider_connectivity", 1)
 
             assert result.test_name == "test_provider_connectivity"
             assert result.result == TestResult.ERROR
@@ -161,12 +149,14 @@ class TestTestingFramework:
     async def test_run_test_suite(self, testing_framework):
         """Test running a test suite."""
         # Mock the test methods
-        with patch.object(
-            testing_framework, "test_provider_connectivity", new_callable=AsyncMock
-        ) as mock_connectivity, patch.object(
-            testing_framework, "test_provider_authentication", new_callable=AsyncMock
-        ) as mock_auth:
-
+        with (
+            patch.object(
+                testing_framework, "test_provider_connectivity", new_callable=AsyncMock
+            ) as mock_connectivity,
+            patch.object(
+                testing_framework, "test_provider_authentication", new_callable=AsyncMock
+            ) as mock_auth,
+        ):
             mock_connectivity.return_value = True
             mock_auth.return_value = True
 
@@ -184,12 +174,14 @@ class TestTestingFramework:
     async def test_run_test_suite_parallel(self, testing_framework):
         """Test running a test suite in parallel."""
         # Mock the test methods
-        with patch.object(
-            testing_framework, "test_latency_benchmarks", new_callable=AsyncMock
-        ) as mock_latency, patch.object(
-            testing_framework, "test_throughput_benchmarks", new_callable=AsyncMock
-        ) as mock_throughput:
-
+        with (
+            patch.object(
+                testing_framework, "test_latency_benchmarks", new_callable=AsyncMock
+            ) as mock_latency,
+            patch.object(
+                testing_framework, "test_throughput_benchmarks", new_callable=AsyncMock
+            ) as mock_throughput,
+        ):
             mock_latency.return_value = {"test": 100.0}
             mock_throughput.return_value = {"test": 10.0}
 
@@ -280,16 +272,18 @@ class TestTestingFramework:
         mock_provider = AsyncMock()
         mock_provider.generate.return_value = Mock(content="test response")
 
-        with patch.object(
-            testing_framework.provider_factory,
-            "list_providers",
-            return_value=["test_provider"],
-        ), patch.object(
-            testing_framework.provider_factory,
-            "get_provider",
-            return_value=mock_provider,
+        with (
+            patch.object(
+                testing_framework.provider_factory,
+                "list_providers",
+                return_value=["test_provider"],
+            ),
+            patch.object(
+                testing_framework.provider_factory,
+                "get_provider",
+                return_value=mock_provider,
+            ),
         ):
-
             result = await testing_framework.test_provider_connectivity()
             assert result is True
 
@@ -297,9 +291,7 @@ class TestTestingFramework:
     async def test_provider_connectivity_test_failure(self, testing_framework):
         """Test the provider connectivity test method with failure."""
         # Mock the provider factory to return no providers
-        with patch.object(
-            testing_framework.provider_factory, "list_providers", return_value=[]
-        ):
+        with patch.object(testing_framework.provider_factory, "list_providers", return_value=[]):
             result = await testing_framework.test_provider_connectivity()
             assert result is False
 
@@ -325,16 +317,18 @@ class TestTestingFramework:
         mock_provider = AsyncMock()
         mock_provider.generate.return_value = mock_response
 
-        with patch.object(
-            testing_framework.provider_factory,
-            "list_providers",
-            return_value=["test_provider"],
-        ), patch.object(
-            testing_framework.provider_factory,
-            "get_provider",
-            return_value=mock_provider,
+        with (
+            patch.object(
+                testing_framework.provider_factory,
+                "list_providers",
+                return_value=["test_provider"],
+            ),
+            patch.object(
+                testing_framework.provider_factory,
+                "get_provider",
+                return_value=mock_provider,
+            ),
         ):
-
             result = await testing_framework.test_provider_response_format()
             assert result is True
 
@@ -344,16 +338,18 @@ class TestTestingFramework:
         mock_provider = AsyncMock()
         mock_provider.generate.side_effect = Exception("Test error")
 
-        with patch.object(
-            testing_framework.provider_factory,
-            "list_providers",
-            return_value=["test_provider"],
-        ), patch.object(
-            testing_framework.provider_factory,
-            "get_provider",
-            return_value=mock_provider,
+        with (
+            patch.object(
+                testing_framework.provider_factory,
+                "list_providers",
+                return_value=["test_provider"],
+            ),
+            patch.object(
+                testing_framework.provider_factory,
+                "get_provider",
+                return_value=mock_provider,
+            ),
         ):
-
             result = await testing_framework.test_provider_error_handling()
             assert result is True  # Should handle errors gracefully
 

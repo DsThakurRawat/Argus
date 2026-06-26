@@ -92,9 +92,7 @@ class TestValidationResult:
 
     def test_validation_result_creation(self) -> None:
         """Test creating a validation result"""
-        result = ValidationResult(
-            is_valid=True, severity=ValidationSeverity.LOW, quality_score=8.5
-        )
+        result = ValidationResult(is_valid=True, severity=ValidationSeverity.LOW, quality_score=8.5)
 
         assert result.is_valid is True
         assert result.severity == ValidationSeverity.LOW
@@ -479,9 +477,7 @@ class TestCodeGenerationResult:
             validation_results=validation_result,
         )
 
-        result = CodeGenerationResult(
-            success=True, code_fix=code_fix, quality_score=9.0
-        )
+        result = CodeGenerationResult(success=True, code_fix=code_fix, quality_score=9.0)
 
         assert result.is_high_quality() is True
 

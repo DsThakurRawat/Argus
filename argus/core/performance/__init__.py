@@ -19,11 +19,11 @@ Example usage:
 
     # Create metrics collector
     collector = MetricsCollector()
-    
+
     # Track performance
     with collector.track_operation("api_call"):
         result = await api_call()
-    
+
     # Profile async operations
     profiler = PerformanceProfiler()
     with profiler.profile_async_operation("data_processing"):
@@ -60,37 +60,33 @@ from .profiler import (
 )
 
 __all__ = [
-    # Metrics
-    "MetricsCollector",
-    "MetricType",
-    "MetricValue",
-    "MetricAggregation",
-    "PerformanceMetrics",
-    "MetricsConfig",
-
-    # Profiler
-    "PerformanceProfiler",
-    "AsyncProfiler",
-    "ProfilerConfig",
-    "ProfilerResult",
-    "OperationProfile",
-
-    # Alerts
-    "PerformanceAlerts",
-    "AlertThreshold",
+    "AlertConfig",
     "AlertRule",
     "AlertSeverity",
-    "AlertConfig",
-
-    # Dashboard
-    "PerformanceDashboard",
+    "AlertThreshold",
+    "AsyncProfiler",
     "DashboardConfig",
     "DashboardWidget",
-    "PerformanceVisualization",
-
+    "MetricAggregation",
+    "MetricType",
+    "MetricValue",
+    # Metrics
+    "MetricsCollector",
+    "MetricsConfig",
+    "OperationProfile",
+    "OptimizationConfig",
     # Optimization
     "OptimizationEngine",
     "OptimizationRecommendation",
+    # Alerts
+    "PerformanceAlerts",
     "PerformanceAnalyzer",
-    "OptimizationConfig",
+    # Dashboard
+    "PerformanceDashboard",
+    "PerformanceMetrics",
+    # Profiler
+    "PerformanceProfiler",
+    "PerformanceVisualization",
+    "ProfilerConfig",
+    "ProfilerResult",
 ]

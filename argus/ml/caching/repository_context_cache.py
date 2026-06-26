@@ -41,9 +41,7 @@ class RepositoryContextCache(ContextCache):
         self.logger = logging.getLogger(__name__)
 
         # Repository-specific metadata
-        self.repo_analysis_depths: dict[str, list[str]] = (
-            {}
-        )  # repo_path -> analysis_depths
+        self.repo_analysis_depths: dict[str, list[str]] = {}  # repo_path -> analysis_depths
         self.tech_stack_cache: dict[str, dict[str, Any]] = {}  # repo_path -> tech_stack
         self.last_commit_cache: dict[str, str] = {}  # repo_path -> last_commit_hash
 
@@ -199,9 +197,11 @@ class RepositoryContextCache(ContextCache):
                 invalidated_count += 1
 
                 # Remove from tracking
-                if repo_path in self.repo_analysis_depths:
-                    if analysis_depth in self.repo_analysis_depths[repo_path]:
-                        self.repo_analysis_depths[repo_path].remove(analysis_depth)
+                if (
+                    repo_path in self.repo_analysis_depths
+                    and analysis_depth in self.repo_analysis_depths[repo_path]
+                ):
+                    self.repo_analysis_depths[repo_path].remove(analysis_depth)
         else:
             # Invalidate all analysis depths for this repo
             if repo_path in self.repo_analysis_depths:
@@ -220,9 +220,7 @@ class RepositoryContextCache(ContextCache):
         if repo_path in self.last_commit_cache:
             del self.last_commit_cache[repo_path]
 
-        self.logger.info(
-            f"[REPO-CACHE] Invalidated {invalidated_count} entries for {repo_path}"
-        )
+        self.logger.info(f"[REPO-CACHE] Invalidated {invalidated_count} entries for {repo_path}")
         return invalidated_count
 
     async def get_available_analysis_depths(self, repo_path: str) -> list[str]:
@@ -276,24 +274,19 @@ class RepositoryContextCache(ContextCache):
         """Generate cache key for repository context."""
         return f"repo_context:{repo_path}:{analysis_depth}"
 
-    def _calculate_repo_ttl(
-        self, analysis_depth: str, custom_ttl: int | None = None
-    ) -> int:
+    def _calculate_repo_ttl(self, analysis_depth: str, custom_ttl: int | None = None) -> int:
         """Calculate TTL for repository context based on analysis depth."""
         if custom_ttl:
             return custom_ttl
 
         # Analysis depth-specific TTL strategies
-        if analysis_depth == "shallow":
-            return 1800  # 30 minutes for shallow analysis
-        elif analysis_depth == "standard":
-            return 3600  # 1 hour for standard analysis
-        elif analysis_depth == "deep":
-            return 7200  # 2 hours for deep analysis
-        elif analysis_depth == "comprehensive":
-            return 10800  # 3 hours for comprehensive analysis
-
-        return self.default_ttl_seconds
+        depth_ttls = {
+            "shallow": 1800,  # 30 minutes for shallow analysis
+            "standard": 3600,  # 1 hour for standard analysis
+            "deep": 7200,  # 2 hours for deep analysis
+            "comprehensive": 10800,  # 3 hours for comprehensive analysis
+        }
+        return depth_ttls.get(analysis_depth, self.default_ttl_seconds)
 
     def _get_current_time(self) -> float:
         """Get current time for consistency."""
@@ -308,9 +301,7 @@ class RepositoryContextCache(ContextCache):
     def get_cache_stats(self) -> dict[str, Any]:
         """Get cache statistics for monitoring."""
         total_size = sum(entry.size_bytes for entry in self.cache.values())
-        repo_counts = {
-            repo: len(depths) for repo, depths in self.repo_analysis_depths.items()
-        }
+        repo_counts = {repo: len(depths) for repo, depths in self.repo_analysis_depths.items()}
 
         return {
             "total_entries": len(self.cache),

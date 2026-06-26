@@ -9,6 +9,7 @@ integration testing, and cost analysis.
 """
 
 import asyncio
+import contextlib
 from dataclasses import dataclass, field
 from enum import Enum
 import logging
@@ -86,12 +87,8 @@ class TestingFramework:
         self.performance_benchmark = PerformanceBenchmark(
             provider_factory, model_registry, cost_manager
         )
-        self.cost_analysis_tester = (
-            CostAnalysisTester(cost_manager) if cost_manager else None
-        )
-        self.integration_tester = IntegrationTester(
-            provider_factory, model_registry, cost_manager
-        )
+        self.cost_analysis_tester = CostAnalysisTester(cost_manager) if cost_manager else None
+        self.integration_tester = IntegrationTester(provider_factory, model_registry, cost_manager)
 
         # Test results storage
         self.test_results: list[TestReport] = []
@@ -175,9 +172,7 @@ class TestingFramework:
             # Run tests in parallel
             tasks = []
             for test_name in suite.tests:
-                task = asyncio.create_task(
-                    self._run_single_test(test_name, suite.timeout_seconds)
-                )
+                task = asyncio.create_task(self._run_single_test(test_name, suite.timeout_seconds))
                 tasks.append(task)
 
             # Wait for all tests to complete
@@ -230,9 +225,7 @@ class TestingFramework:
 
         return all_results
 
-    async def _run_single_test(
-        self, test_name: str, timeout_seconds: int
-    ) -> TestReport:
+    async def _run_single_test(self, test_name: str, timeout_seconds: int) -> TestReport:
         """Run a single test with timeout."""
         start_time = time.time()
 
@@ -334,9 +327,7 @@ class TestingFramework:
 
                 # Validate response format
                 if not isinstance(response, LLMResponse):
-                    logger.error(
-                        f"Provider {provider_name} returned invalid response type"
-                    )
+                    logger.error(f"Provider {provider_name} returned invalid response type")
                     return False
 
                 if not hasattr(response, "content") or not response.content:
@@ -368,13 +359,10 @@ class TestingFramework:
                     max_tokens=10,
                 )
 
-                try:
+                # Some providers might handle empty prompts gracefully
+                # (acceptable behavior); errors are expected for invalid requests
+                with contextlib.suppress(Exception):  # nosec B110
                     await provider.generate(invalid_request)
-                    # Some providers might handle empty prompts gracefully
-                    # This is acceptable behavior
-                except Exception:
-                    # Expected behavior for invalid requests
-                    pass  # nosec B110
 
             return True
         except Exception as e:
@@ -512,12 +500,9 @@ class TestingFramework:
             ]
 
             for _ in invalid_inputs:
-                try:
-                    # This would test the ModelMixer input validation
-                    # For now, we'll just verify the framework can handle it
-                    pass
-                except ValueError:
-                    # Expected behavior
+                # This would test the ModelMixer input validation
+                # For now, we'll just verify the framework can handle it
+                with contextlib.suppress(ValueError):
                     pass
 
             return True
@@ -558,15 +543,9 @@ class TestingFramework:
     def generate_test_report(self) -> dict[str, Any]:
         """Generate a comprehensive test report."""
         total_tests = len(self.test_results)
-        passed_tests = len(
-            [r for r in self.test_results if r.result == TestResult.PASSED]
-        )
-        failed_tests = len(
-            [r for r in self.test_results if r.result == TestResult.FAILED]
-        )
-        error_tests = len(
-            [r for r in self.test_results if r.result == TestResult.ERROR]
-        )
+        passed_tests = len([r for r in self.test_results if r.result == TestResult.PASSED])
+        failed_tests = len([r for r in self.test_results if r.result == TestResult.FAILED])
+        error_tests = len([r for r in self.test_results if r.result == TestResult.ERROR])
 
         total_duration = sum(r.duration_ms for r in self.test_results)
 
@@ -576,9 +555,7 @@ class TestingFramework:
                 "passed": passed_tests,
                 "failed": failed_tests,
                 "errors": error_tests,
-                "success_rate": (
-                    (passed_tests / total_tests * 100) if total_tests > 0 else 0
-                ),
+                "success_rate": ((passed_tests / total_tests * 100) if total_tests > 0 else 0),
                 "total_duration_ms": total_duration,
             },
             "test_results": [

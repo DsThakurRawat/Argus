@@ -31,9 +31,7 @@ class TestSetupRepositorySystem:
     @pytest.mark.asyncio
     async def test_setup_with_encryption_key(self, mock_config):
         """Test setting up repository system with encryption key."""
-        with patch(
-            "argus.source_control.setup.RepositoryManager"
-        ) as mock_repo_manager_class:
+        with patch("argus.source_control.setup.RepositoryManager") as mock_repo_manager_class:
             mock_repo_manager = AsyncMock()
             mock_repo_manager_class.return_value = mock_repo_manager
 
@@ -45,9 +43,7 @@ class TestSetupRepositorySystem:
     @pytest.mark.asyncio
     async def test_setup_without_encryption_key(self, mock_config):
         """Test setting up repository system without encryption key."""
-        with patch(
-            "argus.source_control.setup.RepositoryManager"
-        ) as mock_repo_manager_class:
+        with patch("argus.source_control.setup.RepositoryManager") as mock_repo_manager_class:
             mock_repo_manager = AsyncMock()
             mock_repo_manager_class.return_value = mock_repo_manager
 
@@ -59,15 +55,11 @@ class TestSetupRepositorySystem:
     @pytest.mark.asyncio
     async def test_setup_credential_manager_configuration(self, mock_config):
         """Test that credential manager is properly configured."""
-        with patch(
-            "argus.source_control.setup.CredentialManager"
-        ) as mock_cred_manager_class:
+        with patch("argus.source_control.setup.CredentialManager") as mock_cred_manager_class:
             mock_cred_manager = MagicMock()
             mock_cred_manager_class.return_value = mock_cred_manager
 
-            with patch(
-                "argus.source_control.setup.ProviderFactory"
-            ) as mock_factory_class:
+            with patch("argus.source_control.setup.ProviderFactory") as mock_factory_class:
                 mock_factory = MagicMock()
                 mock_factory_class.return_value = mock_factory
 
@@ -80,9 +72,7 @@ class TestSetupRepositorySystem:
                     await setup_repository_system(mock_config, "test-key")
 
                     # Verify credential manager was created with encryption key
-                    mock_cred_manager_class.assert_called_once_with(
-                        encryption_key="test-key"
-                    )
+                    mock_cred_manager_class.assert_called_once_with(encryption_key="test-key")
 
                     # Verify backends were registered
                     assert mock_cred_manager.register_backend.call_count == 2
@@ -93,15 +83,14 @@ class TestSetupRepositorySystem:
     @pytest.mark.asyncio
     async def test_setup_provider_registration(self, mock_config):
         """Test that providers are properly registered."""
-        with patch("argus.source_control.setup.CredentialManager"), patch(
-            "argus.source_control.setup.ProviderFactory"
-        ) as mock_factory_class:
+        with (
+            patch("argus.source_control.setup.CredentialManager"),
+            patch("argus.source_control.setup.ProviderFactory") as mock_factory_class,
+        ):
             mock_factory = MagicMock()
             mock_factory_class.return_value = mock_factory
 
-            with patch(
-                "argus.source_control.setup.RepositoryManager"
-            ) as mock_repo_manager_class:
+            with patch("argus.source_control.setup.RepositoryManager") as mock_repo_manager_class:
                 mock_repo_manager = AsyncMock()
                 mock_repo_manager_class.return_value = mock_repo_manager
                 await setup_repository_system(mock_config)

@@ -47,7 +47,7 @@ class TextGenerationTest(CapabilityTest):
                     "expected_substring": {"type": "string"},
                 },
                 performance_score=0.8,
-                cost_efficiency=0.7
+                cost_efficiency=0.7,
             )
         )
 
@@ -58,11 +58,8 @@ class TextGenerationTest(CapabilityTest):
         try:
             # Create a simple LLMRequest for testing
             from argus.llm.base import LLMRequest
-            request = LLMRequest(
-                prompt=prompt,
-                max_tokens=100,
-                temperature=0.1
-            )
+
+            request = LLMRequest(prompt=prompt, max_tokens=100, temperature=0.1)
             response = await provider._generate(request)
             response_content = response.content if hasattr(response, "content") else str(response)
             return expected_substring.lower() in response_content.lower()
@@ -86,7 +83,7 @@ class CodeGenerationTest(CapabilityTest):
                     "expected_substring": {"type": "string"},
                 },
                 performance_score=0.9,
-                cost_efficiency=0.6
+                cost_efficiency=0.6,
             )
         )
 
@@ -97,11 +94,8 @@ class CodeGenerationTest(CapabilityTest):
         try:
             # Create a simple LLMRequest for testing
             from argus.llm.base import LLMRequest
-            request = LLMRequest(
-                prompt=prompt,
-                max_tokens=100,
-                temperature=0.1
-            )
+
+            request = LLMRequest(prompt=prompt, max_tokens=100, temperature=0.1)
             response = await provider._generate(request)
             response_content = response.content if hasattr(response, "content") else str(response)
             return expected_substring.lower() in response_content.lower()

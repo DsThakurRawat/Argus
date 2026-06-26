@@ -48,9 +48,7 @@ class LiteLLMProvider(LLMProvider):
 
     def __init__(self, config: LLMProviderConfig) -> None:
         if not LITELLM_AVAILABLE:
-            raise ImportError(
-                "LiteLLM is not available. Please install: pip install litellm"
-            )
+            raise ImportError("LiteLLM is not available. Please install: pip install litellm")
         super().__init__(config)
         self._configure_litellm()
 
@@ -83,9 +81,7 @@ class LiteLLMProvider(LLMProvider):
         try:
             await self.health_check()
             self._initialized = True
-            self.logger.info(
-                f"LiteLLM provider '{self.provider_name}' initialized successfully"
-            )
+            self.logger.info(f"LiteLLM provider '{self.provider_name}' initialized successfully")
         except Exception as e:
             self.logger.error(
                 f"Failed to initialize LiteLLM provider '{self.provider_name}': {e!s}"
@@ -143,9 +139,7 @@ class LiteLLMProvider(LLMProvider):
             )
             return response
         except Exception as e:
-            self.logger.error(
-                f"Error generating structured response with {model_name}: {e!s}"
-            )
+            self.logger.error(f"Error generating structured response with {model_name}: {e!s}")
             raise
 
     def generate_stream(
@@ -174,9 +168,7 @@ class LiteLLMProvider(LLMProvider):
                     if chunk.choices[0].delta.content:
                         yield chunk.choices[0].delta.content
             except Exception as e:
-                self.logger.error(
-                    f"Error generating stream with {model_name}: {e!s}"
-                )
+                self.logger.error(f"Error generating stream with {model_name}: {e!s}")
                 raise
 
         return _stream()
@@ -187,9 +179,7 @@ class LiteLLMProvider(LLMProvider):
             test_response = await self.generate_text(prompt="Hello", max_tokens=10)
             return bool(test_response)
         except Exception as e:
-            self.logger.error(
-                f"Health check failed for provider '{self.provider_name}': {e!s}"
-            )
+            self.logger.error(f"Health check failed for provider '{self.provider_name}': {e!s}")
             return False
 
     def get_available_models(self) -> list[str]:
@@ -210,10 +200,7 @@ class LiteLLMProvider(LLMProvider):
         if not self.config.provider or not self.config.models:
             return False
 
-        if (
+        return not (
             self.config.provider in ["openai", "anthropic", "gemini", "grok"]
             and not self.config.api_key
-        ):
-            return False
-
-        return True
+        )

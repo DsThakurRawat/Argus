@@ -1,6 +1,4 @@
-import re
-
-with open("argus/llm/factory.py", "r") as f:
+with open("argus/llm/factory.py") as f:
     content = f.read()
 
 new_methods = """
@@ -15,7 +13,7 @@ new_methods = """
         provider_type = config.provider
         if provider_type not in self._provider_types:
             raise ValueError(f"Unsupported provider type: {provider_type}")
-        
+
         provider_class = self._provider_types[provider_type]
         try:
             provider = provider_class(config)
@@ -57,7 +55,10 @@ property_hack = """
 """
 
 content = content.replace("    _providers = {", "    _providers_class = {")
-content = content.replace("        return cls._instances[instance_key]", new_methods + "\n        return cls._instances[instance_key]")
+content = content.replace(
+    "        return cls._instances[instance_key]",
+    new_methods + "\n        return cls._instances[instance_key]",
+)
 
 with open("argus/llm/factory.py", "w") as f:
     f.write(content)

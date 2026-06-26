@@ -4,7 +4,7 @@ import asyncio
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, TypeVar
+from typing import Any, Generic, TypeVar
 
 from .bulkhead_isolator import BulkheadConfig, BulkheadIsolator
 from .circuit_breaker import CircuitBreaker, CircuitState
@@ -35,9 +35,9 @@ class FaultToleranceStrategy(Enum):
 
 
 @dataclass
-class FaultToleranceConfig:
+class FaultToleranceConfig(Generic[T]):
     """Fault tolerance configuration.
-    
+
     Attributes:
         strategy: Fault tolerance strategy to use
         retry_config: Retry configuration
@@ -63,16 +63,16 @@ class FaultToleranceConfig:
     enable_logging: bool = True
 
 
-class FaultToleranceManager:
+class FaultToleranceManager(Generic[T]):
     """Fault tolerance manager for resilience patterns.
-    
+
     Provides a unified interface for applying multiple
     resilience patterns to operations.
     """
 
-    def __init__(self, config: FaultToleranceConfig):
+    def __init__(self, config: FaultToleranceConfig[T]):
         """Initialize the fault tolerance manager.
-        
+
         Args:
             config: Fault tolerance configuration
         """
@@ -86,78 +86,97 @@ class FaultToleranceManager:
         self._metrics: dict[str, Any] = {}
         self._setup_resilience_patterns()
 
-    def _setup_resilience_patterns(self) -> None:
+    def _setup_resilience_patterns(self) -> Any:
         """Setup resilience patterns based on configuration."""
         if self._config.strategy == FaultToleranceStrategy.NONE:
             return
 
         # Setup retry handler
-        if (self._config.strategy in [
-            FaultToleranceStrategy.RETRY_ONLY,
-            FaultToleranceStrategy.FULL_PROTECTION,
-            FaultToleranceStrategy.CUSTOM
-        ] and self._config.retry_config):
+        if (
+            self._config.strategy
+            in [
+                FaultToleranceStrategy.RETRY_ONLY,
+                FaultToleranceStrategy.FULL_PROTECTION,
+                FaultToleranceStrategy.CUSTOM,
+            ]
+            and self._config.retry_config
+        ):
             self._retry_handler = RetryHandler(self._config.retry_config)
 
         # Setup circuit breaker
-        if (self._config.strategy in [
-            FaultToleranceStrategy.CIRCUIT_BREAKER_ONLY,
-            FaultToleranceStrategy.FULL_PROTECTION,
-            FaultToleranceStrategy.CUSTOM
-        ] and self._config.circuit_breaker_config):
+        if (
+            self._config.strategy
+            in [
+                FaultToleranceStrategy.CIRCUIT_BREAKER_ONLY,
+                FaultToleranceStrategy.FULL_PROTECTION,
+                FaultToleranceStrategy.CUSTOM,
+            ]
+            and self._config.circuit_breaker_config
+        ):
             self._circuit_breaker = CircuitBreaker(**self._config.circuit_breaker_config)
 
         # Setup timeout manager
-        if (self._config.strategy in [
-            FaultToleranceStrategy.TIMEOUT_ONLY,
-            FaultToleranceStrategy.FULL_PROTECTION,
-            FaultToleranceStrategy.CUSTOM
-        ] and self._config.timeout_config):
+        if (
+            self._config.strategy
+            in [
+                FaultToleranceStrategy.TIMEOUT_ONLY,
+                FaultToleranceStrategy.FULL_PROTECTION,
+                FaultToleranceStrategy.CUSTOM,
+            ]
+            and self._config.timeout_config
+        ):
             self._timeout_manager = TimeoutManager(self._config.timeout_config)
 
         # Setup bulkhead isolator
-        if (self._config.strategy in [
-            FaultToleranceStrategy.BULKHEAD_ONLY,
-            FaultToleranceStrategy.FULL_PROTECTION,
-            FaultToleranceStrategy.CUSTOM
-        ] and self._config.bulkhead_config):
+        if (
+            self._config.strategy
+            in [
+                FaultToleranceStrategy.BULKHEAD_ONLY,
+                FaultToleranceStrategy.FULL_PROTECTION,
+                FaultToleranceStrategy.CUSTOM,
+            ]
+            and self._config.bulkhead_config
+        ):
             self._bulkhead_isolator = BulkheadIsolator(self._config.bulkhead_config)
 
         # Setup rate limiter
-        if (self._config.strategy in [
-            FaultToleranceStrategy.RATE_LIMIT_ONLY,
-            FaultToleranceStrategy.FULL_PROTECTION,
-            FaultToleranceStrategy.CUSTOM
-        ] and self._config.rate_limit_config):
+        if (
+            self._config.strategy
+            in [
+                FaultToleranceStrategy.RATE_LIMIT_ONLY,
+                FaultToleranceStrategy.FULL_PROTECTION,
+                FaultToleranceStrategy.CUSTOM,
+            ]
+            and self._config.rate_limit_config
+        ):
             self._rate_limiter = RateLimiter(self._config.rate_limit_config)
 
         # Setup health checker
-        if (self._config.strategy in [
-            FaultToleranceStrategy.HEALTH_CHECK_ONLY,
-            FaultToleranceStrategy.FULL_PROTECTION,
-            FaultToleranceStrategy.CUSTOM
-        ] and self._config.health_checks):
+        if (
+            self._config.strategy
+            in [
+                FaultToleranceStrategy.HEALTH_CHECK_ONLY,
+                FaultToleranceStrategy.FULL_PROTECTION,
+                FaultToleranceStrategy.CUSTOM,
+            ]
+            and self._config.health_checks
+        ):
             self._health_checker = HealthChecker()
             for health_check_config in self._config.health_checks:
                 health_check = HealthCheck(**health_check_config)
                 self._health_checker.add_health_check(health_check)
 
-    async def execute_with_fault_tolerance(
-        self,
-        func: Callable[..., T],
-        *args,
-        **kwargs
-    ) -> T:
+    async def execute_with_fault_tolerance(self, func: Callable[..., T], *args, **kwargs) -> T:
         """Execute a function with fault tolerance.
-        
+
         Args:
             func: Function to execute
             *args: Function arguments
             **kwargs: Function keyword arguments
-            
+
         Returns:
             Function result
-            
+
         Raises:
             CircuitBreakerError: If circuit breaker is open
             RetryExhaustedError: If retries are exhausted
@@ -174,27 +193,20 @@ class FaultToleranceManager:
 
         # Apply rate limiting
         if self._rate_limiter:
-            await self._rate_limiter.acquire()
+            self._rate_limiter.acquire()
 
         # Apply bulkhead isolation
         if self._bulkhead_isolator:
-            await self._bulkhead_isolator.acquire()
+            self._bulkhead_isolator.acquire()
 
         try:
             # Apply timeout
             if self._timeout_manager:
                 result = await self._timeout_manager.execute_with_timeout(
-                    self._execute_with_retry_and_circuit_breaker,
-                    func,
-                    *args,
-                    **kwargs
+                    self._execute_with_retry_and_circuit_breaker, None, None, func, *args, **kwargs
                 )
             else:
-                result = await self._execute_with_retry_and_circuit_breaker(
-                    func,
-                    *args,
-                    **kwargs
-                )
+                result = await self._execute_with_retry_and_circuit_breaker(func, *args, **kwargs)
 
             # Update metrics
             if self._config.enable_metrics:
@@ -220,18 +232,15 @@ class FaultToleranceManager:
                 self._bulkhead_isolator.release()
 
     async def _execute_with_retry_and_circuit_breaker(
-        self,
-        func: Callable[..., T],
-        *args,
-        **kwargs
+        self, func: Callable[..., T], *args, **kwargs
     ) -> T:
         """Execute function with retry and circuit breaker.
-        
+
         Args:
             func: Function to execute
             *args: Function arguments
             **kwargs: Function keyword arguments
-            
+
         Returns:
             Function result
         """
@@ -241,33 +250,25 @@ class FaultToleranceManager:
 
         # Execute with retry if configured
         if self._retry_handler:
-            return await self._retry_handler.execute_with_retry(
-                self._execute_with_circuit_breaker,
-                func,
-                *args,
-                **kwargs
+            return await self._retry_handler.execute(
+                self._execute_with_circuit_breaker, func, *args, **kwargs
             )
         else:
             return await self._execute_with_circuit_breaker(func, *args, **kwargs)
 
-    async def _execute_with_circuit_breaker(
-        self,
-        func: Callable[..., T],
-        *args,
-        **kwargs
-    ) -> T:
+    async def _execute_with_circuit_breaker(self, func: Callable[..., T], *args, **kwargs) -> T:
         """Execute function with circuit breaker.
-        
+
         Args:
             func: Function to execute
             *args: Function arguments
             **kwargs: Function keyword arguments
-            
+
         Returns:
             Function result
         """
         if self._circuit_breaker:
-            return await self._circuit_breaker.execute(func, *args, **kwargs)
+            return await self._circuit_breaker.call(func, *args, **kwargs)
         else:
             if asyncio.iscoroutinefunction(func):
                 return await func(*args, **kwargs)
@@ -276,7 +277,7 @@ class FaultToleranceManager:
 
     def _update_metrics(self, metric_name: str, value: int | float) -> None:
         """Update metrics.
-        
+
         Args:
             metric_name: Name of the metric
             value: Metric value
@@ -287,19 +288,19 @@ class FaultToleranceManager:
 
     def get_metrics(self) -> dict[str, Any]:
         """Get current metrics.
-        
+
         Returns:
             Current metrics
         """
         return self._metrics.copy()
 
-    def reset_metrics(self) -> None:
+    def reset_metrics(self) -> Any:
         """Reset metrics."""
         self._metrics.clear()
 
     def get_health_status(self) -> dict[str, Any]:
         """Get health status.
-        
+
         Returns:
             Health status information
         """
@@ -309,7 +310,7 @@ class FaultToleranceManager:
 
     def is_healthy(self) -> bool:
         """Check if system is healthy.
-        
+
         Returns:
             True if healthy, False otherwise
         """
@@ -318,25 +319,27 @@ class FaultToleranceManager:
         return True
 
 
-def fault_tolerance(
-    config: FaultToleranceConfig
-) -> Callable[[Callable[..., T]], Callable[..., T]]:
+def fault_tolerance(config: FaultToleranceConfig) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator for applying fault tolerance to functions.
-    
+
     Args:
         config: Fault tolerance configuration
-        
+
     Returns:
         Decorated function
     """
+
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         manager = FaultToleranceManager(config)
 
         if asyncio.iscoroutinefunction(func):
-            async def async_wrapper(*args, **kwargs) -> T:
+
+            async def async_wrapper(*args, **kwargs) -> Any:
                 return await manager.execute_with_fault_tolerance(func, *args, **kwargs)
-            return async_wrapper
+
+            return async_wrapper  # type: ignore
         else:
+
             def sync_wrapper(*args, **kwargs) -> T:
                 # For sync functions, we need to run in event loop
                 try:
@@ -353,9 +356,8 @@ def fault_tolerance(
                     )
                 except RuntimeError:
                     # No event loop, create one
-                    return asyncio.run(
-                        manager.execute_with_fault_tolerance(func, *args, **kwargs)
-                    )
+                    return asyncio.run(manager.execute_with_fault_tolerance(func, *args, **kwargs))
+
             return sync_wrapper
 
     return decorator
@@ -367,17 +369,17 @@ def with_retry(
     delay: float = 1.0,
     backoff_multiplier: float = 2.0,
     max_delay: float = 60.0,
-    jitter: bool = True
+    jitter: bool = True,
 ) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator for applying retry logic to functions.
-    
+
     Args:
         max_attempts: Maximum number of retry attempts
         delay: Initial delay between retries
         backoff_multiplier: Backoff multiplier for delay
         max_delay: Maximum delay between retries
         jitter: Whether to add jitter to delays
-        
+
     Returns:
         Decorated function
     """
@@ -385,27 +387,25 @@ def with_retry(
         strategy=FaultToleranceStrategy.RETRY_ONLY,
         retry_config=RetryConfig(
             max_attempts=max_attempts,
-            delay=delay,
-            backoff_multiplier=backoff_multiplier,
+            base_delay=delay,
+            exponential_base=backoff_multiplier,
             max_delay=max_delay,
-            jitter=jitter
-        )
+            jitter=jitter,
+        ),
     )
     return fault_tolerance(config)
 
 
 def with_circuit_breaker(
-    failure_threshold: int = 5,
-    recovery_timeout: float = 60.0,
-    expected_exception: type = Exception
+    failure_threshold: int = 5, recovery_timeout: float = 60.0, expected_exception: type = Exception
 ) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator for applying circuit breaker to functions.
-    
+
     Args:
         failure_threshold: Number of failures before opening circuit
         recovery_timeout: Time to wait before attempting recovery
         expected_exception: Exception type to count as failures
-        
+
     Returns:
         Decorated function
     """
@@ -414,23 +414,23 @@ def with_circuit_breaker(
         circuit_breaker_config={
             "failure_threshold": failure_threshold,
             "recovery_timeout": recovery_timeout,
-            "expected_exception": expected_exception
-        }
+            "expected_exception": expected_exception,
+        },
     )
     return fault_tolerance(config)
 
 
 def with_timeout(timeout: float) -> Callable[[Callable[..., T]], Callable[..., T]]:
     """Decorator for applying timeout to functions.
-    
+
     Args:
         timeout: Timeout in seconds
-        
+
     Returns:
         Decorated function
     """
     config = FaultToleranceConfig(
         strategy=FaultToleranceStrategy.TIMEOUT_ONLY,
-        timeout_config=TimeoutConfig(timeout=timeout)
+        timeout_config=TimeoutConfig(default_timeout=timeout),
     )
     return fault_tolerance(config)

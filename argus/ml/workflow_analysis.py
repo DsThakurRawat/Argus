@@ -11,7 +11,7 @@ import logging
 from typing import Any
 
 from .caching import ContextCache
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
+from .ml_analysis_agent import MLAnalysisAgent
 from .performance import PerformanceConfig
 from .prompt_context_models import IssueContext, PromptContext
 
@@ -36,10 +36,10 @@ class WorkflowAnalysisEngine:
         self.logger = logging.getLogger(__name__)
 
         # Initialize enhanced agent (will be injected)
-        self.enhanced_agent: EnhancedAnalysisAgent | None = None
+        self.enhanced_agent: MLAnalysisAgent | None = None
         self.cache: ContextCache | None = None
 
-    def set_enhanced_agent(self, enhanced_agent: EnhancedAnalysisAgent) -> None:
+    def set_enhanced_agent(self, enhanced_agent: MLAnalysisAgent) -> None:
         """Set the enhanced analysis agent."""
         self.enhanced_agent = enhanced_agent
 
@@ -89,9 +89,7 @@ class WorkflowAnalysisEngine:
             return result
 
         except Exception as e:
-            self.logger.error(
-                f"[ANALYSIS] Enhanced analysis failed for flow_id={flow_id}: {e}"
-            )
+            self.logger.error(f"[ANALYSIS] Enhanced analysis failed for flow_id={flow_id}: {e}")
             return {"success": False, "error": str(e)}
 
     async def execute_fallback_analysis(
@@ -114,9 +112,7 @@ class WorkflowAnalysisEngine:
             Fallback analysis result
         """
         try:
-            self.logger.info(
-                f"[FALLBACK] Executing fallback analysis for flow_id={flow_id}"
-            )
+            self.logger.info(f"[FALLBACK] Executing fallback analysis for flow_id={flow_id}")
 
             if not self.enhanced_agent:
                 raise ValueError("Enhanced agent not set")
@@ -144,9 +140,7 @@ class WorkflowAnalysisEngine:
             }
 
         except Exception as e:
-            self.logger.error(
-                f"[FALLBACK] Fallback analysis failed for flow_id={flow_id}: {e}"
-            )
+            self.logger.error(f"[FALLBACK] Fallback analysis failed for flow_id={flow_id}: {e}")
             return {"success": False, "error": str(e), "fallback": True}
 
     def _analyze_root_cause_basic(
@@ -175,19 +169,17 @@ class WorkflowAnalysisEngine:
         else:
             return "Add comprehensive error handling and logging for better debugging"
 
-    def _generate_basic_code_patch(
-        self, issue_context: IssueContext, proposed_fix: str
-    ) -> str:
+    def _generate_basic_code_patch(self, issue_context: IssueContext, proposed_fix: str) -> str:
         """Generate basic code patch for fallback scenarios."""
         affected_files = issue_context.affected_files
 
         if not affected_files:
-            return "# Basic error handling implementation\n# TODO: Implement based on specific issue"
+            return (
+                "# Basic error handling implementation\n# TODO: Implement based on specific issue"
+            )
 
         # Generate basic code patch based on file type
-        file_ext = (
-            affected_files[0].split(".")[-1] if "." in affected_files[0] else "py"
-        )
+        file_ext = affected_files[0].split(".")[-1] if "." in affected_files[0] else "py"
 
         if file_ext == "py":
             return f"""# Basic Python error handling

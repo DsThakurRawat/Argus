@@ -132,9 +132,7 @@ class CodeValidationPipeline:
             validation_result.syntax_score = syntax_result.overall_score
 
             # 2. Pattern compliance validation
-            pattern_result = await self._validate_patterns(
-                code_patch, generator_type, context
-            )
+            pattern_result = await self._validate_patterns(code_patch, generator_type, context)
             validation_result.issues.extend(pattern_result.issues)
             validation_result.pattern_compliant = pattern_result.is_valid
             validation_result.pattern_score = pattern_result.overall_score
@@ -146,17 +144,13 @@ class CodeValidationPipeline:
             validation_result.security_score = security_result.overall_score
 
             # 4. Performance validation
-            performance_result = await self._assess_performance_impact(
-                code_patch, context
-            )
+            performance_result = await self._assess_performance_impact(code_patch, context)
             validation_result.issues.extend(performance_result.issues)
             validation_result.performance_valid = performance_result.is_valid
             validation_result.performance_score = performance_result.overall_score
 
             # 5. Best practices validation
-            best_practices_result = await self._validate_best_practices(
-                code_patch, context
-            )
+            best_practices_result = await self._validate_best_practices(code_patch, context)
             validation_result.issues.extend(best_practices_result.issues)
             validation_result.feedback.extend(best_practices_result.feedback)
 
@@ -366,8 +360,7 @@ class CodeValidationPipeline:
 
         # Check for error handling
         if not any(
-            re.search(pattern, code)
-            for pattern in self.best_practices_patterns["error_handling"]
+            re.search(pattern, code) for pattern in self.best_practices_patterns["error_handling"]
         ):
             feedback.append(
                 ValidationFeedback(
@@ -383,10 +376,7 @@ class CodeValidationPipeline:
             )
 
         # Check for logging
-        if not any(
-            re.search(pattern, code)
-            for pattern in self.best_practices_patterns["logging"]
-        ):
+        if not any(re.search(pattern, code) for pattern in self.best_practices_patterns["logging"]):
             feedback.append(
                 ValidationFeedback(
                     feedback_id="logging_missing",
@@ -402,8 +392,7 @@ class CodeValidationPipeline:
 
         # Check for type hints
         if not any(
-            re.search(pattern, code)
-            for pattern in self.best_practices_patterns["type_hints"]
+            re.search(pattern, code) for pattern in self.best_practices_patterns["type_hints"]
         ):
             feedback.append(
                 ValidationFeedback(
@@ -412,9 +401,7 @@ class CodeValidationPipeline:
                     message="Consider adding type hints",
                     suggestion="Add type hints for better code documentation and IDE support",
                     priority=5,
-                    examples=[
-                        "def function(param: str) -> int:\n    return len(param)"
-                    ],
+                    examples=["def function(param: str) -> int:\n    return len(param)"],
                 )
             )
 

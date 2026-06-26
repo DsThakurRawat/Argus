@@ -76,9 +76,7 @@ class LogProcessor:
 
         # Truncate message if too long
         if len(log_entry.message) > self.max_message_length:
-            log_entry.message = (
-                log_entry.message[: self.max_message_length] + "... [TRUNCATED]"
-            )
+            log_entry.message = log_entry.message[: self.max_message_length] + "... [TRUNCATED]"
             log_entry.metadata["truncated"] = True
 
         # Validate severity
@@ -100,9 +98,7 @@ class LogProcessor:
 
         # Apply PII patterns
         for pattern, replacement in self.pii_patterns:
-            sanitized_message = re.sub(
-                pattern, replacement, sanitized_message, flags=re.IGNORECASE
-            )
+            sanitized_message = re.sub(pattern, replacement, sanitized_message, flags=re.IGNORECASE)
 
         # Check if message was modified
         if sanitized_message != log_entry.message:

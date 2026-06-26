@@ -54,10 +54,7 @@ def validate_prompt(prompt: str) -> bool:
         return False
 
     # Check for reasonable length
-    if len(prompt) > 100000:  # 100k characters
-        return False
-
-    return True
+    return len(prompt) <= 100000  # 100k characters
 
 
 def sanitize_prompt(prompt: str) -> str:
@@ -169,7 +166,9 @@ def build_context_kwargs(context_data: Any) -> dict[str, Any]:
 
     return {
         "primary_service": data.get("primary_service", "Unknown"),
-        "affected_services": safe_list_join(data.get("affected_services"), "No services identified"),
+        "affected_services": safe_list_join(
+            data.get("affected_services"), "No services identified"
+        ),
         "time_window_start": data.get("time_window_start", "Unknown"),
         "time_window_end": data.get("time_window_end", "Unknown"),
         "error_patterns": safe_json_serialize(data.get("error_patterns", {})),
@@ -178,8 +177,12 @@ def build_context_kwargs(context_data: Any) -> dict[str, Any]:
         "code_changes_context": data.get("code_changes_context", "No recent changes"),
         "static_analysis_findings": safe_json_serialize(data.get("static_analysis_findings", {})),
         "code_quality_metrics": safe_json_serialize(data.get("code_quality_metrics", {})),
-        "dependency_vulnerabilities": safe_list_join(data.get("dependency_vulnerabilities"), "No vulnerabilities identified"),
-        "error_related_files": safe_list_join(data.get("error_related_files"), "No related files identified"),
+        "dependency_vulnerabilities": safe_list_join(
+            data.get("dependency_vulnerabilities"), "No vulnerabilities identified"
+        ),
+        "error_related_files": safe_list_join(
+            data.get("error_related_files"), "No related files identified"
+        ),
         "recent_commits": safe_list_join(data.get("recent_commits"), "No recent commits"),
     }
 
@@ -194,6 +197,7 @@ def build_evidence_kwargs(evidence_data: dict[str, Any]) -> dict[str, Any]:
     Returns:
         Formatted keyword arguments with normalized dict keys for JSON compatibility
     """
+
     def normalize_dict_keys(obj: Any) -> Any:
         """Recursively normalize dict keys to strings for JSON compatibility."""
         if isinstance(obj, dict):

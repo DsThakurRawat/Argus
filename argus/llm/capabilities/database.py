@@ -23,9 +23,7 @@ class CapabilityDatabase:
             model_capabilities: The ModelCapabilities object to add.
         """
         self._capabilities[model_capabilities.model_id] = model_capabilities
-        logger.info(
-            f"Added/updated capabilities for model: {model_capabilities.model_id}"
-        )
+        logger.info(f"Added/updated capabilities for model: {model_capabilities.model_id}")
 
     def get_capabilities(self, model_id: str) -> ModelCapabilities | None:
         """
@@ -39,9 +37,7 @@ class CapabilityDatabase:
         """
         return self._capabilities.get(model_id)
 
-    def query_capabilities(
-        self, capability_name: str | None = None
-    ) -> list[ModelCapabilities]:
+    def query_capabilities(self, capability_name: str | None = None) -> list[ModelCapabilities]:
         """
         Query models based on their capabilities.
 

@@ -90,9 +90,7 @@ class MetricsCollector:
         series_key = self._create_series_key(name, tags or {})
         return self.series.get(series_key)
 
-    async def get_metric_value(
-        self, name: str, tags: dict[str, str] | None = None
-    ) -> float | None:
+    async def get_metric_value(self, name: str, tags: dict[str, str] | None = None) -> float | None:
         """Get the latest value for a metric."""
         series = await self.get_metric_series(name, tags)
         if series and series.points:
@@ -110,7 +108,7 @@ class MetricsCollector:
 
     async def list_metrics(self) -> list[str]:
         """List all metric names."""
-        return list(set(series.name for series in self.series.values()))
+        return list({series.name for series in self.series.values()})
 
     async def get_metrics_summary(self) -> dict[str, Any]:
         """Get a summary of all metrics."""
@@ -140,9 +138,7 @@ class MetricsCollector:
                     "mean": sum(values) / len(values),
                     "sum": sum(values),
                     "series_count": len(series_list),
-                    "latest_timestamp": max(
-                        p.timestamp for p in all_points
-                    ).isoformat(),
+                    "latest_timestamp": max(p.timestamp for p in all_points).isoformat(),
                 }
 
         return summary
@@ -196,8 +192,6 @@ class MetricsCollector:
             "max_points_per_series": self.max_points_per_series,
             "retention_hours": self.retention_hours,
             "memory_usage_percentage": (
-                round((total_series / self.max_series) * 100, 2)
-                if self.max_series > 0
-                else 0
+                round((total_series / self.max_series) * 100, 2) if self.max_series > 0 else 0
             ),
         }

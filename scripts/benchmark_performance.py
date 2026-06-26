@@ -20,6 +20,7 @@ from argus.llm.testing.framework import TestingFramework
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 async def run_performance_benchmark():
     """Run comprehensive performance benchmark."""
     print("🚀 Starting Enhanced Multi-Provider LLM Performance Benchmark")
@@ -37,12 +38,12 @@ async def run_performance_benchmark():
                         "model_type": "fast",
                         "cost_per_1k_tokens": 0.000075,
                         "max_tokens": 1000000,
-                        "capabilities": ["text", "json"]
+                        "capabilities": ["text", "json"],
                     }
-                }
+                },
             }
         },
-        default_model_type="fast"
+        default_model_type="fast",
     )
 
     # Initialize testing framework
@@ -59,9 +60,7 @@ async def run_performance_benchmark():
 
     try:
         results = await framework.run_performance_test(
-            test_name="baseline_performance",
-            iterations=5,
-            concurrency=2
+            test_name="baseline_performance", iterations=5, concurrency=2
         )
 
         basic_duration = time.time() - start_time
@@ -90,7 +89,7 @@ async def run_performance_benchmark():
                 request=None,  # Mock request
                 response=None,  # Mock response
                 duration_ms=100 + i * 10,
-                cost=0.001 + i * 0.0001
+                cost=0.001 + i * 0.0001,
             )
 
         metrics_duration = time.time() - start_time
@@ -110,8 +109,8 @@ async def run_performance_benchmark():
 
     try:
         # Test config loading performance
-        config_start = time.time()
-        test_config = LLMConfig(
+        time.time()
+        LLMConfig(
             providers={
                 "openai": {
                     "provider": "openai",
@@ -122,12 +121,12 @@ async def run_performance_benchmark():
                             "model_type": "smart",
                             "cost_per_1k_tokens": 0.00015,
                             "max_tokens": 128000,
-                            "capabilities": ["text", "json"]
+                            "capabilities": ["text", "json"],
                         }
-                    }
+                    },
                 }
             },
-            default_model_type="smart"
+            default_model_type="smart",
         )
         config_duration = time.time() - start_time
 
@@ -153,11 +152,7 @@ async def run_performance_benchmark():
         # Create some objects to test memory usage
         test_objects = []
         for i in range(1000):
-            test_objects.append({
-                "id": i,
-                "data": f"test_data_{i}" * 10,
-                "timestamp": time.time()
-            })
+            test_objects.append({"id": i, "data": f"test_data_{i}" * 10, "timestamp": time.time()})
 
         memory_after = process.memory_info().rss / 1024 / 1024  # MB
         memory_usage = memory_after - memory_before
@@ -186,8 +181,9 @@ async def run_performance_benchmark():
         print("✅ System Status: OPERATIONAL")
         print(f"✅ Average Latency: {results.avg_latency_ms:.2f}ms")
         print(f"✅ Success Rate: {results.success_rate:.2%}")
-        print(f"✅ Cost Efficiency: ${results.total_cost:.4f} for "
-              f"{results.total_requests} requests")
+        print(
+            f"✅ Cost Efficiency: ${results.total_cost:.4f} for {results.total_requests} requests"
+        )
     else:
         print("⚠️  System Status: PARTIAL (some tests failed)")
 
@@ -202,6 +198,7 @@ async def run_performance_benchmark():
     print("   4. ✅ Multi-provider support is functional")
 
     return results
+
 
 if __name__ == "__main__":
     asyncio.run(run_performance_benchmark())

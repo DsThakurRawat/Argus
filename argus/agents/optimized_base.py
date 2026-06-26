@@ -125,9 +125,7 @@ class OptimizedBaseAgent(Generic[T]):
         if self._strategy_manager_loader is None:
             # Get the enhanced service to access model scorer
             enhanced_service = await self.llm_service._enhanced_service_loader.get()
-            self._strategy_manager_loader = StrategyManager(
-                enhanced_service.model_scorer
-            )
+            self._strategy_manager_loader = StrategyManager(enhanced_service.model_scorer)
 
         return self._strategy_manager_loader
 

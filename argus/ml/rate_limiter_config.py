@@ -110,9 +110,7 @@ class RateLimiterConfig:
             return False
         if self.min_requests_for_adaptation < 1:
             return False
-        if not 0 < self.adaptation_factor <= 1:
-            return False
-        return True
+        return 0 < self.adaptation_factor <= 1
 
 
 @dataclass

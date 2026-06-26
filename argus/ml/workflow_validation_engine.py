@@ -47,9 +47,7 @@ class WorkflowValidationEngine:
             # Prepare code result for validation pipeline
             code_result = {
                 "code_patch": analysis_result.get("analysis", {}).get("code_patch", ""),
-                "file_path": analysis_result.get("analysis", {}).get(
-                    "file_path", "unknown"
-                ),
+                "file_path": analysis_result.get("analysis", {}).get("file_path", "unknown"),
                 "generator_type": prompt_context.generator_type,
                 "issue_type": prompt_context.issue_context.issue_type.value,
             }
@@ -99,9 +97,7 @@ class WorkflowValidationEngine:
             validation_result["warnings"].append("Avoid wildcard imports")
 
         if "global " in code:
-            validation_result["suggestions"].append(
-                "Consider avoiding global variables"
-            )
+            validation_result["suggestions"].append("Consider avoiding global variables")
 
         return validation_result
 
@@ -131,9 +127,7 @@ class WorkflowValidationEngine:
                 for issue in validation_result.issues
             ],
             "warnings": [
-                issue
-                for issue in validation_result.issues
-                if issue.level.value == "warning"
+                issue for issue in validation_result.issues if issue.level.value == "warning"
             ],
             "suggestions": [
                 {

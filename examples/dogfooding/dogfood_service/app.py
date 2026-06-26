@@ -334,7 +334,7 @@ def import_error() -> None:
     """Trigger ImportError - Dependency error."""
     try:
         # Try to import non-existent module
-        import non_existent_module
+        import non_existent_module  # noqa: F401 - intentional import to trigger ImportError
 
         return jsonify({"message": "Module imported successfully"})
     except ImportError as e:

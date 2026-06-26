@@ -60,9 +60,7 @@ class StrategyManager:
         """Initialize default strategies."""
         self._strategies = {
             OptimizationGoal.COST: CostOptimizedStrategy(self.model_scorer),
-            OptimizationGoal.PERFORMANCE: PerformanceOptimizedStrategy(
-                self.model_scorer
-            ),
+            OptimizationGoal.PERFORMANCE: PerformanceOptimizedStrategy(self.model_scorer),
             OptimizationGoal.QUALITY: QualityOptimizedStrategy(self.model_scorer),
             OptimizationGoal.TIME_BASED: TimeBasedStrategy(self.model_scorer),
             OptimizationGoal.HYBRID: HybridStrategy(self.model_scorer),
@@ -112,8 +110,7 @@ class StrategyManager:
         strategy_metrics = self._strategy_performance[goal.value]
         strategy_metrics["total_selections"] += 1
         strategy_metrics["average_latency"] = (
-            strategy_metrics["average_latency"]
-            * (strategy_metrics["total_selections"] - 1)
+            strategy_metrics["average_latency"] * (strategy_metrics["total_selections"] - 1)
             + result.execution_time_ms
         ) / strategy_metrics["total_selections"]
 
@@ -123,9 +120,7 @@ class StrategyManager:
 
         return result
 
-    def add_strategy(
-        self, goal: OptimizationGoal, strategy: ModelSelectionStrategy
-    ) -> None:
+    def add_strategy(self, goal: OptimizationGoal, strategy: ModelSelectionStrategy) -> None:
         """Add or replace a strategy.
 
         Args:
@@ -193,7 +188,7 @@ class StrategyManager:
             Dictionary mapping strategy names to their performance metrics
         """
         all_metrics = {}
-        for goal in self._strategies.keys():
+        for goal in self._strategies:
             all_metrics[goal.value] = self.get_strategy_performance(goal)
         return all_metrics
 
@@ -205,9 +200,7 @@ class StrategyManager:
         """
         return self._strategy_usage_stats.copy()
 
-    def update_strategy_performance(
-        self, goal: OptimizationGoal, success: bool, latency_ms: float
-    ):
+    def update_strategy_performance(self, goal: OptimizationGoal, success: bool, latency_ms: float):
         """Update performance metrics for a strategy based on actual usage.
 
         Args:
@@ -267,12 +260,9 @@ class StrategyManager:
 
         # Calculate overall success rate
         total_successful = sum(
-            metrics["successful_selections"]
-            for metrics in self._strategy_performance.values()
+            metrics["successful_selections"] for metrics in self._strategy_performance.values()
         )
-        overall_success_rate = (
-            total_successful / max(1, total_usage) if total_usage > 0 else 0.0
-        )
+        overall_success_rate = total_successful / max(1, total_usage) if total_usage > 0 else 0.0
 
         return {
             "status": "healthy",
@@ -289,9 +279,7 @@ class StrategyManager:
             },
         }
 
-    def get_strategy_recommendations(
-        self, context: StrategyContext
-    ) -> list[OptimizationGoal]:
+    def get_strategy_recommendations(self, context: StrategyContext) -> list[OptimizationGoal]:
         """Get recommended strategies based on context.
 
         Args:

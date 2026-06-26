@@ -9,6 +9,7 @@ from local file system files with in-memory buffering and backpressure managemen
 
 import asyncio
 from collections.abc import AsyncGenerator
+import contextlib
 from datetime import UTC, datetime
 import glob
 import logging
@@ -66,31 +67,25 @@ class QueuedFileSystemAdapter(LogIngestionInterface):
         self._last_check_time = datetime.now(UTC)
         self._error_count = 0
         self._last_error = None
-        self._file_positions: dict[str, int] = (
-            {}
-        )  # Track file positions for incremental reading
+        self._file_positions: dict[str, int] = {}  # Track file positions for incremental reading
 
         # Background tasks
         self._file_watcher_task: asyncio.Task | None = None
         self._queue_processor_task: asyncio.Task | None = None
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the file system adapter and memory queue."""
         try:
             # Validate file path
             if not os.path.exists(self.file_path):
-                raise SourceConnectionError(
-                    f"File path does not exist: {self.file_path}"
-                )
+                raise SourceConnectionError(f"File path does not exist: {self.file_path}")
 
             # Start memory queue
             await self.memory_queue.start()
 
             # Start background tasks
             self._file_watcher_task = asyncio.create_task(self._file_watcher_loop())
-            self._queue_processor_task = asyncio.create_task(
-                self._queue_processor_loop()
-            )
+            self._queue_processor_task = asyncio.create_task(self._queue_processor_loop())
 
             self.running = True
             self._last_check_time = datetime.now(UTC)
@@ -98,9 +93,7 @@ class QueuedFileSystemAdapter(LogIngestionInterface):
 
         except Exception as e:
             logger.error(f"Failed to start queued file system adapter: {e}")
-            raise SourceConnectionError(
-                f"Failed to start file system adapter: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to start file system adapter: {e}") from e
 
     async def stop(self) -> None:
         """Stop the file system adapter and memory queue."""
@@ -109,17 +102,13 @@ class QueuedFileSystemAdapter(LogIngestionInterface):
         # Cancel background tasks
         if self._file_watcher_task:
             self._file_watcher_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._file_watcher_task
-            except asyncio.CancelledError:
-                pass
 
         if self._queue_processor_task:
             self._queue_processor_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._queue_processor_task
-            except asyncio.CancelledError:
-                pass
 
         # Stop memory queue
         await self.memory_queue.stop()
@@ -218,16 +207,13 @@ class QueuedFileSystemAdapter(LogIngestionInterface):
 
     async def handle_error(self, error: Exception, context: dict[str, Any]) -> bool:
         """Handle errors from the adapter."""
-        logger.error(
-            f"File system error in {context.get('operation', 'unknown')}: {error}"
-        )
+        logger.error(f"File system error in {context.get('operation', 'unknown')}: {error}")
         self._error_count += 1
         self._last_error = str(error)
 
-        # Return True if error should be retried
-        if isinstance(error, (OSError, IOError)):
-            return True  # Retry file system errors
-        return False
+        # Return True if error should be retried.
+        # Retry file system errors.
+        return isinstance(error, (OSError, IOError))
 
     async def get_health_metrics(self) -> dict[str, Any]:
         """Get detailed health metrics."""
@@ -367,9 +353,7 @@ class QueuedFileSystemAdapter(LogIngestionInterface):
                             )
 
                     except LogParsingError as e:
-                        logger.warning(
-                            f"Failed to parse log line {file_path}:{line_num}: {e}"
-                        )
+                        logger.warning(f"Failed to parse log line {file_path}:{line_num}: {e}")
                         continue
 
                 # Update file position
@@ -429,9 +413,7 @@ class QueuedFileSystemAdapter(LogIngestionInterface):
                 metadata={
                     "file_path": file_path,
                     "line_number": line_num,
-                    "file_size": (
-                        os.path.getsize(file_path) if os.path.exists(file_path) else 0
-                    ),
+                    "file_size": (os.path.getsize(file_path) if os.path.exists(file_path) else 0),
                 },
             )
 

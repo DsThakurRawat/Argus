@@ -107,13 +107,9 @@ class ErrorHandlingConfigValidator:
         for operation_type in operation_types:
             if hasattr(config, operation_type):
                 operation_config = getattr(config, operation_type)
-                is_valid, operation_errors = self.validate_circuit_breaker_config(
-                    operation_config
-                )
+                is_valid, operation_errors = self.validate_circuit_breaker_config(operation_config)
                 if not is_valid:
-                    errors.extend(
-                        [f"{operation_type}: {error}" for error in operation_errors]
-                    )
+                    errors.extend([f"{operation_type}: {error}" for error in operation_errors])
 
         return len(errors) == 0, errors
 
@@ -135,9 +131,7 @@ class ErrorHandlingConfigValidator:
         elif config.max_retries < 0:
             errors.append("max_retries must be non-negative")
         elif config.max_retries > 10:
-            errors.append(
-                "max_retries should not exceed 10 to prevent excessive delays"
-            )
+            errors.append("max_retries should not exceed 10 to prevent excessive delays")
 
         # Validate base delay
         if not isinstance(config.base_delay, (int, float)):
@@ -185,9 +179,7 @@ class ErrorHandlingConfigValidator:
 
         return len(errors) == 0, errors
 
-    def validate_error_type(
-        self, error_type: str | ErrorType
-    ) -> tuple[bool, list[str]]:
+    def validate_error_type(self, error_type: str | ErrorType) -> tuple[bool, list[str]]:
         """
         Validate error type.
 
@@ -209,9 +201,7 @@ class ErrorHandlingConfigValidator:
 
         return len(errors) == 0, errors
 
-    def validate_circuit_state(
-        self, state: str | CircuitState
-    ) -> tuple[bool, list[str]]:
+    def validate_circuit_state(self, state: str | CircuitState) -> tuple[bool, list[str]]:
         """
         Validate circuit state.
 
@@ -233,9 +223,7 @@ class ErrorHandlingConfigValidator:
 
         return len(errors) == 0, errors
 
-    def validate_health_check_config(
-        self, config: dict[str, Any]
-    ) -> tuple[bool, list[str]]:
+    def validate_health_check_config(self, config: dict[str, Any]) -> tuple[bool, list[str]]:
         """
         Validate health check configuration.
 
@@ -248,9 +236,8 @@ class ErrorHandlingConfigValidator:
         errors = []
 
         # Validate enabled flag
-        if "enabled" in config:
-            if not isinstance(config["enabled"], bool):
-                errors.append("enabled must be a boolean")
+        if "enabled" in config and not isinstance(config["enabled"], bool):
+            errors.append("enabled must be a boolean")
 
         # Validate check interval
         if "check_interval" in config:
@@ -302,9 +289,8 @@ class ErrorHandlingConfigValidator:
         errors = []
 
         # Validate enabled flag
-        if "enabled" in config:
-            if not isinstance(config["enabled"], bool):
-                errors.append("enabled must be a boolean")
+        if "enabled" in config and not isinstance(config["enabled"], bool):
+            errors.append("enabled must be a boolean")
 
         # Validate collection interval
         if "collection_interval" in config:
@@ -347,9 +333,8 @@ class ErrorHandlingConfigValidator:
         errors = []
 
         # Validate enabled flag
-        if "enabled" in config:
-            if not isinstance(config["enabled"], bool):
-                errors.append("enabled must be a boolean")
+        if "enabled" in config and not isinstance(config["enabled"], bool):
+            errors.append("enabled must be a boolean")
 
         # Validate fallback timeout
         if "fallback_timeout" in config:
@@ -380,15 +365,11 @@ class ErrorHandlingConfigValidator:
                             f"Invalid strategy: {strategy}. Must be one of {valid_strategies}"
                         )
                     elif not isinstance(enabled, bool):
-                        errors.append(
-                            f"Strategy {strategy} enabled flag must be a boolean"
-                        )
+                        errors.append(f"Strategy {strategy} enabled flag must be a boolean")
 
         return len(errors) == 0, errors
 
-    def validate_error_handling_config(
-        self, config: dict[str, Any]
-    ) -> tuple[bool, list[str]]:
+    def validate_error_handling_config(self, config: dict[str, Any]) -> tuple[bool, list[str]]:
         """
         Validate complete error handling configuration.
 
@@ -410,8 +391,8 @@ class ErrorHandlingConfigValidator:
                         try:
                             # Create a CircuitBreakerConfig from the dict
                             cb_config = CircuitBreakerConfig(**op_config)
-                            is_valid, circuit_errors = (
-                                self.validate_circuit_breaker_config(cb_config)
+                            is_valid, circuit_errors = self.validate_circuit_breaker_config(
+                                cb_config
                             )
                             if not is_valid:
                                 errors.extend(
@@ -445,9 +426,7 @@ class ErrorHandlingConfigValidator:
 
         # Validate health checks config
         if "health_checks" in config:
-            is_valid, health_errors = self.validate_health_check_config(
-                config["health_checks"]
-            )
+            is_valid, health_errors = self.validate_health_check_config(config["health_checks"])
             if not is_valid:
                 errors.extend([f"health_checks: {error}" for error in health_errors])
 
@@ -463,9 +442,7 @@ class ErrorHandlingConfigValidator:
                 config["graceful_degradation"]
             )
             if not is_valid:
-                errors.extend(
-                    [f"graceful_degradation: {error}" for error in degradation_errors]
-                )
+                errors.extend([f"graceful_degradation: {error}" for error in degradation_errors])
 
         return len(errors) == 0, errors
 
@@ -540,9 +517,7 @@ class ErrorHandlingConfigValidator:
             },
         }
 
-    def validate_and_fix_config(
-        self, config: dict[str, Any]
-    ) -> tuple[dict[str, Any], list[str]]:
+    def validate_and_fix_config(self, config: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
         """
         Validate configuration and fix common issues.
 
@@ -563,14 +538,10 @@ class ErrorHandlingConfigValidator:
             circuit_config = fixed_config["circuit_breaker"]
             if isinstance(circuit_config, dict):
                 # Ensure all operation types are present
-                for op_type, default_op_config in default_config[
-                    "circuit_breaker"
-                ].items():
+                for op_type, default_op_config in default_config["circuit_breaker"].items():
                     if op_type not in circuit_config:
                         circuit_config[op_type] = default_op_config.copy()
-                        warnings.append(
-                            f"Added missing {op_type} circuit breaker config"
-                        )
+                        warnings.append(f"Added missing {op_type} circuit breaker config")
         else:
             # Add entire circuit breaker section if missing
             fixed_config["circuit_breaker"] = default_config["circuit_breaker"].copy()
@@ -597,9 +568,7 @@ class ErrorHandlingConfigValidator:
                 for field, default_value in default_config["health_checks"].items():
                     if field not in health_config:
                         health_config[field] = default_value
-                        warnings.append(
-                            f"Added missing health_checks config field: {field}"
-                        )
+                        warnings.append(f"Added missing health_checks config field: {field}")
         else:
             # Add entire health_checks section if missing
             fixed_config["health_checks"] = default_config["health_checks"].copy()
@@ -622,19 +591,13 @@ class ErrorHandlingConfigValidator:
         if "graceful_degradation" in fixed_config:
             degradation_config = fixed_config["graceful_degradation"]
             if isinstance(degradation_config, dict):
-                for field, default_value in default_config[
-                    "graceful_degradation"
-                ].items():
+                for field, default_value in default_config["graceful_degradation"].items():
                     if field not in degradation_config:
                         degradation_config[field] = default_value
-                        warnings.append(
-                            f"Added missing graceful_degradation config field: {field}"
-                        )
+                        warnings.append(f"Added missing graceful_degradation config field: {field}")
         else:
             # Add entire graceful_degradation section if missing
-            fixed_config["graceful_degradation"] = default_config[
-                "graceful_degradation"
-            ].copy()
+            fixed_config["graceful_degradation"] = default_config["graceful_degradation"].copy()
             warnings.append("Added missing graceful_degradation section")
 
         return fixed_config, warnings

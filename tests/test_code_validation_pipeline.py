@@ -116,9 +116,7 @@ def incomplete_function() -> None:
         assert len(result.issues) == 0
 
     @pytest.mark.asyncio
-    async def test_validate_invalid_syntax(
-        self, validation_pipeline, invalid_python_code
-    ):
+    async def test_validate_invalid_syntax(self, validation_pipeline, invalid_python_code):
         """Test validation of code with syntax errors."""
         code_result = {
             "code_patch": invalid_python_code,
@@ -135,17 +133,13 @@ def incomplete_function() -> None:
         assert len(result.issues) > 0
 
         syntax_issues = [
-            issue
-            for issue in result.issues
-            if issue.validation_type == ValidationType.SYNTAX
+            issue for issue in result.issues if issue.validation_type == ValidationType.SYNTAX
         ]
         assert len(syntax_issues) > 0
         assert syntax_issues[0].level == ValidationLevel.ERROR
 
     @pytest.mark.asyncio
-    async def test_validate_security_issues(
-        self, validation_pipeline, code_with_security_issues
-    ):
+    async def test_validate_security_issues(self, validation_pipeline, code_with_security_issues):
         """Test validation of code with security vulnerabilities."""
         code_result = {
             "code_patch": code_with_security_issues,
@@ -160,9 +154,7 @@ def incomplete_function() -> None:
         assert result.security_score < 1.0
 
         security_issues = [
-            issue
-            for issue in result.issues
-            if issue.validation_type == ValidationType.SECURITY
+            issue for issue in result.issues if issue.validation_type == ValidationType.SECURITY
         ]
         assert len(security_issues) > 0
         assert any(issue.level == ValidationLevel.CRITICAL for issue in security_issues)
@@ -185,19 +177,13 @@ def incomplete_function() -> None:
         assert result.performance_score < 1.0
 
         performance_issues = [
-            issue
-            for issue in result.issues
-            if issue.validation_type == ValidationType.PERFORMANCE
+            issue for issue in result.issues if issue.validation_type == ValidationType.PERFORMANCE
         ]
         assert len(performance_issues) > 0
-        assert any(
-            issue.level == ValidationLevel.WARNING for issue in performance_issues
-        )
+        assert any(issue.level == ValidationLevel.WARNING for issue in performance_issues)
 
     @pytest.mark.asyncio
-    async def test_validate_todo_comments(
-        self, validation_pipeline, code_with_todo_comments
-    ):
+    async def test_validate_todo_comments(self, validation_pipeline, code_with_todo_comments):
         """Test validation of code with TODO/FIXME comments."""
         code_result = {
             "code_patch": code_with_todo_comments,
@@ -217,10 +203,7 @@ def incomplete_function() -> None:
             if issue.validation_type == ValidationType.PATTERN_COMPLIANCE
         ]
         assert len(pattern_issues) > 0
-        assert any(
-            "TODO" in issue.message or "FIXME" in issue.message
-            for issue in pattern_issues
-        )
+        assert any("TODO" in issue.message or "FIXME" in issue.message for issue in pattern_issues)
 
     @pytest.mark.asyncio
     async def test_validate_empty_code(self, validation_pipeline):
@@ -327,9 +310,7 @@ def process_user_input(user_input: str) -> None:
         result = await validation_pipeline.validate_code(code_result)
 
         # Should have feedback about input sanitization
-        sanitization_feedback = [
-            f for f in result.feedback if "sanitiz" in f.message.lower()
-        ]
+        sanitization_feedback = [f for f in result.feedback if "sanitiz" in f.message.lower()]
         assert len(sanitization_feedback) > 0
 
     @pytest.mark.asyncio

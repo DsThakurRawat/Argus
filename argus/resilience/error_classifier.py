@@ -166,9 +166,7 @@ class ErrorClassifier:
         if status_code is not None:
             category = self._status_code_mappings.get(status_code)
             if category:
-                logger.debug(
-                    f"Classified error by status code {status_code}: {category}"
-                )
+                logger.debug(f"Classified error by status code {status_code}: {category}")
                 return category
 
         # Extract status code from error message if not provided
@@ -197,9 +195,7 @@ class ErrorClassifier:
             for category, patterns in self._error_patterns.items():
                 for pattern in patterns:
                     if pattern in error_message_lower:
-                        logger.debug(
-                            f"Classified error by message pattern '{pattern}': {category}"
-                        )
+                        logger.debug(f"Classified error by message pattern '{pattern}': {category}")
                         return category
 
         # Check error string representation
@@ -214,9 +210,7 @@ class ErrorClassifier:
 
         # Default classification based on provider context
         if provider:
-            logger.debug(
-                f"Using provider-specific default classification for {provider}"
-            )
+            logger.debug(f"Using provider-specific default classification for {provider}")
             return self._get_provider_default_category(provider)
 
         # Default to provider failure for unknown errors
@@ -348,9 +342,7 @@ class ErrorClassifier:
         self._error_patterns[category].append(pattern.lower())
         logger.info(f"Added error pattern '{pattern}' for category {category}")
 
-    def add_status_code_mapping(
-        self, status_code: int, category: ErrorCategory
-    ) -> None:
+    def add_status_code_mapping(self, status_code: int, category: ErrorCategory) -> None:
         """Add a custom status code mapping.
 
         Args:
@@ -376,12 +368,9 @@ class ErrorClassifier:
         """Get statistics about error classifications."""
         return {
             "error_patterns": {
-                category.value: len(patterns)
-                for category, patterns in self._error_patterns.items()
+                category.value: len(patterns) for category, patterns in self._error_patterns.items()
             },
             "status_code_mappings": len(self._status_code_mappings),
             "exception_mappings": len(self._exception_mappings),
-            "total_patterns": sum(
-                len(patterns) for patterns in self._error_patterns.values()
-            ),
+            "total_patterns": sum(len(patterns) for patterns in self._error_patterns.values()),
         }

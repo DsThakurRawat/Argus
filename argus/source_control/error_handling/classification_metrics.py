@@ -70,22 +70,16 @@ class ConfusionMatrix:
 
         tp = self.matrix.get((error_type, error_type), 0)
         fp = sum(
-            self.matrix.get((other, error_type), 0)
-            for other in self.classes
-            if other != error_type
+            self.matrix.get((other, error_type), 0) for other in self.classes if other != error_type
         )
         fn = sum(
-            self.matrix.get((error_type, other), 0)
-            for other in self.classes
-            if other != error_type
+            self.matrix.get((error_type, other), 0) for other in self.classes if other != error_type
         )
 
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
         f1_score = (
-            2 * (precision * recall) / (precision + recall)
-            if (precision + recall) > 0
-            else 0.0
+            2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
         )
 
         return {
@@ -130,9 +124,7 @@ class PerformanceMetrics:
     average_confidence: float = 0.0
     average_prediction_time_ms: float = 0.0
     total_prediction_time_ms: float = 0.0
-    classification_counts: dict[ErrorType, int] = field(
-        default_factory=lambda: defaultdict(int)
-    )
+    classification_counts: dict[ErrorType, int] = field(default_factory=lambda: defaultdict(int))
     confidence_by_type: dict[ErrorType, list[float]] = field(
         default_factory=lambda: defaultdict(list)
     )
@@ -270,8 +262,7 @@ class ClassificationMetricsCollector:
 
         # Calculate overall precision, recall, F1 (micro-averaged)
         total_tp = sum(
-            self.confusion_matrix.matrix.get((cls, cls), 0)
-            for cls in self.confusion_matrix.classes
+            self.confusion_matrix.matrix.get((cls, cls), 0) for cls in self.confusion_matrix.classes
         )
         total_fp = sum(
             self.confusion_matrix.matrix.get((true_cls, pred_cls), 0)
@@ -281,14 +272,10 @@ class ClassificationMetricsCollector:
         )
         total_fn = total_fp  # In multi-class, FP for one class is FN for others
 
-        precision = (
-            total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0.0
-        )
+        precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0.0
         recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0.0
         f1_score = (
-            2 * (precision * recall) / (precision + recall)
-            if (precision + recall) > 0
-            else 0.0
+            2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
         )
 
         return ClassificationMetrics(
@@ -333,9 +320,7 @@ class ClassificationMetricsCollector:
         for error_type, count in self.performance_metrics.classification_counts.items():
             prediction_distribution[error_type.value] = {
                 "count": count,
-                "percentage": (
-                    (count / total_predictions * 100) if total_predictions > 0 else 0.0
-                ),
+                "percentage": ((count / total_predictions * 100) if total_predictions > 0 else 0.0),
             }
 
         return {
@@ -367,10 +352,7 @@ class ClassificationMetricsCollector:
             },
             "confusion_matrix": {
                 "classes": (
-                    [
-                        cls.value
-                        for cls in classification_metrics.confusion_matrix.classes
-                    ]
+                    [cls.value for cls in classification_metrics.confusion_matrix.classes]
                     if classification_metrics.confusion_matrix
                     else []
                 ),
@@ -456,9 +438,7 @@ class ClassificationMetricsCollector:
         # Add confusion matrix
         if classification_metrics.confusion_matrix:
             matrix = classification_metrics.confusion_matrix.get_matrix_array()
-            classes = [
-                cls.value for cls in classification_metrics.confusion_matrix.classes
-            ]
+            classes = [cls.value for cls in classification_metrics.confusion_matrix.classes]
         else:
             matrix = np.array([])
             classes = []
@@ -516,8 +496,7 @@ class ClassificationMetricsCollector:
         sorted_errors = sorted(error_counts.items(), key=lambda x: x[1], reverse=True)
 
         return [
-            (true_label, pred_label, count)
-            for (true_label, pred_label), count in sorted_errors[:n]
+            (true_label, pred_label, count) for (true_label, pred_label), count in sorted_errors[:n]
         ]
 
     def get_confidence_statistics(self) -> dict[str, float]:
@@ -656,9 +635,7 @@ def calculate_metrics_from_predictions(
     """Calculate metrics from lists of predictions."""
     collector = ClassificationMetricsCollector(f"batch_{algorithm_name}")
 
-    for true_label, predicted_result in zip(
-        true_labels, predicted_results, strict=True
-    ):
+    for true_label, predicted_result in zip(true_labels, predicted_results, strict=True):
         # Assume 1ms prediction time for batch calculations
         collector.record_prediction(true_label, predicted_result, 1.0)
 

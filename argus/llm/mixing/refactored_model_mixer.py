@@ -66,9 +66,7 @@ class TaskDecomposer:
         """Initialize the simple task decomposer."""
         self.model_registry = model_registry
 
-    async def decompose_task(
-        self, task: str, context: dict[str, Any]
-    ) -> TaskDecomposition:
+    async def decompose_task(self, task: str, context: dict[str, Any]) -> TaskDecomposition:
         """Decompose a task using simple heuristics."""
         # Simple decomposition based on task length and keywords
         subtasks = []
@@ -178,9 +176,7 @@ class RefactoredModelMixer:
         self.cost_manager = cost_manager
 
         # Initialize modular components
-        self.model_manager = ModelManager(
-            provider_factory, model_registry, max_concurrent_requests
-        )
+        self.model_manager = ModelManager(provider_factory, model_registry, max_concurrent_requests)
         self.context_manager = ContextManager()
         self.performance_optimizer = PerformanceOptimizer()
         self.strategy_factory = MixingStrategyFactory()
@@ -192,9 +188,7 @@ class RefactoredModelMixer:
 
         # Enable optimizations by default
         self.performance_optimizer.enable_optimization(OptimizationStrategy.CACHING)
-        self.performance_optimizer.enable_optimization(
-            OptimizationStrategy.LOAD_BALANCING
-        )
+        self.performance_optimizer.enable_optimization(OptimizationStrategy.LOAD_BALANCING)
 
         logger.info("RefactoredModelMixer initialized with modular architecture")
 
@@ -231,9 +225,7 @@ class RefactoredModelMixer:
             r"<link\b[^>]*javascript",
             r"<meta\b[^>]*http-equiv",
         ]
-        return any(
-            re.search(pattern, prompt, re.IGNORECASE) for pattern in dangerous_patterns
-        )
+        return any(re.search(pattern, prompt, re.IGNORECASE) for pattern in dangerous_patterns)
 
     def _sanitize_prompt(self, prompt: str) -> str:
         """Sanitize prompt by removing or escaping dangerous content."""
@@ -262,24 +254,17 @@ class RefactoredModelMixer:
         start_time = time.time()
 
         # Get model configurations
-        if custom_configs:
-            model_configs = custom_configs
-        else:
-            model_configs = self.model_manager.get_specialized_configs(task_type)
+        model_configs = custom_configs or self.model_manager.get_specialized_configs(task_type)
 
         # Validate model configurations
         self.model_manager.validate_configs(model_configs)
 
         if not model_configs:
-            raise ValueError(
-                f"No model configurations available for task type: {task_type}"
-            )
+            raise ValueError(f"No model configurations available for task type: {task_type}")
 
         # Apply cost-aware filtering if cost manager is available
         if self.cost_manager:
-            model_configs = await self._apply_cost_aware_filtering(
-                model_configs, prompt
-            )
+            model_configs = await self._apply_cost_aware_filtering(model_configs, prompt)
 
         # Check for cached response
         cached_response = await self.performance_optimizer.get_cached_response(
@@ -342,10 +327,8 @@ class RefactoredModelMixer:
         if results:
             valid_results = [r for r in results if r is not None]
             if valid_results:
-                aggregated_result, confidence = (
-                    await self.result_aggregator.aggregate_results(
-                        valid_results, model_configs, strategy
-                    )
+                aggregated_result, confidence = await self.result_aggregator.aggregate_results(
+                    valid_results, model_configs, strategy
                 )
             else:
                 aggregated_result = ""
@@ -380,9 +363,7 @@ class RefactoredModelMixer:
         execution_time_ms = execution_time * 1000
 
         # Update strategy performance
-        self.strategy_monitor.record_execution(
-            strategy, execution_time, len(valid_results) > 0
-        )
+        self.strategy_monitor.record_execution(strategy, execution_time, len(valid_results) > 0)
 
         return MixingResult(
             primary_result=(
@@ -407,9 +388,7 @@ class RefactoredModelMixer:
             },
         )
 
-    async def _apply_cost_aware_filtering(
-        self, model_configs: list[Any], prompt: str
-    ) -> list[Any]:
+    async def _apply_cost_aware_filtering(self, model_configs: list[Any], prompt: str) -> list[Any]:
         """Apply cost-aware filtering to model configurations."""
         if not self.cost_manager:
             return model_configs
@@ -428,9 +407,7 @@ class RefactoredModelMixer:
                 )
                 estimated_costs.append((config, cost))
             except Exception as e:
-                logger.warning(
-                    f"Failed to estimate cost for {config.provider}:{config.model}: {e}"
-                )
+                logger.warning(f"Failed to estimate cost for {config.provider}:{config.model}: {e}")
                 estimated_costs.append((config, float("inf")))
 
         # Filter out configurations that exceed cost limits
@@ -439,9 +416,7 @@ class RefactoredModelMixer:
             if config.cost_limit is None or cost <= config.cost_limit:
                 filtered_configs.append(config)
             else:
-                logger.info(
-                    f"Filtered out {config.provider}:{config.model} due to cost limit"
-                )
+                logger.info(f"Filtered out {config.provider}:{config.model} due to cost limit")
 
         return filtered_configs if filtered_configs else model_configs
 
@@ -454,17 +429,13 @@ class RefactoredModelMixer:
     ) -> list[MixingResult]:
         """Decompose a complex task and mix models for each subtask."""
         # Decompose the task
-        decomposition = await self.task_decomposer.decompose_task(
-            complex_task, context or {}
-        )
+        decomposition = await self.task_decomposer.decompose_task(complex_task, context or {})
 
         # Mix models for each subtask
         results = []
         for i, subtask in enumerate(decomposition.subtasks):
             try:
-                result = await self.mix_models(
-                    subtask, task_type, strategy, context=context
-                )
+                result = await self.mix_models(subtask, task_type, strategy, context=context)
                 result.metadata["subtask_index"] = i
                 result.metadata["original_task"] = complex_task
                 results.append(result)

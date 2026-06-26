@@ -34,9 +34,7 @@ class OptimizationResult:
 class CostOptimizer:
     """Intelligent cost optimization for model selection."""
 
-    def __init__(
-        self, cost_manager: DynamicCostManager, model_registry: ModelRegistry
-    ) -> None:
+    def __init__(self, cost_manager: DynamicCostManager, model_registry: ModelRegistry) -> None:
         self.cost_manager = cost_manager
         self.model_registry = model_registry
 
@@ -75,9 +73,7 @@ class CostOptimizer:
             )
 
         # Filter by constraints
-        filtered_models = self._filter_models_by_constraints(
-            available_models, context, max_cost
-        )
+        filtered_models = self._filter_models_by_constraints(available_models, context, max_cost)
 
         if not filtered_models:
             raise ValueError("No models meet the specified constraints")
@@ -114,10 +110,7 @@ class CostOptimizer:
 
         for model in models:
             # Check provider preference
-            if (
-                context.provider_preference
-                and model.provider not in context.provider_preference
-            ):
+            if context.provider_preference and model.provider not in context.provider_preference:
                 continue
 
             # Check cost constraint
@@ -187,7 +180,9 @@ class CostOptimizer:
         sorted_models = sorted(models, key=performance_score, reverse=True)
         selected = sorted_models[0]
 
-        reasoning = f"Selected {selected.name} as the highest performance model that meets requirements"
+        reasoning = (
+            f"Selected {selected.name} as the highest performance model that meets requirements"
+        )
 
         return selected, reasoning
 
@@ -229,9 +224,7 @@ class CostOptimizer:
 
         return selected, reasoning
 
-    def _estimate_request_cost(
-        self, model: ModelInfo, context: StrategyContext
-    ) -> float:
+    def _estimate_request_cost(self, model: ModelInfo, context: StrategyContext) -> float:
         """Estimate cost for a request with the given model."""
         # Use average token counts for estimation
         # In a real implementation, this would be more sophisticated
@@ -288,9 +281,7 @@ class CostOptimizer:
             context=context, strategy=OptimizationStrategy.BUDGET, max_cost=budget_limit
         )
 
-    def get_optimization_recommendations(
-        self, usage_records: list[UsageRecord]
-    ) -> dict[str, Any]:
+    def get_optimization_recommendations(self, usage_records: list[UsageRecord]) -> dict[str, Any]:
         """Get optimization recommendations based on usage patterns."""
         if not usage_records:
             return {"recommendations": [], "savings_potential": 0.0}
@@ -319,9 +310,7 @@ class CostOptimizer:
         recommendations = []
 
         # Find most expensive models
-        expensive_models = sorted(
-            model_usage.items(), key=lambda x: x[1]["cost"], reverse=True
-        )[:3]
+        expensive_models = sorted(model_usage.items(), key=lambda x: x[1]["cost"], reverse=True)[:3]
         for model, usage in expensive_models:
             if usage["cost"] > total_cost * 0.2:  # More than 20% of total cost
                 recommendations.append(

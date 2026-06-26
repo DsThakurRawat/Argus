@@ -53,9 +53,7 @@ class TestCredentialStorageSecurity:
     def test_ssh_key_file_security(self) -> None:
         """Test SSH key file security validation."""
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
-            temp_file.write(
-                "-----BEGIN PRIVATE KEY-----\nMOCK_KEY\n-----END PRIVATE KEY-----"
-            )
+            temp_file.write("-----BEGIN PRIVATE KEY-----\nMOCK_KEY\n-----END PRIVATE KEY-----")
             temp_file_path = temp_file.name
 
         try:
@@ -84,9 +82,7 @@ class TestCredentialStorageSecurity:
             "token_uri": "https://oauth2.googleapis.com/token",
         }
 
-        with tempfile.NamedTemporaryFile(
-            mode="w", delete=False, suffix=".json"
-        ) as temp_file:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".json") as temp_file:
             json.dump(service_account_data, temp_file)
             temp_file_path = temp_file.name
 
@@ -105,12 +101,8 @@ class TestCredentialStorageSecurity:
                 invalid_file_path = invalid_file.name
 
             try:
-                config_invalid = CredentialConfig(
-                    service_account_key_file=invalid_file_path
-                )
-                with pytest.raises(
-                    ValueError, match="Failed to read service account key"
-                ):
+                config_invalid = CredentialConfig(service_account_key_file=invalid_file_path)
+                with pytest.raises(ValueError, match="Failed to read service account key"):
                     config_invalid.get_service_account_key()
             finally:
                 os.unlink(invalid_file_path)
@@ -160,7 +152,7 @@ class TestCredentialStorageSecurity:
         assert config.get_password() == "secret_password_value"
         assert config.get_ssh_key_passphrase() == "secret_passphrase_value"
 
-        client_id, client_secret = config.get_client_credentials()
+        _client_id, client_secret = config.get_client_credentials()
         assert client_secret == "secret_client_secret_value"
 
     def test_environment_variable_fallback_security(self) -> None:

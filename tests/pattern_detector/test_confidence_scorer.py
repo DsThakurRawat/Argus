@@ -85,9 +85,7 @@ class TestConfidenceScorer:
         assert scorer.confidence_rules is not None
         assert PatternType.CASCADE_FAILURE in scorer.confidence_rules
 
-    def test_calculate_confidence_score(
-        self, sample_window, sample_threshold_results, sample_logs
-    ):
+    def test_calculate_confidence_score(self, sample_window, sample_threshold_results, sample_logs):
         """Test comprehensive confidence score calculation."""
         scorer = ConfidenceScorer()
         confidence_score = scorer.calculate_confidence(
@@ -107,9 +105,7 @@ class TestConfidenceScorer:
         assert len(confidence_score.explanation) > 0
         assert len(confidence_score.factor_scores) > 0
 
-    def test_calculate_raw_factors(
-        self, sample_window, sample_threshold_results, sample_logs
-    ):
+    def test_calculate_raw_factors(self, sample_window, sample_threshold_results, sample_logs):
         """Test calculation of raw confidence factors."""
         scorer = ConfidenceScorer()
         raw_factors = scorer._calculate_raw_factors(
@@ -123,20 +119,14 @@ class TestConfidenceScorer:
                 assert factor_key in raw_factors
                 assert isinstance(raw_factors[factor_key], float)
 
-    def test_time_concentration_factor(
-        self, sample_window: str, sample_logs: str
-    ) -> None:
+    def test_time_concentration_factor(self, sample_window: str, sample_logs: str) -> None:
         """Test time concentration factor calculation."""
         scorer = ConfidenceScorer()
         concentrated_logs = sample_logs[:5]
-        concentration = scorer._calculate_time_concentration(
-            concentrated_logs, sample_window
-        )
+        concentration = scorer._calculate_time_concentration(concentrated_logs, sample_window)
         assert concentration > 0.5
         dispersed_logs = [sample_logs[0], sample_logs[-1]]
-        concentration = scorer._calculate_time_concentration(
-            dispersed_logs, sample_window
-        )
+        concentration = scorer._calculate_time_concentration(dispersed_logs, sample_window)
         assert concentration < 0.5
 
     def test_service_distribution_factor(self, sample_logs: str) -> None:

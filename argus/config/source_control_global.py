@@ -5,6 +5,7 @@ Global source control configuration models.
 """
 
 from enum import Enum
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 
@@ -41,18 +42,14 @@ class SourceControlGlobalConfig(BaseConfig):
     )
 
     # Discovery and automation
-    auto_discovery: bool = Field(
-        default=False, description="Enable automatic repository discovery"
-    )
+    auto_discovery: bool = Field(default=False, description="Enable automatic repository discovery")
     conflict_resolution: ConflictResolutionStrategy = Field(
         default=ConflictResolutionStrategy.MANUAL,
         description="Conflict resolution strategy",
     )
 
     # Logging and monitoring
-    audit_logging: bool = Field(
-        default=True, description="Enable audit logging for all operations"
-    )
+    audit_logging: bool = Field(default=True, description="Enable audit logging for all operations")
     enable_metrics: bool = Field(default=True, description="Enable metrics collection")
 
     # Performance settings
@@ -79,20 +76,14 @@ class SourceControlGlobalConfig(BaseConfig):
     rate_limit_requests_per_minute: int = Field(
         default=60, ge=1, description="Maximum requests per minute per provider"
     )
-    rate_limit_burst_size: int = Field(
-        default=10, ge=1, description="Burst size for rate limiting"
-    )
+    rate_limit_burst_size: int = Field(default=10, ge=1, description="Burst size for rate limiting")
 
     # Caching
     enable_caching: bool = Field(
         default=True, description="Enable caching for repository operations"
     )
-    cache_ttl_seconds: int = Field(
-        default=3600, ge=60, description="Cache TTL in seconds"
-    )
-    max_cache_size_mb: int = Field(
-        default=100, ge=1, description="Maximum cache size in MB"
-    )
+    cache_ttl_seconds: int = Field(default=3600, ge=60, description="Cache TTL in seconds")
+    max_cache_size_mb: int = Field(default=100, ge=1, description="Maximum cache size in MB")
 
     # Security settings
     enable_credential_rotation: bool = Field(
@@ -119,7 +110,7 @@ class SourceControlGlobalConfig(BaseConfig):
 
     @field_validator("default_provider")
     @classmethod
-    def validate_default_provider(cls: str, v: str) -> None:
+    def validate_default_provider(cls: Any, v: Any) -> Any:
         """Validate default provider type."""
         valid_providers = ["github", "gitlab", "local"]
         if v not in valid_providers:
@@ -128,7 +119,7 @@ class SourceControlGlobalConfig(BaseConfig):
 
     @field_validator("max_concurrent_operations")
     @classmethod
-    def validate_max_concurrent_operations(cls: str, v: str) -> None:
+    def validate_max_concurrent_operations(cls: Any, v: Any) -> Any:
         """Validate maximum concurrent operations."""
         if v < 1:
             raise ValueError("Maximum concurrent operations must be at least 1")
@@ -138,7 +129,7 @@ class SourceControlGlobalConfig(BaseConfig):
 
     @field_validator("rate_limit_requests_per_minute")
     @classmethod
-    def validate_rate_limit(cls: str, v: str) -> None:
+    def validate_rate_limit(cls: Any, v: Any) -> Any:
         """Validate rate limit settings."""
         if v < 1:
             raise ValueError("Rate limit must be at least 1 request per minute")
@@ -148,7 +139,7 @@ class SourceControlGlobalConfig(BaseConfig):
 
     @field_validator("rate_limit_burst_size")
     @classmethod
-    def validate_burst_size(cls: str, v: str) -> None:
+    def validate_burst_size(cls: Any, v: Any) -> Any:
         """Validate burst size."""
         if v < 1:
             raise ValueError("Burst size must be at least 1")
@@ -157,13 +148,13 @@ class SourceControlGlobalConfig(BaseConfig):
         return v
 
     @model_validator(mode="after")
-    def validate_rate_limiting_config(self) -> None:
+    def validate_rate_limiting_config(self) -> Any:
         """Validate rate limiting configuration."""
-        if self.enable_rate_limiting:
-            if self.rate_limit_burst_size > self.rate_limit_requests_per_minute:
-                raise ValueError(
-                    "Burst size cannot be greater than requests per minute"
-                )
+        if (
+            self.enable_rate_limiting
+            and self.rate_limit_burst_size > self.rate_limit_requests_per_minute
+        ):
+            raise ValueError("Burst size cannot be greater than requests per minute")
         return self
 
     def get_effective_credentials(
@@ -176,11 +167,7 @@ class SourceControlGlobalConfig(BaseConfig):
         self, repo_strategy: RemediationStrategyConfig | None
     ) -> RemediationStrategyConfig:
         """Get effective remediation strategy for a repository."""
-        return (
-            repo_strategy
-            or self.default_remediation_strategy
-            or RemediationStrategyConfig()
-        )
+        return repo_strategy or self.default_remediation_strategy or RemediationStrategyConfig()
 
     def should_use_caching(self) -> bool:
         """Check if caching should be used."""
@@ -194,13 +181,13 @@ class SourceControlGlobalConfig(BaseConfig):
 class SourceControlConfig(BaseConfig):
     """Source control configuration for a service."""
 
-    repositories: list[
-        GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig
-    ] = Field(default_factory=list, description="List of repositories for this service")
+    repositories: list[GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig] = (
+        Field(default_factory=list, description="List of repositories for this service")
+    )
 
     @field_validator("repositories")
     @classmethod
-    def validate_repository_names(cls: str, v: str) -> None:
+    def validate_repository_names(cls: Any, v: Any) -> Any:
         """Validate that repository names are unique within a service."""
         if not v:
             return v
@@ -212,7 +199,7 @@ class SourceControlConfig(BaseConfig):
         return v
 
     @model_validator(mode="after")
-    def validate_repositories(self) -> None:
+    def validate_repositories(self) -> Any:
         """Validate repository configurations."""
         if not self.repositories:
             raise ValueError("At least one repository must be configured")
@@ -236,17 +223,13 @@ class SourceControlConfig(BaseConfig):
 
     def get_repositories_by_type(
         self, repo_type: str
-    ) -> list[
-        GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig
-    ]:
+    ) -> list[GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig]:
         """Get all repositories of a specific type."""
         return [repo for repo in self.repositories if repo.type == repo_type]
 
     def get_repositories_for_path(
         self, file_path: str
-    ) -> list[
-        GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig
-    ]:
+    ) -> list[GitHubRepositoryConfig | GitLabRepositoryConfig | LocalRepositoryConfig]:
         """Get repositories that match the given file path."""
         matching_repos = []
         for repo in self.repositories:

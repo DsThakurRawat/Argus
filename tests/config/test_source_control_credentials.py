@@ -67,9 +67,7 @@ class TestCredentialConfig:
 
     def test_password_from_env(self) -> None:
         """Test getting password from environment variable."""
-        config = CredentialConfig(
-            token_env="GITHUB_TOKEN", password_env="GITHUB_PASSWORD"
-        )
+        config = CredentialConfig(token_env="GITHUB_TOKEN", password_env="GITHUB_PASSWORD")
 
         with patch.dict(os.environ, {"GITHUB_PASSWORD": "testpass"}):
             password = config.get_password()
@@ -134,9 +132,7 @@ class TestCredentialConfig:
         """Test that no authentication method raises validation error."""
         with pytest.raises(ValidationError) as exc_info:
             CredentialConfig()
-        assert "At least one authentication method must be provided" in str(
-            exc_info.value
-        )
+        assert "At least one authentication method must be provided" in str(exc_info.value)
 
     def test_get_service_account_key_from_env(self) -> None:
         """Test getting service account key from environment variable."""
@@ -145,9 +141,7 @@ class TestCredentialConfig:
         key_data = {"type": "service_account", "project_id": "test"}
         with patch.dict(
             os.environ,
-            {
-                "SERVICE_ACCOUNT_KEY": '{"type": "service_account", "project_id": "test"}'
-            },
+            {"SERVICE_ACCOUNT_KEY": '{"type": "service_account", "project_id": "test"}'},
         ):
             key = config.get_service_account_key()
             assert key == key_data
@@ -171,9 +165,7 @@ class TestCredentialConfig:
 
     def test_get_client_credentials(self) -> None:
         """Test getting OAuth client credentials."""
-        config = CredentialConfig(
-            client_id_env="CLIENT_ID", client_secret_env="CLIENT_SECRET"
-        )
+        config = CredentialConfig(client_id_env="CLIENT_ID", client_secret_env="CLIENT_SECRET")
 
         with patch.dict(
             os.environ,
@@ -195,9 +187,7 @@ class TestCredentialConfig:
 
     def test_ssh_key_passphrase_from_env(self) -> None:
         """Test getting SSH key passphrase from environment variable."""
-        config = CredentialConfig(
-            token_env="GITHUB_TOKEN", ssh_key_passphrase_env="SSH_PASSPHRASE"
-        )
+        config = CredentialConfig(token_env="GITHUB_TOKEN", ssh_key_passphrase_env="SSH_PASSPHRASE")
 
         with patch.dict(os.environ, {"SSH_PASSPHRASE": "test_passphrase"}):
             passphrase = config.get_ssh_key_passphrase()
@@ -205,9 +195,7 @@ class TestCredentialConfig:
 
     def test_ssh_key_passphrase_direct(self) -> None:
         """Test getting SSH key passphrase from direct value."""
-        config = CredentialConfig(
-            token_env="GITHUB_TOKEN", ssh_key_passphrase="direct_passphrase"
-        )
+        config = CredentialConfig(token_env="GITHUB_TOKEN", ssh_key_passphrase="direct_passphrase")
         passphrase = config.get_ssh_key_passphrase()
         assert passphrase == "direct_passphrase"
 
@@ -235,9 +223,7 @@ class TestCredentialConfig:
             temp_file = f.name
 
         try:
-            config = CredentialConfig(
-                token_env="GITHUB_TOKEN", service_account_key_file=temp_file
-            )
+            config = CredentialConfig(token_env="GITHUB_TOKEN", service_account_key_file=temp_file)
             # Delete the file after config creation to simulate read error
             os.unlink(temp_file)
 

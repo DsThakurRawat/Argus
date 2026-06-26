@@ -99,9 +99,7 @@ class TestAsyncOptimizer:
             await asyncio.sleep(0.1)
             raise ValueError("Task failed")
 
-        return AsyncTask(
-            task_id="failing_task", coroutine=failing_coroutine, max_retries=1
-        )
+        return AsyncTask(task_id="failing_task", coroutine=failing_coroutine, max_retries=1)
 
     @pytest.fixture
     def timeout_task(self) -> None:
@@ -111,9 +109,7 @@ class TestAsyncOptimizer:
             await asyncio.sleep(10.0)  # Longer than timeout
             return "should_not_reach_here"
 
-        return AsyncTask(
-            task_id="timeout_task", coroutine=timeout_coroutine, timeout=0.1
-        )
+        return AsyncTask(task_id="timeout_task", coroutine=timeout_coroutine, timeout=0.1)
 
     @pytest.mark.asyncio
     async def test_execute_concurrent_tasks_success(self, optimizer, simple_task):
@@ -171,9 +167,7 @@ class TestAsyncOptimizer:
             await asyncio.sleep(0.05)
             return f"batch_result_{value}"
 
-        tasks = [
-            AsyncTask(f"batch_task_{i}", batch_coroutine, args=(i,)) for i in range(4)
-        ]
+        tasks = [AsyncTask(f"batch_task_{i}", batch_coroutine, args=(i,)) for i in range(4)]
 
         result = await optimizer.execute_batch(tasks, "test_batch")
 
@@ -184,13 +178,11 @@ class TestAsyncOptimizer:
         assert result.total_duration_ms > 0
 
         # Check that results are in the successful list
-        successful_values = [r for r in result.successful]
+        successful_values = list(result.successful)
         assert len(successful_values) == 4
 
     @pytest.mark.asyncio
-    async def test_execute_batch_with_failures(
-        self, optimizer, simple_task, failing_task
-    ):
+    async def test_execute_batch_with_failures(self, optimizer, simple_task, failing_task):
         """Test batch processing with some failures."""
         tasks = [simple_task, failing_task]
         result = await optimizer.execute_batch(tasks, "mixed_batch")
@@ -382,9 +374,7 @@ class TestAsyncOptimizerIntegration:
     @pytest.fixture
     def monitoring_optimizer(self) -> None:
         """Create an AsyncOptimizer with monitoring enabled."""
-        return AsyncOptimizer(
-            max_concurrent_tasks=2, batch_size=2, enable_monitoring=True
-        )
+        return AsyncOptimizer(max_concurrent_tasks=2, batch_size=2, enable_monitoring=True)
 
     @pytest.mark.asyncio
     async def test_performance_monitoring_integration(self, monitoring_optimizer):
@@ -397,9 +387,7 @@ class TestAsyncOptimizerIntegration:
         task = AsyncTask("monitored_task", monitored_coroutine, args=("test",))
 
         # Mock the record_performance function
-        with patch(
-            "argus.ml.performance.async_optimizer.record_performance"
-        ) as mock_record:
+        with patch("argus.ml.performance.async_optimizer.record_performance") as mock_record:
             result = await monitoring_optimizer.execute_with_retry(task)
 
             assert result == "monitored_test"

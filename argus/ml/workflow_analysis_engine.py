@@ -11,7 +11,7 @@ import logging
 from typing import Any
 
 from .caching import ContextCache
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
+from .ml_analysis_agent import MLAnalysisAgent
 from .performance import PerformanceConfig
 from .prompt_context_models import IssueContext, PromptContext
 
@@ -29,7 +29,7 @@ class WorkflowAnalysisEngine:
 
     def __init__(
         self,
-        enhanced_agent: EnhancedAnalysisAgent,
+        enhanced_agent: MLAnalysisAgent,
         cache: ContextCache,
         performance_config: PerformanceConfig,
     ):
@@ -85,9 +85,7 @@ class WorkflowAnalysisEngine:
             return result
 
         except Exception as e:
-            self.logger.error(
-                f"[ANALYSIS] Enhanced analysis failed for flow_id={flow_id}: {e}"
-            )
+            self.logger.error(f"[ANALYSIS] Enhanced analysis failed for flow_id={flow_id}: {e}")
             return {"success": False, "error": str(e)}
 
     async def execute_fallback_analysis(
@@ -110,9 +108,7 @@ class WorkflowAnalysisEngine:
             Fallback analysis result
         """
         try:
-            self.logger.info(
-                f"[FALLBACK] Executing fallback analysis for flow_id={flow_id}"
-            )
+            self.logger.info(f"[FALLBACK] Executing fallback analysis for flow_id={flow_id}")
 
             # Simple fallback analysis
             issue_context = self.enhanced_agent._extract_issue_context(triage_packet)
@@ -137,9 +133,7 @@ class WorkflowAnalysisEngine:
             }
 
         except Exception as e:
-            self.logger.error(
-                f"[FALLBACK] Fallback analysis failed for flow_id={flow_id}: {e}"
-            )
+            self.logger.error(f"[FALLBACK] Fallback analysis failed for flow_id={flow_id}: {e}")
             return {"success": False, "error": str(e), "fallback": True}
 
     def _analyze_root_cause_basic(
@@ -168,19 +162,17 @@ class WorkflowAnalysisEngine:
         else:
             return "Add comprehensive error handling and logging for better debugging"
 
-    def _generate_basic_code_patch(
-        self, issue_context: IssueContext, proposed_fix: str
-    ) -> str:
+    def _generate_basic_code_patch(self, issue_context: IssueContext, proposed_fix: str) -> str:
         """Generate basic code patch for fallback scenarios."""
         affected_files = issue_context.affected_files
 
         if not affected_files:
-            return "# Basic error handling implementation\n# TODO: Implement based on specific issue"
+            return (
+                "# Basic error handling implementation\n# TODO: Implement based on specific issue"
+            )
 
         # Generate basic code patch based on file type
-        file_ext = (
-            affected_files[0].split(".")[-1] if "." in affected_files[0] else "py"
-        )
+        file_ext = affected_files[0].split(".")[-1] if "." in affected_files[0] else "py"
 
         if file_ext == "py":
             return f"""# Basic Python error handling

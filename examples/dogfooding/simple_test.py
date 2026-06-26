@@ -15,8 +15,8 @@ import time
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from argus.ingestion.adapters.file_system import FileSystemAdapter
-from argus.ingestion.manager.log_manager import LogManager
+from argus.ingestion.adapters.file_system import FileSystemAdapter  # noqa: E402 - needs sys.path
+from argus.ingestion.manager.log_manager import LogManager  # noqa: E402 - needs sys.path
 
 
 async def simple_log_processor(log_entry):
@@ -43,9 +43,10 @@ async def main():
     # Start the dogfood service
     print("🚀 Starting dogfood service...")
     import subprocess
-    dogfood_process = subprocess.Popen([
-        "python", "dogfood_service/app.py"
-    ], cwd=Path(__file__).parent)
+
+    dogfood_process = subprocess.Popen(
+        ["python", "dogfood_service/app.py"], cwd=Path(__file__).parent
+    )
 
     # Wait for service to start
     time.sleep(3)
@@ -64,7 +65,7 @@ async def main():
         watch_mode=True,
         encoding="utf-8",
         buffer_size=1000,
-        max_memory_mb=100
+        max_memory_mb=100,
     )
 
     adapter = FileSystemAdapter(config)
@@ -85,6 +86,7 @@ async def main():
     # Trigger some errors to generate logs
     print("🔥 Triggering errors...")
     import requests
+
     try:
         requests.get("http://127.0.0.1:5001/error/division", timeout=5)
         requests.get("http://127.0.0.1:5001/error/memory", timeout=5)

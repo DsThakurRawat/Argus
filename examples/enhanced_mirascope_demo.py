@@ -30,25 +30,25 @@ async def demo_prompt_creation_and_versioning():
     prompt_id = prompt_manager.create_prompt(
         name="SRE Triage Analysis",
         template="""
-        You are an expert SRE analyst. Analyze the following log entries and 
+        You are an expert SRE analyst. Analyze the following log entries and
         provide a triage assessment.
-        
+
         Log entries:
         {log_entries}
-        
+
         Please provide:
         1. Severity level (low, medium, high, critical)
         2. Issue category
         3. Root cause analysis
         4. Recommended immediate actions
-        
+
         Format your response as JSON.
         """,
         description="Analyzes log entries for SRE triage purposes",
         category="sre",
         owner="sre_team",
         tags=["sre", "triage", "analysis"],
-        metadata={"domain": "infrastructure", "criticality": "high"}
+        metadata={"domain": "infrastructure", "criticality": "high"},
     )
 
     logger.info(f"Created prompt with ID: {prompt_id}")
@@ -59,12 +59,12 @@ async def demo_prompt_creation_and_versioning():
         template="""
         You are an expert SRE analyst with 10+ years of experience in incident response.
         Analyze the following log entries and provide a comprehensive triage assessment.
-        
+
         Log entries:
         {log_entries}
-        
+
         Context: This is a production system with high availability requirements.
-        
+
         Please provide a structured analysis:
         1. Severity level (low, medium, high, critical) with justification
         2. Issue category and subcategory
@@ -72,13 +72,13 @@ async def demo_prompt_creation_and_versioning():
         4. Impact assessment (users affected, business impact)
         5. Recommended immediate actions (prioritized)
         6. Escalation requirements
-        
+
         Format your response as structured JSON with clear field names.
         """,
         created_by="senior_sre",
         description="Enhanced version with more detailed analysis",
         tags=["sre", "triage", "analysis", "enhanced"],
-        metadata={"improvements": ["detailed_analysis", "impact_assessment", "escalation"]}
+        metadata={"improvements": ["detailed_analysis", "impact_assessment", "escalation"]},
     )
 
     logger.info(f"Created version 2: {version_2}")
@@ -103,7 +103,7 @@ async def demo_ab_testing():
         name="Customer Support Response",
         template="Respond to this customer inquiry: {inquiry}",
         category="support",
-        owner="support_team"
+        owner="support_team",
     )
 
     # Create two versions for A/B testing
@@ -111,34 +111,34 @@ async def demo_ab_testing():
         prompt_id=prompt_id,
         template="""
         Thank you for contacting us. I understand your concern about {inquiry}.
-        
+
         Here's what I can help you with:
         1. Immediate resolution steps
         2. Alternative solutions
         3. Escalation if needed
-        
+
         Please let me know if you need further assistance.
         """,
         created_by="support_team",
-        description="Version A: Standard response format"
+        description="Version A: Standard response format",
     )
 
     version_b = prompt_manager.create_version(
         prompt_id=prompt_id,
         template="""
         Hi there! 👋
-        
+
         I see you're having an issue with {inquiry}. Don't worry, I'm here to help!
-        
+
         Let me break this down for you:
         ✅ First, let's try this quick fix...
         ✅ If that doesn't work, here's an alternative...
         ✅ And if you're still stuck, I'll escalate this right away!
-        
+
         Does this help? Feel free to ask if you need anything else! 😊
         """,
         created_by="support_team",
-        description="Version B: Friendly, emoji-enhanced response"
+        description="Version B: Friendly, emoji-enhanced response",
     )
 
     # Run A/B test
@@ -153,7 +153,7 @@ async def demo_ab_testing():
         version_a=version_a,
         version_b=version_b,
         test_config=test_config,
-        duration_hours=48
+        duration_hours=48,
     )
 
     logger.info(f"Started A/B test {test_id} between versions {version_a} and {version_b}")
@@ -173,23 +173,23 @@ async def demo_ab_testing():
                 "cost": 0.001,
                 "quality_score": 0.8 + i * 0.01,
                 "customer_satisfaction": 0.7 + i * 0.02,
-            }
+            },
         )
 
         # Simulate version B usage
         prompt_manager.record_usage(
             prompt_id=prompt_id,
             version=version_b,
-            user_id=f"user_{i+20}",
-            request_data={"inquiry": f"Test inquiry {i+20}"},
-            response_data={"response": f"Version B response {i+20}"},
+            user_id=f"user_{i + 20}",
+            request_data={"inquiry": f"Test inquiry {i + 20}"},
+            response_data={"response": f"Version B response {i + 20}"},
             metrics={
                 "response_time": 1.1 + i * 0.1,
                 "success": True,
                 "cost": 0.001,
                 "quality_score": 0.85 + i * 0.01,
                 "customer_satisfaction": 0.8 + i * 0.02,
-            }
+            },
         )
 
     logger.info("Recorded usage data for A/B test")
@@ -206,16 +206,14 @@ async def demo_analytics():
     # Get analytics for a prompt
     analytics = prompt_manager.get_analytics(
         prompt_id="demo_prompt",  # Use the prompt from previous demo
-        time_range_hours=24
+        time_range_hours=24,
     )
 
     logger.info(f"Analytics data: {json.dumps(analytics, indent=2)}")
 
     # Get version-specific analytics
     version_analytics = prompt_manager.get_analytics(
-        prompt_id="demo_prompt",
-        version="2.0.0",
-        time_range_hours=24
+        prompt_id="demo_prompt", version="2.0.0", time_range_hours=24
     )
 
     logger.info(f"Version analytics: {json.dumps(version_analytics, indent=2)}")
@@ -232,7 +230,7 @@ async def demo_prompt_optimization():
         name="Code Review Assistant",
         template="Review this code: {code}",
         category="development",
-        owner="dev_team"
+        owner="dev_team",
     )
 
     # Define optimization goals
@@ -240,7 +238,7 @@ async def demo_prompt_optimization():
         "improve_code_quality_detection",
         "provide_actionable_feedback",
         "reduce_response_time",
-        "increase_accuracy"
+        "increase_accuracy",
     ]
 
     # Define test cases
@@ -248,34 +246,30 @@ async def demo_prompt_optimization():
         {
             "inputs": {"code": "def add(a, b): return a + b"},
             "expected": "function",
-            "type": "contains"
+            "type": "contains",
         },
         {
             "inputs": {"code": "x = 5\ny = 10\nprint(x + y)"},
             "expected": "variable",
-            "type": "contains"
+            "type": "contains",
         },
         {
             "inputs": {"code": "import os\nos.system('rm -rf /')"},
             "expected": "security",
-            "type": "contains"
-        }
+            "type": "contains",
+        },
     ]
 
     # Run optimization
     optimized_version = prompt_manager.optimize_prompt(
-        prompt_id=prompt_id,
-        optimization_goals=optimization_goals,
-        test_cases=test_cases
+        prompt_id=prompt_id, optimization_goals=optimization_goals, test_cases=test_cases
     )
 
     logger.info(f"Created optimized version: {optimized_version}")
 
     # Run tests on the optimized version
     test_results = prompt_manager.test_prompt(
-        prompt_id=prompt_id,
-        test_cases=test_cases,
-        version=optimized_version
+        prompt_id=prompt_id, test_cases=test_cases, version=optimized_version
     )
 
     logger.info(f"Test results: {json.dumps(test_results, indent=2)}")
@@ -292,12 +286,12 @@ async def demo_comprehensive_testing():
         name="API Documentation Generator",
         template="""
         Generate API documentation for the following endpoint:
-        
+
         Method: {method}
         Path: {path}
         Parameters: {parameters}
         Response: {response}
-        
+
         Please provide comprehensive documentation including:
         1. Description
         2. Parameters
@@ -306,7 +300,7 @@ async def demo_comprehensive_testing():
         5. Error handling
         """,
         category="documentation",
-        owner="api_team"
+        owner="api_team",
     )
 
     # Define comprehensive test cases
@@ -316,38 +310,35 @@ async def demo_comprehensive_testing():
                 "method": "GET",
                 "path": "/api/users",
                 "parameters": "limit, offset",
-                "response": "User list"
+                "response": "User list",
             },
             "expected": "GET /api/users",
-            "type": "contains"
+            "type": "contains",
         },
         {
             "inputs": {
                 "method": "POST",
                 "path": "/api/users",
                 "parameters": "name, email",
-                "response": "Created user"
+                "response": "Created user",
             },
             "expected": "POST /api/users",
-            "type": "contains"
+            "type": "contains",
         },
         {
             "inputs": {
                 "method": "DELETE",
                 "path": "/api/users/{id}",
                 "parameters": "id",
-                "response": "Success/Error"
+                "response": "Success/Error",
             },
             "expected": "DELETE /api/users",
-            "type": "contains"
-        }
+            "type": "contains",
+        },
     ]
 
     # Run tests
-    test_results = prompt_manager.test_prompt(
-        prompt_id=prompt_id,
-        test_cases=test_cases
-    )
+    test_results = prompt_manager.test_prompt(prompt_id=prompt_id, test_cases=test_cases)
 
     logger.info(f"Comprehensive test results: {json.dumps(test_results, indent=2)}")
 
@@ -363,7 +354,7 @@ async def demo_team_collaboration():
         name="Security Incident Response",
         template="Analyze this security incident: {incident_details}",
         category="security",
-        owner="security_team"
+        owner="security_team",
     )
 
     # Add collaborators
@@ -372,7 +363,7 @@ async def demo_team_collaboration():
     prompt_data.permissions = {
         "security_lead": ["read", "write", "deploy"],
         "incident_manager": ["read", "write"],
-        "sre_team": ["read"]
+        "sre_team": ["read"],
     }
 
     # Create a version by a collaborator
@@ -380,45 +371,42 @@ async def demo_team_collaboration():
         prompt_id=prompt_id,
         template="""
         SECURITY INCIDENT ANALYSIS
-        
+
         Incident Details: {incident_details}
-        
+
         Analysis Framework:
         1. Threat Assessment
            - Severity Level
            - Attack Vector
            - Potential Impact
-        
+
         2. Response Actions
            - Immediate containment
            - Evidence collection
            - Communication plan
-        
+
         3. Recovery Steps
            - System restoration
            - Security hardening
            - Monitoring enhancement
-        
+
         4. Post-Incident
            - Root cause analysis
            - Process improvements
            - Documentation updates
-        
+
         Please provide detailed analysis for each section.
         """,
         created_by="security_lead",
         description="Enhanced security incident analysis template",
-        tags=["security", "incident", "response", "enhanced"]
+        tags=["security", "incident", "response", "enhanced"],
     )
 
     logger.info(f"Created collaborative version: {version}")
 
     # Deploy with approval workflow
     prompt_manager.deploy_version(
-        prompt_id=prompt_id,
-        version=version,
-        environment="production",
-        deploy_by="security_lead"
+        prompt_id=prompt_id, version=version, environment="production", deploy_by="security_lead"
     )
 
     logger.info("Deployed version with team collaboration")
@@ -430,10 +418,10 @@ async def main():
 
     try:
         # Demo 1: Prompt creation and versioning
-        prompt_id = await demo_prompt_creation_and_versioning()
+        await demo_prompt_creation_and_versioning()
 
         # Demo 2: A/B testing
-        ab_prompt_id, test_id = await demo_ab_testing()
+        _ab_prompt_id, _test_id = await demo_ab_testing()
 
         # Demo 3: Analytics
         await demo_analytics()
@@ -454,7 +442,7 @@ async def main():
         all_prompts = prompt_manager.prompts
         logger.info(f"Created {len(all_prompts)} prompts with enhanced Mirascope integration")
 
-        for prompt_id, prompt_data in all_prompts.items():
+        for _prompt_id, prompt_data in all_prompts.items():
             logger.info(f"Prompt '{prompt_data.name}': {len(prompt_data.versions)} versions")
 
     except Exception as e:

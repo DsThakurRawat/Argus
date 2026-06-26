@@ -130,9 +130,7 @@ class CodeGeneratorFactory:
             for issue_type, generator in self.generators.items()
         }
 
-    def register_generator(
-        self, issue_type: IssueType, generator: BaseCodeGenerator
-    ) -> None:
+    def register_generator(self, issue_type: IssueType, generator: BaseCodeGenerator) -> None:
         """Register a new generator for an issue type"""
         self.generators[issue_type] = generator
 
@@ -168,9 +166,7 @@ class CodeGeneratorFactory:
                     )
 
                 if not info.get("domain"):
-                    issues["warnings"].append(
-                        f"Generator for {issue_type.value} missing domain"
-                    )
+                    issues["warnings"].append(f"Generator for {issue_type.value} missing domain")
 
             except Exception as e:
                 issues["errors"].append(

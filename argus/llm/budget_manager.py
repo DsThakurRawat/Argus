@@ -29,15 +29,9 @@ class BudgetConfig(BaseModel):
         description="Alert thresholds as percentages (0.0 to 1.0)",
     )
     enforcement_policy: EnforcementPolicy = EnforcementPolicy.WARN
-    auto_reset: bool = Field(
-        True, description="Automatically reset budget at period end"
-    )
-    rollover_unused: bool = Field(
-        False, description="Roll over unused budget to next period"
-    )
-    max_rollover: float = Field(
-        50.0, gt=0, description="Maximum rollover amount in USD"
-    )
+    auto_reset: bool = Field(True, description="Automatically reset budget at period end")
+    rollover_unused: bool = Field(False, description="Roll over unused budget to next period")
+    max_rollover: float = Field(50.0, gt=0, description="Maximum rollover amount in USD")
 
 
 @dataclass
@@ -69,7 +63,7 @@ class BudgetManager:
         # Initialize current period
         self._initialize_period()
 
-    def _initialize_period(self) -> None:
+    def _initialize_period(self) -> Any:
         """Initialize the current budget period."""
         now = datetime.now()
 
@@ -84,9 +78,7 @@ class BudgetManager:
             )
             self.period_end = self.period_start + timedelta(weeks=1)
         else:  # MONTHLY
-            self.period_start = now.replace(
-                day=1, hour=0, minute=0, second=0, microsecond=0
-            )
+            self.period_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
             # Calculate next month
             if now.month == 12:
                 next_month = now.replace(year=now.year + 1, month=1, day=1)
@@ -94,9 +86,7 @@ class BudgetManager:
                 next_month = now.replace(month=now.month + 1, day=1)
             self.period_end = next_month
 
-        logger.info(
-            f"Initialized budget period: {self.period_start} to {self.period_end}"
-        )
+        logger.info(f"Initialized budget period: {self.period_start} to {self.period_end}")
 
     def add_usage_record(self, record: UsageRecord) -> None:
         """Add a usage record and check budget constraints."""
@@ -121,7 +111,7 @@ class BudgetManager:
         now = datetime.now()
         return self.period_end is not None and now >= self.period_end
 
-    def _reset_period(self) -> None:
+    def _reset_period(self) -> Any:
         """Reset the budget period."""
         if self.config.rollover_unused:
             current_spend = self.get_current_spend()
@@ -138,9 +128,7 @@ class BudgetManager:
         # Initialize new period
         self._initialize_period()
 
-        logger.info(
-            f"Budget period reset. New period: {self.period_start} to {self.period_end}"
-        )
+        logger.info(f"Budget period reset. New period: {self.period_start} to {self.period_end}")
 
     def _check_budget_thresholds(self) -> None:
         """Check if budget thresholds have been exceeded."""
@@ -156,8 +144,7 @@ class BudgetManager:
                     alert
                     for alert in self.budget_alerts
                     if alert.threshold_percentage == threshold
-                    and (datetime.now() - alert.timestamp).total_seconds()
-                    < 3600  # 1 hour
+                    and (datetime.now() - alert.timestamp).total_seconds() < 3600  # 1 hour
                 ]
 
                 if not recent_alerts:
@@ -173,7 +160,7 @@ class BudgetManager:
 
                     severity = "WARNING" if threshold < 1.0 else "CRITICAL"
                     logger.warning(
-                        f"Budget {severity}: {threshold*100}% threshold exceeded "
+                        f"Budget {severity}: {threshold * 100}% threshold exceeded "
                         f"(${current_spend:.2f}/${effective_budget:.2f})"
                     )
 
@@ -201,9 +188,7 @@ class BudgetManager:
             return 0.0
 
         current_period_records = [
-            record
-            for record in self.usage_records
-            if record.timestamp >= self.period_start
+            record for record in self.usage_records if record.timestamp >= self.period_start
         ]
 
         return sum(record.cost_usd for record in current_period_records)
@@ -217,16 +202,11 @@ class BudgetManager:
         current_spend = self.get_current_spend()
         effective_budget = self.get_effective_budget()
         remaining_budget = max(0, effective_budget - current_spend)
-        usage_percentage = (
-            (current_spend / effective_budget) * 100 if effective_budget > 0 else 0
-        )
+        usage_percentage = (current_spend / effective_budget) * 100 if effective_budget > 0 else 0
 
         # Calculate days remaining
         now = datetime.now()
-        if self.period_end:
-            days_remaining = max(0, (self.period_end - now).days)
-        else:
-            days_remaining = 0
+        days_remaining = max(0, (self.period_end - now).days) if self.period_end else 0
 
         # Project spending based on current rate
         if self.period_start and days_remaining > 0:
@@ -328,9 +308,7 @@ class BudgetManager:
             "by_provider": by_provider,
             "by_model": by_model,
             "by_day": by_day,
-            "period_start": (
-                self.period_start.isoformat() if self.period_start else None
-            ),
+            "period_start": (self.period_start.isoformat() if self.period_start else None),
             "period_end": self.period_end.isoformat() if self.period_end else None,
         }
 
@@ -373,9 +351,7 @@ class BudgetManager:
                 {
                     "day": day,
                     "projected_spend": projected_spend,
-                    "budget_remaining": max(
-                        0, self.get_effective_budget() - projected_spend
-                    ),
+                    "budget_remaining": max(0, self.get_effective_budget() - projected_spend),
                 }
             )
 
@@ -385,8 +361,6 @@ class BudgetManager:
             "effective_budget": self.get_effective_budget(),
             "forecast": forecast,
             "days_until_budget_exhausted": (
-                int(self.get_effective_budget() / daily_rate)
-                if daily_rate > 0
-                else None
+                int(self.get_effective_budget() / daily_rate) if daily_rate > 0 else None
             ),
         }

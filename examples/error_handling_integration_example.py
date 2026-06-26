@@ -22,8 +22,7 @@ import logging
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -42,7 +41,7 @@ async def demonstrate_provider_integration():
         providers = [
             ("GitHub", GitHubProvider),
             ("GitLab", GitLabProvider),
-            ("Local", LocalProvider)
+            ("Local", LocalProvider),
         ]
 
         for provider_name, provider_class in providers:
@@ -169,7 +168,7 @@ async def demonstrate_self_healing():
                 await self_healing.analyze_error(
                     error_type=ErrorType.TIMEOUT_ERROR,
                     error_message="Request timeout",
-                    context={"operation": "get_file_content", "attempt": i + 1}
+                    context={"operation": "get_file_content", "attempt": i + 1},
                 )
 
             # Check if any recovery actions were triggered

@@ -75,9 +75,7 @@ class ErrorClassifier:
         if self.config.enable_pattern_matching:
             initialize_default_patterns()
 
-        self.logger.info(
-            f"Initialized ErrorClassifier with strategy: {self.config.strategy}"
-        )
+        self.logger.info(f"Initialized ErrorClassifier with strategy: {self.config.strategy}")
 
     def _create_classifier(self) -> BaseErrorClassifier:
         """Create the classification algorithm based on configuration."""
@@ -122,10 +120,7 @@ class ErrorClassifier:
             # Try pattern-based classification first if enabled
             if self.pattern_matcher and self.config.enable_pattern_matching:
                 pattern_result = self._classify_with_patterns(error_text, error_context)
-                if (
-                    pattern_result
-                    and pattern_result.confidence >= self.config.confidence_threshold
-                ):
+                if pattern_result and pattern_result.confidence >= self.config.confidence_threshold:
                     classification = self._convert_pattern_result_to_classification(
                         pattern_result, error
                     )
@@ -215,9 +210,7 @@ class ErrorClassifier:
     ) -> ErrorClassification:
         """Convert ClassificationResult to ErrorClassification."""
         # Get metadata for the error type
-        metadata = error_type_registry.get_metadata(
-            classification_result.error_type.value
-        )
+        metadata = error_type_registry.get_metadata(classification_result.error_type.value)
 
         if metadata:
             return ErrorClassification(
@@ -261,44 +254,29 @@ class ErrorClassifier:
         error_str = str(error).lower()
 
         # Network-related context
-        if any(
-            term in error_str
-            for term in ["network", "connection", "timeout", "dns", "ssl"]
-        ):
+        if any(term in error_str for term in ["network", "connection", "timeout", "dns", "ssl"]):
             return "network"
 
         # Authentication context
         elif any(
-            term in error_str
-            for term in ["auth", "unauthorized", "forbidden", "credentials"]
+            term in error_str for term in ["auth", "unauthorized", "forbidden", "credentials"]
         ):
             return "authentication"
 
         # File system context
-        elif any(
-            term in error_str
-            for term in ["file", "directory", "path", "permission", "disk"]
-        ):
+        elif any(term in error_str for term in ["file", "directory", "path", "permission", "disk"]):
             return "filesystem"
 
         # API context
-        elif any(
-            term in error_str
-            for term in ["api", "http", "request", "response", "status"]
-        ):
+        elif any(term in error_str for term in ["api", "http", "request", "response", "status"]):
             return "api"
 
         # Git context
-        elif any(
-            term in error_str
-            for term in ["git", "merge", "conflict", "branch", "commit"]
-        ):
+        elif any(term in error_str for term in ["git", "merge", "conflict", "branch", "commit"]):
             return "git"
 
         # Provider context
-        elif any(
-            term in error_str for term in ["github", "gitlab", "bitbucket", "azure"]
-        ):
+        elif any(term in error_str for term in ["github", "gitlab", "bitbucket", "azure"]):
             return "provider"
 
         return "unknown"
@@ -336,9 +314,7 @@ class ErrorClassifier:
             classification_result = ClassificationResult(
                 error_type=classification.error_type,
                 confidence=(
-                    classification.details.get("confidence", 0.5)
-                    if classification.details
-                    else 0.5
+                    classification.details.get("confidence", 0.5) if classification.details else 0.5
                 ),
                 metadata=metadata,
                 classification_strategy=ClassificationStrategy.HYBRID,
@@ -389,7 +365,7 @@ class ErrorClassifier:
             return self.metrics_collector.generate_classification_report()
         return None
 
-    def reset_metrics(self) -> None:
+    def reset_metrics(self) -> Any:
         """Reset metrics if metrics collection is enabled."""
         if self.metrics_collector:
             self.metrics_collector.reset_metrics()

@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 @dataclass
 class ProfilerConfig:
     """Configuration for performance profiling.
-    
+
     Attributes:
         max_profiles: Maximum number of profiles to store
         enable_task_tracking: Whether to track asyncio tasks
@@ -38,7 +38,7 @@ class ProfilerConfig:
 @dataclass
 class OperationProfile:
     """Profile of a single operation.
-    
+
     Attributes:
         operation_name: Name of the operation
         start_time: When the operation started
@@ -69,7 +69,7 @@ class OperationProfile:
 @dataclass
 class ProfilerResult:
     """Result of performance profiling.
-    
+
     Attributes:
         total_operations: Total number of profiled operations
         avg_duration: Average operation duration
@@ -97,14 +97,14 @@ class ProfilerResult:
 
 class AsyncProfiler:
     """Asyncio-specific profiler for async operations.
-    
+
     Tracks asyncio tasks, coroutines, event loop utilization,
     and async-specific performance metrics.
     """
 
     def __init__(self, config: ProfilerConfig | None = None):
         """Initialize the async profiler.
-        
+
         Args:
             config: Profiler configuration
         """
@@ -118,21 +118,23 @@ class AsyncProfiler:
 
     def _should_sample(self) -> bool:
         """Check if we should sample this operation based on sampling rate.
-        
+
         Returns:
             True if we should sample, False otherwise
         """
         import random
-        return random.random() < self._config.sampling_rate
+
+        return random.random() < self._config.sampling_rate  # nosec B311
 
     def _get_memory_usage(self) -> int:
         """Get current memory usage.
-        
+
         Returns:
             Memory usage in bytes
         """
         try:
             import psutil
+
             process = psutil.Process()
             return process.memory_info().rss
         except ImportError:
@@ -142,7 +144,7 @@ class AsyncProfiler:
 
     def _get_event_loop_utilization(self) -> float:
         """Get current event loop utilization.
-        
+
         Returns:
             Event loop utilization as percentage
         """
@@ -158,7 +160,7 @@ class AsyncProfiler:
 
     def _track_task_creation(self, task: asyncio.Task) -> None:
         """Track asyncio task creation.
-        
+
         Args:
             task: The created task
         """
@@ -170,7 +172,7 @@ class AsyncProfiler:
 
     def _track_coroutine_execution(self, coro: Awaitable) -> None:
         """Track coroutine execution.
-        
+
         Args:
             coro: The coroutine being executed
         """
@@ -182,16 +184,14 @@ class AsyncProfiler:
 
     @asynccontextmanager
     async def profile_async_operation(
-        self,
-        operation_name: str,
-        tags: dict[str, str] | None = None
+        self, operation_name: str, tags: dict[str, str] | None = None
     ):
         """Profile an async operation.
-        
+
         Args:
             operation_name: Name of the operation
             tags: Additional metadata tags
-            
+
         Yields:
             Operation context
         """
@@ -213,7 +213,7 @@ class AsyncProfiler:
                 "memory_before": memory_before,
                 "task_count_before": task_count_before,
                 "coroutine_count_before": coroutine_count_before,
-                "tags": tags or {}
+                "tags": tags or {},
             }
 
         try:
@@ -240,7 +240,7 @@ class AsyncProfiler:
                 task_count=task_count_after - task_count_before,
                 coroutine_count=coroutine_count_after - coroutine_count_before,
                 event_loop_utilization=self._get_event_loop_utilization(),
-                tags=tags or {}
+                tags=tags or {},
             )
 
             # Store profile
@@ -250,17 +250,18 @@ class AsyncProfiler:
 
     def get_profiles(self, operation_name: str | None = None) -> list[OperationProfile]:
         """Get profiles for a specific operation or all operations.
-        
+
         Args:
             operation_name: Operation name (optional)
-            
+
         Returns:
             List of operation profiles
         """
         with self._lock:
             if operation_name:
                 return [
-                    profile for profile in self._profiles
+                    profile
+                    for profile in self._profiles
                     if profile.operation_name == operation_name
                 ]
             else:
@@ -268,10 +269,10 @@ class AsyncProfiler:
 
     def get_profiler_result(self, operation_name: str | None = None) -> ProfilerResult:
         """Get profiler result for a specific operation or all operations.
-        
+
         Args:
             operation_name: Operation name (optional)
-            
+
         Returns:
             Profiler result
         """
@@ -297,7 +298,8 @@ class AsyncProfiler:
 
         avg_event_loop_utilization = (
             sum(event_loop_utilizations) / len(event_loop_utilizations)
-            if event_loop_utilizations else 0.0
+            if event_loop_utilizations
+            else 0.0
         )
 
         return ProfilerResult(
@@ -310,7 +312,7 @@ class AsyncProfiler:
             total_tasks=total_tasks,
             total_coroutines=total_coroutines,
             avg_event_loop_utilization=avg_event_loop_utilization,
-            profiles=profiles
+            profiles=profiles,
         )
 
     def reset_profiles(self) -> None:
@@ -325,14 +327,14 @@ class AsyncProfiler:
 
 class PerformanceProfiler:
     """Main performance profiler that combines sync and async profiling.
-    
+
     Provides a unified interface for profiling both synchronous
     and asynchronous operations with comprehensive metrics collection.
     """
 
     def __init__(self, config: ProfilerConfig | None = None):
         """Initialize the performance profiler.
-        
+
         Args:
             config: Profiler configuration
         """
@@ -342,17 +344,13 @@ class PerformanceProfiler:
         self._sync_profiles: deque = deque(maxlen=self._config.max_profiles)
 
     @contextmanager
-    def profile_operation(
-        self,
-        operation_name: str,
-        tags: dict[str, str] | None = None
-    ):
+    def profile_operation(self, operation_name: str, tags: dict[str, str] | None = None):
         """Profile a synchronous operation.
-        
+
         Args:
             operation_name: Name of the operation
             tags: Additional metadata tags
-            
+
         Yields:
             Operation context
         """
@@ -362,8 +360,7 @@ class PerformanceProfiler:
 
         start_time = time.time()
         memory_before = (
-            self._async_profiler._get_memory_usage()
-            if self._config.enable_memory_profiling else 0
+            self._async_profiler._get_memory_usage() if self._config.enable_memory_profiling else 0
         )
 
         try:
@@ -374,7 +371,8 @@ class PerformanceProfiler:
             duration = end_time - start_time
             memory_after = (
                 self._async_profiler._get_memory_usage()
-                if self._config.enable_memory_profiling else 0
+                if self._config.enable_memory_profiling
+                else 0
             )
             memory_delta = memory_after - memory_before
 
@@ -387,7 +385,7 @@ class PerformanceProfiler:
                 memory_before=memory_before,
                 memory_after=memory_after,
                 memory_delta=memory_delta,
-                tags=tags or {}
+                tags=tags or {},
             )
 
             # Store profile
@@ -396,16 +394,14 @@ class PerformanceProfiler:
 
     @asynccontextmanager
     async def profile_async_operation(
-        self,
-        operation_name: str,
-        tags: dict[str, str] | None = None
+        self, operation_name: str, tags: dict[str, str] | None = None
     ):
         """Profile an async operation.
-        
+
         Args:
             operation_name: Name of the operation
             tags: Additional metadata tags
-            
+
         Yields:
             Async operation context
         """
@@ -414,10 +410,10 @@ class PerformanceProfiler:
 
     def get_all_profiles(self, operation_name: str | None = None) -> list[OperationProfile]:
         """Get all profiles (sync and async) for a specific operation or all operations.
-        
+
         Args:
             operation_name: Operation name (optional)
-            
+
         Returns:
             List of operation profiles
         """
@@ -429,18 +425,17 @@ class PerformanceProfiler:
 
             if operation_name:
                 return [
-                    profile for profile in all_profiles
-                    if profile.operation_name == operation_name
+                    profile for profile in all_profiles if profile.operation_name == operation_name
                 ]
             else:
                 return all_profiles
 
     def get_profiler_result(self, operation_name: str | None = None) -> ProfilerResult:
         """Get profiler result for a specific operation or all operations.
-        
+
         Args:
             operation_name: Operation name (optional)
-            
+
         Returns:
             Profiler result
         """
@@ -466,7 +461,8 @@ class PerformanceProfiler:
 
         avg_event_loop_utilization = (
             sum(event_loop_utilizations) / len(event_loop_utilizations)
-            if event_loop_utilizations else 0.0
+            if event_loop_utilizations
+            else 0.0
         )
 
         return ProfilerResult(
@@ -479,7 +475,7 @@ class PerformanceProfiler:
             total_tasks=total_tasks,
             total_coroutines=total_coroutines,
             avg_event_loop_utilization=avg_event_loop_utilization,
-            profiles=profiles
+            profiles=profiles,
         )
 
     def reset_profiles(self) -> None:
@@ -490,7 +486,7 @@ class PerformanceProfiler:
 
     def get_profiler_summary(self) -> dict[str, Any]:
         """Get a summary of profiler state.
-        
+
         Returns:
             Profiler summary
         """
@@ -507,6 +503,6 @@ class PerformanceProfiler:
                     "enable_coroutine_tracking": self._config.enable_coroutine_tracking,
                     "enable_event_loop_tracking": self._config.enable_event_loop_tracking,
                     "enable_memory_profiling": self._config.enable_memory_profiling,
-                    "sampling_rate": self._config.sampling_rate
-                }
+                    "sampling_rate": self._config.sampling_rate,
+                },
             }

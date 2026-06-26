@@ -12,7 +12,7 @@ class JsonFormatter(logging.Formatter):
     Includes standard log record attributes and any extra attributes passed.
     """
 
-    def format(self, record: str) -> None:
+    def format(self, record: logging.LogRecord) -> str:
         """
         Format.
 
@@ -47,9 +47,7 @@ class JsonFormatter(logging.Formatter):
         return json.dumps(log_record)
 
 
-def setup_logging(
-    log_level: str = "INFO", json_format: bool = False, log_file: str | None = None
-):
+def setup_logging(log_level: str = "INFO", json_format: bool = False, log_file: str | None = None):
     """
     Sets up the logging configuration for the application.
 

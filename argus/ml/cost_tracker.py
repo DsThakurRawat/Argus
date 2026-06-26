@@ -22,9 +22,7 @@ class CostTracker:
     and cost-related analytics for API usage monitoring.
     """
 
-    def __init__(
-        self, budget_config: BudgetConfig | None = None, max_records: int = 10000
-    ):
+    def __init__(self, budget_config: BudgetConfig | None = None, max_records: int = 10000):
         """
         Initialize the cost tracker.
 
@@ -157,9 +155,7 @@ class CostTracker:
         # Check for budget alerts
         await self._check_budget_alerts()
 
-        self.logger.debug(
-            f"Recorded usage: {operation} using {model}, cost: ${cost_usd:.4f}"
-        )
+        self.logger.debug(f"Recorded usage: {operation} using {model}, cost: ${cost_usd:.4f}")
 
         return record
 
@@ -201,12 +197,8 @@ class CostTracker:
         # Reset daily/monthly costs if needed
         await self._reset_periodic_costs()
 
-        daily_usage_percent = (
-            self.daily_cost / self.budget_config.daily_budget_usd
-        ) * 100
-        monthly_usage_percent = (
-            self.monthly_cost / self.budget_config.monthly_budget_usd
-        ) * 100
+        daily_usage_percent = (self.daily_cost / self.budget_config.daily_budget_usd) * 100
+        monthly_usage_percent = (self.monthly_cost / self.budget_config.monthly_budget_usd) * 100
 
         is_over_budget = (
             self.daily_cost > self.budget_config.daily_budget_usd
@@ -245,17 +237,13 @@ class CostTracker:
             Cost summary for the specified period
         """
         if start_date is None:
-            start_date = datetime.now(UTC).replace(
-                day=1, hour=0, minute=0, second=0, microsecond=0
-            )
+            start_date = datetime.now(UTC).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         if end_date is None:
             end_date = datetime.now(UTC)
 
         # Filter records by date range
         period_records = [
-            record
-            for record in self.usage_records
-            if start_date <= record.timestamp <= end_date
+            record for record in self.usage_records if start_date <= record.timestamp <= end_date
         ]
 
         # Calculate summary
@@ -269,9 +257,7 @@ class CostTracker:
         # Cost by model
         cost_by_model = {}
         for record in period_records:
-            cost_by_model[record.model] = (
-                cost_by_model.get(record.model, 0.0) + record.cost_usd
-            )
+            cost_by_model[record.model] = cost_by_model.get(record.model, 0.0) + record.cost_usd
 
         # Cost by operation
         cost_by_operation = {}
@@ -327,9 +313,7 @@ class CostTracker:
 
         return records
 
-    async def reset_usage(
-        self, reset_daily: bool = True, reset_monthly: bool = True
-    ) -> None:
+    async def reset_usage(self, reset_daily: bool = True, reset_monthly: bool = True) -> None:
         """Reset usage tracking with specific options."""
         if reset_daily and reset_monthly:
             await self.reset_budget("all")
@@ -408,9 +392,7 @@ class CostTracker:
         if days is not None:
             # Filter records by days
             cutoff_date = datetime.now(UTC) - timedelta(days=days)
-            period_records = [
-                r for r in self.usage_records if r.timestamp >= cutoff_date
-            ]
+            period_records = [r for r in self.usage_records if r.timestamp >= cutoff_date]
 
             # Calculate period totals
             total_cost = sum(r.cost_usd for r in period_records)
@@ -429,20 +411,14 @@ class CostTracker:
         current_date = datetime.now(UTC).date()
 
         # Reset daily cost if needed
-        if (
-            self.budget_config.enable_daily_reset
-            and current_date > self.last_daily_reset
-        ):
+        if self.budget_config.enable_daily_reset and current_date > self.last_daily_reset:
             self.daily_usage = 0.0
             self.daily_cost = 0.0
             self.last_daily_reset = current_date
 
         # Reset monthly cost if needed
         current_month = current_date.replace(day=1)
-        if (
-            self.budget_config.enable_monthly_reset
-            and current_month > self.last_monthly_reset
-        ):
+        if self.budget_config.enable_monthly_reset and current_month > self.last_monthly_reset:
             self.monthly_usage = 0.0
             self.monthly_cost = 0.0
             self.last_monthly_reset = current_month

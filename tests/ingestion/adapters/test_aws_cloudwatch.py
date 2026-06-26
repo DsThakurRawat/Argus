@@ -78,7 +78,10 @@ class TestAWSCloudWatchAdapter:
         # Mock log group not found
         error_response = {"Error": {"Code": "AccessDeniedException"}}
         import botocore.exceptions
-        mock_client.describe_log_groups.side_effect = botocore.exceptions.ClientError(error_response, "DescribeLogGroups")
+
+        mock_client.describe_log_groups.side_effect = botocore.exceptions.ClientError(
+            error_response, "DescribeLogGroups"
+        )
 
         with pytest.raises(SourceConnectionError):
             await adapter.start()
@@ -105,8 +108,12 @@ class TestAWSCloudWatchAdapter:
         mock_session.client.return_value = mock_client
 
         # Mock empty log events
-        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
-        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
+        mock_client.describe_log_streams.return_value = {
+            "logStreams": [{"logStreamName": "test-stream"}]
+        }
+        mock_client.describe_log_streams.return_value = {
+            "logStreams": [{"logStreamName": "test-stream"}]
+        }
         mock_client.get_log_events.return_value = {"events": []}
 
         await adapter.start()
@@ -143,8 +150,12 @@ class TestAWSCloudWatchAdapter:
                 "logStreamName": "test-stream",
             },
         ]
-        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
-        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
+        mock_client.describe_log_streams.return_value = {
+            "logStreams": [{"logStreamName": "test-stream"}]
+        }
+        mock_client.describe_log_streams.return_value = {
+            "logStreams": [{"logStreamName": "test-stream"}]
+        }
         mock_client.get_log_events.return_value = {"events": mock_events}
 
         await adapter.start()
@@ -307,8 +318,12 @@ class TestAWSCloudWatchAdapter:
         mock_session.client.return_value = mock_client
 
         # Mock paginated response
-        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
-        mock_client.describe_log_streams.return_value = {"logStreams": [{"logStreamName": "test-stream"}]}
+        mock_client.describe_log_streams.return_value = {
+            "logStreams": [{"logStreamName": "test-stream"}]
+        }
+        mock_client.describe_log_streams.return_value = {
+            "logStreams": [{"logStreamName": "test-stream"}]
+        }
         mock_client.get_log_events.return_value = {
             "events": [
                 {

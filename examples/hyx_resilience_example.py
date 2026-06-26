@@ -19,9 +19,7 @@ from argus.ingestion.interfaces.resilience import (
 )
 
 
-async def simulate_external_api_call(
-    api_name: str, should_fail: bool = False
-) -> dict[str, Any]:
+async def simulate_external_api_call(api_name: str, should_fail: bool = False) -> dict[str, Any]:
     """Simulate an external API call that might fail."""
     await asyncio.sleep(0.1)  # Simulate network delay
 
@@ -36,9 +34,7 @@ async def simulate_external_api_call(
     }
 
 
-async def simulate_database_operation(
-    operation: str, should_fail: bool = False
-) -> dict[str, Any]:
+async def simulate_database_operation(operation: str, should_fail: bool = False) -> dict[str, Any]:
     """Simulate a database operation that might fail."""
     await asyncio.sleep(0.05)  # Simulate database delay
 
@@ -68,9 +64,7 @@ async def demonstrate_basic_resilience():
     # Test successful operation
     print("✅ Testing successful operation...")
     try:
-        result = await client.execute(
-            lambda: simulate_external_api_call("health-check")
-        )
+        result = await client.execute(lambda: simulate_external_api_call("health-check"))
         print(f"   Result: {result}")
     except Exception as e:
         print(f"   Error: {e}")
@@ -92,9 +86,9 @@ async def demonstrate_basic_resilience():
             result = await client.execute(
                 lambda: simulate_external_api_call("failing-api", should_fail=True)
             )
-            print(f"   Attempt {i+1}: Success - {result}")
+            print(f"   Attempt {i + 1}: Success - {result}")
         except Exception as e:
-            print(f"   Attempt {i+1}: Failed - {e}")
+            print(f"   Attempt {i + 1}: Failed - {e}")
 
     # Show health stats
     print("\n📈 Health Statistics:")
@@ -112,7 +106,7 @@ async def demonstrate_batch_operations():
     client = HyxResilientClient(config)
 
     # Simulate batch of API calls
-    operations = [lambda: simulate_external_api_call(f"api-{i}") for i in range(10)]
+    operations = [lambda i=i: simulate_external_api_call(f"api-{i}") for i in range(10)]
 
     print("🚀 Executing batch of 10 operations...")
     results = []
@@ -121,9 +115,9 @@ async def demonstrate_batch_operations():
         try:
             result = await client.execute(operation)
             results.append(result)
-            print(f"   Operation {i+1}: ✅ Success")
+            print(f"   Operation {i + 1}: ✅ Success")
         except Exception as e:
-            print(f"   Operation {i+1}: ❌ Failed - {e}")
+            print(f"   Operation {i + 1}: ❌ Failed - {e}")
             results.append(None)
 
     successful = sum(1 for r in results if r is not None)
@@ -145,9 +139,7 @@ async def demonstrate_environment_configs():
         print(f"\n🔧 {env.upper()} Configuration:")
         config = create_resilience_config(env)
         print(f"   Retry attempts: {config.retry['max_attempts']}")
-        print(
-            f"   Circuit breaker threshold: {config.circuit_breaker['failure_threshold']}"
-        )
+        print(f"   Circuit breaker threshold: {config.circuit_breaker['failure_threshold']}")
         print(f"   Timeout: {config.timeout}s")
         print(f"   Bulkhead limit: {config.bulkhead['limit']}")
         print(f"   Rate limit: {config.rate_limit['requests_per_second']} req/s")
@@ -222,9 +214,7 @@ async def main():
         print("\n\n🎉 Demo completed successfully!")
         print("\n💡 Key Takeaways:")
         print("   - Hyx provides comprehensive resilience patterns")
-        print(
-            "   - Environment-specific configurations for different deployment stages"
-        )
+        print("   - Environment-specific configurations for different deployment stages")
         print("   - Integration with existing ingestion configuration system")
         print("   - Built-in health monitoring and statistics")
         print("   - Legacy compatibility with deprecation warnings")

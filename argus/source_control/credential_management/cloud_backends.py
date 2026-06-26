@@ -38,9 +38,7 @@ class VaultBackend(CredentialBackend):
         try:
             import hvac
         except ImportError:
-            self.logger.error(
-                "hvac library not installed. Install with: pip install hvac"
-            )
+            self.logger.error("hvac library not installed. Install with: pip install hvac")
             return None
 
         try:
@@ -64,9 +62,7 @@ class VaultBackend(CredentialBackend):
         try:
             import hvac
         except ImportError:
-            self.logger.error(
-                "hvac library not installed. Install with: pip install hvac"
-            )
+            self.logger.error("hvac library not installed. Install with: pip install hvac")
             raise
 
         try:
@@ -77,9 +73,7 @@ class VaultBackend(CredentialBackend):
             secret_path = f"{self.mount_point}/data/{key}"
             secret_data = json.loads(value) if isinstance(value, str) else value
 
-            client.secrets.kv.v2.create_or_update_secret(
-                path=secret_path, secret=secret_data
-            )
+            client.secrets.kv.v2.create_or_update_secret(path=secret_path, secret=secret_data)
         except Exception as e:
             raise RuntimeError(f"Failed to store secret in Vault: {e}") from e
 
@@ -88,9 +82,7 @@ class VaultBackend(CredentialBackend):
         try:
             import hvac
         except ImportError:
-            self.logger.error(
-                "hvac library not installed. Install with: pip install hvac"
-            )
+            self.logger.error("hvac library not installed. Install with: pip install hvac")
             return
 
         try:
@@ -108,9 +100,7 @@ class VaultBackend(CredentialBackend):
 class AWSSecretsBackend(CredentialBackend):
     """Credential backend using AWS Secrets Manager."""
 
-    def __init__(
-        self, region_name: str | None = None, profile_name: str | None = None
-    ):
+    def __init__(self, region_name: str | None = None, profile_name: str | None = None):
         self.region_name = region_name or os.getenv("AWS_DEFAULT_REGION", "us-east-1")
         self.profile_name = profile_name
         self.logger = logging.getLogger("AWSSecretsBackend")
@@ -120,9 +110,7 @@ class AWSSecretsBackend(CredentialBackend):
         try:
             import boto3
         except ImportError:
-            self.logger.error(
-                "boto3 library not installed. Install with: pip install boto3"
-            )
+            self.logger.error("boto3 library not installed. Install with: pip install boto3")
             return None
 
         try:
@@ -132,9 +120,7 @@ class AWSSecretsBackend(CredentialBackend):
             response = client.get_secret_value(SecretId=key)
             return response["SecretString"]
         except Exception as e:
-            self.logger.error(
-                f"Failed to retrieve secret from AWS Secrets Manager: {e}"
-            )
+            self.logger.error(f"Failed to retrieve secret from AWS Secrets Manager: {e}")
             return None
 
     async def set(self, key: str, value: str) -> None:
@@ -142,9 +128,7 @@ class AWSSecretsBackend(CredentialBackend):
         try:
             import boto3
         except ImportError:
-            self.logger.error(
-                "boto3 library not installed. Install with: pip install boto3"
-            )
+            self.logger.error("boto3 library not installed. Install with: pip install boto3")
             raise
 
         try:
@@ -158,18 +142,14 @@ class AWSSecretsBackend(CredentialBackend):
                 # Create new secret if it doesn't exist
                 client.create_secret(Name=key, SecretString=value)
         except Exception as e:
-            raise RuntimeError(
-                f"Failed to store secret in AWS Secrets Manager: {e}"
-            ) from e
+            raise RuntimeError(f"Failed to store secret in AWS Secrets Manager: {e}") from e
 
     async def delete(self, key: str) -> None:
         """Delete a credential from AWS Secrets Manager."""
         try:
             import boto3
         except ImportError:
-            self.logger.error(
-                "boto3 library not installed. Install with: pip install boto3"
-            )
+            self.logger.error("boto3 library not installed. Install with: pip install boto3")
             return
 
         try:

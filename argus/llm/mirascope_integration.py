@@ -86,9 +86,7 @@ class PromptManager:
         version = "1.0.0"
         timestamp = datetime.now().isoformat()
 
-        prompt_version = PromptVersion(
-            version=version, template=template, created_at=timestamp
-        )
+        prompt_version = PromptVersion(version=version, template=template, created_at=timestamp)
 
         prompt_data = PromptData(
             id=prompt_id,
@@ -106,9 +104,7 @@ class PromptManager:
         self._save_prompts()
         return prompt_id
 
-    def get_prompt(
-        self, prompt_id: str, version: str | None = None
-    ) -> Any | str:
+    def get_prompt(self, prompt_id: str, version: str | None = None) -> Any | str:
         """Get a Mirascope prompt object for the specified prompt."""
         if prompt_id not in self.prompts:
             raise ValueError(f"Prompt with ID {prompt_id} not found")
@@ -117,9 +113,7 @@ class PromptManager:
         version_to_use = version or prompt_data.current_version
 
         if version_to_use not in prompt_data.versions:
-            raise ValueError(
-                f"Version {version_to_use} not found for prompt {prompt_id}"
-            )
+            raise ValueError(f"Version {version_to_use} not found for prompt {prompt_id}")
 
         template = prompt_data.versions[version_to_use].template
 
@@ -130,9 +124,7 @@ class PromptManager:
         # TODO: Implement proper mirascope integration when API is stable
         return template
 
-    def create_version(
-        self, prompt_id: str, template: str, version: str | None = None
-    ) -> str:
+    def create_version(self, prompt_id: str, template: str, version: str | None = None) -> str:
         """Create a new version of an existing prompt."""
         if prompt_id not in self.prompts:
             raise ValueError(f"Prompt with ID {prompt_id} not found")
@@ -147,9 +139,7 @@ class PromptManager:
 
         timestamp = datetime.now().isoformat()
 
-        prompt_version = PromptVersion(
-            version=version, template=template, created_at=timestamp
-        )
+        prompt_version = PromptVersion(version=version, template=template, created_at=timestamp)
 
         prompt_data.versions[version] = prompt_version
         prompt_data.current_version = version
@@ -209,9 +199,7 @@ class PromptManager:
         self.prompts[prompt_id].versions[version_to_use].tests.append(test_record)
         self._save_prompts()
 
-        success_rate = (
-            sum(r["success"] for r in results) / len(results) if results else 0
-        )
+        success_rate = sum(r["success"] for r in results) / len(results) if results else 0
         return {"success_rate": success_rate, "results": results}
 
     def record_metrics(
@@ -225,18 +213,14 @@ class PromptManager:
         version_to_use = version or prompt_data.current_version
 
         if version_to_use not in prompt_data.versions:
-            raise ValueError(
-                f"Version {version_to_use} not found for prompt {prompt_id}"
-            )
+            raise ValueError(f"Version {version_to_use} not found for prompt {prompt_id}")
 
         timestamp = datetime.now().isoformat()
 
         # Add to metrics history
         metrics_record = {"timestamp": timestamp, "data": metrics}
 
-        self.prompts[prompt_id].versions[version_to_use].metrics_history.append(
-            metrics_record
-        )
+        self.prompts[prompt_id].versions[version_to_use].metrics_history.append(metrics_record)
 
         # Update current metrics summary
         current_metrics = self.prompts[prompt_id].versions[version_to_use].metrics
@@ -275,7 +259,7 @@ class PromptManager:
 
         return list(self.prompts[prompt_id].versions.keys())
 
-    def _load_prompts(self) -> None:
+    def _load_prompts(self) -> Any:
         """Load prompts from storage."""
         prompts_file = self.storage_path / "prompts.json"
         if prompts_file.exists():
@@ -338,9 +322,7 @@ class PromptCollaborationManager:
         self.prompt_manager = prompt_manager
         self.reviews: dict[str, list[dict[str, Any]]] = {}
 
-    def create_review(
-        self, prompt_id: str, version: str, reviewer: str, comments: str
-    ) -> str:
+    def create_review(self, prompt_id: str, version: str, reviewer: str, comments: str) -> str:
         """Create a review for a prompt version."""
         review_id = str(uuid.uuid4())
         timestamp = datetime.now().isoformat()
@@ -389,9 +371,7 @@ class PromptCollaborationManager:
 class PromptOptimizer:
     """Prompt optimization capabilities."""
 
-    def __init__(
-        self, prompt_manager: PromptManager, llm_service: str | None = None
-    ) -> None:
+    def __init__(self, prompt_manager: PromptManager, llm_service: Any | None = None) -> None:
         self.prompt_manager = prompt_manager
         self.llm_service = llm_service
 
@@ -412,23 +392,21 @@ class PromptOptimizer:
         # Create optimization prompt
         optimization_prompt = f"""
         You are an expert prompt engineer. Optimize the following prompt based on these goals:
-        {', '.join(optimization_goals)}
-        
+        {", ".join(optimization_goals)}
+
         Current prompt:
         {current_template}
-        
+
         Test cases:
         {test_cases}
-        
+
         Provide an optimized version of the prompt that better achieves the stated goals.
         Only return the optimized prompt text, nothing else.
         """
 
         # Get optimization suggestion from LLM
         try:
-            optimized_template = await self.llm_service.generate_text(
-                optimization_prompt
-            )
+            optimized_template = await self.llm_service.generate_text(optimization_prompt)
         except Exception:
             # Fallback if LLM service fails
             optimized_template = current_template

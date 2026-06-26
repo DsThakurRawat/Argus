@@ -49,9 +49,7 @@ class BaseSubOperation(ABC):
                 self.config = create_sub_operation_config(provider_type, operation_name)
 
         # Initialize operation-specific logger
-        self.operation_logger = logging.getLogger(
-            f"{self.__class__.__name__}.{operation_name}"
-        )
+        self.operation_logger = logging.getLogger(f"{self.__class__.__name__}.{operation_name}")
         self._setup_logging()
 
         # Performance tracking
@@ -59,7 +57,7 @@ class BaseSubOperation(ABC):
         self._error_count = 0
         self._total_duration = 0.0
 
-    def _setup_logging(self) -> None:
+    def _setup_logging(self) -> Any:
         """Setup operation-specific logging."""
         if self.config.log_level:
             level = getattr(logging, self.config.log_level.upper(), logging.INFO)
@@ -83,9 +81,7 @@ class BaseSubOperation(ABC):
 
         # Log operation start if enabled
         if self.config.log_operations:
-            self.operation_logger.info(
-                f"Starting {operation_name} (type: {operation_type})"
-            )
+            self.operation_logger.info(f"Starting {operation_name} (type: {operation_type})")
 
         start_time = asyncio.get_event_loop().time()
 
@@ -127,9 +123,7 @@ class BaseSubOperation(ABC):
             # Log success if enabled
             if self.config.log_operations:
                 duration = asyncio.get_event_loop().time() - start_time
-                self.operation_logger.info(
-                    f"Completed {operation_name} in {duration:.3f}s"
-                )
+                self.operation_logger.info(f"Completed {operation_name} in {duration:.3f}s")
 
             # Update performance metrics
             self._operation_count += 1

@@ -8,6 +8,7 @@ and other frequently accessed data to improve response times.
 """
 
 import asyncio
+import contextlib
 from dataclasses import dataclass
 import hashlib
 import json
@@ -88,9 +89,7 @@ class ContextCache:
     async def _cleanup_expired(self):
         """Remove expired cache entries."""
         current_time = time.time()
-        expired_keys = [
-            key for key, entry in self.cache.items() if current_time > entry.expires_at
-        ]
+        expired_keys = [key for key, entry in self.cache.items() if current_time > entry.expires_at]
 
         for key in expired_keys:
             del self.cache[key]
@@ -178,9 +177,7 @@ class ContextCache:
 
         return entry.value
 
-    async def set(
-        self, key: str, value: Any, ttl_seconds: int | None = None
-    ) -> bool:
+    async def set(self, key: str, value: Any, ttl_seconds: int | None = None) -> bool:
         """
         Set a value in cache.
 
@@ -270,10 +267,8 @@ class ContextCache:
         """Clean up resources."""
         if self._cleanup_task and not self._cleanup_task.done():
             self._cleanup_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._cleanup_task
-            except asyncio.CancelledError:
-                pass
 
         await self.clear()
 
@@ -343,16 +338,14 @@ class RepositoryContextCache:
         """Invalidate all cached data for a repository."""
         keys_to_delete = [
             key
-            for key in self.base_cache.cache.keys()
+            for key in self.base_cache.cache
             if key.startswith(f"{self.repo_prefix}{repo_path}:")
         ]
 
         for key in keys_to_delete:
             await self.base_cache.delete(key)
 
-        self.logger.info(
-            f"Invalidated {len(keys_to_delete)} cache entries for {repo_path}"
-        )
+        self.logger.info(f"Invalidated {len(keys_to_delete)} cache entries for {repo_path}")
 
 
 class IssuePatternCache:
@@ -378,9 +371,7 @@ class IssuePatternCache:
         """Generate cache key for issue patterns."""
         return f"{self.pattern_prefix}{pattern_type}:{hashlib.md5(pattern_data.encode(), usedforsecurity=False).hexdigest()}"
 
-    async def get_issue_pattern(
-        self, pattern_type: str, pattern_data: str
-    ) -> Any | None:
+    async def get_issue_pattern(self, pattern_type: str, pattern_data: str) -> Any | None:
         """
         Get cached issue pattern.
 

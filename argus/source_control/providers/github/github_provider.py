@@ -8,10 +8,9 @@ interface specifically for GitHub repositories.
 """
 
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from github import Github
-from github.Repository import Repository
 
 from ....config.source_control_repositories import GitHubRepositoryConfig
 from ...base_implementation import BaseSourceControlProvider
@@ -34,6 +33,9 @@ from .github_operations import GitHubOperations
 from .github_pull_requests import GitHubPullRequests
 from .github_utils import GitHubUtils
 
+if TYPE_CHECKING:
+    from github.Repository import Repository
+
 
 class GitHubProvider(BaseSourceControlProvider):
     """GitHub implementation of the SourceControlProvider interface."""
@@ -43,9 +45,7 @@ class GitHubProvider(BaseSourceControlProvider):
         super().__init__(config)
         # Convert config dict back to GitHubRepositoryConfig for type safety
         self.repo_config = GitHubRepositoryConfig(**config)
-        self.credentials = (
-            None  # Will be set later when credential management is integrated
-        )
+        self.credentials = None  # Will be set later when credential management is integrated
         self.logger = logging.getLogger("GitHubProvider")
         self.client: Github | None = None
         self.repo: Repository | None = None
@@ -59,7 +59,7 @@ class GitHubProvider(BaseSourceControlProvider):
         self.error_handling_factory = ErrorHandlingFactory()
         self.error_handling_components: dict[str, Any] | None = None
 
-    async def _setup_client(self) -> None:
+    async def _setup_client(self) -> Any:
         """Set up GitHub client and repository."""
         try:
             # Initialize GitHub client
@@ -79,18 +79,14 @@ class GitHubProvider(BaseSourceControlProvider):
             self.repo = self.client.get_repo(f"{owner}/{repo_name}")
 
             # Initialize error handling system
-            self._initialize_error_handling(
-                "github", self.repo_config.error_handling.model_dump()
-            )
+            self._initialize_error_handling("github", self.repo_config.error_handling.model_dump())
 
             # Initialize component modules
             if self.client and self.repo:
                 self.operations = GitHubOperations(
                     self.client, self.repo, self.logger, self._error_handling_components
                 )
-                self.pull_requests = GitHubPullRequests(
-                    self.client, self.repo, self.logger
-                )
+                self.pull_requests = GitHubPullRequests(self.client, self.repo, self.logger)
                 self.utils = GitHubUtils(self.client, self.repo, self.logger)
 
         except Exception as e:
@@ -174,9 +170,7 @@ class GitHubProvider(BaseSourceControlProvider):
             raise RuntimeError("GitHub operations not initialized")
         return await self.operations.get_repository_info()
 
-    async def check_conflicts(
-        self, path: str, content: str, branch: str | None = None
-    ) -> bool:
+    async def check_conflicts(self, path: str, content: str, branch: str | None = None) -> bool:
         """Check for merge conflicts between branches."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -186,25 +180,19 @@ class GitHubProvider(BaseSourceControlProvider):
         base_branch = "main"  # This should be configurable
 
         try:
-            conflict_info = await self.operations.check_conflicts(
-                path, base_branch, feature_branch
-            )
+            conflict_info = await self.operations.check_conflicts(path, base_branch, feature_branch)
             return conflict_info.has_conflicts
         except Exception:
             # If we can't check conflicts, assume there are conflicts to be safe
             return True
 
-    async def resolve_conflicts(
-        self, path: str, content: str, strategy: str = "manual"
-    ) -> bool:
+    async def resolve_conflicts(self, path: str, content: str, strategy: str = "manual") -> bool:
         """Resolve merge conflicts in a file."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
         return await self.operations.resolve_conflicts(path, content, strategy)
 
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Execute multiple operations in batch."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")
@@ -238,9 +226,7 @@ class GitHubProvider(BaseSourceControlProvider):
                         kwargs.get("draft", False),
                     )
                 except Exception as e:
-                    self.logger.error(
-                        f"Failed to create pull request with error handling: {e}"
-                    )
+                    self.logger.error(f"Failed to create pull request with error handling: {e}")
                     return RemediationResult(
                         success=False,
                         message=f"Failed to create pull request: {e}",
@@ -345,9 +331,7 @@ class GitHubProvider(BaseSourceControlProvider):
                         "file_operations", self.operations.get_file_info, path, ref
                     )
                 except Exception as e:
-                    self.logger.error(
-                        f"Failed to get file info with error handling: {e}"
-                    )
+                    self.logger.error(f"Failed to get file info with error handling: {e}")
                     # Return empty file info on error
                     return FileInfo(
                         path=path,
@@ -406,9 +390,7 @@ class GitHubProvider(BaseSourceControlProvider):
             raise RuntimeError("GitHub operations not initialized")
         return await self.operations.list_files(path, ref)
 
-    async def generate_patch(
-        self, file_path: str, old_content: str, new_content: str
-    ) -> str:
+    async def generate_patch(self, file_path: str, old_content: str, new_content: str) -> str:
         """Generate a patch between old and new content."""
         if not self.operations:
             raise RuntimeError("GitHub operations not initialized")

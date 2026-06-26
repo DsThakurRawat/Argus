@@ -291,9 +291,7 @@ class IntegrationTester:
                     task_type=TaskType.CREATIVE_WRITING,
                     strategy=MixingStrategy.SEQUENTIAL,
                 )
-                logger.warning(
-                    "Very long prompt was accepted, should have been rejected"
-                )
+                logger.warning("Very long prompt was accepted, should have been rejected")
             except ValueError:
                 # Expected behavior
                 pass
@@ -312,8 +310,7 @@ class IntegrationTester:
         try:
             # Generate multiple test prompts
             prompts = [
-                self.test_data_generator.generate_prompt(PromptType.SIMPLE)
-                for _ in range(10)
+                self.test_data_generator.generate_prompt(PromptType.SIMPLE) for _ in range(10)
             ]
 
             # Run multiple mixing operations concurrently
@@ -394,9 +391,7 @@ class IntegrationTester:
                 logger.warning("Cost was not tracked properly")
                 return False
 
-            logger.info(
-                f"Cost tracking test passed: {final_cost - initial_cost:.4f} cost recorded"
-            )
+            logger.info(f"Cost tracking test passed: {final_cost - initial_cost:.4f} cost recorded")
             return True
 
         except Exception as e:
@@ -476,13 +471,9 @@ class IntegrationTester:
             try:
                 result = await test_func()
                 results[test_name] = result
-                logger.info(
-                    f"Integration test '{test_name}': {'PASSED' if result else 'FAILED'}"
-                )
+                logger.info(f"Integration test '{test_name}': {'PASSED' if result else 'FAILED'}")
             except Exception as e:
-                logger.error(
-                    f"Integration test '{test_name}' failed with exception: {e}"
-                )
+                logger.error(f"Integration test '{test_name}' failed with exception: {e}")
                 results[test_name] = False
 
         # Summary

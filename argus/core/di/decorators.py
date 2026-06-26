@@ -26,10 +26,7 @@ def injectable(
     def decorator(cls: type[T]) -> type[T]:
         # Register the service
         container = get_container()
-        if service_type is None:
-            service_type_to_register = cls
-        else:
-            service_type_to_register = service_type
+        service_type_to_register = cls if service_type is None else service_type
 
         if lifetime == "singleton":
             container.register_singleton(service_type_to_register, cls)
@@ -76,7 +73,7 @@ def inject(
                 elif service_type is None and param_type != inspect.Parameter.empty:
                     try:
                         resolved_kwargs[param_name] = container.get_service(param_type)
-                    except Exception:
+                    except Exception:  # nosec B112
                         continue  # Skip if not registered
 
             # Call the function with resolved dependencies
@@ -114,7 +111,7 @@ def auto_inject(func: Callable[..., Any]) -> Callable[..., Any]:
             if param_type != inspect.Parameter.empty:
                 try:
                     resolved_kwargs[param_name] = container.get_service(param_type)
-                except Exception:
+                except Exception:  # nosec B112
                     continue  # Skip if not registered
 
         # Call the function with resolved dependencies
@@ -180,7 +177,7 @@ def factory(func: Callable[[], T]) -> Callable[[], T]:
     hints = get_type_hints(func)
     return_type = hints.get("return", type(None))
 
-    if return_type != type(None):
+    if return_type is not type(None):
         container.register_transient(return_type, func)
 
     return func

@@ -5,6 +5,7 @@ Credential configuration models for source control providers.
 """
 
 from pathlib import Path
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 from pydantic.types import SecretStr
@@ -16,23 +17,15 @@ class CredentialConfig(BaseConfig):
     """Configuration for repository credentials."""
 
     # Token-based authentication
-    token_env: str | None = Field(
-        None, description="Environment variable containing the token"
-    )
-    token_file: str | None = Field(
-        None, description="File path containing the token"
-    )
+    token_env: str | None = Field(None, description="Environment variable containing the token")
+    token_file: str | None = Field(None, description="File path containing the token")
     token: SecretStr | None = Field(
         None, description="Direct token value (not recommended for production)"
     )
 
     # Username/password authentication
-    username_env: str | None = Field(
-        None, description="Environment variable for username"
-    )
-    password_env: str | None = Field(
-        None, description="Environment variable for password"
-    )
+    username_env: str | None = Field(None, description="Environment variable for username")
+    password_env: str | None = Field(None, description="Environment variable for password")
     username: str | None = Field(
         None, description="Direct username value (not recommended for production)"
     )
@@ -50,9 +43,7 @@ class CredentialConfig(BaseConfig):
     )
 
     # OAuth authentication
-    client_id_env: str | None = Field(
-        None, description="Environment variable for OAuth client ID"
-    )
+    client_id_env: str | None = Field(None, description="Environment variable for OAuth client ID")
     client_secret_env: str | None = Field(
         None, description="Environment variable for OAuth client secret"
     )
@@ -73,7 +64,7 @@ class CredentialConfig(BaseConfig):
 
     @field_validator("ssh_key_path")
     @classmethod
-    def validate_ssh_key_path(cls: str, v: str) -> None:
+    def validate_ssh_key_path(cls: Any, v: Any) -> Any:
         """Validate SSH key path exists if provided."""
         if v is not None:
             key_path = Path(v)
@@ -85,7 +76,7 @@ class CredentialConfig(BaseConfig):
 
     @field_validator("service_account_key_file")
     @classmethod
-    def validate_service_account_key_file(cls: str, v: str) -> None:
+    def validate_service_account_key_file(cls: Any, v: Any) -> Any:
         """Validate service account key file exists if provided."""
         if v is not None:
             key_path = Path(v)
@@ -96,7 +87,7 @@ class CredentialConfig(BaseConfig):
         return v
 
     @model_validator(mode="after")
-    def check_auth_method(self) -> None:
+    def check_auth_method(self) -> Any:
         """Ensure at least one authentication method is provided."""
         auth_methods = [
             self.token_env,
@@ -134,9 +125,7 @@ class CredentialConfig(BaseConfig):
                 with open(self.token_file) as f:
                     return f.read().strip()
             except OSError as e:
-                raise ValueError(
-                    f"Failed to read token from file {self.token_file}: {e}"
-                ) from e
+                raise ValueError(f"Failed to read token from file {self.token_file}: {e}") from e
 
         return None
 

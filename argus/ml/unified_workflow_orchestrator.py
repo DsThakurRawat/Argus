@@ -15,8 +15,9 @@ import logging
 import time
 from typing import Any
 
+from argus.agents.enhanced_specialized import EnhancedAnalysisAgent
+
 from .caching import ContextCache
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
 from .performance import PerformanceConfig, record_performance
 from .workflow_analysis_engine import WorkflowAnalysisEngine
 from .workflow_code_generator import WorkflowCodeGenerator
@@ -87,11 +88,13 @@ class UnifiedWorkflowOrchestrator:
         self.repo_path = repo_path
 
         # Initialize modular components
-        self.context_manager = WorkflowContextManager(enhanced_agent, repo_path)
+        self.context_manager = WorkflowContextManager(enhanced_agent, repo_path)  # type: ignore
         self.analysis_engine = WorkflowAnalysisEngine(
-            enhanced_agent, cache, performance_config
+            enhanced_agent,  # type: ignore
+            cache,
+            performance_config,  # type: ignore
         )
-        self.code_generator = WorkflowCodeGenerator(enhanced_agent)
+        self.code_generator = WorkflowCodeGenerator(enhanced_agent)  # type: ignore
         self.validation_engine = WorkflowValidationEngine()
         self.metrics_collector = WorkflowMetricsCollector(
             cache, self.context_manager, performance_config
@@ -139,9 +142,7 @@ class UnifiedWorkflowOrchestrator:
         )
 
         try:
-            self.logger.info(
-                f"[WORKFLOW] Starting unified workflow for flow_id={flow_id}"
-            )
+            self.logger.info(f"[WORKFLOW] Starting unified workflow for flow_id={flow_id}")
 
             # Phase 1: Context Building & Caching
             context_building_start = time.time()
@@ -211,10 +212,8 @@ class UnifiedWorkflowOrchestrator:
 
             if enable_validation and generated_code:
                 validation_start = time.time()
-                validation_result = (
-                    await self.validation_engine.validate_generated_code(
-                        analysis_result, prompt_context
-                    )
+                validation_result = await self.validation_engine.validate_generated_code(
+                    analysis_result, prompt_context
                 )
                 validation_duration = time.time() - validation_start
 

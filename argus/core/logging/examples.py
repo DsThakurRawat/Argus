@@ -5,6 +5,7 @@ import time
 from typing import Any
 
 from .alerting import AlertRule, AlertSeverity, get_alert_manager
+from .config import HandlerConfig, LogFormat, LogLevel, OutputDestination
 from .flow_tracker import get_flow_tracker
 from .logger import LoggingConfig, get_logger
 
@@ -40,9 +41,7 @@ def flow_tracking_example():
     get_flow_tracker()
 
     # Start a flow
-    flow_id = logger.start_flow(
-        "user_registration", metadata={"user_email": "user@example.com"}
-    )
+    flow_id = logger.start_flow("user_registration", metadata={"user_email": "user@example.com"})
     logger.info("Starting user registration", flow_id=flow_id)
 
     # Simulate some work
@@ -89,7 +88,10 @@ def performance_monitoring_example():
 
     # Export metrics
     metrics = logger.export_metrics("stats")
-    print(f"Available metrics: {list(metrics.keys())}")
+    if isinstance(metrics, dict):
+        print(f"Available metrics: {list(metrics.keys())}")
+    else:
+        print(f"Recorded metrics: {len(metrics)} items")
 
 
 def alerting_example():
@@ -165,10 +167,15 @@ def comprehensive_example():
 
     # Configure logging
     config = LoggingConfig(
-        name="comprehensive_example",
-        level=20,  # INFO
-        handlers=[{"type": "console", "level": 20, "formatter": "json"}],
-        formatters={"json": {"type": "json", "include_extra": True}},
+        level=LogLevel.INFO,
+        handlers=[
+            HandlerConfig(
+                name="console",
+                destination=OutputDestination.CONSOLE,
+                level=LogLevel.INFO,
+                format=LogFormat.JSON,
+            )
+        ],
     )
 
     logger = get_logger(config)
@@ -189,15 +196,17 @@ def comprehensive_example():
                 logger.info(f"Executing {step} step", flow_id=flow_id)
 
                 # Simulate work
-                time.sleep(random.uniform(0.01, 0.05))
+                time.sleep(random.uniform(0.01, 0.05))  # nosec B311
 
                 # Record metrics
                 logger.record_metric(
-                    "processing_records", random.randint(100, 1000), tags={"step": step}
+                    "processing_records",
+                    random.randint(100, 1000),  # nosec B311
+                    tags={"step": step},  # nosec B311
                 )
 
                 # Simulate occasional errors
-                if random.random() < 0.1:  # 10% chance of error
+                if random.random() < 0.1:  # 10% chance of error  # nosec B311
                     logger.error(
                         f"Error in {step} step",
                         extra={"error_code": f"E_{step.upper()}"},
@@ -216,7 +225,10 @@ def comprehensive_example():
         print(f"Flow completed: {flow['operation']} in {flow['duration']:.2f}s")
 
     metrics = logger.export_metrics("stats")
-    print(f"Recorded metrics: {list(metrics.keys())}")
+    if isinstance(metrics, dict):
+        print(f"Recorded metrics: {list(metrics.keys())}")
+    else:
+        print(f"Recorded metrics: {len(metrics)} items")
 
     alerts = logger.get_alerts()
     print(f"Generated alerts: {len(alerts)}")

@@ -100,8 +100,7 @@ class StrategyMetricsCollector:
 
         # Update latency metrics
         metrics.average_latency_ms = (
-            metrics.average_latency_ms * (metrics.total_selections - 1)
-            + execution_time_ms
+            metrics.average_latency_ms * (metrics.total_selections - 1) + execution_time_ms
         ) / metrics.total_selections
         metrics.min_latency_ms = min(metrics.min_latency_ms, execution_time_ms)
         metrics.max_latency_ms = max(metrics.max_latency_ms, execution_time_ms)
@@ -109,8 +108,7 @@ class StrategyMetricsCollector:
         # Update score metrics
         if hasattr(result, "score") and hasattr(result.score, "overall_score"):
             metrics.average_score = (
-                metrics.average_score * (metrics.total_selections - 1)
-                + result.score.overall_score
+                metrics.average_score * (metrics.total_selections - 1) + result.score.overall_score
             ) / metrics.total_selections
 
         # Update success rate
@@ -120,9 +118,7 @@ class StrategyMetricsCollector:
         metrics.last_used = datetime.now()
 
         # Record in history
-        self._record_in_history(
-            strategy_name, result, success, execution_time_ms, metadata
-        )
+        self._record_in_history(strategy_name, result, success, execution_time_ms, metadata)
 
         # Create performance snapshot
         self._create_performance_snapshot(strategy_name)
@@ -196,9 +192,7 @@ class StrategyMetricsCollector:
         """
         return self._metrics.copy()
 
-    def get_performance_trend(
-        self, strategy_name: str, hours: int = 24
-    ) -> dict[str, Any]:
+    def get_performance_trend(self, strategy_name: str, hours: int = 24) -> dict[str, Any]:
         """Get performance trend for a strategy over time.
 
         Args:
@@ -227,9 +221,7 @@ class StrategyMetricsCollector:
         latency_trend = self._calculate_trend(latencies)
 
         return {
-            "trend": (
-                "improving" if success_trend > 0 and latency_trend < 0 else "declining"
-            ),
+            "trend": ("improving" if success_trend > 0 and latency_trend < 0 else "declining"),
             "success_rate_trend": success_trend,
             "latency_trend": latency_trend,
             "data_points": len(recent_snapshots),
@@ -255,9 +247,7 @@ class StrategyMetricsCollector:
         x_mean = statistics.mean(x_values)
         y_mean = statistics.mean(values)
 
-        numerator = sum(
-            (x - x_mean) * (y - y_mean) for x, y in zip(x_values, values, strict=False)
-        )
+        numerator = sum((x - x_mean) * (y - y_mean) for x, y in zip(x_values, values, strict=False))
         denominator = sum((x - x_mean) ** 2 for x in x_values)
 
         return numerator / denominator if denominator != 0 else 0.0
@@ -307,9 +297,7 @@ class StrategyMetricsCollector:
         if metrics.average_latency_ms == 0:
             return 0.0
 
-        return metrics.success_rate / (
-            metrics.average_latency_ms / 1000
-        )  # Convert to seconds
+        return metrics.success_rate / (metrics.average_latency_ms / 1000)  # Convert to seconds
 
     def get_usage_statistics(self) -> dict[str, Any]:
         """Get overall usage statistics.
@@ -343,9 +331,7 @@ class StrategyMetricsCollector:
                 del self._metrics[strategy_name]
             # Remove from history
             self._selection_history = [
-                h
-                for h in self._selection_history
-                if h["strategy_name"] != strategy_name
+                h for h in self._selection_history if h["strategy_name"] != strategy_name
             ]
             self._performance_history = [
                 s for s in self._performance_history if s.strategy_name != strategy_name
@@ -429,16 +415,12 @@ class StrategyPerformanceAnalyzer:
                 "success_rate_std": (
                     statistics.stdev(success_rates) if len(success_rates) > 1 else 0.0
                 ),
-                "latency_std": (
-                    statistics.stdev(latency_means) if len(latency_means) > 1 else 0.0
-                ),
+                "latency_std": (statistics.stdev(latency_means) if len(latency_means) > 1 else 0.0),
             },
             "recommendations": self._generate_recommendations(all_metrics),
         }
 
-    def _generate_recommendations(
-        self, metrics: dict[str, StrategyMetrics]
-    ) -> list[str]:
+    def _generate_recommendations(self, metrics: dict[str, StrategyMetrics]) -> list[str]:
         """Generate performance recommendations.
 
         Args:
@@ -500,9 +482,7 @@ class StrategyRecommendationEngine:
 
         # Filter to available strategies only
         available_metrics = {
-            name: metrics
-            for name, metrics in all_metrics.items()
-            if name in available_strategies
+            name: metrics for name, metrics in all_metrics.items() if name in available_strategies
         }
 
         if not available_metrics:
@@ -550,9 +530,7 @@ class StrategyRecommendationEngine:
             confidence *= 0.8
 
         # Adjust based on recent performance
-        trend = self.metrics_collector.get_performance_trend(
-            metrics.strategy_name, hours=24
-        )
+        trend = self.metrics_collector.get_performance_trend(metrics.strategy_name, hours=24)
         if trend.get("trend") == "improving":
             confidence *= 1.05
         elif trend.get("trend") == "declining":

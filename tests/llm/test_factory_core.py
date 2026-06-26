@@ -33,9 +33,7 @@ class MockProvider(LLMProvider):
     async def generate_structured(self, prompt, response_model, model=None, **kwargs):
         return response_model()
 
-    def generate_stream(
-        self, prompt: str, model: str | None = None, **kwargs: str
-    ) -> None:
+    def generate_stream(self, prompt: str, model: str | None = None, **kwargs: str) -> None:
         """
         Generate Stream.
 
@@ -117,9 +115,7 @@ class TestLLMProviderFactory:
 
     def test_create_provider_success(self, factory: str, mock_config: str) -> None:
         """Test successful provider creation."""
-        with patch(
-            "argus.llm.factory.LiteLLMProvider"
-        ) as mock_provider_class:
+        with patch("argus.llm.factory.LiteLLMProvider") as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
             mock_provider_class.return_value = mock_provider
@@ -132,13 +128,9 @@ class TestLLMProviderFactory:
             mock_provider_class.assert_called_once_with(mock_config)
             mock_provider.validate_config.assert_called_once()
 
-    def test_create_provider_force_recreate(
-        self, factory: str, mock_config: str
-    ) -> None:
+    def test_create_provider_force_recreate(self, factory: str, mock_config: str) -> None:
         """Test provider creation with force_recreate=True."""
-        with patch(
-            "argus.llm.factory.LiteLLMProvider"
-        ) as mock_provider_class:
+        with patch("argus.llm.factory.LiteLLMProvider") as mock_provider_class:
             mock_provider1 = MagicMock()
             mock_provider1.validate_config.return_value = True
             mock_provider2 = MagicMock()
@@ -163,30 +155,20 @@ class TestLLMProviderFactory:
         with pytest.raises(ValueError, match="Unsupported provider type: unsupported"):
             factory.create_provider(config)
 
-    def test_create_provider_invalid_config(
-        self, factory: str, mock_config: str
-    ) -> None:
+    def test_create_provider_invalid_config(self, factory: str, mock_config: str) -> None:
         """Test creating provider with invalid configuration."""
-        with patch(
-            "argus.llm.factory.LiteLLMProvider"
-        ) as mock_provider_class:
+        with patch("argus.llm.factory.LiteLLMProvider") as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = False
             mock_provider_class.return_value = mock_provider
             factory.register_provider_type("anthropic", mock_provider_class)
 
-            with pytest.raises(
-                ValueError, match="Invalid configuration for provider: anthropic"
-            ):
+            with pytest.raises(ValueError, match="Invalid configuration for provider: anthropic"):
                 factory.create_provider(mock_config)
 
-    def test_create_provider_creation_failure(
-        self, factory: str, mock_config: str
-    ) -> None:
+    def test_create_provider_creation_failure(self, factory: str, mock_config: str) -> None:
         """Test provider creation failure."""
-        with patch(
-            "argus.llm.factory.LiteLLMProvider"
-        ) as mock_provider_class:
+        with patch("argus.llm.factory.LiteLLMProvider") as mock_provider_class:
             mock_provider_class.side_effect = Exception("Creation failed")
             factory.register_provider_type("anthropic", mock_provider_class)
 
@@ -195,9 +177,7 @@ class TestLLMProviderFactory:
 
     def test_get_provider_existing(self, factory: str, mock_config: str) -> None:
         """Test getting an existing provider."""
-        with patch(
-            "argus.llm.factory.LiteLLMProvider"
-        ) as mock_provider_class:
+        with patch("argus.llm.factory.LiteLLMProvider") as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
             mock_provider_class.return_value = mock_provider
@@ -215,9 +195,7 @@ class TestLLMProviderFactory:
 
     def test_get_all_providers(self, factory: str, mock_config: str) -> None:
         """Test getting all providers."""
-        with patch(
-            "argus.llm.factory.LiteLLMProvider"
-        ) as mock_provider_class:
+        with patch("argus.llm.factory.LiteLLMProvider") as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
             mock_provider_class.return_value = mock_provider
@@ -233,9 +211,7 @@ class TestLLMProviderFactory:
 
     def test_remove_provider_existing(self, factory: str, mock_config: str) -> None:
         """Test removing an existing provider."""
-        with patch(
-            "argus.llm.factory.LiteLLMProvider"
-        ) as mock_provider_class:
+        with patch("argus.llm.factory.LiteLLMProvider") as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
             mock_provider_class.return_value = mock_provider
@@ -254,9 +230,7 @@ class TestLLMProviderFactory:
 
     def test_clear_providers(self, factory: str, mock_config: str) -> None:
         """Test clearing all providers."""
-        with patch(
-            "argus.llm.factory.LiteLLMProvider"
-        ) as mock_provider_class:
+        with patch("argus.llm.factory.LiteLLMProvider") as mock_provider_class:
             mock_provider = MagicMock()
             mock_provider.validate_config.return_value = True
             mock_provider_class.return_value = mock_provider

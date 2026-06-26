@@ -32,14 +32,14 @@ class SecurityCodeGenerator(BaseCodeGenerator):
                 code_template="""def secure_input_validation(input_data, allowed_patterns):
     if not isinstance(input_data, str):
         raise SecurityError("Invalid input type")
-    
+
     # Remove potentially dangerous characters
     sanitized = re.sub(r'[<>"\']', '', input_data)
-    
+
     # Validate against allowed patterns
     if not re.match(allowed_patterns, sanitized):
         raise SecurityError("Input contains forbidden characters")
-    
+
     return sanitized""",
                 validation_rules=["input_validation_rule"],
                 best_practices=["Always validate inputs", "Use whitelist approach"],
@@ -58,7 +58,7 @@ class SecurityCodeGenerator(BaseCodeGenerator):
         stored_hash
     ):
         raise AuthenticationError("Invalid credentials")
-    
+
     # Generate secure session token
     session_token = secrets.token_urlsafe(32)
     session_data = {
@@ -66,7 +66,7 @@ class SecurityCodeGenerator(BaseCodeGenerator):
         'created_at': datetime.utcnow(),
         'expires_at': datetime.utcnow() + timedelta(hours=1)
     }
-    
+
     return session_token, session_data""",
                 validation_rules=["authentication_rule"],
                 best_practices=[
@@ -85,17 +85,17 @@ class SecurityCodeGenerator(BaseCodeGenerator):
     # Check if user has permission for the action on the resource
     if not user.is_authenticated:
         raise AuthorizationError("User not authenticated")
-    
+
     # Check role-based permissions
     required_permission = f"{resource}:{action}"
     if required_permission not in user.permissions:
         raise AuthorizationError("Insufficient permissions")
-    
+
     # Check resource ownership if applicable
     if hasattr(resource, 'owner_id') and resource.owner_id != user.id:
         if not user.has_role('admin'):
             raise AuthorizationError("Access denied to resource")
-    
+
     return True""",
                 validation_rules=["authorization_rule"],
                 best_practices=["Check authentication first", "Verify permissions"],
@@ -110,13 +110,13 @@ class SecurityCodeGenerator(BaseCodeGenerator):
                 code_template="""def encrypt_sensitive_data(data, key):
     # Generate a random IV for each encryption
     iv = os.urandom(16)
-    
+
     # Create cipher with AES-256-GCM
     cipher = AES.new(key, AES.MODE_GCM, iv)
-    
+
     # Encrypt the data
     ciphertext, tag = cipher.encrypt_and_digest(data.encode())
-    
+
     # Return IV, ciphertext, and authentication tag
     return {
         'iv': base64.b64encode(iv).decode(),
@@ -129,11 +129,11 @@ def decrypt_sensitive_data(encrypted_data: str, key: str) -> None:
     iv = base64.b64decode(encrypted_data['iv'])
     ciphertext = base64.b64decode(encrypted_data['ciphertext'])
     tag = base64.b64decode(encrypted_data['tag'])
-    
+
     # Create cipher and decrypt
     cipher = AES.new(key, AES.MODE_GCM, iv)
     plaintext = cipher.decrypt_and_verify(ciphertext, tag)
-    
+
     return plaintext.decode()""",
                 validation_rules=["encryption_rule"],
                 best_practices=["Use strong algorithms", "Generate random IVs"],
@@ -148,10 +148,10 @@ def decrypt_sensitive_data(encrypted_data: str, key: str) -> None:
                 code_template="""def secure_log_event(event_type, user_id, details):
     # Sanitize sensitive information
     sanitized_details = {
-        k: v for k, v in details.items() 
+        k: v for k, v in details.items()
         if k not in ['password', 'token', 'credit_card', 'ssn']
     }
-    
+
     # Log security event
     logger.warning(
         f"Security Event: {event_type}",
@@ -163,7 +163,7 @@ def decrypt_sensitive_data(encrypted_data: str, key: str) -> None:
             'details': sanitized_details
         }
     )
-    
+
     # Alert security team for critical events
     if event_type in ['failed_login', 'unauthorized_access', 'data_breach']:
         alert_security_team(event_type, user_id, sanitized_details)""",
@@ -194,7 +194,7 @@ def decrypt_sensitive_data(encrypted_data: str, key: str) -> None:
                 rule_type="authentication",
                 severity=ValidationSeverity.CRITICAL,
                 validation_function="validate_authentication_security",
-                parameters={"check_password_hash": True, "check_session": True},
+                parameters={"check_password_hash": True, "check_session": True},  # nosec B105
             ),
             ValidationRule(
                 rule_id="security_authorization",
@@ -251,27 +251,27 @@ class TestSecurityFunctionality:
         '''Test successful input validation'''
         # Test implementation here
         pass
-    
+
     def test_input_validation_malicious_input(self) -> None:
         '''Test input validation with malicious input'''
         # Test implementation here
         pass
-    
+
     def test_authentication_success(self) -> None:
         '''Test successful authentication'''
         # Test implementation here
         pass
-    
+
     def test_authentication_failure(self) -> None:
         '''Test authentication failure handling'''
         # Test implementation here
         pass
-    
+
     def test_authorization_check(self) -> None:
         '''Test authorization checks'''
         # Test implementation here
         pass
-    
+
     def test_encryption_decryption(self) -> None:
         '''Test encryption and decryption'''
         # Test implementation here
@@ -283,17 +283,17 @@ class TestSecurityVulnerabilities:
         '''Test SQL injection prevention'''
         # Test implementation here
         pass
-    
+
     def test_xss_prevention(self) -> None:
         '''Test XSS prevention'''
         # Test implementation here
         pass
-    
+
     def test_csrf_protection(self) -> None:
         '''Test CSRF protection'''
         # Test implementation here
         pass
-    
+
     def test_timing_attack_prevention(self) -> None:
         '''Test timing attack prevention'''
         # Test implementation here

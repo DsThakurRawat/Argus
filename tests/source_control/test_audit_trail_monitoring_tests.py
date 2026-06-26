@@ -86,9 +86,7 @@ class TestAuditTrailMonitoringTests:
             assert isinstance(operation["success"], bool)
             assert isinstance(operation["details"], dict)
 
-    def test_security_event_tracking_comprehensive(
-        self, mock_github_provider: str
-    ) -> None:
+    def test_security_event_tracking_comprehensive(self, mock_github_provider: str) -> None:
         """Test comprehensive security event tracking."""
         # Test different types of security events
         security_events = [

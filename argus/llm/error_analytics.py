@@ -52,9 +52,7 @@ class ErrorAnalytics:
             return {
                 "total_errors": sum(self.error_counts.values()),
                 "error_types": dict(self.error_counts),
-                "category_counts": {
-                    cat.name: count for cat, count in self.category_counts.items()
-                },
+                "category_counts": {cat.name: count for cat, count in self.category_counts.items()},
                 "recent_errors_count": len(self.recent_errors),
                 "provider_errors": {
                     provider: dict(errors)
@@ -77,12 +75,8 @@ class ErrorAnalytics:
                 "error_types": dict(provider_errors),
                 "health_score": health_score,
                 "recent_errors": [
-                    error
-                    for error in self.recent_errors
-                    if error["provider"] == provider_id
-                ][
-                    -10:
-                ],  # Last 10 errors
+                    error for error in self.recent_errors if error["provider"] == provider_id
+                ][-10:],  # Last 10 errors
             }
 
     async def get_top_error_providers(self, limit: int = 5) -> list[dict[str, Any]]:
@@ -92,9 +86,7 @@ class ErrorAnalytics:
                 {"provider": provider, "total_errors": sum(errors.values())}
                 for provider, errors in self.provider_error_counts.items()
             ]
-            return sorted(
-                provider_totals, key=lambda x: x["total_errors"], reverse=True
-            )[:limit]
+            return sorted(provider_totals, key=lambda x: x["total_errors"], reverse=True)[:limit]
 
     async def clear_analytics(self) -> None:
         """Clear all analytics data."""

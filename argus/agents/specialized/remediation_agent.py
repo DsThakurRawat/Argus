@@ -62,9 +62,7 @@ class EnhancedRemediationAgent(EnhancedBaseAgent[AnalysisResult]):
             **kwargs,
         )
 
-        logger.info(
-            "EnhancedRemediationAgent initialized with quality-focused optimization"
-        )
+        logger.info("EnhancedRemediationAgent initialized with quality-focused optimization")
 
     async def provide_remediation(
         self,
@@ -197,9 +195,7 @@ class EnhancedRemediationAgentV2(EnhancedBaseAgent[RemediationPlan]):
             **kwargs,
         )
 
-        logger.info(
-            "EnhancedRemediationAgent initialized with code generation optimization"
-        )
+        logger.info("EnhancedRemediationAgent initialized with code generation optimization")
 
     async def create_remediation_plan(
         self,

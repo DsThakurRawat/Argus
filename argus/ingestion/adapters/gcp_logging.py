@@ -56,7 +56,7 @@ class GCPLoggingAdapter(LogIngestionInterface):
         self._total_logs_processed = 0
         self._total_logs_failed = 0
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the Cloud Logging consumer."""
         if self._is_running:
             return
@@ -75,14 +75,10 @@ class GCPLoggingAdapter(LogIngestionInterface):
                 self._logging_client = logging_v2.Client()
 
             self._is_running = True
-            self._last_poll_time = datetime.now() - timedelta(
-                seconds=self.poll_interval
-            )
+            self._last_poll_time = datetime.now() - timedelta(seconds=self.poll_interval)
 
         except Exception as e:
-            raise SourceConnectionError(
-                f"Failed to start Cloud Logging adapter: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to start Cloud Logging adapter: {e}") from e
 
     async def stop(self) -> None:
         """Stop the Cloud Logging consumer."""
@@ -109,8 +105,7 @@ class GCPLoggingAdapter(LogIngestionInterface):
 
             # Build filter with time range
             time_filter = (
-                f'timestamp>="{start_time.isoformat()}Z" '
-                f'timestamp<="{current_time.isoformat()}Z"'
+                f'timestamp>="{start_time.isoformat()}Z" timestamp<="{current_time.isoformat()}Z"'
             )
             full_filter = f"{self.log_filter} AND {time_filter}"
 
@@ -138,9 +133,7 @@ class GCPLoggingAdapter(LogIngestionInterface):
                 except Exception as e:
                     self._total_logs_failed += 1
                     self._consecutive_failures += 1
-                    raise LogParsingError(
-                        f"Failed to parse Cloud Logging entry: {e}"
-                    ) from e
+                    raise LogParsingError(f"Failed to parse Cloud Logging entry: {e}") from e
 
             # Update last poll time
             self._last_poll_time = current_time
@@ -150,9 +143,7 @@ class GCPLoggingAdapter(LogIngestionInterface):
 
         except Exception as e:
             self._consecutive_failures += 1
-            raise SourceConnectionError(
-                f"Failed to get logs from Cloud Logging: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to get logs from Cloud Logging: {e}") from e
 
     def _parse_log_entry(self, entry) -> LogEntry | None:
         """Parse a Cloud Logging entry into a LogEntry."""
@@ -193,14 +184,10 @@ class GCPLoggingAdapter(LogIngestionInterface):
                             else {}
                         ),
                     },
-                    "http_request": (
-                        entry.http_request.__dict__ if entry.http_request else None
-                    ),
+                    "http_request": (entry.http_request.__dict__ if entry.http_request else None),
                     "operation": entry.operation.__dict__ if entry.operation else None,
                     "source_location": (
-                        entry.source_location.__dict__
-                        if entry.source_location
-                        else None
+                        entry.source_location.__dict__ if entry.source_location else None
                     ),
                     "raw_payload": str(entry.payload),
                 },
@@ -275,15 +262,9 @@ class GCPLoggingAdapter(LogIngestionInterface):
         self._consecutive_failures += 1
 
         # Consider GCP API errors as potentially recoverable
-        if hasattr(error, "code") and getattr(error, "code", None) in [
-            429,
-            500,
-            502,
-            503,
-            504,
-        ]:
-            return True
-        return False
+        return bool(
+            hasattr(error, "code") and getattr(error, "code", None) in [429, 500, 502, 503, 504]
+        )
 
     async def get_health_metrics(self) -> dict[str, Any]:
         """Get detailed health and performance metrics."""
@@ -292,9 +273,7 @@ class GCPLoggingAdapter(LogIngestionInterface):
             "consecutive_failures": self._consecutive_failures,
             "total_logs_processed": self._total_logs_processed,
             "total_logs_failed": self._total_logs_failed,
-            "last_poll_time": (
-                self._last_poll_time.isoformat() if self._last_poll_time else None
-            ),
+            "last_poll_time": (self._last_poll_time.isoformat() if self._last_poll_time else None),
             "project_id": self.project_id,
             "log_filter": self.log_filter,
             "resilience_stats": self.resilient_client.get_health_stats(),

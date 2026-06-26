@@ -81,9 +81,7 @@ class BaseAgent(Generic[T]):
 
         except Exception as e:
             if self.collect_stats:
-                self.stats.record_error(
-                    model=model, error=str(e), prompt_name=prompt_name
-                )
+                self.stats.record_error(model=model, error=str(e), prompt_name=prompt_name)
 
             # Try fallback model if available and enabled
             if use_fallback and self.fallback_model and model != self.fallback_model:

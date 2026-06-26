@@ -4,10 +4,6 @@
 
 **Autonomous, Multi-Provider Cloud SRE & AI Monitoring Assistant**
 
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
-[![Python Version](https://img.shields.io/badge/Python-3.12+-yellow?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Multi-Provider AI](https://img.shields.io/badge/Multi--Provider%20AI-00BCD4?style=for-the-badge&logo=openai&logoColor=fff)](https://github.com/DsThakurRawat/Argus)
-[![CI/CD](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](#)
 
 *Your intelligent, self-healing cloud infrastructure partner.*
 

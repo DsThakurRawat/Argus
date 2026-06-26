@@ -68,17 +68,14 @@ class GracefulDegradationManager:
 
         # Network-related errors
         if any(
-            keyword in error_str
-            for keyword in ["network", "connection", "timeout", "unreachable"]
+            keyword in error_str for keyword in ["network", "connection", "timeout", "unreachable"]
         ):
             return ErrorType.NETWORK_ERROR
         elif "timeout" in error_str:
             return ErrorType.TIMEOUT_ERROR
         elif "rate limit" in error_str or "too many requests" in error_str:
             return ErrorType.RATE_LIMIT_ERROR
-        elif any(
-            keyword in error_str for keyword in ["auth", "unauthorized", "forbidden"]
-        ):
+        elif any(keyword in error_str for keyword in ["auth", "unauthorized", "forbidden"]):
             return ErrorType.AUTHENTICATION_ERROR
         elif "permission" in error_str or "access denied" in error_str:
             return ErrorType.PERMISSION_DENIED_ERROR
@@ -104,10 +101,7 @@ class GracefulDegradationManager:
             return await self._fallback_to_local_file_operation(
                 operation_name, func, *args, **kwargs
             )
-        elif (
-            "pull_request" in operation_name.lower()
-            or "merge_request" in operation_name.lower()
-        ):
+        elif "pull_request" in operation_name.lower() or "merge_request" in operation_name.lower():
             return await self._fallback_to_offline_pr_operation(
                 operation_name, func, *args, **kwargs
             )
@@ -123,9 +117,7 @@ class GracefulDegradationManager:
         """Handle timeout-related degradation."""
         # For timeout errors, try with reduced timeout and simplified operation
         if "batch" in operation_name.lower():
-            return await self._fallback_to_single_operation(
-                operation_name, func, *args, **kwargs
-            )
+            return await self._fallback_to_single_operation(operation_name, func, *args, **kwargs)
         else:
             return await self._fallback_to_reduced_timeout_operation(
                 operation_name, func, *args, **kwargs
@@ -204,9 +196,7 @@ class GracefulDegradationManager:
         """Handle quota exceeded degradation."""
         # For quota exceeded errors, try to use alternative API endpoints or reduce request size
         if "batch" in operation_name.lower():
-            return await self._fallback_to_single_operation(
-                operation_name, func, *args, **kwargs
-            )
+            return await self._fallback_to_single_operation(operation_name, func, *args, **kwargs)
         else:
             return await self._fallback_to_reduced_request_size_operation(
                 operation_name, func, *args, **kwargs
@@ -262,9 +252,7 @@ class GracefulDegradationManager:
         self, operation_name: str, func: Callable, *args, **kwargs
     ) -> Any:
         """Fallback to reduced timeout operation."""
-        self.logger.info(
-            f"Falling back to reduced timeout operation for {operation_name}"
-        )
+        self.logger.info(f"Falling back to reduced timeout operation for {operation_name}")
         # This would be implemented to use a shorter timeout
         raise NotImplementedError("Reduced timeout operation fallback not implemented")
 
@@ -280,13 +268,9 @@ class GracefulDegradationManager:
         self, operation_name: str, func: Callable, *args, **kwargs
     ) -> Any:
         """Fallback to reduced concurrency operation."""
-        self.logger.info(
-            f"Falling back to reduced concurrency operation for {operation_name}"
-        )
+        self.logger.info(f"Falling back to reduced concurrency operation for {operation_name}")
         # This would be implemented to use lower concurrency
-        raise NotImplementedError(
-            "Reduced concurrency operation fallback not implemented"
-        )
+        raise NotImplementedError("Reduced concurrency operation fallback not implemented")
 
     async def _fallback_to_read_only_operation(
         self, operation_name: str, func: Callable, *args, **kwargs
@@ -300,21 +284,15 @@ class GracefulDegradationManager:
         self, operation_name: str, func: Callable, *args, **kwargs
     ) -> Any:
         """Fallback to alternative permissions operation."""
-        self.logger.info(
-            f"Falling back to alternative permissions operation for {operation_name}"
-        )
+        self.logger.info(f"Falling back to alternative permissions operation for {operation_name}")
         # This would be implemented to use alternative permissions
-        raise NotImplementedError(
-            "Alternative permissions operation fallback not implemented"
-        )
+        raise NotImplementedError("Alternative permissions operation fallback not implemented")
 
     async def _fallback_to_default_content_operation(
         self, operation_name: str, func: Callable, *args, **kwargs
     ) -> Any:
         """Fallback to default content operation."""
-        self.logger.info(
-            f"Falling back to default content operation for {operation_name}"
-        )
+        self.logger.info(f"Falling back to default content operation for {operation_name}")
         # This would be implemented to return default content when file is not found
         raise NotImplementedError("Default content operation fallback not implemented")
 
@@ -330,13 +308,9 @@ class GracefulDegradationManager:
         self, operation_name: str, func: Callable, *args, **kwargs
     ) -> Any:
         """Fallback to reduced request size operation."""
-        self.logger.info(
-            f"Falling back to reduced request size operation for {operation_name}"
-        )
+        self.logger.info(f"Falling back to reduced request size operation for {operation_name}")
         # This would be implemented to use smaller request sizes
-        raise NotImplementedError(
-            "Reduced request size operation fallback not implemented"
-        )
+        raise NotImplementedError("Reduced request size operation fallback not implemented")
 
     async def _fallback_to_cached_data_operation(
         self, operation_name: str, func: Callable, *args, **kwargs
@@ -350,13 +324,9 @@ class GracefulDegradationManager:
         self, operation_name: str, func: Callable, *args, **kwargs
     ) -> Any:
         """Fallback to retry after maintenance operation."""
-        self.logger.info(
-            f"Falling back to retry after maintenance operation for {operation_name}"
-        )
+        self.logger.info(f"Falling back to retry after maintenance operation for {operation_name}")
         # This would be implemented to retry the operation after maintenance
-        raise NotImplementedError(
-            "Retry after maintenance operation fallback not implemented"
-        )
+        raise NotImplementedError("Retry after maintenance operation fallback not implemented")
 
 
 def create_graceful_degradation_manager(

@@ -36,9 +36,7 @@ class GitHubAPIFallbackStrategy(FallbackStrategyBase):
             and "github" in context.get("service", "").lower()
         )
 
-    async def execute(
-        self, operation_type: str, original_func: Any, *args, **kwargs
-    ) -> Any:
+    async def execute(self, operation_type: str, original_func: Any, *args, **kwargs) -> Any:
         """Execute the fallback strategy."""
         self.logger.info("Executing GitHub API fallback strategy")
 
@@ -68,9 +66,7 @@ class DatabaseFallbackStrategy(FallbackStrategyBase):
             and "database" in context.get("service", "").lower()
         )
 
-    async def execute(
-        self, operation_type: str, original_func: Any, *args, **kwargs
-    ) -> Any:
+    async def execute(self, operation_type: str, original_func: Any, *args, **kwargs) -> Any:
         """Execute the fallback strategy."""
         self.logger.info("Executing database fallback strategy")
 
@@ -131,9 +127,7 @@ class AdvancedErrorHandlingExample:
         github_config.recovery_timeout = 30.0
         github_config.success_threshold = 3
         github_config.timeout = 15.0
-        self.circuit_breakers["github_api"] = AdvancedCircuitBreaker(
-            github_config, "github_api"
-        )
+        self.circuit_breakers["github_api"] = AdvancedCircuitBreaker(github_config, "github_api")
 
         # Database circuit breaker
         db_config = CircuitBreakerConfig()
@@ -141,9 +135,7 @@ class AdvancedErrorHandlingExample:
         db_config.recovery_timeout = 20.0
         db_config.success_threshold = 2
         db_config.timeout = 10.0
-        self.circuit_breakers["database"] = AdvancedCircuitBreaker(
-            db_config, "database"
-        )
+        self.circuit_breakers["database"] = AdvancedCircuitBreaker(db_config, "database")
 
     async def _setup_fallback_manager(self):
         """Setup fallback manager with custom strategies."""
@@ -237,14 +229,9 @@ class AdvancedErrorHandlingExample:
         # Simulate GitHub API calls
         async def github_api_call(operation: str, **kwargs) -> dict[str, Any]:
             """Simulate GitHub API call with potential failures."""
-            if (
-                operation == "get_repository"
-                and kwargs.get("repo_name") == "nonexistent"
-            ):
+            if operation == "get_repository" and kwargs.get("repo_name") == "nonexistent":
                 raise Exception("Repository not found")
-            elif (
-                operation == "create_issue" and kwargs.get("title") == "rate_limit_test"
-            ):
+            elif operation == "create_issue" and kwargs.get("title") == "rate_limit_test":
                 raise Exception("API rate limit exceeded")
             else:
                 return {
@@ -255,18 +242,14 @@ class AdvancedErrorHandlingExample:
 
         # Test successful operation
         try:
-            result = await github_cb.call(
-                github_api_call, "get_repository", repo_name="test_repo"
-            )
+            result = await github_cb.call(github_api_call, "get_repository", repo_name="test_repo")
             self.logger.info(f"GitHub API call successful: {result}")
         except Exception as e:
             self.logger.error(f"GitHub API call failed: {e}")
 
         # Test error handling with fallback
         try:
-            result = await github_cb.call(
-                github_api_call, "create_issue", title="rate_limit_test"
-            )
+            result = await github_cb.call(github_api_call, "create_issue", title="rate_limit_test")
             self.logger.info(f"GitHub API call successful: {result}")
         except Exception as e:
             self.logger.error(f"GitHub API call failed: {e}")

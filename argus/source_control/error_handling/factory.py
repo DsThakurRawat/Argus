@@ -68,9 +68,7 @@ class ErrorHandlingFactory:
 
         # Circuit breaker configuration
         circuit_config = self._create_circuit_breaker_config(fixed_config)
-        operation_circuit_config = self._create_operation_circuit_breaker_config(
-            fixed_config
-        )
+        operation_circuit_config = self._create_operation_circuit_breaker_config(fixed_config)
 
         # Retry configuration
         retry_config = self._create_retry_config(fixed_config)
@@ -84,10 +82,8 @@ class ErrorHandlingFactory:
         )
 
         # Graceful degradation manager
-        components["graceful_degradation_manager"] = (
-            create_graceful_degradation_manager(
-                components["resilient_manager"],
-            )
+        components["graceful_degradation_manager"] = create_graceful_degradation_manager(
+            components["resilient_manager"],
         )
 
         # Health check manager
@@ -97,9 +93,7 @@ class ErrorHandlingFactory:
 
         return components
 
-    def _create_circuit_breaker_config(
-        self, config: dict[str, Any]
-    ) -> CircuitBreakerConfig:
+    def _create_circuit_breaker_config(self, config: dict[str, Any]) -> CircuitBreakerConfig:
         """Create circuit breaker configuration."""
         circuit_config = config.get("circuit_breaker", {})
         return CircuitBreakerConfig(

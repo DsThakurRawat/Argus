@@ -139,9 +139,7 @@ class TestErrorHandlingConfig:
         assert file_cb_config.failure_threshold == 10
 
         # Test unknown operation (should return default)
-        default_cb_config = config.get_operation_circuit_breaker_config(
-            "unknown_operation"
-        )
+        default_cb_config = config.get_operation_circuit_breaker_config("unknown_operation")
         assert default_cb_config.failure_threshold == 5
 
     def test_is_operation_enabled(self) -> None:
@@ -179,9 +177,7 @@ class TestErrorHandlingConfigValidator:
 
         # Make configuration invalid
         config.circuit_breaker.file_operations.failure_threshold = -1
-        config.circuit_breaker.file_operations.success_threshold = (
-            10  # > failure_threshold
-        )
+        config.circuit_breaker.file_operations.success_threshold = 10  # > failure_threshold
 
         issues = validator.validate_config(config)
         assert len(issues) > 0
@@ -414,9 +410,7 @@ class TestRepositoryConfigErrorHandling:
         assert "graceful_degradation" in error_config
 
         # Check GitHub-specific overrides
-        assert (
-            error_config["circuit_breaker"]["file_operations"]["failure_threshold"] == 8
-        )
+        assert error_config["circuit_breaker"]["file_operations"]["failure_threshold"] == 8
         assert error_config["retry"]["max_retries"] == 5
         assert error_config["graceful_degradation"]["cache_ttl"] == 600.0
 
@@ -436,9 +430,7 @@ class TestRepositoryConfigErrorHandling:
         assert "graceful_degradation" in error_config
 
         # Check GitLab-specific overrides
-        assert (
-            error_config["circuit_breaker"]["file_operations"]["failure_threshold"] == 6
-        )
+        assert error_config["circuit_breaker"]["file_operations"]["failure_threshold"] == 6
         assert error_config["retry"]["max_retries"] == 4
         assert error_config["graceful_degradation"]["cache_ttl"] == 480.0
 
@@ -459,9 +451,6 @@ class TestRepositoryConfigErrorHandling:
             assert "graceful_degradation" in error_config
 
             # Check Local-specific overrides
-            assert (
-                error_config["circuit_breaker"]["file_operations"]["failure_threshold"]
-                == 20
-            )
+            assert error_config["circuit_breaker"]["file_operations"]["failure_threshold"] == 20
             assert error_config["retry"]["max_retries"] == 2
             assert error_config["graceful_degradation"]["cache_ttl"] == 1800.0

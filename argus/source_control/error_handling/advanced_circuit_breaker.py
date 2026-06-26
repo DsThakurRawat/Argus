@@ -66,12 +66,8 @@ class AdaptiveThresholds:
 
         # Calculate failure rate over recent window
         recent_window = datetime.now() - timedelta(minutes=5)
-        recent_failures = [
-            f for f in self.recent_failures if f["timestamp"] > recent_window
-        ]
-        recent_successes = [
-            s for s in self.recent_successes if s["timestamp"] > recent_window
-        ]
+        recent_failures = [f for f in self.recent_failures if f["timestamp"] > recent_window]
+        recent_successes = [s for s in self.recent_successes if s["timestamp"] > recent_window]
 
         total_recent = len(recent_failures) + len(recent_successes)
         if total_recent == 0:
@@ -146,9 +142,7 @@ class MultiDimensionalFailureAnalyzer:
             "server_errors": deque(maxlen=50),
         }
 
-    def analyze_failure(
-        self, error_type: ErrorType, response_time: float
-    ) -> dict[str, Any]:
+    def analyze_failure(self, error_type: ErrorType, response_time: float) -> dict[str, Any]:
         """Analyze a failure and return insights."""
         now = datetime.now()
 
@@ -248,9 +242,7 @@ class AdvancedCircuitBreaker:
         self.last_success_time: datetime | None = None
 
         # Advanced features
-        self.adaptive_thresholds = AdaptiveThresholds(
-            base_threshold=config.failure_threshold
-        )
+        self.adaptive_thresholds = AdaptiveThresholds(base_threshold=config.failure_threshold)
         self.state_callbacks = StateTransitionCallback()
         self.failure_analyzer = MultiDimensionalFailureAnalyzer()
 
@@ -343,9 +335,7 @@ class AdvancedCircuitBreaker:
                     f"Circuit breaker {self.name} closed after {self.success_count} successful operations"
                 )
 
-    async def _record_failure(
-        self, error_type: ErrorType, response_time: float
-    ) -> None:
+    async def _record_failure(self, error_type: ErrorType, response_time: float) -> None:
         """Record a failed operation with multi-dimensional analysis."""
         self.failure_count += 1
         self.total_failures += 1
@@ -354,9 +344,7 @@ class AdvancedCircuitBreaker:
         self.last_failure_time = datetime.now()
 
         # Analyze failure
-        failure_analysis = self.failure_analyzer.analyze_failure(
-            error_type, response_time
-        )
+        failure_analysis = self.failure_analyzer.analyze_failure(error_type, response_time)
         self.adaptive_thresholds.add_failure(error_type, response_time)
 
         # Log analysis and recommendations
@@ -408,9 +396,7 @@ class AdvancedCircuitBreaker:
 
         try:
             # Execute the function with timeout
-            result = await asyncio.wait_for(
-                func(*args, **kwargs), timeout=self.config.timeout
-            )
+            result = await asyncio.wait_for(func(*args, **kwargs), timeout=self.config.timeout)
 
             response_time = time.time() - start_time
             await self._record_success(response_time)
@@ -494,9 +480,7 @@ class AdvancedCircuitBreaker:
             "adaptive_threshold": self.adaptive_thresholds.get_adaptive_threshold(),
             "performance_threshold": self.adaptive_thresholds.get_performance_threshold(),
             "average_response_time": (
-                sum(self.response_times) / len(self.response_times)
-                if self.response_times
-                else 0
+                sum(self.response_times) / len(self.response_times) if self.response_times else 0
             ),
             "failure_patterns": patterns,
             "last_failure_time": (
@@ -543,9 +527,7 @@ class AdvancedCircuitBreaker:
         return {
             "health_score": max(0, health_score),
             "status": (
-                "healthy"
-                if health_score > 80
-                else "degraded" if health_score > 50 else "unhealthy"
+                "healthy" if health_score > 80 else "degraded" if health_score > 50 else "unhealthy"
             ),
             "issues": issues,
             "recommendations": self.failure_analyzer._get_recommendations(),

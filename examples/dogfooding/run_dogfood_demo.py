@@ -60,6 +60,7 @@ class DogfoodOrchestrator:
         self.config_dir = self.base_dir / "configs"
         self.log_dir = Path("/tmp/sre-dogfooding")
         self.single_agent = single_agent
+        self._cleanup_task: asyncio.Task | None = None
 
     async def setup_environment(self) -> bool:
         """Set up the dogfooding environment."""
@@ -92,9 +93,7 @@ class DogfoodOrchestrator:
                 logger.info("Installing service dependencies with uv...")
                 # Use the virtual environment Python if available
                 venv_python = self.base_dir.parent.parent / ".venv" / "bin" / "python"
-                python_executable = (
-                    str(venv_python) if venv_python.exists() else sys.executable
-                )
+                python_executable = str(venv_python) if venv_python.exists() else sys.executable
 
                 result = subprocess.run(
                     [
@@ -138,9 +137,7 @@ class DogfoodOrchestrator:
 
             # Use the virtual environment Python if available
             venv_python = self.base_dir.parent.parent / ".venv" / "bin" / "python"
-            python_executable = (
-                str(venv_python) if venv_python.exists() else sys.executable
-            )
+            python_executable = str(venv_python) if venv_python.exists() else sys.executable
 
             process = subprocess.Popen(
                 [python_executable, str(service_script)],
@@ -165,9 +162,7 @@ class DogfoodOrchestrator:
                     logger.info("Problem Service started successfully")
                     return True
                 else:
-                    logger.error(
-                        f"Health check failed with status {response.status_code}"
-                    )
+                    logger.error(f"Health check failed with status {response.status_code}")
                     return False
             except ImportError:
                 logger.warning("requests not available, skipping health check")
@@ -196,9 +191,7 @@ class DogfoodOrchestrator:
 
             # Use the virtual environment Python if available
             venv_python = self.base_dir.parent.parent / ".venv" / "bin" / "python"
-            python_executable = (
-                str(venv_python) if venv_python.exists() else sys.executable
-            )
+            python_executable = str(venv_python) if venv_python.exists() else sys.executable
 
             # Use new ingestion system config for both instances
             if instance_num == 1:
@@ -223,7 +216,7 @@ class DogfoodOrchestrator:
 
             process = subprocess.Popen(
                 cmd_args,
-                stdout=open(log_file, "w"),
+                stdout=open(log_file, "w"),  # noqa: SIM115 - handle owned by subprocess lifetime
                 stderr=subprocess.STDOUT,
                 text=True,
                 env=env,
@@ -327,7 +320,7 @@ async def main():
 
         """
         logger.info("Received shutdown signal")
-        asyncio.create_task(orchestrator.cleanup())
+        orchestrator._cleanup_task = asyncio.create_task(orchestrator.cleanup())
         sys.exit(0)
 
     signal.signal(signal.SIGINT, signal_handler)

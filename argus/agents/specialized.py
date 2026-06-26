@@ -8,10 +8,9 @@ and are tailored for specific types of tasks like text generation, analysis,
 and code generation.
 """
 
-
 from ..llm.service import LLMService
 from .base import BaseAgent
-from .response_models import AnalysisResponse, CodeResponse, TextResponse
+from .response_models import AnalysisResult, CodeResponse, TextResponse
 
 
 class TextAgent(BaseAgent[TextResponse]):
@@ -37,7 +36,7 @@ class TextAgent(BaseAgent[TextResponse]):
         )
 
 
-class AnalysisAgent(BaseAgent[AnalysisResponse]):
+class AnalysisAgent(BaseAgent[AnalysisResult]):
     """Agent specialized for analysis tasks."""
 
     def __init__(
@@ -48,14 +47,12 @@ class AnalysisAgent(BaseAgent[AnalysisResponse]):
     ):
         super().__init__(
             llm_service=llm_service,
-            response_model=AnalysisResponse,
+            response_model=AnalysisResult,
             primary_model=primary_model,
             fallback_model=fallback_model,
         )
 
-    async def analyze(
-        self, content: str, criteria: list[str], **kwargs
-    ) -> AnalysisResponse:
+    async def analyze(self, content: str, criteria: list[str], **kwargs) -> AnalysisResult:
         """Analyze content based on provided criteria."""
         return await self.execute(
             prompt_name="analyze_content",
@@ -79,9 +76,7 @@ class CodeAgent(BaseAgent[CodeResponse]):
             fallback_model=fallback_model,
         )
 
-    async def generate_code(
-        self, description: str, language: str, **kwargs
-    ) -> CodeResponse:
+    async def generate_code(self, description: str, language: str, **kwargs) -> CodeResponse:
         """Generate code based on description and language."""
         return await self.execute(
             prompt_name="generate_code",

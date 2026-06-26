@@ -107,9 +107,7 @@ class ProviderPluginLoader:
             # Register providers with the factory
             for provider_name, provider_class in providers.items():
                 LLMProviderFactory.register_provider(provider_name, provider_class)
-                logger.info(
-                    f"Registered provider {provider_name} from plugin {plugin_name}"
-                )
+                logger.info(f"Registered provider {provider_name} from plugin {plugin_name}")
 
             logger.info(f"Loaded plugin {plugin_name} with {len(providers)} providers")
             return plugin_info
@@ -177,13 +175,9 @@ class ProviderPluginLoader:
                 # Register providers with the factory
                 for provider_name, provider_class in providers.items():
                     LLMProviderFactory.register_provider(provider_name, provider_class)
-                    logger.info(
-                        f"Registered provider {provider_name} from plugin {plugin_name}"
-                    )
+                    logger.info(f"Registered provider {provider_name} from plugin {plugin_name}")
 
-                logger.info(
-                    f"Loaded plugin {plugin_name} with {len(providers)} providers"
-                )
+                logger.info(f"Loaded plugin {plugin_name} with {len(providers)} providers")
                 return plugin_info
 
             finally:
@@ -195,9 +189,7 @@ class ProviderPluginLoader:
             logger.error(f"Failed to load plugin from {package_path}: {e}")
             raise
 
-    def load_plugin_from_zip(
-        self, zip_path: str, plugin_name: str | None = None
-    ) -> dict[str, Any]:
+    def load_plugin_from_zip(self, zip_path: str, plugin_name: str | None = None) -> dict[str, Any]:
         """
         Load a provider plugin from a ZIP file.
 
@@ -262,9 +254,7 @@ class ProviderPluginLoader:
             logger.error(f"Failed to load plugin from {zip_path}: {e}")
             raise
 
-    def load_plugin_from_url(
-        self, url: str, plugin_name: str | None = None
-    ) -> dict[str, Any]:
+    def load_plugin_from_url(self, url: str, plugin_name: str | None = None) -> dict[str, Any]:
         """
         Load a provider plugin from a remote URL.
 
@@ -289,11 +279,12 @@ class ProviderPluginLoader:
                 logger.debug(f"Loading plugin from cache: {plugin_name}")
                 return self._plugin_cache[cache_key]
 
-            # Download the plugin file
-            with tempfile.NamedTemporaryFile(
-                mode="w+b", suffix=".py", delete=False
-            ) as temp_file:
-                with urllib.request.urlopen(url) as response:
+            # Download the plugin file (restrict to http(s) to avoid file:// and
+            # other unexpected schemes being opened by urlopen).
+            if not url.lower().startswith(("http://", "https://")):
+                raise ValueError(f"Unsupported plugin URL scheme (only http/https allowed): {url}")
+            with tempfile.NamedTemporaryFile(mode="w+b", suffix=".py", delete=False) as temp_file:
+                with urllib.request.urlopen(url) as response:  # nosec B310 - scheme restricted above
                     temp_file.write(response.read())
                 temp_file_path = temp_file.name
 
@@ -325,12 +316,7 @@ class ProviderPluginLoader:
         providers = {}
 
         for name, obj in inspect.getmembers(module, inspect.isclass):
-            if (
-                issubclass(obj, LLMProvider)
-                and obj != LLMProvider
-                and not inspect.isabstract(obj)
-            ):
-
+            if issubclass(obj, LLMProvider) and obj != LLMProvider and not inspect.isabstract(obj):
                 # Extract provider name from class name
                 provider_name = self._extract_provider_name(name)
                 if provider_name:
@@ -349,9 +335,7 @@ class ProviderPluginLoader:
         # Get all modules in the package
         for name, obj in inspect.getmembers(package, inspect.ismodule):
             if not name.startswith("_"):
-                module_providers = self._extract_providers_from_module(
-                    obj, f"{plugin_name}.{name}"
-                )
+                module_providers = self._extract_providers_from_module(obj, f"{plugin_name}.{name}")
                 providers.update(module_providers)
 
         return providers
@@ -382,11 +366,9 @@ class ProviderPluginLoader:
             plugin_info = self.loaded_plugins[plugin_name]
 
             # Unregister providers
-            for provider_name in plugin_info["providers"].keys():
+            for provider_name in plugin_info["providers"]:
                 LLMProviderFactory.unregister_provider(provider_name)
-                logger.info(
-                    f"Unregistered provider {provider_name} from plugin {plugin_name}"
-                )
+                logger.info(f"Unregistered provider {provider_name} from plugin {plugin_name}")
 
             # Remove from loaded plugins
             del self.loaded_plugins[plugin_name]
@@ -490,9 +472,7 @@ class ProviderPluginLoader:
 
         return discovered_plugins
 
-    def auto_load_plugins(
-        self, search_paths: list[str] | None = None
-    ) -> dict[str, Any]:
+    def auto_load_plugins(self, search_paths: list[str] | None = None) -> dict[str, Any]:
         """
         Automatically discover and load all available plugins.
 
@@ -525,9 +505,7 @@ class ProviderPluginLoader:
                 results["errors"].append(f"Failed to load {plugin_path}: {e}")
                 logger.warning(f"Failed to auto-load plugin {plugin_path}: {e}")
 
-        logger.info(
-            f"Auto-loaded {results['loaded']} plugins, {results['failed']} failed"
-        )
+        logger.info(f"Auto-loaded {results['loaded']} plugins, {results['failed']} failed")
         return results
 
 
@@ -540,9 +518,7 @@ def get_plugin_loader() -> ProviderPluginLoader:
     return _global_plugin_loader
 
 
-def load_provider_plugin(
-    plugin_path: str, plugin_name: str | None = None
-) -> dict[str, Any]:
+def load_provider_plugin(plugin_path: str, plugin_name: str | None = None) -> dict[str, Any]:
     """
     Convenience function to load a provider plugin.
 

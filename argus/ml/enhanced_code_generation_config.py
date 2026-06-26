@@ -75,6 +75,4 @@ class EnhancedCodeGenerationConfig:
             return False
         if not (0.0 <= self.quality_threshold <= 10.0):
             return False
-        if not (0.0 <= self.human_review_threshold <= 10.0):
-            return False
-        return True
+        return 0.0 <= self.human_review_threshold <= 10.0

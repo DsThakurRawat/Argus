@@ -7,6 +7,7 @@ This module provides monitoring capabilities for system resources
 including memory usage, CPU utilization, and other performance metrics.
 """
 
+import contextlib
 import statistics
 
 try:
@@ -107,16 +108,12 @@ class SystemMonitor:
         self.cpu_monitor: CPUMonitor | None = None
 
         if enable_memory and PSUTIL_AVAILABLE:
-            try:
+            with contextlib.suppress(ImportError):
                 self.memory_monitor = MemoryMonitor()
-            except ImportError:
-                pass
 
         if enable_cpu and PSUTIL_AVAILABLE:
-            try:
+            with contextlib.suppress(ImportError):
                 self.cpu_monitor = CPUMonitor()
-            except ImportError:
-                pass
 
     def start(self) -> None:
         """Start all monitoring."""

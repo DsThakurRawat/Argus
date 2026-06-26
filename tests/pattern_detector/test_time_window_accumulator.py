@@ -34,9 +34,7 @@ class TestLogAccumulator:
 
     def test_log_accumulator_round_to_window_start(self, mock_callback: str) -> None:
         """Test timestamp rounding to window boundaries."""
-        accumulator = LogAccumulator(
-            window_duration_minutes=5, on_window_ready=mock_callback
-        )
+        accumulator = LogAccumulator(window_duration_minutes=5, on_window_ready=mock_callback)
 
         test_cases = [
             (datetime(2025, 1, 27, 10, 3, 30), datetime(2025, 1, 27, 10, 0, 0)),
@@ -50,9 +48,7 @@ class TestLogAccumulator:
 
     def test_log_accumulator_add_log(self, mock_callback: str) -> None:
         """Test adding logs to accumulator."""
-        accumulator = LogAccumulator(
-            window_duration_minutes=5, on_window_ready=mock_callback
-        )
+        accumulator = LogAccumulator(window_duration_minutes=5, on_window_ready=mock_callback)
 
         log_data = {
             "insertId": "test-123",
@@ -64,15 +60,13 @@ class TestLogAccumulator:
         accumulator.add_log(log_data)
 
         assert len(accumulator.windows) == 1
-        window = list(accumulator.windows.values())[0]
+        window = next(iter(accumulator.windows.values()))
         assert len(window.logs) == 1
         assert window.logs[0].insert_id == "test-123"
 
     def test_log_accumulator_multiple_windows(self, mock_callback: str) -> None:
         """Test creation of multiple windows for different time ranges."""
-        accumulator = LogAccumulator(
-            window_duration_minutes=5, on_window_ready=mock_callback
-        )
+        accumulator = LogAccumulator(window_duration_minutes=5, on_window_ready=mock_callback)
 
         log_data_1 = {
             "insertId": "test-1",
@@ -185,9 +179,7 @@ class TestWindowManager:
         manager.fast_accumulator.add_log.assert_called_once_with(log_data)
         manager.trend_accumulator.add_log.assert_called_once_with(log_data)
 
-    def test_window_manager_fast_window_callback(
-        self, mock_pattern_callback: str
-    ) -> None:
+    def test_window_manager_fast_window_callback(self, mock_pattern_callback: str) -> None:
         """Test fast window completion callback."""
         manager = WindowManager(pattern_callback=mock_pattern_callback)
 
@@ -200,9 +192,7 @@ class TestWindowManager:
 
         mock_pattern_callback.assert_called_once_with(mock_window)
 
-    def test_window_manager_trend_window_callback(
-        self, mock_pattern_callback: str
-    ) -> None:
+    def test_window_manager_trend_window_callback(self, mock_pattern_callback: str) -> None:
         """Test trend window completion callback."""
         manager = WindowManager(pattern_callback=mock_pattern_callback)
 
@@ -215,9 +205,7 @@ class TestWindowManager:
 
         mock_pattern_callback.assert_called_once_with(mock_window)
 
-    def test_window_manager_callback_error_handling(
-        self, mock_pattern_callback: str
-    ) -> None:
+    def test_window_manager_callback_error_handling(self, mock_pattern_callback: str) -> None:
         """Test error handling in window callbacks."""
         mock_pattern_callback.side_effect = RuntimeError("Test error")
         manager = WindowManager(pattern_callback=mock_pattern_callback)
@@ -226,9 +214,7 @@ class TestWindowManager:
         mock_window.logs = []
         mock_window.get_error_logs.return_value = []
 
-        with patch(
-            "argus.pattern_detector.time_window_accumulator.logger"
-        ) as mock_logger:
+        with patch("argus.pattern_detector.time_window_accumulator.logger") as mock_logger:
             manager._on_fast_window_ready(mock_window)
             manager._on_trend_window_ready(mock_window)
             assert mock_logger.error.call_count == 2

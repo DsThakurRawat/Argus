@@ -85,9 +85,7 @@ class BenchmarkRunner:
             for i in range(config.num_requests):
                 try:
                     request_start = time.time()
-                    response = await self._make_request(
-                        provider, model_name, test_prompt, config
-                    )
+                    response = await self._make_request(provider, model_name, test_prompt, config)
                     request_end = time.time()
 
                     latency_ms = (request_end - request_start) * 1000
@@ -105,7 +103,7 @@ class BenchmarkRunner:
                     system_monitor.update()
 
                 except Exception as e:
-                    error_msg = f"Request {i+1} failed: {e}"
+                    error_msg = f"Request {i + 1} failed: {e}"
                     logger.warning(error_msg)
                     errors.append(error_msg)
 
@@ -116,9 +114,7 @@ class BenchmarkRunner:
             memory_usage, cpu_usage = system_monitor.stop()
 
         # Calculate metrics
-        cost_per_request = (
-            total_cost / config.num_requests if config.num_requests > 0 else 0.0
-        )
+        cost_per_request = total_cost / config.num_requests if config.num_requests > 0 else 0.0
 
         return self.metrics_collector.create_benchmark_result(
             test_name=f"latency_{provider_name}_{model_name}",
@@ -181,9 +177,7 @@ class BenchmarkRunner:
                 nonlocal successful_requests, total_cost
                 try:
                     request_start = time.time()
-                    response = await self._make_request(
-                        provider, model_name, test_prompt, config
-                    )
+                    response = await self._make_request(provider, model_name, test_prompt, config)
                     request_end = time.time()
 
                     latency_ms = (request_end - request_start) * 1000
@@ -219,9 +213,7 @@ class BenchmarkRunner:
             memory_usage, cpu_usage = system_monitor.stop()
 
         # Calculate metrics
-        cost_per_request = (
-            total_cost / config.num_requests if config.num_requests > 0 else 0.0
-        )
+        cost_per_request = total_cost / config.num_requests if config.num_requests > 0 else 0.0
 
         return self.metrics_collector.create_benchmark_result(
             test_name=f"throughput_{provider_name}_{model_name}",

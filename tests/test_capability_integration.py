@@ -378,9 +378,7 @@ def test_task_validation(discovery_system: str) -> None:
 
     # Test validation (this would need proper task requirements in config)
     # For now, just test the method exists
-    result = discovery_system.validate_task_requirements(
-        "text_completion", "openai/gpt-4"
-    )
+    result = discovery_system.validate_task_requirements("text_completion", "openai/gpt-4")
     assert isinstance(result, dict)
 
 

@@ -103,9 +103,7 @@ class ModelRegistry:
             logger.info(f"Loaded {len(self._models)} models from {config_path}")
 
         except Exception as e:
-            logger.error(
-                f"Failed to load model registry config from {config_path}: {e}"
-            )
+            logger.error(f"Failed to load model registry config from {config_path}: {e}")
             raise
 
     def _load_models_from_data(self, data: dict[str, Any]) -> None:
@@ -127,9 +125,7 @@ class ModelRegistry:
         for cap_data in data.get("capabilities", []):  # Change cap_str to cap_data
             try:
                 # Assuming cap_data is a dictionary matching ModelCapability structure
-                capabilities.append(
-                    ModelCapability(**cap_data)
-                )  # Create ModelCapability object
+                capabilities.append(ModelCapability(**cap_data))  # Create ModelCapability object
             except Exception as e:  # Catch general exception for parsing errors
                 logger.warning(f"Failed to parse capability {cap_data}: {e}")
 
@@ -153,7 +149,7 @@ class ModelRegistry:
             provider_specific=data.get("provider_specific", {}),
         )
 
-    def _build_indexes(self) -> None:
+    def _build_indexes(self) -> Any:
         """Build internal indexes for efficient querying."""
         self._semantic_mappings.clear()
         self._provider_models.clear()
@@ -278,9 +274,7 @@ class ModelRegistry:
                     model_caps = self.capability_database.get_capabilities(model_id)
                     if model_caps:
                         current_cap_names = {c.name for c in model_caps.capabilities}
-                        if all(
-                            req_cap in current_cap_names for req_cap in capabilities
-                        ):
+                        if all(req_cap in current_cap_names for req_cap in capabilities):
                             filtered_by_caps.append(model)
             candidates = filtered_by_caps
 
@@ -290,15 +284,11 @@ class ModelRegistry:
 
         # Filter by performance
         if min_performance is not None:
-            candidates = [
-                m for m in candidates if m.performance_score >= min_performance
-            ]
+            candidates = [m for m in candidates if m.performance_score >= min_performance]
 
         # Filter by reliability
         if min_reliability is not None:
-            candidates = [
-                m for m in candidates if m.reliability_score >= min_reliability
-            ]
+            candidates = [m for m in candidates if m.reliability_score >= min_reliability]
 
         return candidates
 

@@ -56,9 +56,7 @@ class ConfigMonitoring:
         self.metrics["config_reloads"] += 1
         self.metrics["last_reload_time"] = datetime.now()
 
-    def record_validation_failure(
-        self, config_file: str, errors: list, environment: str
-    ):
+    def record_validation_failure(self, config_file: str, errors: list, environment: str):
         """Record configuration validation failure."""
         event = ConfigChangeEvent(
             timestamp=datetime.now(),

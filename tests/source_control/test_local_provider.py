@@ -47,9 +47,7 @@ def local_provider_factory(temp_dir: str) -> None:
     """Create a LocalProvider factory for a non-Git directory."""
 
     def _create_provider():
-        config = LocalRepositoryConfig(
-            name="test-local-repo", path=temp_dir, git_enabled=False
-        )
+        config = LocalRepositoryConfig(name="test-local-repo", path=temp_dir, git_enabled=False)
         return LocalProvider(config.model_dump())
 
     return _create_provider
@@ -60,9 +58,7 @@ def git_provider_factory(git_temp_dir: str) -> None:
     """Create a LocalProvider factory for a Git directory."""
 
     def _create_provider():
-        config = LocalRepositoryConfig(
-            name="test-git-repo", path=git_temp_dir, git_enabled=True
-        )
+        config = LocalRepositoryConfig(name="test-git-repo", path=git_temp_dir, git_enabled=True)
         return LocalProvider(config.model_dump())
 
     return _create_provider
@@ -278,12 +274,8 @@ class TestLocalProviderPatchGeneration:
     @pytest.mark.asyncio
     async def test_git_patch_generation_non_git(self, local_provider):
         """Test Git patch generation in non-Git directory."""
-        with pytest.raises(
-            ValueError, match="Git format patches require a Git repository"
-        ):
-            await local_provider.generate_patch(
-                "test.txt", "content", format=PatchFormat.GIT
-            )
+        with pytest.raises(ValueError, match="Git format patches require a Git repository"):
+            await local_provider.generate_patch("test.txt", "content", format=PatchFormat.GIT)
 
     @pytest.mark.asyncio
     async def test_apply_patch(self, local_provider, temp_dir):
@@ -334,9 +326,7 @@ class TestLocalProviderGitIntegration:
                 file_path="new_file.txt",
                 content="New file content",
             ),
-            FileOperation(
-                operation_type="write", file_path="test.txt", content="Updated content"
-            ),
+            FileOperation(operation_type="write", file_path="test.txt", content="Updated content"),
         ]
 
         # Commit options
@@ -355,24 +345,16 @@ class TestLocalProviderGitIntegration:
     @pytest.mark.asyncio
     async def test_commit_changes_without_git(self, local_provider):
         """Test committing changes without Git enabled."""
-        file_ops = [
-            FileOperation(
-                operation_type="write", file_path="test.txt", content="content"
-            )
-        ]
+        file_ops = [FileOperation(operation_type="write", file_path="test.txt", content="content")]
         options = CommitOptions(commit=True, commit_message="Test commit")
 
-        with pytest.raises(
-            ValueError, match="Cannot commit changes when Git is not enabled"
-        ):
+        with pytest.raises(ValueError, match="Cannot commit changes when Git is not enabled"):
             await local_provider.commit_changes(file_ops, options)
 
     @pytest.mark.asyncio
     async def test_apply_remediation(self, git_provider, git_temp_dir):
         """Test applying remediation."""
-        result = await git_provider.apply_remediation(
-            "test.txt", "New content", "Fix issue"
-        )
+        result = await git_provider.apply_remediation("test.txt", "New content", "Fix issue")
 
         assert result.success is True
         assert result.file_path == "test.txt"
@@ -401,9 +383,7 @@ class TestLocalProviderGitIntegration:
     @pytest.mark.asyncio
     async def test_branch_operations_non_git(self, local_provider):
         """Test branch operations in non-Git directory."""
-        with pytest.raises(
-            ValueError, match="Branch operations require a Git repository"
-        ):
+        with pytest.raises(ValueError, match="Branch operations require a Git repository"):
             await local_provider.create_branch("test-branch")
 
     @pytest.mark.asyncio
@@ -434,9 +414,7 @@ class TestLocalProviderGitIntegration:
     async def test_execute_git_command(self, git_provider):
         """Test executing Git commands."""
         # Execute a simple Git command
-        stdout, stderr = await git_provider.execute_git_command(
-            "rev-parse", "--abbrev-ref", "HEAD"
-        )
+        stdout, stderr = await git_provider.execute_git_command("rev-parse", "--abbrev-ref", "HEAD")
 
         # Verify command output
         assert stdout.strip() == "main"
@@ -492,9 +470,7 @@ class TestLocalProviderGitIntegration:
     @pytest.mark.asyncio
     async def test_diff_between_commits_non_git(self, local_provider):
         """Test getting diff in non-Git directory."""
-        with pytest.raises(
-            ValueError, match="Diff operations require a Git repository"
-        ):
+        with pytest.raises(ValueError, match="Diff operations require a Git repository"):
             await local_provider.diff_between_commits("test.txt", "HEAD~1", "HEAD")
 
 
@@ -579,9 +555,7 @@ class TestLocalProviderErrorHandling:
     async def test_error_handling_invalid_operation_type(self, git_provider):
         """Test error handling for invalid operation type."""
         file_ops = [
-            FileOperation(
-                operation_type="invalid", file_path="test.txt", content="Test content"
-            )
+            FileOperation(operation_type="invalid", file_path="test.txt", content="Test content")
         ]
 
         options = CommitOptions(commit=True, commit_message="Test commit")

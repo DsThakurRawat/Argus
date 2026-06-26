@@ -10,7 +10,7 @@ multi-step agent operations.
 
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any, Generic, TypeVar
+from typing import Any, ClassVar, Generic, TypeVar
 from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator
@@ -46,7 +46,7 @@ class WorkflowState(str, Enum):
     ROLLED_BACK = "rolled_back"
 
 
-class StateTransition(str, Enum):
+class StateTransitionEnum(str, Enum):
     """Valid state transitions."""
 
     # Agent state transitions
@@ -90,14 +90,12 @@ class StateSnapshot(BaseModel, Generic[T]):
     )
     state_type: str = Field(..., description="Type of state being captured")
     data: T = Field(..., description="State data")
-    version: str = Field("1.0", description="State schema version")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    version: str = Field(default="1.0", description="State schema version")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 class StateTransition(BaseModel):
@@ -113,16 +111,12 @@ class StateTransition(BaseModel):
         description="Transition timestamp",
     )
     reason: str | None = Field(None, description="Reason for transition")
-    triggered_by: str | None = Field(
-        None, description="What triggered the transition"
-    )
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Transition metadata"
-    )
+    triggered_by: str | None = Field(None, description="What triggered the transition")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Transition metadata")
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 # ============================================================================
@@ -133,12 +127,8 @@ class StateTransition(BaseModel):
 class AgentExecutionContext(BaseModel):
     """Context for agent execution."""
 
-    session_id: str = Field(
-        default_factory=lambda: str(uuid4()), description="Session identifier"
-    )
-    request_id: str = Field(
-        default_factory=lambda: str(uuid4()), description="Request identifier"
-    )
+    session_id: str = Field(default_factory=lambda: str(uuid4()), description="Session identifier")
+    request_id: str = Field(default_factory=lambda: str(uuid4()), description="Request identifier")
     agent_id: str = Field(..., description="Agent identifier")
     agent_type: str = Field(..., description="Type of agent")
     user_id: str | None = Field(None, description="User identifier")
@@ -157,25 +147,23 @@ class AgentExecutionMetrics(BaseModel):
         default_factory=lambda: datetime.now(UTC),
         description="Execution start time",
     )
-    end_time: datetime | None = Field(None, description="Execution end time")
+    end_time: datetime | None = Field(default=None, description="Execution end time")
     duration_ms: float | None = Field(
-        None, description="Execution duration in milliseconds"
+        default=None, description="Execution duration in milliseconds"
     )
-    tokens_used: int = Field(0, ge=0, description="Number of tokens used")
-    cost_usd: float | None = Field(None, ge=0.0, description="Cost in USD")
-    memory_usage_mb: float | None = Field(
-        None, ge=0.0, description="Memory usage in MB"
-    )
+    tokens_used: int = Field(default=0, ge=0, description="Number of tokens used")
+    cost_usd: float | None = Field(default=None, ge=0.0, description="Cost in USD")
+    memory_usage_mb: float | None = Field(default=None, ge=0.0, description="Memory usage in MB")
     cpu_usage_percent: float | None = Field(
-        None, ge=0.0, le=100.0, description="CPU usage percentage"
+        default=None, ge=0.0, le=100.0, description="CPU usage percentage"
     )
-    api_calls_made: int = Field(0, ge=0, description="Number of API calls made")
-    errors_encountered: int = Field(0, ge=0, description="Number of errors encountered")
-    warnings_generated: int = Field(0, ge=0, description="Number of warnings generated")
+    api_calls_made: int = Field(default=0, ge=0, description="Number of API calls made")
+    errors_encountered: int = Field(default=0, ge=0, description="Number of errors encountered")
+    warnings_generated: int = Field(default=0, ge=0, description="Number of warnings generated")
 
     @field_validator("duration_ms", mode="before")
     @classmethod
-    def calculate_duration(cls: str, v: str, info: str) -> None:
+    def calculate_duration(cls: Any, v: Any, info: Any) -> Any:
         """Calculate duration from start and end times."""
         if hasattr(info, "data"):
             data = info.data
@@ -193,12 +181,10 @@ class AgentExecutionState(BaseModel):
     state_id: str = Field(
         default_factory=lambda: str(uuid4()), description="Unique state identifier"
     )
-    current_state: AgentState = Field(
-        AgentState.IDLE, description="Current agent state"
-    )
+    current_state: AgentState = Field(AgentState.IDLE, description="Current agent state")
     context: AgentExecutionContext = Field(..., description="Execution context")
     metrics: AgentExecutionMetrics = Field(
-        default_factory=AgentExecutionMetrics, description="Execution metrics"
+        default_factory=lambda: AgentExecutionMetrics(), description="Execution metrics"
     )
     state_history: list[StateTransition] = Field(
         default_factory=list, description="History of state transitions"
@@ -207,9 +193,7 @@ class AgentExecutionState(BaseModel):
         default_factory=list, description="History of errors encountered"
     )
     warnings: list[str] = Field(default_factory=list, description="Current warnings")
-    data: dict[str, Any] = Field(
-        default_factory=dict, description="Agent-specific data"
-    )
+    data: dict[str, Any] = Field(default_factory=dict, description="Agent-specific data")
     last_updated: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
         description="Last update timestamp",
@@ -221,7 +205,7 @@ class AgentExecutionState(BaseModel):
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
     def transition_to(
         self, new_state: AgentState, reason: str | None = None
@@ -234,7 +218,7 @@ class AgentExecutionState(BaseModel):
             triggered_by="agent_execution",
         )
 
-        new_state_history = self.state_history + [transition]
+        new_state_history = [*self.state_history, transition]
 
         return AgentExecutionState(
             state_id=str(uuid4()),
@@ -251,7 +235,7 @@ class AgentExecutionState(BaseModel):
 
     def add_error(self, error: dict[str, Any]) -> "AgentExecutionState":
         """Add an error to the state."""
-        new_error_history = self.error_history + [error]
+        new_error_history = [*self.error_history, error]
         return AgentExecutionState(
             state_id=str(uuid4()),
             current_state=self.current_state,
@@ -267,7 +251,7 @@ class AgentExecutionState(BaseModel):
 
     def add_warning(self, warning: str) -> "AgentExecutionState":
         """Add a warning to the state."""
-        new_warnings = self.warnings + [warning]
+        new_warnings = [*self.warnings, warning]
         return AgentExecutionState(
             state_id=str(uuid4()),
             current_state=self.current_state,
@@ -290,16 +274,12 @@ class AgentExecutionState(BaseModel):
 class WorkflowStep(BaseModel):
     """Individual step in a workflow."""
 
-    step_id: str = Field(
-        default_factory=lambda: str(uuid4()), description="Unique step identifier"
-    )
+    step_id: str = Field(default_factory=lambda: str(uuid4()), description="Unique step identifier")
     step_name: str = Field(..., description="Name of the step")
     step_type: str = Field(..., description="Type of step")
     agent_id: str | None = Field(None, description="Agent responsible for this step")
     status: AgentState = Field(AgentState.IDLE, description="Step status")
-    input_data: dict[str, Any] = Field(
-        default_factory=dict, description="Input data for the step"
-    )
+    input_data: dict[str, Any] = Field(default_factory=dict, description="Input data for the step")
     output_data: dict[str, Any] = Field(
         default_factory=dict, description="Output data from the step"
     )
@@ -310,12 +290,10 @@ class WorkflowStep(BaseModel):
     completed_at: datetime | None = Field(None, description="Step completion time")
     error_message: str | None = Field(None, description="Error message if failed")
     retry_count: int = Field(0, ge=0, description="Number of retries for this step")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Step-specific metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Step-specific metadata")
 
     class Config:
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 class WorkflowContext(BaseModel):
@@ -329,24 +307,16 @@ class WorkflowContext(BaseModel):
     current_state: WorkflowState = Field(
         WorkflowState.CREATED, description="Current workflow state"
     )
-    steps: list[WorkflowStep] = Field(
-        default_factory=list, description="Workflow steps"
-    )
-    global_data: dict[str, Any] = Field(
-        default_factory=dict, description="Global workflow data"
-    )
-    variables: dict[str, Any] = Field(
-        default_factory=dict, description="Workflow variables"
-    )
+    steps: list[WorkflowStep] = Field(default_factory=list, description="Workflow steps")
+    global_data: dict[str, Any] = Field(default_factory=dict, description="Global workflow data")
+    variables: dict[str, Any] = Field(default_factory=dict, description="Workflow variables")
     created_by: str | None = Field(None, description="User who created the workflow")
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
         description="Creation timestamp",
     )
     started_at: datetime | None = Field(None, description="Workflow start time")
-    completed_at: datetime | None = Field(
-        None, description="Workflow completion time"
-    )
+    completed_at: datetime | None = Field(None, description="Workflow completion time")
     last_updated: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
         description="Last update timestamp",
@@ -355,12 +325,10 @@ class WorkflowContext(BaseModel):
     retry_count: int = Field(0, ge=0, description="Number of workflow retries")
     max_retries: int = Field(3, ge=0, description="Maximum workflow retries")
     timeout_seconds: int | None = Field(None, description="Workflow timeout")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Workflow metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Workflow metadata")
 
     class Config:
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
     def transition_to(
         self, new_state: WorkflowState, reason: str | None = None
@@ -388,7 +356,7 @@ class WorkflowContext(BaseModel):
 
     def add_step(self, step: WorkflowStep) -> "WorkflowContext":
         """Add a step to the workflow."""
-        new_steps = self.steps + [step]
+        new_steps = [*self.steps, step]
         return WorkflowContext(
             workflow_id=self.workflow_id,
             workflow_name=self.workflow_name,
@@ -461,21 +429,17 @@ class ConversationHistory(BaseModel):
         default_factory=lambda: datetime.now(UTC),
         description="Conversation start time",
     )
-    last_message_at: datetime | None = Field(
-        None, description="Last message timestamp"
-    )
+    last_message_at: datetime | None = Field(None, description="Last message timestamp")
     total_messages: int = Field(0, ge=0, description="Total number of messages")
     total_tokens: int = Field(0, ge=0, description="Total tokens used")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Conversation metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Conversation metadata")
 
     class Config:
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
     def add_message(self, message: dict[str, Any]) -> "ConversationHistory":
         """Add a message to the conversation history."""
-        new_messages = self.messages + [message]
+        new_messages = [*self.messages, message]
         return ConversationHistory(
             conversation_id=self.conversation_id,
             agent_id=self.agent_id,
@@ -511,7 +475,7 @@ class PersistentAgentData(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict, description="Data metadata")
 
     class Config:
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
     def update_data(self, new_data: dict[str, Any]) -> "PersistentAgentData":
         """Update the persistent data."""
@@ -560,6 +524,12 @@ class StateManager(BaseModel):
         to_state: AgentState | WorkflowState,
     ) -> bool:
         """Validate if a state transition is allowed."""
+        if isinstance(to_state, AgentState):
+            if to_state in (AgentState.CANCELLED, AgentState.PAUSED):
+                return True
+        elif isinstance(to_state, WorkflowState) and to_state == WorkflowState.CANCELLED:
+            return True
+
         # Define valid transitions
         valid_transitions = {
             # Agent state transitions
@@ -569,8 +539,6 @@ class StateManager(BaseModel):
             (AgentState.WAITING, AgentState.PROCESSING),
             (AgentState.PROCESSING, AgentState.COMPLETED),
             (AgentState.PROCESSING, AgentState.FAILED),
-            (AgentState.ANY, AgentState.CANCELLED),
-            (AgentState.ANY, AgentState.PAUSED),
             (AgentState.PAUSED, AgentState.PROCESSING),
             # Workflow state transitions
             (WorkflowState.CREATED, WorkflowState.STARTED),
@@ -579,7 +547,6 @@ class StateManager(BaseModel):
             (WorkflowState.PAUSED, WorkflowState.RUNNING),
             (WorkflowState.RUNNING, WorkflowState.COMPLETED),
             (WorkflowState.RUNNING, WorkflowState.FAILED),
-            (WorkflowState.ANY, WorkflowState.CANCELLED),
             (WorkflowState.FAILED, WorkflowState.ROLLED_BACK),
         }
 

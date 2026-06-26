@@ -133,9 +133,7 @@ class DynamicConstants:
         self.MAX_CONCURRENT_REQUESTS = int(os.getenv("MAX_CONCURRENT_REQUESTS", "5"))
         self.MAX_PROMPT_LENGTH = int(os.getenv("MAX_PROMPT_LENGTH", "50000"))
         self.DEFAULT_TIMEOUT_SECONDS = int(os.getenv("DEFAULT_TIMEOUT_SECONDS", "30"))
-        self.HEALTH_CHECK_TIMEOUT_SECONDS = int(
-            os.getenv("HEALTH_CHECK_TIMEOUT_SECONDS", "10")
-        )
+        self.HEALTH_CHECK_TIMEOUT_SECONDS = int(os.getenv("HEALTH_CHECK_TIMEOUT_SECONDS", "10"))
         self.CACHE_TTL_SECONDS = int(os.getenv("CACHE_TTL_SECONDS", "3600"))
         self.MAX_MODEL_CONFIGS = int(os.getenv("MAX_MODEL_CONFIGS", "10"))
         self.MAX_CONTEXT_SIZE = int(os.getenv("MAX_CONTEXT_SIZE", "10000"))
@@ -143,13 +141,9 @@ class DynamicConstants:
         self.DEFAULT_COST_THRESHOLD = float(os.getenv("DEFAULT_COST_THRESHOLD", "1.0"))
         self.ERROR_RATE_THRESHOLD = float(os.getenv("ERROR_RATE_THRESHOLD", "0.1"))
         self.DEFAULT_RETRY_ATTEMPTS = int(os.getenv("DEFAULT_RETRY_ATTEMPTS", "3"))
-        self.DEFAULT_RETRY_DELAY_SECONDS = int(
-            os.getenv("DEFAULT_RETRY_DELAY_SECONDS", "1")
-        )
+        self.DEFAULT_RETRY_DELAY_SECONDS = int(os.getenv("DEFAULT_RETRY_DELAY_SECONDS", "1"))
         self.METRICS_RETENTION_HOURS = int(os.getenv("METRICS_RETENTION_HOURS", "24"))
-        self.HEALTH_CHECK_INTERVAL_SECONDS = int(
-            os.getenv("HEALTH_CHECK_INTERVAL_SECONDS", "30")
-        )
+        self.HEALTH_CHECK_INTERVAL_SECONDS = int(os.getenv("HEALTH_CHECK_INTERVAL_SECONDS", "30"))
 
         # Validate configuration values
         self.validate()

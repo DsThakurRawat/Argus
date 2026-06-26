@@ -125,9 +125,7 @@ class EnhancedLLMService[T]:
                             ModelCapability(
                                 name=cap_str,
                                 description=f"Capability: {cap_str}",
-                                performance_score=getattr(
-                                    model_config, "performance_score", 0.5
-                                ),
+                                performance_score=getattr(model_config, "performance_score", 0.5),
                                 cost_efficiency=1.0
                                 - (
                                     model_config.cost_per_1k_tokens / 0.1
@@ -155,9 +153,7 @@ class EnhancedLLMService[T]:
 
                 # Register the model
                 self.model_registry.register_model(model_info)
-                self.logger.debug(
-                    f"Registered model: {model_name} from provider: {provider_name}"
-                )
+                self.logger.debug(f"Registered model: {model_name} from provider: {provider_name}")
 
         self.logger.info(
             f"Model registry populated with {self.model_registry.get_model_count()} models"
@@ -345,7 +341,9 @@ IMPORTANT:
 - Respond with ONLY the JSON object, no other text"""
 
                 # Debug: Log the structured prompt being sent
-                self.logger.debug(f"Structured prompt for {response_model.__name__}: {structured_prompt[:500]}...")
+                self.logger.debug(
+                    f"Structured prompt for {response_model.__name__}: {structured_prompt[:500]}..."
+                )
 
                 request = LLMRequest(
                     prompt=structured_prompt,
@@ -371,8 +369,8 @@ IMPORTANT:
                 json_str = None
                 patterns = [
                     r"```json\s*(\{.*?\})\s*```",  # Markdown JSON blocks
-                    r"```\s*(\{.*?\})\s*```",      # Generic code blocks
-                    r"(\{.*\})",                   # Plain JSON
+                    r"```\s*(\{.*?\})\s*```",  # Generic code blocks
+                    r"(\{.*\})",  # Plain JSON
                 ]
 
                 for pattern in patterns:
@@ -388,7 +386,7 @@ IMPORTANT:
                         self.logger.debug(f"Successfully parsed JSON: {parsed_data}")
                     except json.JSONDecodeError as e:
                         self.logger.error(f"Failed to parse JSON: {e}, JSON string: {json_str}")
-                        raise ValueError(f"Invalid JSON in LLM response: {e}")
+                        raise ValueError(f"Invalid JSON in LLM response: {e}") from e
                 else:
                     self.logger.error(f"No JSON found in LLM response: {response.content}")
                     raise ValueError(f"No JSON found in LLM response: {response.content}")
@@ -417,7 +415,7 @@ IMPORTANT:
                         "description": "Analysis of the reported issue",
                         "urgency": "medium",
                         "impact_assessment": "Impact assessment pending",
-                        "recommended_actions": ["Investigate further"]
+                        "recommended_actions": ["Investigate further"],
                     }
 
                     # Merge defaults with response data
@@ -426,7 +424,18 @@ IMPORTANT:
                             parsed_data[key] = default_value
 
                     # Ensure category is valid
-                    if parsed_data.get("category") not in ["performance", "security", "reliability", "usability", "compatibility", "data_quality", "infrastructure", "code_quality", "deployment", "monitoring"]:
+                    if parsed_data.get("category") not in [
+                        "performance",
+                        "security",
+                        "reliability",
+                        "usability",
+                        "compatibility",
+                        "data_quality",
+                        "infrastructure",
+                        "code_quality",
+                        "deployment",
+                        "monitoring",
+                    ]:
                         parsed_data["category"] = "performance"
 
                 elif response_model.__name__ == "AnalysisResult":
@@ -436,12 +445,12 @@ IMPORTANT:
                         key_points = parsed_data.pop("key_points", [])
                         parsed_data["key_findings"] = [
                             {
-                                "title": f"Finding {i+1}",
+                                "title": f"Finding {i + 1}",
                                 "description": str(point),
                                 "severity": "medium",
                                 "confidence": 0.8,
                                 "category": "performance",
-                                "recommendations": ["Investigate further"]
+                                "recommendations": ["Investigate further"],
                             }
                             for i, point in enumerate(key_points)
                         ]
@@ -460,7 +469,7 @@ IMPORTANT:
                                 "severity": "medium",
                                 "confidence": 0.8,
                                 "category": "performance",
-                                "recommendations": ["Investigate further"]
+                                "recommendations": ["Investigate further"],
                             }
                         ],
                         "overall_severity": "medium",
@@ -469,7 +478,7 @@ IMPORTANT:
                         "impact_assessment": "Impact assessment pending",
                         "risk_assessment": "Risk assessment pending",
                         "business_impact": "Business impact pending",
-                        "next_steps": ["Investigate further"]
+                        "next_steps": ["Investigate further"],
                     }
 
                     # Merge defaults with response data
@@ -505,7 +514,7 @@ IMPORTANT:
                                 "validation_criteria": ["Issue resolved"],
                                 "affected_systems": ["target_system"],
                                 "requires_approval": False,
-                                "automated": True
+                                "automated": True,
                             }
                         ],
                         "success_criteria": ["Issue resolved", "System stable"],
@@ -515,7 +524,7 @@ IMPORTANT:
                         "monitoring_plan": ["Monitor system"],
                         "approval_required": False,
                         "automated_steps": 1,
-                        "manual_steps": 0
+                        "manual_steps": 0,
                     }
 
                     # Merge defaults with response data
@@ -529,158 +538,174 @@ IMPORTANT:
                 # Fallback: create a basic response with the raw content
                 if response_model.__name__ == "TriageResult":
                     result = response_model(
-                        agent_id="triage-agent-1",
-                        agent_type="triage",
-                        status="success",
-                        issue_type="error_type_detected",
-                        category="performance",
-                        severity="medium",
-                        confidence=0.8,
-                        confidence_level="high",
-                        summary="Issue analysis completed",
-                        description=(
-                            response.content[:200] + "..."
-                            if len(response.content) > 200
-                            else response.content
-                        ),
-                        urgency="medium",
-                        impact_assessment="Impact assessment pending",
-                        recommended_actions=["Investigate further"],
+                        **{
+                            "agent_id": "triage-agent-1",
+                            "agent_type": "triage",
+                            "status": "success",
+                            "issue_type": "error_type_detected",
+                            "category": "performance",
+                            "severity": "medium",
+                            "confidence": 0.8,
+                            "confidence_level": "high",
+                            "summary": "Issue analysis completed",
+                            "description": (
+                                response.content[:200] + "..."
+                                if len(response.content) > 200
+                                else response.content
+                            ),
+                            "urgency": "medium",
+                            "impact_assessment": "Impact assessment pending",
+                            "recommended_actions": ["Investigate further"],
+                        }
                     )
                 elif response_model.__name__ == "AnalysisResult":
                     result = response_model(
-                        agent_id="analysis-agent-1",
-                        agent_type="analysis",
-                        status="success",
-                        analysis_type="error_analysis",
-                        summary="Analysis completed",
-                        key_findings=[
-                            {
-                                "title": "Error Analysis",
-                                "description": "Error detected in the system",
-                                "severity": "medium",
-                                "confidence": 0.8,
-                                "category": "performance",
-                                "recommendations": ["Investigate further"]
-                            }
-                        ],
-                        overall_severity="medium",
-                        overall_confidence=0.8,
-                        root_cause="Analysis pending",
-                        impact_assessment="Impact assessment pending",
-                        risk_assessment="Risk assessment pending",
-                        business_impact="Business impact pending",
-                        recommendations=["Investigate further"],
-                        next_steps=["Investigate further"]
-                        )
+                        **{
+                            "agent_id": "analysis-agent-1",
+                            "agent_type": "analysis",
+                            "status": "success",
+                            "analysis_type": "error_analysis",
+                            "summary": "Analysis completed",
+                            "key_findings": [
+                                {
+                                    "title": "Error Analysis",
+                                    "description": "Error detected in the system",
+                                    "severity": "medium",
+                                    "confidence": 0.8,
+                                    "category": "performance",
+                                    "recommendations": ["Investigate further"],
+                                }
+                            ],
+                            "overall_severity": "medium",
+                            "overall_confidence": 0.8,
+                            "root_cause": "Analysis pending",
+                            "impact_assessment": "Impact assessment pending",
+                            "risk_assessment": "Risk assessment pending",
+                            "business_impact": "Business impact pending",
+                            "recommendations": ["Investigate further"],
+                            "next_steps": ["Investigate further"],
+                        }
+                    )
                 elif response_model.__name__ == "RemediationPlan":
                     result = response_model(
-                            root_cause_analysis=(
+                        **{
+                            "root_cause_analysis": (
                                 response.content[:200] + "..."
                                 if len(response.content) > 200
                                 else response.content
                             ),
-                            proposed_fix="Manual review required",
-                            code_patch="# TODO: Generate proper code patch\n# "
+                            "proposed_fix": "Manual review required",
+                            "code_patch": "# TODO: Generate proper code patch\n# "
                             + response.content[:100],
-                            priority="medium",
-                            estimated_effort="Unknown",
-                        )
+                            "priority": "medium",
+                            "estimated_effort": "Unknown",
+                        }
+                    )
                 else:
                     result = response_model(
-                            summary=(
+                        **{
+                            "summary": (
                                 response.content[:200] + "..."
                                 if len(response.content) > 200
                                 else response.content
                             ),
-                            scores={"confidence": 0.5},
-                            key_points=[
+                            "scores": {"confidence": 0.5},
+                            "key_points": [
                                 (
                                     response.content[:100] + "..."
                                     if len(response.content) > 100
                                     else response.content
                                 )
                             ],
-                            recommendations=[],
-                        )
+                            "recommendations": [],
+                        }
+                    )
             except (json.JSONDecodeError, ValueError):  # type: ignore
                 # Fallback: create a basic response with the raw content
                 if response_model.__name__ == "TriageResult":
                     result = response_model(
-                        severity="medium",
-                        category="unknown",
-                        urgency="medium",
-                        description=(
-                            response.content[:200] + "..."
-                            if len(response.content) > 200
-                            else response.content
-                        ),
-                        suggested_actions=["Investigate further"],
+                        **{
+                            "severity": "medium",
+                            "category": "unknown",
+                            "urgency": "medium",
+                            "description": (
+                                response.content[:200] + "..."
+                                if len(response.content) > 200
+                                else response.content
+                            ),
+                            "suggested_actions": ["Investigate further"],
+                        }
                     )
                 elif response_model.__name__ == "RemediationPlan":
                     result = response_model(
-                        root_cause_analysis=(
-                            response.content[:200] + "..."
-                            if len(response.content) > 200
-                            else response.content
-                        ),
-                        proposed_fix="Manual review required",
-                        code_patch="# TODO: Generate proper code patch\n# "
-                        + response.content[:100],
-                        priority="medium",
-                        estimated_effort="Unknown",
+                        **{
+                            "root_cause_analysis": (
+                                response.content[:200] + "..."
+                                if len(response.content) > 200
+                                else response.content
+                            ),
+                            "proposed_fix": "Manual review required",
+                            "code_patch": "# TODO: Generate proper code patch\n# "
+                            + response.content[:100],
+                            "priority": "medium",
+                            "estimated_effort": "Unknown",
+                        }
                     )
                 else:
                     # Generic fallback for unknown response models
                     if response_model.__name__ == "AnalysisResult":
                         result = response_model(
-                            agent_id="analysis-agent-1",
-                            agent_type="analysis",
-                            status="success",
-                            analysis_type="error_analysis",
-                            summary=(
-                                response.content[:200] + "..."
-                                if len(response.content) > 200
-                                else response.content
-                            ),
-                            key_findings=[
-                                {
-                                    "title": "Analysis Finding",
-                                    "description": (
-                                        response.content[:100] + "..."
-                                        if len(response.content) > 100
-                                        else response.content
-                                    ),
-                                    "severity": "medium",
-                                    "confidence": 0.5,
-                                    "category": "performance",
-                                    "recommendations": ["Investigate further"]
-                                }
-                            ],
-                            overall_severity="medium",
-                            overall_confidence=0.5,
-                            risk_assessment="Risk assessment pending",
-                            business_impact="Business impact pending",
-                            recommendations=["Investigate further"],
-                            next_steps=["Investigate further"]
+                            **{
+                                "agent_id": "analysis-agent-1",
+                                "agent_type": "analysis",
+                                "status": "success",
+                                "analysis_type": "error_analysis",
+                                "summary": (
+                                    response.content[:200] + "..."
+                                    if len(response.content) > 200
+                                    else response.content
+                                ),
+                                "key_findings": [
+                                    {
+                                        "title": "Analysis Finding",
+                                        "description": (
+                                            response.content[:100] + "..."
+                                            if len(response.content) > 100
+                                            else response.content
+                                        ),
+                                        "severity": "medium",
+                                        "confidence": 0.5,
+                                        "category": "performance",
+                                        "recommendations": ["Investigate further"],
+                                    }
+                                ],
+                                "overall_severity": "medium",
+                                "overall_confidence": 0.5,
+                                "risk_assessment": "Risk assessment pending",
+                                "business_impact": "Business impact pending",
+                                "recommendations": ["Investigate further"],
+                                "next_steps": ["Investigate further"],
+                            }
                         )
                     else:
                         result = response_model(
-                        summary=(
-                            response.content[:200] + "..."
-                            if len(response.content) > 200
-                            else response.content
-                        ),
-                        scores={"confidence": 0.5},
-                        key_points=[
-                            (
-                                response.content[:100] + "..."
-                                if len(response.content) > 100
-                                else response.content
-                            )
-                        ],
-                        recommendations=[],
-                    )
+                            **{
+                                "summary": (
+                                    response.content[:200] + "..."
+                                    if len(response.content) > 200
+                                    else response.content
+                                ),
+                                "scores": {"confidence": 0.5},
+                                "key_points": [
+                                    (
+                                        response.content[:100] + "..."
+                                        if len(response.content) > 100
+                                        else response.content
+                                    )
+                                ],
+                                "recommendations": [],
+                            }
+                        )
 
             # Record performance metrics
             end_time = time.time()
@@ -775,9 +800,7 @@ IMPORTANT:
             )
 
             # Generate the response using the correct interface
-            request = LLMRequest(
-                prompt=prompt, model_type=selected_model.semantic_type, **kwargs
-            )
+            request = LLMRequest(prompt=prompt, model_type=selected_model.semantic_type, **kwargs)
             response = await provider_instance.generate(request)
             result = response.content
 
@@ -829,7 +852,7 @@ IMPORTANT:
     async def generate_with_fallback(
         self,
         prompt: str | Any,
-        response_model: type[T] | None = None,  # noqa: ARG002
+        response_model: type[T] | None = None,
         model_type: ModelType | None = None,
         selection_strategy: SelectionStrategy = SelectionStrategy.BEST_SCORE,
         max_attempts: int = 3,
@@ -856,7 +879,7 @@ IMPORTANT:
 
             try:
                 self.logger.info(
-                    f"Attempting model: {model_info.name} (attempt {i+1}/{max_attempts})"
+                    f"Attempting model: {model_info.name} (attempt {i + 1}/{max_attempts})"
                 )
 
                 # Get the provider for this model
@@ -870,9 +893,7 @@ IMPORTANT:
                 provider_instance = self.providers[provider_name]
 
                 # Generate response using the correct interface
-                request = LLMRequest(
-                    prompt=prompt, model_type=model_info.semantic_type, **kwargs
-                )
+                request = LLMRequest(prompt=prompt, model_type=model_info.semantic_type, **kwargs)
                 response = await provider_instance.generate(request)
                 result = response.content
 
@@ -884,9 +905,7 @@ IMPORTANT:
                     context={"task_type": "fallback_generation", "attempt": i + 1},
                 )
 
-                self.logger.info(
-                    f"Successfully generated response using model: {model_info.name}"
-                )
+                self.logger.info(f"Successfully generated response using model: {model_info.name}")
                 return result
 
             except Exception as e:
@@ -971,15 +990,11 @@ IMPORTANT:
         )
 
         # Select model with fallback support
-        selected_model, selection_result = (
-            self.model_selector.select_model_with_fallback(criteria)
-        )
+        selected_model, selection_result = self.model_selector.select_model_with_fallback(criteria)
 
         return selected_model, selection_result
 
-    def _update_selection_stats(
-        self, model_name: str, strategy: SelectionStrategy
-    ) -> None:
+    def _update_selection_stats(self, model_name: str, strategy: SelectionStrategy) -> None:
         """Update selection statistics."""
         key = f"{model_name}:{strategy.value}"
         self._selection_stats[key] = self._selection_stats.get(key, 0) + 1
@@ -1004,35 +1019,25 @@ IMPORTANT:
             self.logger.error(f"Health check failed: {e!s}")
             return False
 
-    def get_available_models(
-        self, provider: str | None = None
-    ) -> dict[str, list[str]]:
+    def get_available_models(self, provider: str | None = None) -> dict[str, list[str]]:
         """Get available models for the specified provider or all providers."""
         if provider:
             if provider in self.providers:
                 models = self.providers[provider].get_available_models()
-                return {
-                    provider: (
-                        list(models.values()) if isinstance(models, dict) else models
-                    )
-                }
+                return {provider: (list(models.values()) if isinstance(models, dict) else models)}
             return {}
 
         result = {}
         for provider_name, provider_instance in self.providers.items():
             models = provider_instance.get_available_models()
-            result[provider_name] = (
-                list(models.values()) if isinstance(models, dict) else models
-            )
+            result[provider_name] = list(models.values()) if isinstance(models, dict) else models
         return result
 
     def get_model_performance(self, model_name: str) -> dict[str, Any]:
         """Get performance metrics for a specific model."""
         return self.performance_monitor.get_model_performance(model_name)
 
-    def get_best_models(
-        self, metric_type: MetricType, limit: int = 5
-    ) -> list[tuple[str, float]]:
+    def get_best_models(self, metric_type: MetricType, limit: int = 5) -> list[tuple[str, float]]:
         """Get best performing models for a specific metric."""
         return self.performance_monitor.get_best_models(metric_type, limit)
 
@@ -1054,7 +1059,7 @@ IMPORTANT:
 
     # Service Manager Integration Methods
 
-    async def initialize_services(self) -> None:
+    async def initialize_services(self) -> Any:
         """Initialize the service manager and all services."""
         await self.service_manager.initialize()
         self.logger.info("All services initialized successfully")
@@ -1064,9 +1069,7 @@ IMPORTANT:
         await self.service_manager.shutdown()
         self.logger.info("All services shutdown successfully")
 
-    async def get_service_health(
-        self, service_type: ServiceType
-    ) -> ServiceHealth | None:
+    async def get_service_health(self, service_type: ServiceType) -> ServiceHealth | None:
         """Get health status for a specific service type."""
         service = await self.service_manager.get_service(service_type)
         if not service:
@@ -1154,9 +1157,7 @@ IMPORTANT:
                 "operator": alert.operator,
                 "severity": alert.severity,
                 "message": alert.message,
-                "triggered_at": (
-                    alert.triggered_at.isoformat() if alert.triggered_at else None
-                ),
+                "triggered_at": (alert.triggered_at.isoformat() if alert.triggered_at else None),
             }
             for alert in alerts
         ]
@@ -1177,9 +1178,7 @@ def create_enhanced_llm_service(
     service_manager: ServiceManager | None = None,
 ) -> EnhancedLLMService:
     """Factory function to create and configure an EnhancedLLMService instance."""
-    return EnhancedLLMService(
-        config, model_registry, performance_monitor, service_manager
-    )
+    return EnhancedLLMService(config, model_registry, performance_monitor, service_manager)
 
 
 # Export all public classes and functions

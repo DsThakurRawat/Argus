@@ -1,6 +1,6 @@
 # argus/legacy_config.py
-
 import re  # Added for regex validation
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 import yaml
@@ -49,7 +49,7 @@ class ServiceMonitorConfig(BaseModel):
 
     @field_validator("project_id")
     @classmethod
-    def validate_project_id(cls: str, v: str) -> None:
+    def validate_project_id(cls: Any, v: Any) -> Any:
         """
         Validate Project Id.
 
@@ -64,7 +64,7 @@ class ServiceMonitorConfig(BaseModel):
 
     @field_validator("subscription_id")  # Added validator for subscription_id
     @classmethod
-    def validate_subscription_id(cls: str, v: str) -> None:
+    def validate_subscription_id(cls: Any, v: Any) -> Any:
         """
         Validate Subscription Id.
 
@@ -79,7 +79,7 @@ class ServiceMonitorConfig(BaseModel):
 
     @field_validator("service_name")  # Added validator for service_name
     @classmethod
-    def validate_service_name(cls: str, v: str) -> None:
+    def validate_service_name(cls: Any, v: Any) -> Any:
         """
         Validate Service Name.
 

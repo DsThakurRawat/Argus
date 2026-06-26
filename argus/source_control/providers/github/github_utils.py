@@ -19,9 +19,7 @@ from ...models import ProviderHealth
 class GitHubUtils:
     """Utility functions for GitHub operations."""
 
-    def __init__(
-        self, client: Github, repo: Repository, logger: logging.Logger
-    ) -> None:
+    def __init__(self, client: Github, repo: Repository, logger: logging.Logger) -> None:
         """Initialize utilities with GitHub client and repository."""
         self.client = client
         self.repo = repo
@@ -35,14 +33,8 @@ class GitHubUtils:
                 # Get rate limit info
                 rate_limit = self.client.get_rate_limit()
                 rate_limit_core = getattr(rate_limit, "core", None)
-                remaining = (
-                    getattr(rate_limit_core, "remaining", None)
-                    if rate_limit_core
-                    else None
-                )
-                limit = (
-                    getattr(rate_limit_core, "limit", None) if rate_limit_core else None
-                )
+                remaining = getattr(rate_limit_core, "remaining", None) if rate_limit_core else None
+                limit = getattr(rate_limit_core, "limit", None) if rate_limit_core else None
 
                 # Get repository info
                 repo_name = self.repo.name
@@ -230,9 +222,7 @@ class GitHubUtils:
                 if attempt == max_retries - 1:
                     raise
 
-                should_retry = await self.handle_operation_failure(
-                    operation_func.__name__, e
-                )
+                should_retry = await self.handle_operation_failure(operation_func.__name__, e)
                 if not should_retry:
                     raise
 

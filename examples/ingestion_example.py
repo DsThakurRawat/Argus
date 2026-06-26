@@ -76,9 +76,7 @@ class LogProcessor:
         self.processed_count += 1
 
         # Example processing logic
-        logger.info(
-            f"Processing log from {log_entry.source}: {log_entry.message[:100]}..."
-        )
+        logger.info(f"Processing log from {log_entry.source}: {log_entry.message[:100]}...")
 
         # Check for PII (example)
         pii_detected = log_entry.get_field("pii_detected", False)
@@ -210,9 +208,7 @@ async def example_config_based():
 
         # Add sources based on configuration
         for source_config in config.get_enabled_sources():
-            logger.info(
-                f"Adding source: {source_config.name} (type: {source_config.type})"
-            )
+            logger.info(f"Adding source: {source_config.name} (type: {source_config.type})")
 
             if source_config.type == SourceType.FILE_SYSTEM:
                 # Create file system adapter
@@ -297,9 +293,7 @@ async def example_health_monitoring():
 
         # Get metrics
         metrics = await manager.get_metrics()
-        logger.info(
-            f"Total processed: {metrics.get('manager', {}).get('total_processed', 0)}"
-        )
+        logger.info(f"Total processed: {metrics.get('manager', {}).get('total_processed', 0)}")
 
         # Get processing stats
         stats = processor.get_stats()
@@ -420,9 +414,9 @@ async def example_hyx_resilience():
     for i, log_entry in enumerate(test_logs):
         try:
             await processor.process_log(log_entry)
-            logger.info(f"Successfully processed log {i+1}")
+            logger.info(f"Successfully processed log {i + 1}")
         except Exception as e:
-            logger.error(f"Failed to process log {i+1}: {e}")
+            logger.error(f"Failed to process log {i + 1}: {e}")
 
     # Show final stats
     logger.info("Final processing stats:")

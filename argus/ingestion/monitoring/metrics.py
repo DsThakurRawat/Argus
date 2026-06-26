@@ -12,6 +12,7 @@ Provides comprehensive metrics collection including:
 
 import asyncio
 from collections import defaultdict, deque
+import contextlib
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -85,7 +86,7 @@ class MetricsCollector:
 
         logger.info("MetricsCollector initialized")
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the metrics collector and background tasks."""
         if self._running:
             return
@@ -99,10 +100,8 @@ class MetricsCollector:
         self._running = False
         if self._cleanup_task:
             self._cleanup_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._cleanup_task
-            except asyncio.CancelledError:
-                pass
         logger.info("MetricsCollector stopped")
 
     def increment_counter(
@@ -128,9 +127,7 @@ class MetricsCollector:
             )
             self._metrics[name].append(metric)
 
-    def set_gauge(
-        self, name: str, value: float, labels: dict[str, str] | None = None
-    ) -> None:
+    def set_gauge(self, name: str, value: float, labels: dict[str, str] | None = None) -> None:
         """
         Set a gauge metric value.
 
@@ -174,9 +171,7 @@ class MetricsCollector:
             )
             self._metrics[name].append(metric)
 
-    def record_rate(
-        self, name: str, value: float, labels: dict[str, str] | None = None
-    ) -> None:
+    def record_rate(self, name: str, value: float, labels: dict[str, str] | None = None) -> None:
         """
         Record a value for rate calculation.
 
@@ -292,18 +287,13 @@ class MetricsCollector:
             summary = {
                 "counters": dict(self._counters),
                 "gauges": dict(self._gauges),
-                "histograms": {
-                    name: self.get_histogram_stats(name)
-                    for name in self._histograms.keys()
-                },
-                "rates": {name: self.get_rate(name) for name in self._rates.keys()},
+                "histograms": {name: self.get_histogram_stats(name) for name in self._histograms},
+                "rates": {name: self.get_rate(name) for name in self._rates},
                 "timestamp": datetime.now().isoformat(),
             }
             return summary
 
-    def get_metrics_for_export(
-        self, metric_names: list[str] | None = None
-    ) -> list[MetricValue]:
+    def get_metrics_for_export(self, metric_names: list[str] | None = None) -> list[MetricValue]:
         """
         Get metrics in a format suitable for export to monitoring systems.
 
@@ -409,9 +399,7 @@ def record_processing_time(source: str, duration_seconds: float) -> None:
 
 def record_queue_size(queue_name: str, size: int) -> None:
     """Record current queue size."""
-    get_global_metrics().set_gauge(
-        "queue_size", value=size, labels={"queue": queue_name}
-    )
+    get_global_metrics().set_gauge("queue_size", value=size, labels={"queue": queue_name})
 
 
 def record_memory_usage(component: str, usage_mb: float) -> None:

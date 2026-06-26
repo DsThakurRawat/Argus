@@ -141,9 +141,7 @@ class TestSecureConfigManager:
         assert should_rotate is True
 
     @pytest.mark.asyncio
-    async def test_should_rotate_key_by_usage(
-        self, mock_config_manager, sample_api_key
-    ):
+    async def test_should_rotate_key_by_usage(self, mock_config_manager, sample_api_key):
         """Test key rotation by usage count."""
         # Set policy with low usage limit
         policy = RotationPolicy(max_usage_count=100, auto_rotate=True)
@@ -169,9 +167,7 @@ class TestSecureConfigManager:
     async def test_should_not_rotate_key(self, mock_config_manager, sample_api_key):
         """Test that key should not be rotated."""
         # Set policy with high limits
-        policy = RotationPolicy(
-            max_age_days=365, max_usage_count=100000, auto_rotate=True
-        )
+        policy = RotationPolicy(max_age_days=365, max_usage_count=100000, auto_rotate=True)
         mock_config_manager.set_rotation_policy("gemini", policy)
 
         # Set key to be new and low usage
@@ -224,9 +220,7 @@ class TestSecureConfigManager:
         mock_config_manager._key_cache["test-key-123"] = sample_api_key
 
         with patch.object(mock_config_manager, "_persist_keys", new_callable=AsyncMock):
-            result = await mock_config_manager.rotate_key(
-                "test-key-123", "new-key-value"
-            )
+            result = await mock_config_manager.rotate_key("test-key-123", "new-key-value")
 
             assert result is True
             assert sample_api_key.key_hash != "abc123"  # Hash should change
@@ -236,9 +230,7 @@ class TestSecureConfigManager:
     @pytest.mark.asyncio
     async def test_rotate_nonexistent_key(self, mock_config_manager):
         """Test rotating a non-existent key."""
-        result = await mock_config_manager.rotate_key(
-            "nonexistent-key", "new-key-value"
-        )
+        result = await mock_config_manager.rotate_key("nonexistent-key", "new-key-value")
         assert result is False
 
     @pytest.mark.asyncio
@@ -249,14 +241,10 @@ class TestSecureConfigManager:
 
             # Should have created a key for gemini provider
             gemini_keys = [
-                key
-                for key in mock_config_manager._key_cache.values()
-                if key.provider == "gemini"
+                key for key in mock_config_manager._key_cache.values() if key.provider == "gemini"
             ]
             assert len(gemini_keys) == 1
-            assert gemini_keys[0].key_hash == mock_config_manager._hash_key(
-                "test-google-key"
-            )
+            assert gemini_keys[0].key_hash == mock_config_manager._hash_key("test-google-key")
 
     @pytest.mark.asyncio
     async def test_load_from_aws_secrets(self, mock_config_manager):
@@ -280,9 +268,7 @@ class TestSecureConfigManager:
         """Test persisting keys to AWS Secrets Manager."""
         keys_data = {"api_keys": []}
 
-        with patch.object(
-            mock_config_manager._secrets_client, "update_secret"
-        ) as mock_update:
+        with patch.object(mock_config_manager._secrets_client, "update_secret") as mock_update:
             await mock_config_manager._persist_to_aws_secrets(keys_data)
 
             mock_update.assert_called_once()

@@ -8,6 +8,7 @@ including connectivity tests, performance validation, and status monitoring.
 """
 
 import asyncio
+import contextlib
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -96,10 +97,8 @@ class LLMHealthChecker:
         self._running = False
         if self._health_check_task:
             self._health_check_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._health_check_task
-            except asyncio.CancelledError:
-                pass
         logger.info("Continuous health checks stopped")
 
     async def _health_check_loop(self):
@@ -185,9 +184,7 @@ class LLMHealthChecker:
 
                 except Exception as e:
                     logger.error(f"Error checking model {model_info.name}: {e}")
-                    issues.append(
-                        f"Model {model_info.name}: Health check failed - {e!s}"
-                    )
+                    issues.append(f"Model {model_info.name}: Health check failed - {e!s}")
                     total_checks += 1
 
             # Determine overall provider status
@@ -202,9 +199,7 @@ class LLMHealthChecker:
 
             # Calculate average response time
             avg_response_time = (
-                total_response_time / successful_checks
-                if successful_checks > 0
-                else 0.0
+                total_response_time / successful_checks if successful_checks > 0 else 0.0
             )
 
             # Update or create provider health record
@@ -262,9 +257,7 @@ class LLMHealthChecker:
                 )
 
             # Create a simple test request
-            test_prompt = self.test_prompts.get(
-                model_type, "Hello, please respond with 'OK'."
-            )
+            test_prompt = self.test_prompts.get(model_type, "Hello, please respond with 'OK'.")
             request = LLMRequest(
                 prompt=test_prompt,
                 model_type=model_type,
@@ -302,14 +295,10 @@ class LLMHealthChecker:
                             details={
                                 "response_content": response.content,
                                 "input_tokens": (
-                                    response.usage.get("input_tokens", 0)
-                                    if response.usage
-                                    else 0
+                                    response.usage.get("input_tokens", 0) if response.usage else 0
                                 ),
                                 "output_tokens": (
-                                    response.usage.get("output_tokens", 0)
-                                    if response.usage
-                                    else 0
+                                    response.usage.get("output_tokens", 0) if response.usage else 0
                                 ),
                             },
                         )
@@ -469,14 +458,9 @@ class CircuitBreakerHealthChecker(LLMHealthChecker):
 
         # Check circuit breaker state
         if self.circuit_states.get(provider_name) == "open":
-            if (
-                current_time - self.last_failure_times.get(provider_name, 0)
-                > self.recovery_timeout
-            ):
+            if current_time - self.last_failure_times.get(provider_name, 0) > self.recovery_timeout:
                 self.circuit_states[provider_name] = "half-open"
-                logger.info(
-                    f"Circuit breaker for {provider_name} moved to half-open state"
-                )
+                logger.info(f"Circuit breaker for {provider_name} moved to half-open state")
             else:
                 return ProviderHealth(
                     provider=provider_name,
@@ -553,13 +537,9 @@ class CircuitBreakerHealthChecker(LLMHealthChecker):
         self.last_success_times[provider_name] = current_time
         logger.debug(f"Health check success for {provider_name}, circuit closed")
 
-    def _on_failure(
-        self, provider_name: str, current_time: float, issues: list[str]
-    ) -> None:
+    def _on_failure(self, provider_name: str, current_time: float, issues: list[str]) -> None:
         """Handle failed health check."""
-        self.failure_counts[provider_name] = (
-            self.failure_counts.get(provider_name, 0) + 1
-        )
+        self.failure_counts[provider_name] = self.failure_counts.get(provider_name, 0) + 1
         self.last_failure_times[provider_name] = current_time
 
         if self.failure_counts[provider_name] >= self.failure_threshold:

@@ -65,9 +65,7 @@ class TestComprehensiveIntegration:
         return MemoryQueue(config)
 
     @pytest.mark.asyncio
-    async def test_end_to_end_file_ingestion(
-        self, log_manager, file_system_adapter, temp_dir
-    ):
+    async def test_end_to_end_file_ingestion(self, log_manager, file_system_adapter, temp_dir):
         """Test end-to-end file system log ingestion."""
         # Create test log files
         test_file1 = Path(temp_dir) / "app1.log"
@@ -326,9 +324,7 @@ class TestComprehensiveIntegration:
             adapters.append(adapter)
 
             # Create test file
-            Path(temp_dir).joinpath(f"app{i}.log").write_text(
-                f"INFO Concurrent log {i}\n"
-            )
+            Path(temp_dir).joinpath(f"app{i}.log").write_text(f"INFO Concurrent log {i}\n")
 
             await log_manager.add_source(adapter)
 

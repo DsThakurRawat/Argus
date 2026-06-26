@@ -173,7 +173,7 @@ class ValidationEngine:
         # Run validation
         return self.validate(data, field_context)
 
-    def clear_cache(self) -> None:
+    def clear_cache(self) -> Any:
         """Clear the validation cache."""
         with self._cache_lock:
             self._cache.clear()
@@ -192,9 +192,7 @@ class ValidationEngine:
                 "timeout_seconds": self.timeout_seconds,
             }
 
-    def _get_validators_to_use(
-        self, validator_names: list[str] | None
-    ) -> list[ValidationRule]:
+    def _get_validators_to_use(self, validator_names: list[str] | None) -> list[ValidationRule]:
         """Get validators to use for validation.
 
         Args:
@@ -261,9 +259,7 @@ class ValidationEngine:
             }
 
             # Collect results
-            for future in as_completed(
-                future_to_validator, timeout=self.timeout_seconds
-            ):
+            for future in as_completed(future_to_validator, timeout=self.timeout_seconds):
                 validator = future_to_validator[future]
                 try:
                     validator_result = future.result()
@@ -348,7 +344,7 @@ class ValidationEngine:
 
         # Generate hash
         cache_str = json.dumps(cache_data, sort_keys=True, default=str)
-        return hashlib.md5(cache_str.encode()).hexdigest()
+        return hashlib.md5(cache_str.encode(), usedforsecurity=False).hexdigest()
 
     def _get_cached_result(self, cache_key: str) -> ValidationResult | None:
         """Get cached validation result.

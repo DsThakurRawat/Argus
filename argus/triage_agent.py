@@ -4,7 +4,10 @@ import json
 import logging
 from typing import Any
 
-from google.cloud import aiplatform
+try:
+    from google.cloud import aiplatform
+except ImportError:
+    aiplatform = None
 from pydantic import BaseModel, ValidationError
 from tenacity import (
     retry,
@@ -12,7 +15,11 @@ from tenacity import (
     stop_after_attempt,
     wait_exponential,
 )
-from vertexai.preview.generative_models import GenerativeModel
+
+try:
+    from vertexai.preview.generative_models import GenerativeModel
+except ImportError:
+    GenerativeModel = None
 
 logger = logging.getLogger(__name__)
 
@@ -48,8 +55,14 @@ class TriageAgent:
         self.project_id: str = project_id
         self.location: str = location
         self.triage_model: str = triage_model
+
+        if aiplatform is None:
+            raise ImportError("google.cloud.aiplatform is not installed")
+        if GenerativeModel is None:
+            raise ImportError("vertexai.preview.generative_models is not installed")
+
         aiplatform.init(project=project_id, location=location)
-        self.model: GenerativeModel = GenerativeModel(triage_model)
+        self.model: Any = GenerativeModel(triage_model)
         logger.info(
             f"[TRIAGE] TriageAgent initialized with model: {triage_model} in {location} for project: {project_id}"
         )
@@ -70,9 +83,7 @@ class TriageAgent:
         Returns:
             TriagePacket: A structured packet containing triage information.
         """
-        logger.info(
-            f"[TRIAGE] Analyzing {len(logs)} log entries for triage: flow_id={flow_id}"
-        )
+        logger.info(f"[TRIAGE] Analyzing {len(logs)} log entries for triage: flow_id={flow_id}")
 
         # Construct the prompt for the Gemini model
         prompt_template: str = """

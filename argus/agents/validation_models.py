@@ -11,8 +11,8 @@ severity levels, and comprehensive error reporting.
 from collections.abc import Callable
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Any
-from uuid import uuid4
+from typing import Any, ClassVar
+from uuid import UUID
 
 from pydantic import (
     BaseModel,
@@ -32,9 +32,7 @@ class ValidationError(BaseModel):
     field: str = Field(..., description="Field that failed validation")
     message: str = Field(..., description="Error message")
     value: Any | None = Field(None, description="Value that caused the error")
-    code: str | None = Field(
-        None, description="Error code for programmatic handling"
-    )
+    code: str | None = Field(None, description="Error code for programmatic handling")
     severity: str = Field("error", description="Severity of the validation error")
     context: dict[str, Any] = Field(
         default_factory=dict, description="Additional context for the error"
@@ -46,7 +44,7 @@ class ValidationError(BaseModel):
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 class ValidationWarning(BaseModel):
@@ -64,33 +62,25 @@ class ValidationWarning(BaseModel):
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 class ValidationResult(BaseModel):
     """Comprehensive validation result with errors and warnings."""
 
     is_valid: bool = Field(..., description="Whether validation passed")
-    errors: list[ValidationError] = Field(
-        default_factory=list, description="Validation errors"
-    )
+    errors: list[ValidationError] = Field(default_factory=list, description="Validation errors")
     warnings: list[ValidationWarning] = Field(
         default_factory=list, description="Validation warnings"
     )
-    validated_data: dict[str, Any] | None = Field(
-        None, description="Validated and cleaned data"
-    )
-    validation_time_ms: float = Field(
-        ..., description="Time taken for validation in milliseconds"
-    )
+    validated_data: dict[str, Any] | None = Field(None, description="Validated and cleaned data")
+    validation_time_ms: float = Field(..., description="Time taken for validation in milliseconds")
     validator_used: str | None = Field(None, description="Validator that was used")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Validation metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Validation metadata")
 
     class Config:
         frozen = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
+        json_encoders: ClassVar[dict[type, Any]] = {datetime: lambda v: v.isoformat()}
 
 
 # ============================================================================
@@ -125,9 +115,7 @@ def validate_confidence_threshold(value: float, threshold: float = 0.3) -> float
     """Validate confidence score meets minimum threshold."""
     validated_value = validate_confidence_score(value)
     if validated_value < threshold:
-        raise ValueError(
-            f"Confidence score {validated_value} below threshold {threshold}"
-        )
+        raise ValueError(f"Confidence score {validated_value} below threshold {threshold}")
     return validated_value
 
 
@@ -156,10 +144,10 @@ def validate_non_empty_string(value: str) -> str:
 def validate_uuid_format(value: str) -> str:
     """Validate that a string is a valid UUID format."""
     try:
-        uuid4(value)
+        UUID(value)
         return value
-    except ValueError:
-        raise ValueError("Invalid UUID format")
+    except ValueError as err:
+        raise ValueError("Invalid UUID format") from err
 
 
 def validate_timestamp(value: str | datetime) -> datetime:
@@ -169,8 +157,8 @@ def validate_timestamp(value: str | datetime) -> datetime:
     if isinstance(value, str):
         try:
             return datetime.fromisoformat(value.replace("Z", "+00:00"))
-        except ValueError:
-            raise ValueError("Invalid timestamp format")
+        except ValueError as err:
+            raise ValueError("Invalid timestamp format") from err
     raise ValueError("Timestamp must be a string or datetime object")
 
 
@@ -180,8 +168,8 @@ def validate_enum_value(value: Any, enum_class: type) -> Any:
         if isinstance(value, str):
             try:
                 return enum_class(value)
-            except ValueError:
-                raise ValueError(f"Invalid {enum_class.__name__} value: {value}")
+            except ValueError as err:
+                raise ValueError(f"Invalid {enum_class.__name__} value: {value}") from err
         else:
             raise ValueError(f"Value must be a {enum_class.__name__} or string")
     return value
@@ -206,7 +194,7 @@ class MetricValidationSchema(BaseModel):
 
     @field_validator("name")
     @classmethod
-    def validate_name(cls: str, v: str) -> None:
+    def validate_name(cls: Any, v: Any) -> Any:
         """
         Validate Name.
 
@@ -219,7 +207,7 @@ class MetricValidationSchema(BaseModel):
 
     @field_validator("value")
     @classmethod
-    def validate_value(cls: str, v: str) -> None:
+    def validate_value(cls: Any, v: Any) -> Any:
         """
         Validate Value.
 
@@ -232,7 +220,7 @@ class MetricValidationSchema(BaseModel):
 
     @field_validator("timestamp")
     @classmethod
-    def validate_timestamp(cls: str, v: str) -> None:
+    def validate_timestamp(cls: Any, v: Any) -> Any:
         """
         Validate Timestamp.
 
@@ -257,7 +245,7 @@ class LogValidationSchema(BaseModel):
 
     @field_validator("level")
     @classmethod
-    def validate_level(cls: str, v: str) -> None:
+    def validate_level(cls: Any, v: Any) -> Any:
         """
         Validate Level.
 
@@ -273,7 +261,7 @@ class LogValidationSchema(BaseModel):
 
     @field_validator("message")
     @classmethod
-    def validate_message(cls: str, v: str) -> None:
+    def validate_message(cls: Any, v: Any) -> Any:
         """
         Validate Message.
 
@@ -286,7 +274,7 @@ class LogValidationSchema(BaseModel):
 
     @field_validator("timestamp")
     @classmethod
-    def validate_timestamp(cls: str, v: str) -> None:
+    def validate_timestamp(cls: Any, v: Any) -> Any:
         """
         Validate Timestamp.
 
@@ -311,7 +299,7 @@ class CodeAnalysisValidationSchema(BaseModel):
 
     @field_validator("file_path")
     @classmethod
-    def validate_file_path(cls: str, v: str) -> None:
+    def validate_file_path(cls: Any, v: Any) -> Any:
         """
         Validate File Path.
 
@@ -324,7 +312,7 @@ class CodeAnalysisValidationSchema(BaseModel):
 
     @field_validator("severity")
     @classmethod
-    def validate_severity(cls: str, v: str) -> None:
+    def validate_severity(cls: Any, v: Any) -> Any:
         """
         Validate Severity.
 
@@ -337,7 +325,7 @@ class CodeAnalysisValidationSchema(BaseModel):
 
     @field_validator("confidence")
     @classmethod
-    def validate_confidence(cls: str, v: str) -> None:
+    def validate_confidence(cls: Any, v: Any) -> Any:
         """
         Validate Confidence.
 
@@ -350,7 +338,7 @@ class CodeAnalysisValidationSchema(BaseModel):
 
     @field_validator("message")
     @classmethod
-    def validate_message(cls: str, v: str) -> None:
+    def validate_message(cls: Any, v: Any) -> Any:
         """
         Validate Message.
 
@@ -382,17 +370,16 @@ def validate_with_schema(schema_class: type) -> Callable:
 
         """
 
-        def wrapper(*args: str, **kwargs: str) -> None:
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             """
             Wrapper.
-
             """
             try:
                 # Validate kwargs with the schema
                 validated_data = schema_class(**kwargs)
                 return func(*args, **validated_data.model_dump())
             except PydanticValidationError as e:
-                raise ValueError(f"Validation failed: {e}")
+                raise ValueError(f"Validation failed: {e}") from e
 
         return wrapper
 
@@ -402,10 +389,9 @@ def validate_with_schema(schema_class: type) -> Callable:
 def validate_confidence(func: Callable) -> Callable:
     """Decorator to validate confidence parameters."""
 
-    def wrapper(*args: str, **kwargs: str) -> None:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         """
         Wrapper.
-
         """
         if "confidence" in kwargs:
             kwargs["confidence"] = validate_confidence_score(kwargs["confidence"])
@@ -417,10 +403,9 @@ def validate_confidence(func: Callable) -> Callable:
 def validate_severity(func: Callable) -> Callable:
     """Decorator to validate severity parameters."""
 
-    def wrapper(*args: str, **kwargs: str) -> None:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         """
         Wrapper.
-
         """
         if "severity" in kwargs:
             kwargs["severity"] = validate_severity_level(kwargs["severity"])
@@ -449,7 +434,7 @@ class ValidationUtils:
         for field in required_fields:
             if field not in data:
                 errors.append(
-                    ValidationError(
+                    ValidationUtils.create_validation_error(
                         field=field,
                         message=f"Required field '{field}' is missing",
                         severity=ValidationSeverity.ERROR,
@@ -462,7 +447,7 @@ class ValidationUtils:
                 validate_confidence_score(data["confidence"])
             except ValueError as e:
                 errors.append(
-                    ValidationError(
+                    ValidationUtils.create_validation_error(
                         field="confidence",
                         message=str(e),
                         value=data["confidence"],
@@ -476,7 +461,7 @@ class ValidationUtils:
                 validate_severity_level(data["severity"])
             except ValueError as e:
                 errors.append(
-                    ValidationError(
+                    ValidationUtils.create_validation_error(
                         field="severity",
                         message=str(e),
                         value=data["severity"],
@@ -490,7 +475,7 @@ class ValidationUtils:
                 validate_timestamp(data["timestamp"])
             except ValueError as e:
                 errors.append(
-                    ValidationError(
+                    ValidationUtils.create_validation_error(
                         field="timestamp",
                         message=str(e),
                         value=data["timestamp"],
@@ -523,7 +508,7 @@ class ValidationUtils:
         for field in required_fields:
             if field not in data:
                 errors.append(
-                    ValidationError(
+                    ValidationUtils.create_validation_error(
                         field=field,
                         message=f"Required field '{field}' is missing",
                         severity=ValidationSeverity.ERROR,
@@ -534,7 +519,7 @@ class ValidationUtils:
         if "steps" in data:
             if not isinstance(data["steps"], list):
                 errors.append(
-                    ValidationError(
+                    ValidationUtils.create_validation_error(
                         field="steps",
                         message="Steps must be a list",
                         value=data["steps"],
@@ -545,7 +530,7 @@ class ValidationUtils:
                 for i, step in enumerate(data["steps"]):
                     if not isinstance(step, dict):
                         errors.append(
-                            ValidationError(
+                            ValidationUtils.create_validation_error(
                                 field=f"steps[{i}]",
                                 message="Step must be a dictionary",
                                 value=step,
@@ -554,7 +539,7 @@ class ValidationUtils:
                         )
                     elif "step_id" not in step:
                         errors.append(
-                            ValidationError(
+                            ValidationUtils.create_validation_error(
                                 field=f"steps[{i}].step_id",
                                 message="Step ID is required",
                                 severity=ValidationSeverity.ERROR,
@@ -605,7 +590,7 @@ class ValidationUtils:
         field: str,
         message: str,
         value: Any = None,
-        code: str = None,
+        code: str | None = None,
         severity: str = "error",
     ) -> ValidationError:
         """Create a validation error with standard format."""
@@ -618,8 +603,8 @@ class ValidationUtils:
         field: str,
         message: str,
         value: Any = None,
-        code: str = None,
-        suggestion: str = None,
+        code: str | None = None,
+        suggestion: str | None = None,
     ) -> ValidationWarning:
         """Create a validation warning with standard format."""
         return ValidationWarning(
@@ -635,8 +620,8 @@ class ValidationUtils:
 class ValidationRegistry:
     """Registry for validation functions and schemas."""
 
-    _validators: dict[str, Callable] = {}
-    _schemas: dict[str, type] = {}
+    _validators: ClassVar[dict[str, Callable]] = {}
+    _schemas: ClassVar[dict[str, type]] = {}
 
     @classmethod
     def register_validator(cls, name: str, validator: Callable) -> None:

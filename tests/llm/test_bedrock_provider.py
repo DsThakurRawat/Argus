@@ -67,10 +67,7 @@ class TestBedrockProvider:
 
         assert models[ModelType.FAST] == "anthropic.claude-3-5-haiku-20241022-v1:0"
         assert models[ModelType.SMART] == "anthropic.claude-3-5-sonnet-20241022-v1:0"
-        assert (
-            models[ModelType.DEEP_THINKING]
-            == "anthropic.claude-3-5-sonnet-20241022-v2:0"
-        )
+        assert models[ModelType.DEEP_THINKING] == "anthropic.claude-3-5-sonnet-20241022-v2:0"
 
     @pytest.mark.asyncio
     async def test_generate_success(self, provider):
@@ -280,9 +277,7 @@ class TestBedrockProvider:
     @pytest.mark.asyncio
     async def test_generate_error_handling(self, provider):
         """Test error handling in generate method."""
-        provider.runtime_client.invoke_model = MagicMock(
-            side_effect=Exception("API error")
-        )
+        provider.runtime_client.invoke_model = MagicMock(side_effect=Exception("API error"))
 
         request = LLMRequest(
             messages=[{"role": "user", "content": "Test prompt"}],
@@ -295,9 +290,7 @@ class TestBedrockProvider:
     @pytest.mark.asyncio
     async def test_embeddings_error_handling(self, provider):
         """Test error handling in embeddings method."""
-        provider.runtime_client.invoke_model = MagicMock(
-            side_effect=Exception("Embeddings error")
-        )
+        provider.runtime_client.invoke_model = MagicMock(side_effect=Exception("Embeddings error"))
 
         with pytest.raises(Exception, match="Embeddings error"):
             await provider.embeddings("Test text")
@@ -326,9 +319,7 @@ class TestBedrockProvider:
 
             assert provider.region == "us-west-2"
             assert provider.profile == "production"
-            mock_session.assert_called_once_with(
-                region_name="us-west-2", profile_name="production"
-            )
+            mock_session.assert_called_once_with(region_name="us-west-2", profile_name="production")
 
     def test_initialization_without_profile(self) -> None:
         """Test provider initialization without AWS profile."""

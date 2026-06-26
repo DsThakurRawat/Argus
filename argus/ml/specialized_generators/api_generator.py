@@ -81,22 +81,22 @@ class TestAPIFunctionality:
         '''Test successful authentication'''
         # Test implementation here
         pass
-    
+
     def test_authentication_failure(self) -> None:
         '''Test authentication failure handling'''
         # Test implementation here
         pass
-    
+
     def test_input_validation(self) -> None:
         '''Test input validation'''
         # Test implementation here
         pass
-    
+
     def test_error_handling(self) -> None:
         '''Test error handling'''
         # Test implementation here
         pass
-    
+
     def test_rate_limiting(self) -> None:
         '''Test rate limiting functionality'''
         # Test implementation here

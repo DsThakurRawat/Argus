@@ -40,9 +40,7 @@ class SharedContext:
     model_interactions: list[tuple[str, str, str]] = field(
         default_factory=list
     )  # (from_model, to_model, interaction_type)
-    correlation_graph: dict[str, set[str]] = field(
-        default_factory=dict
-    )  # model -> related_models
+    correlation_graph: dict[str, set[str]] = field(default_factory=dict)  # model -> related_models
 
 
 class ContextManager:
@@ -54,9 +52,7 @@ class ContextManager:
         self.active_contexts: dict[str, SharedContext] = {}
         self.context_history: list[SharedContext] = []
 
-        logger.info(
-            f"ContextManager initialized with {max_context_age_hours}h max context age"
-        )
+        logger.info(f"ContextManager initialized with {max_context_age_hours}h max context age")
 
     def create_context(self, session_id: str) -> SharedContext:
         """Create a new shared context session."""
@@ -109,9 +105,7 @@ class ContextManager:
             return None
         return context.entries.get(key)
 
-    def get_context_by_tags(
-        self, session_id: str, tags: set[str]
-    ) -> list[ContextEntry]:
+    def get_context_by_tags(self, session_id: str, tags: set[str]) -> list[ContextEntry]:
         """Get context entries that match any of the given tags."""
         context = self.get_context(session_id)
         if not context:
@@ -139,9 +133,7 @@ class ContextManager:
 
         return matching_entries
 
-    def update_context_confidence(
-        self, session_id: str, key: str, new_confidence: float
-    ) -> bool:
+    def update_context_confidence(self, session_id: str, key: str, new_confidence: float) -> bool:
         """Update the confidence of a context entry."""
         context = self.get_context(session_id)
         if not context or key not in context.entries:
@@ -218,7 +210,9 @@ class ContextManager:
         current_length = len(base_prompt)
 
         for entry in relevant_entries:
-            context_str = f"[{entry.source_provider}:{entry.source_model}] {entry.key}: {entry.value}"
+            context_str = (
+                f"[{entry.source_provider}:{entry.source_model}] {entry.key}: {entry.value}"
+            )
 
             if current_length + len(context_str) > max_context_length:
                 break
@@ -232,7 +226,7 @@ class ContextManager:
 
         return base_prompt
 
-    def cleanup_expired_contexts(self) -> None:
+    def cleanup_expired_contexts(self) -> Any:
         """Remove expired context sessions."""
         cutoff_time = datetime.now() - self.max_context_age
         expired_sessions = []
@@ -319,9 +313,7 @@ class ContextPropagator:
                         "context_propagation",
                     )
             except Exception as e:
-                logger.error(
-                    f"Failed to propagate context to {to_provider}:{to_model}: {e}"
-                )
+                logger.error(f"Failed to propagate context to {to_provider}:{to_model}: {e}")
                 results[f"{to_provider}:{to_model}"] = False
 
         return results
@@ -349,9 +341,7 @@ class ContextPropagator:
                 source_entries.append(entry)
 
         if not source_entries:
-            logger.warning(
-                f"No source context entries found for {from_provider}:{from_model}"
-            )
+            logger.warning(f"No source context entries found for {from_provider}:{from_model}")
             return False
 
         # Apply propagation strategy
@@ -392,20 +382,19 @@ class ContextPropagator:
                     },
                 )
 
-        elif propagation_strategy == "summarized":
+        elif propagation_strategy == "summarized" and len(source_entries) > 1:
             # Summarized propagation - create summary of multiple entries
-            if len(source_entries) > 1:
-                summary = await self._summarize_context_entries(source_entries)
-                self.context_manager.add_context_entry(
-                    session_id,
-                    f"summary_from_{from_provider}_{from_model}",
-                    summary,
-                    to_model,
-                    to_provider,
-                    confidence=0.7,  # Lower confidence for summaries
-                    tags={"propagated", "summary"},
-                    metadata={"propagated_from": f"{from_provider}:{from_model}"},
-                )
+            summary = await self._summarize_context_entries(source_entries)
+            self.context_manager.add_context_entry(
+                session_id,
+                f"summary_from_{from_provider}_{from_model}",
+                summary,
+                to_model,
+                to_provider,
+                confidence=0.7,  # Lower confidence for summaries
+                tags={"propagated", "summary"},
+                metadata={"propagated_from": f"{from_provider}:{from_model}"},
+            )
 
         return True
 
@@ -466,13 +455,9 @@ class FeedbackLoop:
 
                 # Check for improvement
                 if iteration > 0:
-                    improvement = self._calculate_improvement(
-                        iterations[-2], iteration_result
-                    )
+                    improvement = self._calculate_improvement(iterations[-2], iteration_result)
                     if improvement < improvement_threshold:
-                        logger.info(
-                            f"Feedback loop converged after {iteration + 1} iterations"
-                        )
+                        logger.info(f"Feedback loop converged after {iteration + 1} iterations")
                         break
 
             except Exception as e:

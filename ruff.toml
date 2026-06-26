@@ -23,10 +23,33 @@ ignore = [
     "E501",  # line too long (handled by formatter)
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
+    # Unused-argument rules: the codebase has many interface/abstract-method
+    # signatures and callback hooks that intentionally accept-but-ignore args.
+    "ARG001",  # unused-function-argument
+    "ARG002",  # unused-method-argument
+    "ARG004",  # unused-static-method-argument
+    # The package deliberately uses relative imports within argus.*; do not
+    # enforce the absolute-import policy (TID252) against that convention.
+    "TID252",  # relative-imports
+    # Deferred modernizations (py3.12 syntax). These are behavior-sensitive on a
+    # serialization-heavy codebase: StrEnum changes str() output vs (str, Enum),
+    # and PEP-695 `type`/generics are lazily evaluated and can affect Pydantic.
+    # Left as a separate, deliberate migration rather than an auto-fix.
+    "UP040",  # non-pep695-type-alias
+    "UP042",  # replace-str-enum
+    "UP046",  # non-pep695-generic-class
+    "UP047",  # non-pep695-generic-function
+    # SIM112 force-uppercases os.environ keys, which silently breaks
+    # case-sensitive credential-key lookups (e.g. "github-token"); these are
+    # not conventional shell env vars, so do not enforce uppercasing.
+    "SIM112",  # uncapitalized-environment-variables
 ]
 
 [lint.per-file-ignores]
-"tests/**/*.py" = ["S101", "S106", "S108"]  # Allow assert, hardcoded passwords in tests
+# Allow assert, hardcoded passwords, broad-raises and ambiguous raises-patterns in tests.
+"tests/**/*.py" = ["S101", "S106", "S108", "B017", "RUF043"]
+# Template test modules intentionally use star-imports to exercise public surfaces.
+"tests/templates/*.py" = ["F403", "F405"]
 "**/__init__.py" = ["F401"]  # Allow unused imports in __init__.py
 
 [lint.isort]

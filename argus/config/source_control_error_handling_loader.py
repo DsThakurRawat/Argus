@@ -34,9 +34,7 @@ class ErrorHandlingConfigLoader:
             raise FileNotFoundError(f"Configuration file not found: {file_path}")
 
         if file_path.suffix.lower() not in [".yaml", ".yml", ".json"]:
-            raise ValueError(
-                f"Unsupported configuration file format: {file_path.suffix}"
-            )
+            raise ValueError(f"Unsupported configuration file format: {file_path.suffix}")
 
         try:
             with open(file_path, encoding="utf-8") as f:
@@ -71,9 +69,7 @@ class ErrorHandlingConfigLoader:
         config_data["retry"] = self._load_retry_from_env(prefix)
 
         # Load graceful degradation settings
-        config_data["graceful_degradation"] = self._load_graceful_degradation_from_env(
-            prefix
-        )
+        config_data["graceful_degradation"] = self._load_graceful_degradation_from_env(prefix)
 
         # Load health check settings
         config_data["health_checks"] = self._load_health_checks_from_env(prefix)
@@ -116,85 +112,49 @@ class ErrorHandlingConfigLoader:
 
         # Default circuit breaker settings
         cb_config["default"] = {
-            "failure_threshold": int(
-                os.getenv(f"{prefix}CB_DEFAULT_FAILURE_THRESHOLD", "5")
-            ),
-            "recovery_timeout": float(
-                os.getenv(f"{prefix}CB_DEFAULT_RECOVERY_TIMEOUT", "60.0")
-            ),
-            "success_threshold": int(
-                os.getenv(f"{prefix}CB_DEFAULT_SUCCESS_THRESHOLD", "3")
-            ),
+            "failure_threshold": int(os.getenv(f"{prefix}CB_DEFAULT_FAILURE_THRESHOLD", "5")),
+            "recovery_timeout": float(os.getenv(f"{prefix}CB_DEFAULT_RECOVERY_TIMEOUT", "60.0")),
+            "success_threshold": int(os.getenv(f"{prefix}CB_DEFAULT_SUCCESS_THRESHOLD", "3")),
             "timeout": float(os.getenv(f"{prefix}CB_DEFAULT_TIMEOUT", "30.0")),
         }
 
         # File operations
         cb_config["file_operations"] = {
-            "failure_threshold": int(
-                os.getenv(f"{prefix}CB_FILE_FAILURE_THRESHOLD", "10")
-            ),
-            "recovery_timeout": float(
-                os.getenv(f"{prefix}CB_FILE_RECOVERY_TIMEOUT", "30.0")
-            ),
-            "success_threshold": int(
-                os.getenv(f"{prefix}CB_FILE_SUCCESS_THRESHOLD", "2")
-            ),
+            "failure_threshold": int(os.getenv(f"{prefix}CB_FILE_FAILURE_THRESHOLD", "10")),
+            "recovery_timeout": float(os.getenv(f"{prefix}CB_FILE_RECOVERY_TIMEOUT", "30.0")),
+            "success_threshold": int(os.getenv(f"{prefix}CB_FILE_SUCCESS_THRESHOLD", "2")),
             "timeout": float(os.getenv(f"{prefix}CB_FILE_TIMEOUT", "60.0")),
         }
 
         # Branch operations
         cb_config["branch_operations"] = {
-            "failure_threshold": int(
-                os.getenv(f"{prefix}CB_BRANCH_FAILURE_THRESHOLD", "5")
-            ),
-            "recovery_timeout": float(
-                os.getenv(f"{prefix}CB_BRANCH_RECOVERY_TIMEOUT", "45.0")
-            ),
-            "success_threshold": int(
-                os.getenv(f"{prefix}CB_BRANCH_SUCCESS_THRESHOLD", "3")
-            ),
+            "failure_threshold": int(os.getenv(f"{prefix}CB_BRANCH_FAILURE_THRESHOLD", "5")),
+            "recovery_timeout": float(os.getenv(f"{prefix}CB_BRANCH_RECOVERY_TIMEOUT", "45.0")),
+            "success_threshold": int(os.getenv(f"{prefix}CB_BRANCH_SUCCESS_THRESHOLD", "3")),
             "timeout": float(os.getenv(f"{prefix}CB_BRANCH_TIMEOUT", "45.0")),
         }
 
         # Pull request operations
         cb_config["pull_request_operations"] = {
-            "failure_threshold": int(
-                os.getenv(f"{prefix}CB_PR_FAILURE_THRESHOLD", "5")
-            ),
-            "recovery_timeout": float(
-                os.getenv(f"{prefix}CB_PR_RECOVERY_TIMEOUT", "90.0")
-            ),
-            "success_threshold": int(
-                os.getenv(f"{prefix}CB_PR_SUCCESS_THRESHOLD", "3")
-            ),
+            "failure_threshold": int(os.getenv(f"{prefix}CB_PR_FAILURE_THRESHOLD", "5")),
+            "recovery_timeout": float(os.getenv(f"{prefix}CB_PR_RECOVERY_TIMEOUT", "90.0")),
+            "success_threshold": int(os.getenv(f"{prefix}CB_PR_SUCCESS_THRESHOLD", "3")),
             "timeout": float(os.getenv(f"{prefix}CB_PR_TIMEOUT", "30.0")),
         }
 
         # Batch operations
         cb_config["batch_operations"] = {
-            "failure_threshold": int(
-                os.getenv(f"{prefix}CB_BATCH_FAILURE_THRESHOLD", "15")
-            ),
-            "recovery_timeout": float(
-                os.getenv(f"{prefix}CB_BATCH_RECOVERY_TIMEOUT", "20.0")
-            ),
-            "success_threshold": int(
-                os.getenv(f"{prefix}CB_BATCH_SUCCESS_THRESHOLD", "2")
-            ),
+            "failure_threshold": int(os.getenv(f"{prefix}CB_BATCH_FAILURE_THRESHOLD", "15")),
+            "recovery_timeout": float(os.getenv(f"{prefix}CB_BATCH_RECOVERY_TIMEOUT", "20.0")),
+            "success_threshold": int(os.getenv(f"{prefix}CB_BATCH_SUCCESS_THRESHOLD", "2")),
             "timeout": float(os.getenv(f"{prefix}CB_BATCH_TIMEOUT", "120.0")),
         }
 
         # Auth operations
         cb_config["auth_operations"] = {
-            "failure_threshold": int(
-                os.getenv(f"{prefix}CB_AUTH_FAILURE_THRESHOLD", "10")
-            ),
-            "recovery_timeout": float(
-                os.getenv(f"{prefix}CB_AUTH_RECOVERY_TIMEOUT", "300.0")
-            ),
-            "success_threshold": int(
-                os.getenv(f"{prefix}CB_AUTH_SUCCESS_THRESHOLD", "5")
-            ),
+            "failure_threshold": int(os.getenv(f"{prefix}CB_AUTH_FAILURE_THRESHOLD", "10")),
+            "recovery_timeout": float(os.getenv(f"{prefix}CB_AUTH_RECOVERY_TIMEOUT", "300.0")),
+            "success_threshold": int(os.getenv(f"{prefix}CB_AUTH_SUCCESS_THRESHOLD", "5")),
             "timeout": float(os.getenv(f"{prefix}CB_AUTH_TIMEOUT", "15.0")),
         }
 
@@ -225,10 +185,7 @@ class ErrorHandlingConfigLoader:
             "simplified_operation_timeout": float(
                 os.getenv(f"{prefix}GD_SIMPLIFIED_TIMEOUT", "10.0")
             ),
-            "offline_mode_enabled": os.getenv(
-                f"{prefix}GD_OFFLINE_MODE", "true"
-            ).lower()
-            == "true",
+            "offline_mode_enabled": os.getenv(f"{prefix}GD_OFFLINE_MODE", "true").lower() == "true",
         }
 
     def _load_health_checks_from_env(self, prefix: str) -> dict[str, Any]:
@@ -239,21 +196,15 @@ class ErrorHandlingConfigLoader:
             "timeout": float(os.getenv(f"{prefix}HC_TIMEOUT", "10.0")),
             "failure_threshold": int(os.getenv(f"{prefix}HC_FAILURE_THRESHOLD", "3")),
             "success_threshold": int(os.getenv(f"{prefix}HC_SUCCESS_THRESHOLD", "2")),
-            "metrics_retention_hours": int(
-                os.getenv(f"{prefix}HC_METRICS_RETENTION", "24")
-            ),
+            "metrics_retention_hours": int(os.getenv(f"{prefix}HC_METRICS_RETENTION", "24")),
         }
 
     def _load_metrics_from_env(self, prefix: str) -> dict[str, Any]:
         """Load metrics configuration from environment variables."""
         return {
             "enabled": os.getenv(f"{prefix}METRICS_ENABLED", "true").lower() == "true",
-            "collection_interval": float(
-                os.getenv(f"{prefix}METRICS_COLLECTION_INTERVAL", "60.0")
-            ),
-            "retention_hours": int(
-                os.getenv(f"{prefix}METRICS_RETENTION_HOURS", "168")
-            ),
+            "collection_interval": float(os.getenv(f"{prefix}METRICS_COLLECTION_INTERVAL", "60.0")),
+            "retention_hours": int(os.getenv(f"{prefix}METRICS_RETENTION_HOURS", "168")),
             "max_series": int(os.getenv(f"{prefix}METRICS_MAX_SERIES", "1000")),
             "max_points_per_series": int(
                 os.getenv(f"{prefix}METRICS_MAX_POINTS_PER_SERIES", "10000")
@@ -264,9 +215,7 @@ class ErrorHandlingConfigLoader:
             == "true",
         }
 
-    def save_to_file(
-        self, config: ErrorHandlingConfig, file_path: str | Path
-    ) -> None:
+    def save_to_file(self, config: ErrorHandlingConfig, file_path: str | Path) -> None:
         """Save error handling configuration to a file."""
         file_path = Path(file_path)
 

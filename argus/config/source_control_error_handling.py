@@ -176,7 +176,7 @@ class ErrorHandlingConfig(BaseConfig):
 
     @field_validator("provider_overrides")
     @classmethod
-    def validate_provider_overrides(cls: str, v: str) -> None:
+    def validate_provider_overrides(cls: Any, v: Any) -> Any:
         """Validate provider-specific overrides."""
         if not isinstance(v, dict):
             raise ValueError("Provider overrides must be a dictionary")
@@ -188,9 +188,7 @@ class ErrorHandlingConfig(BaseConfig):
                     f"Invalid provider '{provider}'. Must be one of: {valid_providers}"
                 )
             if not isinstance(config, dict):
-                raise ValueError(
-                    f"Provider override for '{provider}' must be a dictionary"
-                )
+                raise ValueError(f"Provider override for '{provider}' must be a dictionary")
 
         return v
 
@@ -212,9 +210,7 @@ class ErrorHandlingConfig(BaseConfig):
 
         return base_config
 
-    def get_operation_circuit_breaker_config(
-        self, operation_type: str
-    ) -> CircuitBreakerConfig:
+    def get_operation_circuit_breaker_config(self, operation_type: str) -> CircuitBreakerConfig:
         """Get circuit breaker configuration for a specific operation type."""
         operation_configs = {
             "file_operations": self.circuit_breaker.file_operations,

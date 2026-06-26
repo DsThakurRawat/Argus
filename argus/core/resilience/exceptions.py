@@ -5,7 +5,7 @@ from typing import Any
 
 class ResilienceError(Exception):
     """Base exception for resilience framework errors.
-    
+
     Attributes:
         message: Error message
         context: Additional context information
@@ -16,10 +16,10 @@ class ResilienceError(Exception):
         self,
         message: str,
         context: dict[str, Any] | None = None,
-        original_error: Exception | None = None
+        original_error: Exception | None = None,
     ) -> None:
         """Initialize the resilience error.
-        
+
         Args:
             message: Error message
             context: Additional context information
@@ -33,6 +33,7 @@ class ResilienceError(Exception):
 
 class CircuitBreakerError(ResilienceError):
     """Base exception for circuit breaker errors."""
+
     pass
 
 
@@ -44,10 +45,10 @@ class CircuitOpenError(CircuitBreakerError):
         circuit_name: str,
         failure_count: int,
         failure_threshold: int,
-        context: dict[str, Any] | None = None
+        context: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the circuit open error.
-        
+
         Args:
             circuit_name: Name of the circuit breaker
             failure_count: Current failure count
@@ -67,13 +68,9 @@ class CircuitOpenError(CircuitBreakerError):
 class CircuitHalfOpenError(CircuitBreakerError):
     """Exception raised when circuit breaker is half-open."""
 
-    def __init__(
-        self,
-        circuit_name: str,
-        context: dict[str, Any] | None = None
-    ) -> None:
+    def __init__(self, circuit_name: str, context: dict[str, Any] | None = None) -> None:
         """Initialize the circuit half-open error.
-        
+
         Args:
             circuit_name: Name of the circuit breaker
             context: Additional context information
@@ -85,6 +82,7 @@ class CircuitHalfOpenError(CircuitBreakerError):
 
 class RetryError(ResilienceError):
     """Base exception for retry errors."""
+
     pass
 
 
@@ -95,10 +93,10 @@ class MaxRetriesExceededError(RetryError):
         self,
         max_attempts: int,
         last_error: Exception | None = None,
-        context: dict[str, Any] | None = None
+        context: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the max retries exceeded error.
-        
+
         Args:
             max_attempts: Maximum number of attempts
             last_error: Last error that occurred
@@ -112,6 +110,7 @@ class MaxRetriesExceededError(RetryError):
 
 class TimeoutError(ResilienceError):
     """Base exception for timeout errors."""
+
     pass
 
 
@@ -119,13 +118,10 @@ class OperationTimeoutError(TimeoutError):
     """Exception raised when an operation times out."""
 
     def __init__(
-        self,
-        operation_name: str,
-        timeout_seconds: float,
-        context: dict[str, Any] | None = None
+        self, operation_name: str, timeout_seconds: float, context: dict[str, Any] | None = None
     ) -> None:
         """Initialize the operation timeout error.
-        
+
         Args:
             operation_name: Name of the operation that timed out
             timeout_seconds: Timeout duration in seconds
@@ -139,6 +135,7 @@ class OperationTimeoutError(TimeoutError):
 
 class BulkheadError(ResilienceError):
     """Base exception for bulkhead errors."""
+
     pass
 
 
@@ -150,20 +147,17 @@ class ResourceExhaustedError(BulkheadError):
         resource_name: str,
         max_concurrency: int,
         current_usage: int,
-        context: dict[str, Any] | None = None
+        context: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the resource exhausted error.
-        
+
         Args:
             resource_name: Name of the resource
             max_concurrency: Maximum concurrency allowed
             current_usage: Current resource usage
             context: Additional context information
         """
-        message = (
-            f"Resource '{resource_name}' exhausted. "
-            f"Usage: {current_usage}/{max_concurrency}"
-        )
+        message = f"Resource '{resource_name}' exhausted. Usage: {current_usage}/{max_concurrency}"
         super().__init__(message, context)
         self.resource_name = resource_name
         self.max_concurrency = max_concurrency
@@ -172,6 +166,7 @@ class ResourceExhaustedError(BulkheadError):
 
 class RateLimitError(ResilienceError):
     """Base exception for rate limit errors."""
+
     pass
 
 
@@ -184,10 +179,10 @@ class RateLimitExceededError(RateLimitError):
         limit: int,
         window_seconds: int,
         current_count: int,
-        context: dict[str, Any] | None = None
+        context: dict[str, Any] | None = None,
     ) -> None:
         """Initialize the rate limit exceeded error.
-        
+
         Args:
             rate_limit_name: Name of the rate limit
             limit: Rate limit value
@@ -208,20 +203,16 @@ class RateLimitExceededError(RateLimitError):
 
 class HealthCheckError(ResilienceError):
     """Base exception for health check errors."""
+
     pass
 
 
 class UnhealthyError(HealthCheckError):
     """Exception raised when a health check fails."""
 
-    def __init__(
-        self,
-        check_name: str,
-        reason: str,
-        context: dict[str, Any] | None = None
-    ) -> None:
+    def __init__(self, check_name: str, reason: str, context: dict[str, Any] | None = None) -> None:
         """Initialize the unhealthy error.
-        
+
         Args:
             check_name: Name of the health check
             reason: Reason for failure
@@ -237,13 +228,10 @@ class OperationFailedError(ResilienceError):
     """Exception raised when an operation fails after all resilience patterns."""
 
     def __init__(
-        self,
-        operation_name: str,
-        failure_reasons: list[str],
-        context: dict[str, Any] | None = None
+        self, operation_name: str, failure_reasons: list[str], context: dict[str, Any] | None = None
     ) -> None:
         """Initialize the operation failed error.
-        
+
         Args:
             operation_name: Name of the operation
             failure_reasons: List of failure reasons

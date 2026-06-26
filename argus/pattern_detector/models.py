@@ -22,7 +22,7 @@ class LogEntry(BaseModel):
     error_message: str | None = None
     raw_data: dict[str, Any]
 
-    def __init__(self, **data: str) -> None:
+    def __init__(self, **data: Any) -> None:
         data = self._process_timestamp(data)
         data = self._process_severity(data)
         data = self._process_service_name(data)
@@ -35,9 +35,7 @@ class LogEntry(BaseModel):
             raw_timestamp = data["raw_data"].get("timestamp")
             if raw_timestamp:
                 try:
-                    data["timestamp"] = datetime.fromisoformat(
-                        raw_timestamp.replace("Z", "+00:00")
-                    )
+                    data["timestamp"] = datetime.fromisoformat(raw_timestamp.replace("Z", "+00:00"))
                 except (ValueError, TypeError):
                     data["timestamp"] = datetime.now(UTC)
             else:
@@ -55,17 +53,15 @@ class LogEntry(BaseModel):
         if "service_name" not in data and "raw_data" in data:
             resource = data["raw_data"].get("resource", {})
             labels = resource.get("labels", {})
-            data["service_name"] = labels.get("service_name") or labels.get(
-                "function_name"
-            )
+            data["service_name"] = labels.get("service_name") or labels.get("function_name")
         return data
 
     def _process_error_message(self, data: dict[str, Any]) -> dict[str, Any]:
         """Extract error message from raw data."""
         if "error_message" not in data and "raw_data" in data:
-            data["error_message"] = data["raw_data"].get("textPayload") or data[
-                "raw_data"
-            ].get("message")
+            data["error_message"] = data["raw_data"].get("textPayload") or data["raw_data"].get(
+                "message"
+            )
         return data
 
 
@@ -104,9 +100,7 @@ class TimeWindow:
     def get_error_logs(self) -> list[LogEntry]:
         """Get only error-level logs from this window."""
         return [
-            log
-            for log in self.logs
-            if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
+            log for log in self.logs if log.severity in ["ERROR", "CRITICAL", "ALERT", "EMERGENCY"]
         ]
 
     def get_service_groups(self) -> dict[str, list[LogEntry]]:

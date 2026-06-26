@@ -31,9 +31,7 @@ class TestRepositoryManager:
         )
 
     @pytest.fixture
-    def repository_manager(
-        self, mock_global_config: str, mock_provider_factory: str
-    ) -> None:
+    def repository_manager(self, mock_global_config: str, mock_provider_factory: str) -> None:
         """
         Repository Manager.
 
@@ -71,9 +69,7 @@ class TestRepositoryManager:
         assert len(repository_manager.repositories) == 0
 
     @pytest.mark.asyncio
-    async def test_initialization_failure(
-        self, repository_manager, mock_provider_factory
-    ):
+    async def test_initialization_failure(self, repository_manager, mock_provider_factory):
         """Test repository initialization failure."""
         # For now, this tests the placeholder implementation
         # which doesn't raise exceptions
@@ -107,9 +103,7 @@ class TestRepositoryManager:
             await repository_manager.get_provider("nonexistent")
 
     @pytest.mark.asyncio
-    async def test_execute_across_repos_all_repos(
-        self, repository_manager, mock_provider
-    ):
+    async def test_execute_across_repos_all_repos(self, repository_manager, mock_provider):
         """Test executing operation across all repositories."""
         repository_manager.repositories = {
             "repo1": mock_provider,
@@ -128,9 +122,7 @@ class TestRepositoryManager:
         assert results["repo2"] is True
 
     @pytest.mark.asyncio
-    async def test_execute_across_repos_specific_repos(
-        self, repository_manager, mock_provider
-    ):
+    async def test_execute_across_repos_specific_repos(self, repository_manager, mock_provider):
         """Test executing operation across specific repositories."""
         repository_manager.repositories = {
             "repo1": mock_provider,
@@ -140,18 +132,14 @@ class TestRepositoryManager:
         async def test_operation(provider):
             return await provider.test_connection()
 
-        results = await repository_manager.execute_across_repos(
-            test_operation, ["repo1"]
-        )
+        results = await repository_manager.execute_across_repos(test_operation, ["repo1"])
 
         assert len(results) == 1
         assert "repo1" in results
         assert "repo2" not in results
 
     @pytest.mark.asyncio
-    async def test_execute_across_repos_with_error(
-        self, repository_manager, mock_provider
-    ):
+    async def test_execute_across_repos_with_error(self, repository_manager, mock_provider):
         """Test executing operation with errors."""
         repository_manager.repositories = {
             "repo1": mock_provider,
@@ -175,9 +163,7 @@ class TestRepositoryManager:
         assert "Connection failed" in results["repo2"]["error"]
 
     @pytest.mark.asyncio
-    async def test_execute_across_repos_skip_nonexistent(
-        self, repository_manager, mock_provider
-    ):
+    async def test_execute_across_repos_skip_nonexistent(self, repository_manager, mock_provider):
         """Test executing operation skips non-existent repositories."""
         repository_manager.repositories = {"repo1": mock_provider}
 
@@ -220,9 +206,7 @@ class TestRepositoryManager:
     async def test_get_repository_info_failure(self, repository_manager, mock_provider):
         """Test getting repository info with failure."""
         repository_manager.repositories["test-repo"] = mock_provider
-        mock_provider.get_repository_info.side_effect = Exception(
-            "Info retrieval failed"
-        )
+        mock_provider.get_repository_info.side_effect = Exception("Info retrieval failed")
 
         result = await repository_manager.get_repository_info("test-repo")
 
@@ -236,9 +220,7 @@ class TestRepositoryManager:
         from argus.source_control.models import BranchInfo
 
         mock_branches = [
-            BranchInfo(
-                name="main", sha="abc123", is_protected=True, last_commit=datetime.now()
-            ),
+            BranchInfo(name="main", sha="abc123", is_protected=True, last_commit=datetime.now()),
             BranchInfo(
                 name="feature",
                 sha="def456",
@@ -262,9 +244,7 @@ class TestRepositoryManager:
         assert results["repo2"] == ["main", "feature"]
 
     @pytest.mark.asyncio
-    async def test_apply_remediation_across_repos(
-        self, repository_manager, mock_provider
-    ):
+    async def test_apply_remediation_across_repos(self, repository_manager, mock_provider):
         """Test applying remediation across repositories."""
         repository_manager.repositories = {
             "repo1": mock_provider,
@@ -282,9 +262,7 @@ class TestRepositoryManager:
         assert results["repo2"]["success"] is True
 
     @pytest.mark.asyncio
-    async def test_apply_remediation_with_error(
-        self, repository_manager, mock_provider
-    ):
+    async def test_apply_remediation_with_error(self, repository_manager, mock_provider):
         """Test applying remediation with errors."""
         repository_manager.repositories = {
             "repo1": mock_provider,
@@ -320,7 +298,4 @@ class TestRepositoryManager:
     def test_logger_initialization(self, repository_manager: str) -> None:
         """Test that logger is properly initialized."""
         assert repository_manager.logger is not None
-        assert (
-            repository_manager.logger.name
-            == "argus.source_control.repository_manager"
-        )
+        assert repository_manager.logger.name == "argus.source_control.repository_manager"

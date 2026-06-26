@@ -22,13 +22,9 @@ class GeminiProvider(LLMProvider):
     def __init__(self, config: LLMProviderConfig) -> None:
         super().__init__(config)
         self.api_key = config.api_key
-        self.base_url = (
-            config.base_url or "https://generativelanguage.googleapis.com/v1"
-        )
+        self.base_url = config.base_url or "https://generativelanguage.googleapis.com/v1"
         self.project_id = (
-            config.provider_specific.get("project_id")
-            if config.provider_specific
-            else None
+            config.provider_specific.get("project_id") if config.provider_specific else None
         )
 
         # Set the model name from provider_specific or use default
@@ -72,9 +68,7 @@ class GeminiProvider(LLMProvider):
             prompt = self._convert_messages_to_prompt(request.messages or [])
 
             # Generate content using new SDK
-            response = self._client.models.generate_content(
-                model=self._model, contents=prompt
-            )
+            response = self._client.models.generate_content(model=self._model, contents=prompt)
 
             # Extract usage information
             usage = self._extract_usage(response)
@@ -166,11 +160,7 @@ class GeminiProvider(LLMProvider):
                 model="models/embedding-001",
                 contents=text,
             )
-            if (
-                result.embeddings
-                and len(result.embeddings) > 0
-                and result.embeddings[0].values
-            ):
+            if result.embeddings and len(result.embeddings) > 0 and result.embeddings[0].values:
                 return result.embeddings[0].values
             return []
         except Exception as e:
@@ -228,17 +218,11 @@ class GeminiProvider(LLMProvider):
         usage = {"input_tokens": 0, "output_tokens": 0}
 
         if hasattr(response, "usage_metadata") and response.usage_metadata:
-            usage["input_tokens"] = getattr(
-                response.usage_metadata, "prompt_token_count", 0
-            )
-            usage["output_tokens"] = getattr(
-                response.usage_metadata, "candidates_token_count", 0
-            )
+            usage["input_tokens"] = getattr(response.usage_metadata, "prompt_token_count", 0)
+            usage["output_tokens"] = getattr(response.usage_metadata, "candidates_token_count", 0)
         elif hasattr(response, "usage") and response.usage:
             usage["input_tokens"] = getattr(response.usage, "prompt_token_count", 0)
-            usage["output_tokens"] = getattr(
-                response.usage, "candidates_token_count", 0
-            )
+            usage["output_tokens"] = getattr(response.usage, "candidates_token_count", 0)
 
         return usage
 

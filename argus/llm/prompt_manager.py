@@ -9,6 +9,7 @@ using the Mirascope library for advanced prompt management.
 
 import logging
 import os
+from typing import Any
 
 # Note: Mirascope integration will be added in a future update
 # For now, we'll use simple string templates
@@ -36,7 +37,7 @@ class PromptManager:
         self.logger = logging.getLogger(__name__)
         self._load_prompts()
 
-    def _load_prompts(self) -> None:
+    def _load_prompts(self) -> Any:
         """Load prompts from the prompt directory."""
         if not os.path.exists(self.prompt_directory):
             os.makedirs(self.prompt_directory, exist_ok=True)

@@ -24,9 +24,7 @@ class TestRepositoryConfig:
 
     def test_minimal_valid_config(self) -> None:
         """Test minimal valid configuration."""
-        config = RepositoryConfig(
-            type="github", name="test-repo", branch="main", paths=["/src"]
-        )
+        config = RepositoryConfig(type="github", name="test-repo", branch="main", paths=["/src"])
 
         assert config.type == "github"
         assert config.name == "test-repo"
@@ -113,9 +111,7 @@ class TestRepositoryConfig:
 
     def test_matches_path(self) -> None:
         """Test path matching functionality."""
-        config = RepositoryConfig(
-            type="github", name="test", paths=["/src", "/docs", "/config"]
-        )
+        config = RepositoryConfig(type="github", name="test", paths=["/src", "/docs", "/config"])
 
         # Matching paths
         assert config.matches_path("/src/main.py") is True
@@ -148,9 +144,7 @@ class TestGitHubRepositoryConfig:
             assert config.url == url
 
         # URLs with protocol should be cleaned
-        config = GitHubRepositoryConfig(
-            name="test", url="https://github.com/owner/repo"
-        )
+        config = GitHubRepositoryConfig(name="test", url="https://github.com/owner/repo")
         assert config.url == "owner/repo"
 
         config = GitHubRepositoryConfig(name="test", url="http://github.com/owner/repo")
@@ -184,9 +178,7 @@ class TestGitHubRepositoryConfig:
             "http://localhost:3000/api",
         ]
         for url in valid_urls:
-            config = GitHubRepositoryConfig(
-                name="test", url="owner/repo", api_base_url=url
-            )
+            config = GitHubRepositoryConfig(name="test", url="owner/repo", api_base_url=url)
             assert config.api_base_url == url
 
         # Invalid URLs
@@ -198,9 +190,7 @@ class TestGitHubRepositoryConfig:
 
         for invalid_url, expected_error in invalid_cases:
             with pytest.raises(ValidationError) as exc_info:
-                GitHubRepositoryConfig(
-                    name="test", url="owner/repo", api_base_url=invalid_url
-                )
+                GitHubRepositoryConfig(name="test", url="owner/repo", api_base_url=invalid_url)
             assert expected_error in str(exc_info.value)
 
     def test_get_full_url(self) -> None:
@@ -208,9 +198,7 @@ class TestGitHubRepositoryConfig:
         config = GitHubRepositoryConfig(name="test", url="owner/repo")
         assert config.get_full_url() == "https://github.com/owner/repo"
 
-        config = GitHubRepositoryConfig(
-            name="test", url="https://github.com/owner/repo"
-        )
+        config = GitHubRepositoryConfig(name="test", url="https://github.com/owner/repo")
         assert config.get_full_url() == "https://github.com/owner/repo"
 
     def test_get_owner_and_repo_name(self) -> None:
@@ -225,9 +213,7 @@ class TestGitLabRepositoryConfig:
 
     def test_default_type(self) -> None:
         """Test that type is set to gitlab by default."""
-        config = GitLabRepositoryConfig(
-            name="test", url="https://gitlab.com/owner/repo"
-        )
+        config = GitLabRepositoryConfig(name="test", url="https://gitlab.com/owner/repo")
         assert config.type == "gitlab"
 
     def test_url_validation(self) -> None:
@@ -259,9 +245,7 @@ class TestGitLabRepositoryConfig:
 
     def test_get_project_id(self) -> None:
         """Test getting project ID."""
-        config = GitLabRepositoryConfig(
-            name="test", url="https://gitlab.com/owner/repo"
-        )
+        config = GitLabRepositoryConfig(name="test", url="https://gitlab.com/owner/repo")
         assert config.get_project_id() is None
 
         config = GitLabRepositoryConfig(
@@ -327,7 +311,5 @@ class TestLocalRepositoryConfig:
             assert config.is_git_repository() is True
 
             # Git disabled
-            config = LocalRepositoryConfig(
-                name="test", path=temp_dir, git_enabled=False
-            )
+            config = LocalRepositoryConfig(name="test", path=temp_dir, git_enabled=False)
             assert config.is_git_repository() is False

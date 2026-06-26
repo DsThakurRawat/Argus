@@ -4,16 +4,19 @@ import asyncio
 import functools
 import logging
 import re
+from typing import TYPE_CHECKING
 
 from github import Github as GitHubClient
 from github import GithubException
-from github.Branch import Branch
-from github.ContentFile import ContentFile
-from github.PullRequest import PullRequest
-from github.Repository import Repository
 
 from .analysis_agent import RemediationPlan
 from .local_patch_manager import LocalPatchManager
+
+if TYPE_CHECKING:
+    from github.Branch import Branch
+    from github.ContentFile import ContentFile
+    from github.PullRequest import PullRequest
+    from github.Repository import Repository
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +32,7 @@ class RemediationAgent:
         github_token: str,
         repo_name: str,
         use_local_patches: bool = False,
-        patch_dir: str = "/tmp/real_patches",
+        patch_dir: str = "/tmp/real_patches",  # nosec B108
     ) -> None:
         # Type annotations for attributes
         self.github: GitHubClient | None = None
@@ -47,7 +50,7 @@ class RemediationAgent:
         self.use_local_patches = use_local_patches
         self.repo_name = repo_name
 
-        if use_local_patches or not github_token or github_token == "dummy_token":
+        if use_local_patches or not github_token or github_token == "dummy_token":  # nosec B105
             # Already initialized to None above
             self.local_patch_manager = LocalPatchManager(patch_dir)
             logger.info(
@@ -57,9 +60,7 @@ class RemediationAgent:
             self.github = GitHubClient(github_token)
             self.repo = self.github.get_repo(repo_name)
             self.local_patch_manager = None
-            logger.info(
-                f"[REMEDIATION] RemediationAgent initialized for repository: {repo_name}"
-            )
+            logger.info(f"[REMEDIATION] RemediationAgent initialized for repository: {repo_name}")
 
     def _extract_file_path_from_patch(self, patch_content: str) -> str | None:
         """
@@ -91,9 +92,7 @@ class RemediationAgent:
                 if self._is_valid_file_path(file_path):
                     return file_path
                 else:
-                    logger.warning(
-                        f"[REMEDIATION] Invalid file path extracted: {file_path}"
-                    )
+                    logger.warning(f"[REMEDIATION] Invalid file path extracted: {file_path}")
                     return None
 
         return None
@@ -103,9 +102,7 @@ class RemediationAgent:
         Validates that the extracted file path is safe and reasonable.
         Prevents directory traversal and absolute paths.
         """
-        if not path or ".." in path or path.startswith("/") or path.startswith("\\"):
-            return False
-        return True
+        return not (not path or ".." in path or path.startswith("/") or path.startswith("\\"))
 
     async def create_pull_request(
         self,
@@ -143,17 +140,13 @@ class RemediationAgent:
                 logger.error(
                     f"[REMEDIATION] GitHub repository not available: flow_id={flow_id}, issue_id={issue_id}"
                 )
-                return await self._create_local_patch(
-                    remediation_plan, flow_id, issue_id
-                )
+                return await self._create_local_patch(remediation_plan, flow_id, issue_id)
 
             # Get event loop for async operations
             loop = asyncio.get_event_loop()
 
             # 1. Get the base branch (non-blocking)
-            base: Branch = await loop.run_in_executor(
-                None, self.repo.get_branch, base_branch
-            )
+            base: Branch = await loop.run_in_executor(None, self.repo.get_branch, base_branch)
             logger.debug(
                 f"[REMEDIATION] Base branch found: flow_id={flow_id}, issue_id={issue_id}, branch={base_branch}, sha={base.commit.sha}"
             )
@@ -164,9 +157,7 @@ class RemediationAgent:
                 if self.repo is not None:
                     await loop.run_in_executor(
                         None,
-                        functools.partial(
-                            self.repo.create_git_ref, ref=ref, sha=base.commit.sha
-                        ),
+                        functools.partial(self.repo.create_git_ref, ref=ref, sha=base.commit.sha),
                     )
                 logger.info(
                     f"[REMEDIATION] Branch created successfully: flow_id={flow_id}, issue_id={issue_id}, branch={branch_name}"
@@ -182,9 +173,7 @@ class RemediationAgent:
 
             # 3. Apply the service code fix (non-blocking operations)
             if remediation_plan.code_patch:
-                file_path = self._extract_file_path_from_patch(
-                    remediation_plan.code_patch
-                )
+                file_path = self._extract_file_path_from_patch(remediation_plan.code_patch)
                 if not file_path:
                     logger.warning(
                         f"[REMEDIATION] Service code patch provided but no target file path found: flow_id={flow_id}, issue_id={issue_id}"
@@ -196,15 +185,13 @@ class RemediationAgent:
                     )
                     try:
                         if self.repo is not None:
-                            contents: ContentFile | list[ContentFile] = (
-                                await loop.run_in_executor(
-                                    None,
-                                    functools.partial(
-                                        self.repo.get_contents,
-                                        file_path,
-                                        ref=branch_name,
-                                    ),
-                                )
+                            contents: ContentFile | list[ContentFile] = await loop.run_in_executor(
+                                None,
+                                functools.partial(
+                                    self.repo.get_contents,
+                                    file_path,
+                                    ref=branch_name,
+                                ),
                             )
                         else:
                             raise Exception("GitHub repository not available")
@@ -278,9 +265,7 @@ class RemediationAgent:
                 logger.error(
                     f"[REMEDIATION] Cannot create pull request - repository not available: flow_id={flow_id}, issue_id={issue_id}"
                 )
-                return await self._create_local_patch(
-                    remediation_plan, flow_id, issue_id
-                )
+                return await self._create_local_patch(remediation_plan, flow_id, issue_id)
 
         except GithubException as e:
             logger.error(
@@ -312,9 +297,7 @@ class RemediationAgent:
         Returns:
             str: Path to the created local patch file.
         """
-        logger.info(
-            f"[REMEDIATION] Creating local patch: flow_id={flow_id}, issue_id={issue_id}"
-        )
+        logger.info(f"[REMEDIATION] Creating local patch: flow_id={flow_id}, issue_id={issue_id}")
 
         try:
             # Extract file path from the service code patch

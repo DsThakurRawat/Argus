@@ -64,7 +64,7 @@ class WorkflowContext:
         self.warnings.append(warning)
         logger.warning(f"Workflow warning: {warning}")
 
-    def increment_error(self) -> None:
+    def increment_error(self) -> Any:
         """Increment error count."""
         self.error_count += 1
 
@@ -157,7 +157,9 @@ class WorkflowContextManager(StatefulComponent):
 
         try:
             # Check cache first
-            cache_key = f"repo_{repository_path}_{hash(tuple(file_paths))}_{commit_hash or 'latest'}"
+            cache_key = (
+                f"repo_{repository_path}_{hash(tuple(file_paths))}_{commit_hash or 'latest'}"
+            )
             cached_context = await self.repository_context_cache.get(cache_key)
 
             if cached_context:
@@ -185,9 +187,7 @@ class WorkflowContextManager(StatefulComponent):
             self.total_build_time += build_time
             self.context_build_count += 1
 
-            logger.debug(
-                f"Built repository context for {repository_path} in {build_time:.3f}s"
-            )
+            logger.debug(f"Built repository context for {repository_path} in {build_time:.3f}s")
             return context
 
         except Exception as e:
@@ -217,7 +217,9 @@ class WorkflowContextManager(StatefulComponent):
 
         try:
             # Check cache first
-            cache_key = f"issue_{hash(issue_description)}_{issue_type.value}_{hash(tuple(affected_files))}"
+            cache_key = (
+                f"issue_{hash(issue_description)}_{issue_type.value}_{hash(tuple(affected_files))}"
+            )
             cached_context = await self.issue_pattern_cache.get(cache_key)
 
             if cached_context:
@@ -230,9 +232,7 @@ class WorkflowContextManager(StatefulComponent):
                 issue_type=issue_type,
                 affected_files=affected_files,
                 error_patterns=[],
-                severity_level=(
-                    1 if severity == "low" else 2 if severity == "medium" else 3
-                ),
+                severity_level=(1 if severity == "low" else 2 if severity == "medium" else 3),
                 impact_analysis={},
                 related_services=[],
                 temporal_context={},
@@ -247,9 +247,7 @@ class WorkflowContextManager(StatefulComponent):
             self.total_build_time += build_time
             self.context_build_count += 1
 
-            logger.debug(
-                f"Built issue context for {issue_type.value} in {build_time:.3f}s"
-            )
+            logger.debug(f"Built issue context for {issue_type.value} in {build_time:.3f}s")
             return context
 
         except Exception as e:
@@ -277,9 +275,7 @@ class WorkflowContextManager(StatefulComponent):
 
         try:
             # Check cache first
-            cache_key = (
-                f"prompt_{hash(str(repository_context))}_{hash(str(issue_context))}"
-            )
+            cache_key = f"prompt_{hash(str(repository_context))}_{hash(str(issue_context))}"
             cached_context = await self.context_cache.get(cache_key)
 
             if cached_context:
@@ -342,9 +338,7 @@ class WorkflowContextManager(StatefulComponent):
 
         # Update state
         self.set_state("last_workflow_id", workflow_id)
-        self.set_state(
-            "active_workflows", self.get_state("active_workflows", []) + [workflow_id]
-        )
+        self.set_state("active_workflows", [*self.get_state("active_workflows", []), workflow_id])
 
         logger.info(f"Created workflow context for {workflow_id}")
         return context
@@ -384,7 +378,7 @@ class WorkflowContextManager(StatefulComponent):
             return 0.0
         return self.total_build_time / self.context_build_count
 
-    async def clear_caches(self) -> None:
+    async def clear_caches(self) -> Any:
         """Clear all caches."""
         if hasattr(self.context_cache, "clear"):
             await self.context_cache.clear()

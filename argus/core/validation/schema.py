@@ -43,9 +43,7 @@ class ConfigValidationSchema(BaseValidationSchema):
 
     environment: str = Field(..., description="Environment name")
     schema_version: str = Field(..., description="Schema version")
-    services: list[str] = Field(
-        default_factory=list, description="List of configured services"
-    )
+    services: list[str] = Field(default_factory=list, description="List of configured services")
     debug: bool = Field(default=False, description="Debug mode")
     log_level: str = Field(default="INFO", description="Log level")
 
@@ -92,9 +90,7 @@ class ConfigValidationSchema(BaseValidationSchema):
 
         # Check if log level is appropriate for environment
         if self.environment == "production" and self.log_level in ["DEBUG", "INFO"]:
-            raise ValueError(
-                "Production environment should use WARNING or higher log level"
-            )
+            raise ValueError("Production environment should use WARNING or higher log level")
 
         return self
 
@@ -133,9 +129,7 @@ class ServiceValidationSchema(BaseValidationSchema):
     health_check_interval: float = Field(
         default=60.0, description="Health check interval in seconds"
     )
-    dependencies: list[str] = Field(
-        default_factory=list, description="Service dependencies"
-    )
+    dependencies: list[str] = Field(default_factory=list, description="Service dependencies")
 
     @validator("name")
     def validate_name(cls, v: str) -> str:

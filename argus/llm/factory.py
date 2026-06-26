@@ -21,6 +21,7 @@ from .providers import (
 
 logger = logging.getLogger(__name__)
 
+
 class LLMProviderFactory:
     """
     Registry and factory for LLM provider implementations.
@@ -59,7 +60,9 @@ class LLMProviderFactory:
         self._provider_types[provider_type] = provider_class
         self.__class__._providers_registry[provider_type] = provider_class
 
-    def create_provider(self, config: LLMProviderConfig, force_recreate: bool = False) -> LLMProvider:
+    def create_provider(
+        self, config: LLMProviderConfig, force_recreate: bool = False
+    ) -> LLMProvider:
         """Create a provider instance."""
         provider_type = config.provider
         if provider_type not in self._provider_types:
@@ -80,7 +83,9 @@ class LLMProviderFactory:
                 if is_valid is False:
                     raise ValueError(f"Invalid configuration for provider: {provider_type}")
             self._providers[provider_type] = provider
-            self.__class__._instances[f"{provider_type}_{getattr(config, 'model', 'default')}"] = provider
+            self.__class__._instances[f"{provider_type}_{getattr(config, 'model', 'default')}"] = (
+                provider
+            )
             return provider
         except ValueError:
             raise
@@ -129,6 +134,19 @@ class LLMProviderFactory:
         return cls._instances[instance_key]
 
     @classmethod
+    def list_providers(cls) -> list[str]:
+        return list(cls._providers_registry.keys())
+
+    @classmethod
+    def register_provider(cls, name: str, provider_class: type) -> None:
+        cls._providers_registry[name] = provider_class
+
+    @classmethod
+    def unregister_provider(cls, name: str) -> None:
+        if name in cls._providers_registry:
+            del cls._providers_registry[name]
+
+    @classmethod
     def create_providers_from_config(cls, config: LLMConfig) -> dict[str, LLMProvider]:
         """
         Instantiate all providers defined in the global configuration.
@@ -148,14 +166,15 @@ class LLMProviderFactory:
         """
         for name, instance in list(cls._instances.items()):
             try:
-                if hasattr(instance, "client") and hasattr(instance.client, "aclose"):
-                    await instance.client.aclose()
+                if hasattr(instance, "client") and hasattr(instance.client, "aclose"):  # type: ignore
+                    await instance.client.aclose()  # type: ignore
                 elif hasattr(instance, "__aexit__"):
-                    await instance.__aexit__(None, None, None)
+                    await instance.__aexit__(None, None, None)  # type: ignore
                 logger.info(f"Successfully shut down provider: {name}")
             except Exception as e:
                 logger.error(f"Error shutting down provider {name}: {e}")
         cls._instances.clear()
+
 
 def get_provider_factory() -> type[LLMProviderFactory]:
     """Get the LLM provider factory class."""

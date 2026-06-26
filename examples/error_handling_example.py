@@ -55,9 +55,7 @@ class ErrorHandlingExample:
 
         # Add providers to factory
         for i, _provider in enumerate(providers):
-            self.provider_factory.register_provider(
-                f"mock_provider_{i}", RealisticMockProvider
-            )
+            self.provider_factory.register_provider(f"mock_provider_{i}", RealisticMockProvider)
 
         # Initialize model mixer
         self.model_mixer = ModelMixer(
@@ -133,9 +131,7 @@ class ErrorHandlingExample:
                     logger.info(f"Successfully handled: {test_case['name']}")
 
             except ValueError as e:
-                if test_case["expected_error"] and test_case["expected_error"] in str(
-                    e
-                ):
+                if test_case["expected_error"] and test_case["expected_error"] in str(e):
                     logger.info(f"✅ Correctly caught validation error: {e}")
                 else:
                     logger.error(f"❌ Unexpected validation error: {e}")
@@ -165,7 +161,8 @@ class ErrorHandlingExample:
 
             try:
                 result = await asyncio.wait_for(
-                    provider.generate(request), timeout=1.0  # Very short timeout
+                    provider.generate(request),
+                    timeout=1.0,  # Very short timeout
                 )
                 logger.info(f"Request completed: {result.content[:50]}...")
 
@@ -174,16 +171,12 @@ class ErrorHandlingExample:
 
                 # Demonstrate graceful degradation
                 logger.info("Attempting fallback to another provider...")
-                fallback_provider = self.provider_factory.get_provider(
-                    "mock_provider_2"
-                )
+                fallback_provider = self.provider_factory.get_provider("mock_provider_2")
                 assert fallback_provider is not None, "Fallback provider not found"
 
                 try:
                     fallback_result = await fallback_provider.generate(request)
-                    logger.info(
-                        f"✅ Fallback successful: {fallback_result.content[:50]}..."
-                    )
+                    logger.info(f"✅ Fallback successful: {fallback_result.content[:50]}...")
                 except Exception as e:
                     logger.error(f"❌ Fallback also failed: {e}")
 
@@ -206,15 +199,11 @@ class ErrorHandlingExample:
 
         for i in range(5):
             try:
-                health = await self.health_checker.check_provider_health(
-                    "mock_provider_1"
-                )
-                logger.info(f"Health check {i+1}: {health.status}")
+                health = await self.health_checker.check_provider_health("mock_provider_1")
+                logger.info(f"Health check {i + 1}: {health.status}")
 
                 # Check circuit breaker state
-                cb_state = self.health_checker.get_circuit_breaker_state(
-                    "mock_provider_1"
-                )
+                cb_state = self.health_checker.get_circuit_breaker_state("mock_provider_1")
                 logger.info(f"Circuit breaker state: {cb_state['state']}")
 
                 if cb_state["state"] == "open":
@@ -418,9 +407,7 @@ class ErrorHandlingExample:
                 logger.info(f"Confidence: {result.confidence_score}")
                 logger.info(f"Cost: ${result.total_cost:.4f}")
             else:
-                logger.warning(
-                    "⚠️ No primary result available, checking individual results"
-                )
+                logger.warning("⚠️ No primary result available, checking individual results")
 
                 # Check individual results
                 for i, response in enumerate(result.secondary_results):

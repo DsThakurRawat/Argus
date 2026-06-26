@@ -91,9 +91,7 @@ class RetryHandler:
         # Don't retry circuit breaker exceptions
         if CircuitBreakerOpenException in retryable_exceptions:
             retryable_exceptions = tuple(
-                exc
-                for exc in retryable_exceptions
-                if exc != CircuitBreakerOpenException
+                exc for exc in retryable_exceptions if exc != CircuitBreakerOpenException
             )
 
         last_exception = None
@@ -185,7 +183,7 @@ class RetryHandler:
         # Add jitter if enabled
         if self.jitter:
             jitter_amount = base_delay * self.jitter_range
-            jitter = random.uniform(-jitter_amount, jitter_amount)
+            jitter = random.uniform(-jitter_amount, jitter_amount)  # nosec B311
             delay = max(0.1, base_delay + jitter)  # Minimum 0.1s delay
         else:
             delay = base_delay
@@ -195,9 +193,7 @@ class RetryHandler:
     def get_stats(self) -> dict:
         """Get retry handler statistics."""
         success_rate = (
-            self._total_successes / self._total_attempts * 100
-            if self._total_attempts > 0
-            else 0
+            self._total_successes / self._total_attempts * 100 if self._total_attempts > 0 else 0
         )
 
         return {
@@ -242,7 +238,7 @@ class TenacityRetryHandler:
         # Configure tenacity retry strategy
         self._setup_retry_strategy()
 
-    def _setup_retry_strategy(self) -> None:
+    def _setup_retry_strategy(self) -> Any:
         """Setup the tenacity retry strategy."""
         # Base retry configuration
         retry_config = [
@@ -284,7 +280,7 @@ class TenacityRetryHandler:
                 if attempt < self.max_attempts - 1:
                     delay = self.base_delay * (2**attempt)
                     if self.jitter:
-                        delay += random.uniform(0, delay * 0.1)
+                        delay += random.uniform(0, delay * 0.1)  # nosec B311
                     delay = min(delay, self.max_delay)
                     await asyncio.sleep(delay)
                 else:

@@ -1,7 +1,6 @@
 """Exceptions for the dependency injection system."""
 
 
-
 class ServiceNotFoundError(Exception):
     """Raised when a requested service is not found in the container."""
 

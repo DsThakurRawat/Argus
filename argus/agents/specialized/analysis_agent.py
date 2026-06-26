@@ -62,9 +62,7 @@ class EnhancedAnalysisAgent(EnhancedBaseAgent[AnalysisResult]):
             **kwargs,
         )
 
-        logger.info(
-            "EnhancedAnalysisAgent initialized with quality-focused optimization"
-        )
+        logger.info("EnhancedAnalysisAgent initialized with quality-focused optimization")
 
     async def analyze(
         self,

@@ -5,12 +5,14 @@ File-based queue system for persistent log buffering.
 """
 
 import asyncio
+import contextlib
 from dataclasses import dataclass
 from datetime import UTC, datetime
 import json
 import logging
 import os
 from pathlib import Path
+from typing import Any
 
 from ..interfaces.core import LogEntry
 from .memory_queue import QueueConfig, QueueStats
@@ -48,7 +50,7 @@ class FileSystemQueue:
         self._sync_task: asyncio.Task | None = None
         self._cleanup_task: asyncio.Task | None = None
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the file queue and background tasks."""
         if self._sync_task is None:
             self._sync_task = asyncio.create_task(self._sync_loop())
@@ -67,17 +69,13 @@ class FileSystemQueue:
 
         if self._sync_task:
             self._sync_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._sync_task
-            except asyncio.CancelledError:
-                pass
 
         if self._cleanup_task:
             self._cleanup_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._cleanup_task
-            except asyncio.CancelledError:
-                pass
 
         logger.info("Stopped file queue")
 
@@ -146,7 +144,7 @@ class FileSystemQueue:
             async with self._lock:
                 # Get all queue files, sorted by modification time
                 queue_files = sorted(
-                    [f for f in self.queue_dir.glob("queue_*.jsonl")],
+                    self.queue_dir.glob("queue_*.jsonl"),
                     key=lambda x: x.stat().st_mtime,
                 )
 
@@ -245,9 +243,7 @@ class FileSystemQueue:
         # Create new file
         await self._get_current_file()
 
-    async def _read_file_entries(
-        self, file_path: Path, max_entries: int
-    ) -> list[LogEntry]:
+    async def _read_file_entries(self, file_path: Path, max_entries: int) -> list[LogEntry]:
         """Read log entries from a file."""
         entries = []
 
@@ -273,9 +269,7 @@ class FileSystemQueue:
                         entries.append(entry)
 
                     except (json.JSONDecodeError, KeyError, ValueError) as e:
-                        logger.warning(
-                            f"Error parsing log entry in {file_path}:{line_num}: {e}"
-                        )
+                        logger.warning(f"Error parsing log entry in {file_path}:{line_num}: {e}")
                         continue
 
         except Exception as e:

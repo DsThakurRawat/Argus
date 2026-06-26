@@ -27,7 +27,7 @@ class MetricsManager:
         self.history: dict[str, Any] = {}
         self._setup_metrics_storage()
 
-    def _setup_metrics_storage(self) -> None:
+    def _setup_metrics_storage(self) -> Any:
         """
         Set up metrics storage and load alert thresholds from config.
         """
@@ -139,9 +139,7 @@ class MetricsManager:
         """
         ranked_providers: list[tuple[str, float]] = []
         if metric == "health":
-            ranked_providers = [
-                (pid, m.health_score) for pid, m in self.provider_metrics.items()
-            ]
+            ranked_providers = [(pid, m.health_score) for pid, m in self.provider_metrics.items()]
             ranked_providers.sort(key=lambda item: item[1], reverse=True)
         # Add other metrics for ranking as needed
         return ranked_providers

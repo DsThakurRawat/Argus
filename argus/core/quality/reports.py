@@ -20,6 +20,7 @@ logger = get_logger(__name__)
 
 class ReportFormat(Enum):
     """Supported report formats."""
+
     JSON = "json"
     HTML = "html"
     CONSOLE = "console"
@@ -29,6 +30,7 @@ class ReportFormat(Enum):
 @dataclass
 class QualityReport:
     """Comprehensive quality report."""
+
     timestamp: datetime
     total_gates: int
     passed_gates: int
@@ -62,16 +64,14 @@ class QualityReportGenerator:
         self.logger = get_logger(__name__)
 
     def generate_report(
-        self,
-        results: list[QualityGateResult],
-        duration: float = 0.0
+        self, results: list[QualityGateResult], duration: float = 0.0
     ) -> QualityReport:
         """Generate a comprehensive quality report.
-        
+
         Args:
             results: List of quality gate results.
             duration: Total execution duration in seconds.
-            
+
         Returns:
             Generated quality report.
         """
@@ -92,7 +92,7 @@ class QualityReportGenerator:
             error_gates=error_gates,
             results=results,
             duration=duration,
-            success=success
+            success=success,
         )
 
 
@@ -105,11 +105,11 @@ class QualityReportFormatter:
 
     def format_report(self, report: QualityReport, format_type: ReportFormat) -> str:
         """Format a quality report.
-        
+
         Args:
             report: Quality report to format.
             format_type: Output format type.
-            
+
         Returns:
             Formatted report string.
         """
@@ -124,10 +124,10 @@ class QualityReportFormatter:
 
     def _format_json(self, report: QualityReport) -> str:
         """Format report as JSON.
-        
+
         Args:
             report: Quality report to format.
-            
+
         Returns:
             JSON formatted report.
         """
@@ -142,7 +142,7 @@ class QualityReportFormatter:
                 "pass_rate": report.pass_rate,
                 "failure_rate": report.failure_rate,
                 "success": report.success,
-                "duration": report.duration
+                "duration": report.duration,
             },
             "results": [
                 {
@@ -151,20 +151,20 @@ class QualityReportFormatter:
                     "message": result.message,
                     "duration": result.duration,
                     "timestamp": result.timestamp.isoformat(),
-                    "details": result.details
+                    "details": result.details,
                 }
                 for result in report.results
-            ]
+            ],
         }
 
         return json.dumps(data, indent=2, default=str)
 
     def _format_html(self, report: QualityReport) -> str:
         """Format report as HTML.
-        
+
         Args:
             report: Quality report to format.
-            
+
         Returns:
             HTML formatted report.
         """
@@ -173,7 +173,7 @@ class QualityReportFormatter:
             QualityGateStatus.FAILED: "❌",
             QualityGateStatus.WARNING: "⚠️",
             QualityGateStatus.SKIPPED: "⏭️",
-            QualityGateStatus.ERROR: "💥"
+            QualityGateStatus.ERROR: "💥",
         }
 
         status_colors = {
@@ -181,7 +181,7 @@ class QualityReportFormatter:
             QualityGateStatus.FAILED: "#dc3545",
             QualityGateStatus.WARNING: "#ffc107",
             QualityGateStatus.SKIPPED: "#6c757d",
-            QualityGateStatus.ERROR: "#dc3545"
+            QualityGateStatus.ERROR: "#dc3545",
         }
 
         html = f"""
@@ -191,30 +191,30 @@ class QualityReportFormatter:
             <title>Quality Gate Report</title>
             <style>
                 body {{ font-family: Arial, sans-serif; margin: 20px; }}
-                .header {{ 
-                    background-color: #f8f9fa; 
-                    padding: 20px; 
-                    border-radius: 5px; 
-                    margin-bottom: 20px; 
+                .header {{
+                    background-color: #f8f9fa;
+                    padding: 20px;
+                    border-radius: 5px;
+                    margin-bottom: 20px;
                 }}
-                .summary {{ 
-                    display: grid; 
-                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-                    gap: 15px; 
-                    margin-bottom: 20px; 
+                .summary {{
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
                 }}
-                .summary-card {{ 
-                    background-color: white; 
-                    padding: 15px; 
-                    border-radius: 5px; 
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+                .summary-card {{
+                    background-color: white;
+                    padding: 15px;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 }}
                 .summary-card h3 {{ margin: 0 0 10px 0; color: #333; }}
                 .summary-card .value {{ font-size: 24px; font-weight: bold; }}
-                .results {{ 
-                    background-color: white; 
-                    border-radius: 5px; 
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+                .results {{
+                    background-color: white;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 }}
                 .result-item {{ padding: 15px; border-bottom: 1px solid #eee; }}
                 .result-item:last-child {{ border-bottom: none; }}
@@ -230,10 +230,10 @@ class QualityReportFormatter:
         <body>
             <div class="header">
                 <h1>Quality Gate Report</h1>
-                <p>Generated: {report.timestamp.strftime('%Y-%m-%d %H:%M:%S')}</p>
+                <p>Generated: {report.timestamp.strftime("%Y-%m-%d %H:%M:%S")}</p>
                 <p>Duration: {report.duration:.2f} seconds</p>
             </div>
-            
+
             <div class="summary">
                 <div class="summary-card">
                     <h3>Total Gates</h3>
@@ -252,7 +252,7 @@ class QualityReportFormatter:
                     <div class="value">{report.pass_rate:.1f}%</div>
                 </div>
             </div>
-            
+
             <div class="results">
                 <h2>Gate Results</h2>
         """
@@ -272,8 +272,8 @@ class QualityReportFormatter:
                     </div>
                     <div class="result-message">{result.message}</div>
                     <div class="result-details">
-                        Duration: {result.duration:.2f}s | 
-                        Timestamp: {result.timestamp.strftime('%H:%M:%S')}
+                        Duration: {result.duration:.2f}s |
+                        Timestamp: {result.timestamp.strftime("%H:%M:%S")}
                     </div>
                 </div>
             """
@@ -288,10 +288,10 @@ class QualityReportFormatter:
 
     def _format_markdown(self, report: QualityReport) -> str:
         """Format report as Markdown.
-        
+
         Args:
             report: Quality report to format.
-            
+
         Returns:
             Markdown formatted report.
         """
@@ -300,14 +300,14 @@ class QualityReportFormatter:
             QualityGateStatus.FAILED: "❌",
             QualityGateStatus.WARNING: "⚠️",
             QualityGateStatus.SKIPPED: "⏭️",
-            QualityGateStatus.ERROR: "💥"
+            QualityGateStatus.ERROR: "💥",
         }
 
         md = f"""# Quality Gate Report
 
-**Generated:** {report.timestamp.strftime('%Y-%m-%d %H:%M:%S')}  
-**Duration:** {report.duration:.2f} seconds  
-**Overall Status:** {'✅ PASSED' if report.success else '❌ FAILED'}
+**Generated:** {report.timestamp.strftime("%Y-%m-%d %H:%M:%S")}
+**Duration:** {report.duration:.2f} seconds
+**Overall Status:** {"✅ PASSED" if report.success else "❌ FAILED"}
 
 ## Summary
 
@@ -331,7 +331,7 @@ class QualityReportFormatter:
 - **Status:** {result.status.value.upper()}
 - **Message:** {result.message}
 - **Duration:** {result.duration:.2f}s
-- **Timestamp:** {result.timestamp.strftime('%H:%M:%S')}
+- **Timestamp:** {result.timestamp.strftime("%H:%M:%S")}
 
 """
 
@@ -339,10 +339,10 @@ class QualityReportFormatter:
 
     def _format_console(self, report: QualityReport) -> str:
         """Format report for console output.
-        
+
         Args:
             report: Quality report to format.
-            
+
         Returns:
             Console formatted report.
         """
@@ -351,7 +351,7 @@ class QualityReportFormatter:
             QualityGateStatus.FAILED: "❌",
             QualityGateStatus.WARNING: "⚠️",
             QualityGateStatus.SKIPPED: "⏭️",
-            QualityGateStatus.ERROR: "💥"
+            QualityGateStatus.ERROR: "💥",
         }
 
         output = []
@@ -384,13 +384,10 @@ class QualityReportFormatter:
         return "\n".join(output)
 
     def save_report(
-        self,
-        report: QualityReport,
-        file_path: Path,
-        format_type: ReportFormat
+        self, report: QualityReport, file_path: Path, format_type: ReportFormat
     ) -> None:
         """Save a quality report to a file.
-        
+
         Args:
             report: Quality report to save.
             file_path: Path to save the report.

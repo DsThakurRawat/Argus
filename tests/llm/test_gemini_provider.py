@@ -64,10 +64,10 @@ class TestGeminiProvider:
     @pytest.mark.asyncio
     async def test_provider_initialization(self, mock_config):
         """Test provider initialization."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ) as mock_model:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel") as mock_model,
+        ):
             mock_model_instance = MagicMock()
             mock_model.return_value = mock_model_instance
 
@@ -80,14 +80,12 @@ class TestGeminiProvider:
     @pytest.mark.asyncio
     async def test_generate_response(self, mock_config, mock_gemini_response):
         """Test non-streaming response generation."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ) as mock_model:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel") as mock_model,
+        ):
             mock_model_instance = MagicMock()
-            mock_model_instance.generate_content = MagicMock(
-                return_value=mock_gemini_response
-            )
+            mock_model_instance.generate_content = MagicMock(return_value=mock_gemini_response)
             mock_model.return_value = mock_model_instance
 
             provider = GeminiProvider(mock_config)
@@ -110,18 +108,14 @@ class TestGeminiProvider:
                 assert response.usage["output_tokens"] == 5
 
     @pytest.mark.asyncio
-    async def test_generate_streaming_response(
-        self, mock_config, mock_streaming_response
-    ):
+    async def test_generate_streaming_response(self, mock_config, mock_streaming_response):
         """Test streaming response generation."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ) as mock_model:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel") as mock_model,
+        ):
             mock_model_instance = MagicMock()
-            mock_model_instance.generate_content = MagicMock(
-                return_value=mock_streaming_response
-            )
+            mock_model_instance.generate_content = MagicMock(return_value=mock_streaming_response)
             mock_model.return_value = mock_model_instance
 
             provider = GeminiProvider(mock_config)
@@ -148,14 +142,12 @@ class TestGeminiProvider:
     @pytest.mark.asyncio
     async def test_health_check_success(self, mock_config):
         """Test successful health check."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ) as mock_model:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel") as mock_model,
+        ):
             mock_model_instance = MagicMock()
-            mock_model_instance.generate_content = MagicMock(
-                return_value=MagicMock(text="Hello")
-            )
+            mock_model_instance.generate_content = MagicMock(return_value=MagicMock(text="Hello"))
             mock_model.return_value = mock_model_instance
 
             provider = GeminiProvider(mock_config)
@@ -169,14 +161,12 @@ class TestGeminiProvider:
     @pytest.mark.asyncio
     async def test_health_check_failure(self, mock_config):
         """Test failed health check."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ) as mock_model:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel") as mock_model,
+        ):
             mock_model_instance = MagicMock()
-            mock_model_instance.generate_content = MagicMock(
-                side_effect=Exception("API Error")
-            )
+            mock_model_instance.generate_content = MagicMock(side_effect=Exception("API Error"))
             mock_model.return_value = mock_model_instance
 
             provider = GeminiProvider(mock_config)
@@ -189,28 +179,19 @@ class TestGeminiProvider:
 
     def test_supports_streaming(self, mock_config: str) -> None:
         """Test streaming support."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ):
-
+        with patch("google.generativeai.configure"), patch("google.generativeai.GenerativeModel"):
             provider = GeminiProvider(mock_config)
             assert provider.supports_streaming() is True
 
     def test_supports_tools(self, mock_config: str) -> None:
         """Test tool calling support."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ):
-
+        with patch("google.generativeai.configure"), patch("google.generativeai.GenerativeModel"):
             provider = GeminiProvider(mock_config)
             assert provider.supports_tools() is True
 
     def test_get_available_models(self, mock_config: str) -> None:
         """Test getting available models."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ):
-
+        with patch("google.generativeai.configure"), patch("google.generativeai.GenerativeModel"):
             provider = GeminiProvider(mock_config)
             models = provider.get_available_models()
 
@@ -223,13 +204,12 @@ class TestGeminiProvider:
     @pytest.mark.asyncio
     async def test_embeddings(self, mock_config):
         """Test embeddings generation."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ), patch("google.generativeai.embed_content") as mock_embed:
-
-            mock_embed.return_value = {
-                "embedding": [0.1, 0.2, 0.3] * 256
-            }  # 768 dimensions
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel"),
+            patch("google.generativeai.embed_content") as mock_embed,
+        ):
+            mock_embed.return_value = {"embedding": [0.1, 0.2, 0.3] * 256}  # 768 dimensions
 
             provider = GeminiProvider(mock_config)
 
@@ -243,14 +223,12 @@ class TestGeminiProvider:
 
     def test_token_count(self, mock_config: str) -> None:
         """Test token counting."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ) as mock_model:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel") as mock_model,
+        ):
             mock_model_instance = MagicMock()
-            mock_model_instance.count_tokens = MagicMock(
-                return_value=MagicMock(total_tokens=10)
-            )
+            mock_model_instance.count_tokens = MagicMock(return_value=MagicMock(total_tokens=10))
             mock_model.return_value = mock_model_instance
 
             provider = GeminiProvider(mock_config)
@@ -260,14 +238,12 @@ class TestGeminiProvider:
 
     def test_token_count_fallback(self, mock_config: str) -> None:
         """Test token counting fallback."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ) as mock_model:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel") as mock_model,
+        ):
             mock_model_instance = MagicMock()
-            mock_model_instance.count_tokens = MagicMock(
-                side_effect=Exception("API Error")
-            )
+            mock_model_instance.count_tokens = MagicMock(side_effect=Exception("API Error"))
             mock_model.return_value = mock_model_instance
 
             provider = GeminiProvider(mock_config)
@@ -290,10 +266,7 @@ class TestGeminiProvider:
             provider_specific={"model": "gemini-1.5-flash"},
         )
 
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ):
-
+        with patch("google.generativeai.configure"), patch("google.generativeai.GenerativeModel"):
             provider = GeminiProvider(flash_config)
             provider.model = "gemini-1.5-flash"  # Set model directly for testing
 
@@ -316,10 +289,7 @@ class TestGeminiProvider:
             provider_specific={"model": "gemini-1.5-pro"},
         )
 
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ):
-
+        with patch("google.generativeai.configure"), patch("google.generativeai.GenerativeModel"):
             provider = GeminiProvider(pro_config)
             provider.model = "gemini-1.5-pro"  # Set model directly for testing
 
@@ -330,10 +300,7 @@ class TestGeminiProvider:
 
     def test_convert_messages_to_prompt(self, mock_config: str) -> None:
         """Test message conversion to prompt."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ):
-
+        with patch("google.generativeai.configure"), patch("google.generativeai.GenerativeModel"):
             provider = GeminiProvider(mock_config)
 
             messages = [
@@ -344,15 +311,14 @@ class TestGeminiProvider:
 
             prompt = provider._convert_messages_to_prompt(messages)
 
-            expected = "System: You are a helpful assistant.\n\nUser: Hello!\n\nAssistant: Hi there!"
+            expected = (
+                "System: You are a helpful assistant.\n\nUser: Hello!\n\nAssistant: Hi there!"
+            )
             assert prompt == expected
 
     def test_extract_usage(self, mock_config: str) -> None:
         """Test usage extraction from response."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ):
-
+        with patch("google.generativeai.configure"), patch("google.generativeai.GenerativeModel"):
             provider = GeminiProvider(mock_config)
 
             mock_response = MagicMock()
@@ -367,10 +333,7 @@ class TestGeminiProvider:
 
     def test_extract_usage_no_metadata(self, mock_config: str) -> None:
         """Test usage extraction when metadata is missing."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ):
-
+        with patch("google.generativeai.configure"), patch("google.generativeai.GenerativeModel"):
             provider = GeminiProvider(mock_config)
 
             mock_response = MagicMock()
@@ -413,14 +376,12 @@ class TestGeminiProvider:
     @pytest.mark.asyncio
     async def test_generate_error_handling(self, mock_config):
         """Test error handling in generate method."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ) as mock_model:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel") as mock_model,
+        ):
             mock_model_instance = MagicMock()
-            mock_model_instance.generate_content = MagicMock(
-                side_effect=Exception("API Error")
-            )
+            mock_model_instance.generate_content = MagicMock(side_effect=Exception("API Error"))
             mock_model.return_value = mock_model_instance
 
             provider = GeminiProvider(mock_config)
@@ -439,10 +400,11 @@ class TestGeminiProvider:
     @pytest.mark.asyncio
     async def test_embeddings_error_handling(self, mock_config):
         """Test error handling in embeddings method."""
-        with patch("google.generativeai.configure"), patch(
-            "google.generativeai.GenerativeModel"
-        ), patch("google.generativeai.embed_content") as mock_embed:
-
+        with (
+            patch("google.generativeai.configure"),
+            patch("google.generativeai.GenerativeModel"),
+            patch("google.generativeai.embed_content") as mock_embed,
+        ):
             mock_embed.side_effect = Exception("Embeddings API Error")
 
             provider = GeminiProvider(mock_config)

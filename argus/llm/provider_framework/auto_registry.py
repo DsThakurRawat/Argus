@@ -35,9 +35,7 @@ class ProviderAutoRegistry:
         self.external_providers: dict[str, str] = {}  # name -> module_path
         self._initialized = False
 
-    def discover_builtin_providers(
-        self, package_path: str = "argus.llm.providers"
-    ) -> None:
+    def discover_builtin_providers(self, package_path: str = "argus.llm.providers") -> None:
         """
         Discover built-in provider implementations.
 
@@ -67,26 +65,19 @@ class ProviderAutoRegistry:
                             and obj != LLMProvider
                             and not inspect.isabstract(obj)
                         ):
-
                             # Extract provider name from class name
                             provider_name = self._extract_provider_name(name)
                             if provider_name:
                                 self.discovered_providers[provider_name] = obj
-                                logger.info(
-                                    f"Discovered built-in provider: {provider_name}"
-                                )
+                                logger.info(f"Discovered built-in provider: {provider_name}")
 
                 except Exception as e:
-                    logger.warning(
-                        f"Failed to discover provider in {module_info.name}: {e}"
-                    )
+                    logger.warning(f"Failed to discover provider in {module_info.name}: {e}")
 
         except Exception as e:
             logger.error(f"Failed to discover built-in providers: {e}")
 
-    def discover_external_providers(
-        self, search_paths: list[str] | None = None
-    ) -> None:
+    def discover_external_providers(self, search_paths: list[str] | None = None) -> None:
         """
         Discover external provider implementations.
 
@@ -119,9 +110,7 @@ class ProviderAutoRegistry:
         """Load provider from a Python file."""
         try:
             # Create a module spec and load it
-            spec = importlib.util.spec_from_file_location(
-                "external_provider", file_path
-            )
+            spec = importlib.util.spec_from_file_location("external_provider", file_path)
             if spec and spec.loader:
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
@@ -133,7 +122,6 @@ class ProviderAutoRegistry:
                         and obj != LLMProvider
                         and not inspect.isabstract(obj)
                     ):
-
                         provider_name = self._extract_provider_name(name)
                         if provider_name:
                             self.discovered_providers[provider_name] = obj
@@ -289,9 +277,7 @@ class ProviderAutoRegistry:
             "is_external": provider_name in self.external_providers,
             "file_path": self.external_providers.get(provider_name),
             "docstring": provider_class.__doc__,
-            "methods": [
-                method for method in dir(provider_class) if not method.startswith("_")
-            ],
+            "methods": [method for method in dir(provider_class) if not method.startswith("_")],
         }
 
         return info

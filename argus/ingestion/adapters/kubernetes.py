@@ -48,7 +48,7 @@ class KubernetesAdapter(LogIngestionInterface):
         self._last_error = None
         self._watched_pods = set()
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the Kubernetes adapter."""
         if not KUBERNETES_AVAILABLE or config is None or client is None:
             raise SourceConnectionError("Kubernetes client not available")
@@ -72,15 +72,11 @@ class KubernetesAdapter(LogIngestionInterface):
 
             self.running = True
             self._last_check_time = datetime.now(UTC)
-            logger.info(
-                f"Started Kubernetes adapter for namespace: {self.config.namespace}"
-            )
+            logger.info(f"Started Kubernetes adapter for namespace: {self.config.namespace}")
 
         except Exception as e:
             logger.error(f"Failed to start Kubernetes adapter: {e}")
-            raise SourceConnectionError(
-                f"Failed to start Kubernetes adapter: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to start Kubernetes adapter: {e}") from e
 
     async def stop(self) -> None:
         """Stop the Kubernetes adapter."""
@@ -105,9 +101,7 @@ class KubernetesAdapter(LogIngestionInterface):
 
                     for container_name in containers:
                         try:
-                            logs = await self._get_pod_logs(
-                                pod.metadata.name, container_name
-                            )
+                            logs = await self._get_pod_logs(pod.metadata.name, container_name)
 
                             for log_line in logs:
                                 if not self.running:
@@ -137,9 +131,7 @@ class KubernetesAdapter(LogIngestionInterface):
             logger.error(f"Error getting logs from Kubernetes: {e}")
             self._error_count += 1
             self._last_error = str(e)
-            raise SourceConnectionError(
-                f"Failed to get logs from Kubernetes: {e}"
-            ) from e
+            raise SourceConnectionError(f"Failed to get logs from Kubernetes: {e}") from e
 
     async def health_check(self) -> SourceHealth:
         """Check the health of the Kubernetes adapter."""
@@ -166,9 +158,7 @@ class KubernetesAdapter(LogIngestionInterface):
                     "label_selector": self.config.label_selector,
                     "watched_pods": len(self._watched_pods),
                     "last_check": (
-                        self._last_check_time.isoformat()
-                        if self._last_check_time
-                        else None
+                        self._last_check_time.isoformat() if self._last_check_time else None
                     ),
                 },
             )
@@ -201,9 +191,7 @@ class KubernetesAdapter(LogIngestionInterface):
 
     async def handle_error(self, error: Exception, context: dict[str, Any]) -> bool:
         """Handle errors from the adapter."""
-        logger.error(
-            f"Kubernetes error in {context.get('operation', 'unknown')}: {error}"
-        )
+        logger.error(f"Kubernetes error in {context.get('operation', 'unknown')}: {error}")
         self._error_count += 1
         self._last_error = str(error)
 
@@ -310,9 +298,7 @@ class KubernetesAdapter(LogIngestionInterface):
             logger.error(f"Error getting logs from {pod_name}/{container_name}: {e}")
             return []
 
-    def _convert_to_log_entry(
-        self, log_line: str, pod: Any, container_name: str
-    ) -> LogEntry:
+    def _convert_to_log_entry(self, log_line: str, pod: Any, container_name: str) -> LogEntry:
         """Convert Kubernetes log line to LogEntry."""
         # Parse timestamp if present (Kubernetes logs include timestamps)
         timestamp = datetime.now(UTC)
@@ -324,9 +310,7 @@ class KubernetesAdapter(LogIngestionInterface):
                 # Kubernetes timestamp format: 2024-01-01T10:00:00.000000000Z
                 timestamp_str = log_line.split(" ")[0]
                 if "T" in timestamp_str and "Z" in timestamp_str:
-                    timestamp = datetime.fromisoformat(
-                        timestamp_str.replace("Z", "+00:00")
-                    )
+                    timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
                     message = " ".join(log_line.split(" ")[1:])
             except (ValueError, IndexError):
                 # If parsing fails, use current time
@@ -360,8 +344,6 @@ class KubernetesAdapter(LogIngestionInterface):
                 "pod_ip": pod.status.pod_ip,
                 "node_name": pod.spec.node_name,
                 "labels": dict(pod.metadata.labels) if pod.metadata.labels else {},
-                "annotations": (
-                    dict(pod.metadata.annotations) if pod.metadata.annotations else {}
-                ),
+                "annotations": (dict(pod.metadata.annotations) if pod.metadata.annotations else {}),
             },
         )

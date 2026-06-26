@@ -26,9 +26,7 @@ class GrokProvider(LLMProvider):
     def __init__(self, config: LLMProviderConfig) -> None:
         super().__init__(config)
         self.api_key = config.api_key
-        self.base_url = (
-            str(config.base_url) if config.base_url else "https://api.x.ai/v1"
-        )
+        self.base_url = str(config.base_url) if config.base_url else "https://api.x.ai/v1"
 
         # Initialize HTTP client
         self.client = httpx.AsyncClient(
@@ -103,9 +101,7 @@ class GrokProvider(LLMProvider):
                 "stream": True,
             }
 
-            async with self.client.stream(
-                "POST", "/chat/completions", json=payload
-            ) as response:
+            async with self.client.stream("POST", "/chat/completions", json=payload) as response:
                 response.raise_for_status()
 
                 async for line in response.aiter_lines():

@@ -1,5 +1,6 @@
 """Validation result classes for the configuration validation system."""
 
+import dataclasses
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
@@ -23,8 +24,10 @@ class ValidationError:
     value: Any | None = None
     severity: ValidationSeverity = ValidationSeverity.ERROR
     rule_name: str | None = None
-    context: dict[str, Any] = field(default_factory=dict)  # type: ignore
-    suggestions: list[str] = field(default_factory=list)  # type: ignore
+    # Use the fully-qualified dataclasses.field here because the `field`
+    # attribute above shadows the imported `field` name inside this class body.
+    context: dict[str, Any] = dataclasses.field(default_factory=dict)
+    suggestions: list[str] = dataclasses.field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert the error to a dictionary.
@@ -158,9 +161,7 @@ class ValidationResult:
         """
         return [error for error in self.errors if error.field == field]
 
-    def get_errors_by_severity(
-        self, severity: ValidationSeverity
-    ) -> list[ValidationError]:
+    def get_errors_by_severity(self, severity: ValidationSeverity) -> list[ValidationError]:
         """Get all errors by severity level.
 
         Args:
@@ -204,9 +205,7 @@ class ValidationResult:
         Returns:
             True if there are critical errors, False otherwise
         """
-        return any(
-            error.severity == ValidationSeverity.CRITICAL for error in self.errors
-        )
+        return any(error.severity == ValidationSeverity.CRITICAL for error in self.errors)
 
     def get_error_summary(self) -> dict[str, int]:
         """Get a summary of errors by severity.
@@ -221,9 +220,7 @@ class ValidationResult:
                 summary[severity.value] = count
         return summary
 
-    def format_errors(
-        self, include_warnings: bool = True, include_info: bool = False
-    ) -> str:
+    def format_errors(self, include_warnings: bool = True, include_info: bool = False) -> str:
         """Format errors as a human-readable string.
 
         Args:

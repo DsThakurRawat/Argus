@@ -10,6 +10,7 @@ from dataclasses import asdict, dataclass, field
 from enum import Enum
 import json
 import logging
+import os
 import sys
 import threading
 import time
@@ -51,7 +52,7 @@ class LogFormat:
 
     def to_dict(self) -> dict[str, bool]:
         """Convert to dictionary.
-        
+
         Returns:
             Dictionary representation.
         """
@@ -75,7 +76,7 @@ class LogContext:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary.
-        
+
         Returns:
             Dictionary representation.
         """
@@ -105,18 +106,27 @@ class LogContext:
 
     def merge(self, other: "LogContext") -> "LogContext":
         """Merge with another context.
-        
+
         Args:
             other: Other context to merge with.
-            
+
         Returns:
             New merged context.
         """
         merged = LogContext()
 
         # Merge fields, preferring non-None values
-        for field_name in ["request_id", "user_id", "session_id", "correlation_id",
-                          "trace_id", "span_id", "service_name", "version", "environment"]:
+        for field_name in [
+            "request_id",
+            "user_id",
+            "session_id",
+            "correlation_id",
+            "trace_id",
+            "span_id",
+            "service_name",
+            "version",
+            "environment",
+        ]:
             value = getattr(self, field_name) or getattr(other, field_name)
             setattr(merged, field_name, value)
 
@@ -134,10 +144,10 @@ class StructuredLogger:
         name: str,
         level: str | int | LogLevel = LogLevel.INFO,
         formatter: LogFormat | None = None,
-        context: LogContext | None = None
+        context: LogContext | None = None,
     ):
         """Initialize the structured logger.
-        
+
         Args:
             name: Logger name.
             level: Log level.
@@ -149,11 +159,13 @@ class StructuredLogger:
 
         # Set level
         if isinstance(level, LogLevel):
-            level = level.value
+            level_val = getattr(logging, level.value.upper(), logging.INFO)
         elif isinstance(level, str):
-            level = getattr(logging, level.upper(), logging.INFO)
+            level_val = getattr(logging, level.upper(), logging.INFO)
+        else:
+            level_val = level
 
-        self.logger.setLevel(level)
+        self.logger.setLevel(level_val)
 
         # Set formatter
         self.formatter = formatter or LogFormat()
@@ -170,17 +182,17 @@ class StructuredLogger:
         message: str,
         context: LogContext | None = None,
         exception: Exception | None = None,
-        **kwargs
+        **kwargs,
     ) -> dict[str, Any]:
         """Format a log message.
-        
+
         Args:
             level: Log level.
             message: Log message.
             context: Additional context.
             exception: Exception to log.
             **kwargs: Additional fields.
-            
+
         Returns:
             Formatted log entry.
         """
@@ -207,17 +219,14 @@ class StructuredLogger:
 
         # Add exception information
         if exception and self.formatter.exception:
-            log_entry["exception"] = {
-                "type": type(exception).__name__,
-                "message": str(exception)
-            }
+            log_entry["exception"] = {"type": type(exception).__name__, "message": str(exception)}
 
             if self.formatter.stack_trace:
                 log_entry["exception"]["traceback"] = traceback.format_exc()
 
         # Add process/thread information
         if self.formatter.process_id:
-            log_entry["process_id"] = sys.getpid()
+            log_entry["process_id"] = os.getpid()
 
         if self.formatter.thread_id:
             log_entry["thread_id"] = threading.get_ident()
@@ -243,10 +252,10 @@ class StructuredLogger:
         message: str,
         context: LogContext | None = None,
         exception: Exception | None = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         """Log a message.
-        
+
         Args:
             level: Log level.
             message: Log message.
@@ -274,19 +283,11 @@ class StructuredLogger:
         except Exception as e:
             # Fallback to simple logging
             self.logger.error(f"Failed to log structured message: {e}")
-            self.logger.log(
-                getattr(logging, level.upper(), logging.INFO),
-                f"[{level}] {message}"
-            )
+            self.logger.log(getattr(logging, level.upper(), logging.INFO), f"[{level}] {message}")
 
-    def debug(
-        self,
-        message: str,
-        context: LogContext | None = None,
-        **kwargs
-    ) -> None:
+    def debug(self, message: str, context: LogContext | None = None, **kwargs) -> None:
         """Log a debug message.
-        
+
         Args:
             message: Log message.
             context: Additional context.
@@ -294,14 +295,9 @@ class StructuredLogger:
         """
         self._log("DEBUG", message, context, **kwargs)
 
-    def info(
-        self,
-        message: str,
-        context: LogContext | None = None,
-        **kwargs
-    ) -> None:
+    def info(self, message: str, context: LogContext | None = None, **kwargs) -> None:
         """Log an info message.
-        
+
         Args:
             message: Log message.
             context: Additional context.
@@ -309,14 +305,9 @@ class StructuredLogger:
         """
         self._log("INFO", message, context, **kwargs)
 
-    def warning(
-        self,
-        message: str,
-        context: LogContext | None = None,
-        **kwargs
-    ) -> None:
+    def warning(self, message: str, context: LogContext | None = None, **kwargs) -> None:
         """Log a warning message.
-        
+
         Args:
             message: Log message.
             context: Additional context.
@@ -329,10 +320,10 @@ class StructuredLogger:
         message: str,
         context: LogContext | None = None,
         exception: Exception | None = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         """Log an error message.
-        
+
         Args:
             message: Log message.
             context: Additional context.
@@ -346,10 +337,10 @@ class StructuredLogger:
         message: str,
         context: LogContext | None = None,
         exception: Exception | None = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         """Log a critical message.
-        
+
         Args:
             message: Log message.
             context: Additional context.
@@ -360,10 +351,10 @@ class StructuredLogger:
 
     def with_context(self, context: LogContext) -> "StructuredLogger":
         """Create a new logger with additional context.
-        
+
         Args:
             context: Additional context.
-            
+
         Returns:
             New logger with merged context.
         """
@@ -372,12 +363,12 @@ class StructuredLogger:
             name=self.name,
             level=self.logger.level,
             formatter=self.formatter,
-            context=merged_context
+            context=merged_context,
         )
 
     def start_timer(self, operation: str) -> None:
         """Start timing an operation.
-        
+
         Args:
             operation: Operation name.
         """
@@ -385,7 +376,7 @@ class StructuredLogger:
 
     def end_timer(self, operation: str, message: str | None = None) -> None:
         """End timing an operation and log the duration.
-        
+
         Args:
             operation: Operation name.
             message: Optional message to log with timing.
@@ -398,14 +389,15 @@ class StructuredLogger:
         del self._start_times[operation]
 
         log_message = message or f"Operation '{operation}' completed"
-        self.info(log_message, **{f"{operation}_duration": duration})
+        kwargs: dict[str, Any] = {f"{operation}_duration": duration}
+        self.info(log_message, **kwargs)
 
     def measure_time(self, operation: str):
         """Context manager for measuring operation time.
-        
+
         Args:
             operation: Operation name.
-            
+
         Returns:
             Context manager.
         """
@@ -413,20 +405,22 @@ class StructuredLogger:
 
     def set_level(self, level: str | int | LogLevel) -> None:
         """Set the log level.
-        
+
         Args:
             level: Log level.
         """
         if isinstance(level, LogLevel):
-            level = level.value
+            level_val = getattr(logging, level.value.upper(), logging.INFO)
         elif isinstance(level, str):
-            level = getattr(logging, level.upper(), logging.INFO)
+            level_val = getattr(logging, level.upper(), logging.INFO)
+        else:
+            level_val = level
 
-        self.logger.setLevel(level)
+        self.logger.setLevel(level_val)
 
     def add_handler(self, handler: logging.Handler) -> None:
         """Add a handler to the logger.
-        
+
         Args:
             handler: Handler to add.
         """
@@ -434,7 +428,7 @@ class StructuredLogger:
 
     def remove_handler(self, handler: logging.Handler) -> None:
         """Remove a handler from the logger.
-        
+
         Args:
             handler: Handler to remove.
         """
@@ -442,7 +436,7 @@ class StructuredLogger:
 
     def get_handlers(self) -> list[logging.Handler]:
         """Get all handlers.
-        
+
         Returns:
             List of handlers.
         """
@@ -454,7 +448,7 @@ class TimerContext:
 
     def __init__(self, logger: StructuredLogger, operation: str):
         """Initialize the timer context.
-        
+
         Args:
             logger: Logger instance.
             operation: Operation name.
@@ -472,26 +466,23 @@ class TimerContext:
         if exc_type is None:
             self.logger.end_timer(self.operation)
         else:
-            self.logger.end_timer(
-                self.operation,
-                f"Operation '{self.operation}' failed"
-            )
+            self.logger.end_timer(self.operation, f"Operation '{self.operation}' failed")
 
 
 def get_structured_logger(
     name: str,
     level: str | int | LogLevel = LogLevel.INFO,
     formatter: LogFormat | None = None,
-    context: LogContext | None = None
+    context: LogContext | None = None,
 ) -> StructuredLogger:
     """Get a structured logger.
-    
+
     Args:
         name: Logger name.
         level: Log level.
         formatter: Log format configuration.
         context: Default context.
-        
+
     Returns:
         Structured logger instance.
     """
@@ -500,10 +491,10 @@ def get_structured_logger(
 
 def create_log_context(**kwargs) -> LogContext:
     """Create a log context.
-    
+
     Args:
         **kwargs: Context fields.
-        
+
     Returns:
         Log context instance.
     """
@@ -512,10 +503,10 @@ def create_log_context(**kwargs) -> LogContext:
 
 def create_log_format(**kwargs) -> LogFormat:
     """Create a log format.
-    
+
     Args:
         **kwargs: Format fields.
-        
+
     Returns:
         Log format instance.
     """

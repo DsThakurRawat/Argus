@@ -8,6 +8,7 @@ including environment variables, files, and programmatic sources.
 """
 
 from collections.abc import Callable
+import contextlib
 from dataclasses import dataclass
 import json
 import logging
@@ -131,9 +132,7 @@ class EnvironmentConfigLoader(BaseConfigLoader):
                 errors=errors,
             )
 
-    def _set_nested_value(
-        self, data: dict[str, Any], key_path: str, value: Any
-    ) -> None:
+    def _set_nested_value(self, data: dict[str, Any], key_path: str, value: Any) -> None:
         """Set a nested value in the data dictionary."""
         keys = key_path.split(".")
         current = data
@@ -166,9 +165,7 @@ class EnvironmentConfigLoader(BaseConfigLoader):
                 current[keys[-1]] = value
         elif key_path.endswith("_alerts"):
             # Handle comma-separated list
-            current[keys[-1]] = [
-                float(x.strip()) for x in value.split(",") if x.strip()
-            ]
+            current[keys[-1]] = [float(x.strip()) for x in value.split(",") if x.strip()]
         else:
             current[keys[-1]] = value
 
@@ -205,18 +202,14 @@ class EnvironmentConfigLoader(BaseConfigLoader):
                 timeout_key = f"{provider.upper()}_TIMEOUT"
                 timeout = os.environ.get(timeout_key)
                 if timeout:
-                    try:
+                    with contextlib.suppress(ValueError):
                         providers[provider]["timeout"] = int(timeout)
-                    except ValueError:
-                        pass
 
                 max_retries_key = f"{provider.upper()}_MAX_RETRIES"
                 max_retries = os.environ.get(max_retries_key)
                 if max_retries:
-                    try:
+                    with contextlib.suppress(ValueError):
                         providers[provider]["max_retries"] = int(max_retries)
-                    except ValueError:
-                        pass
 
         return providers
 
@@ -382,9 +375,7 @@ class ConfigLoaderManager:
                 self._results.append(result)
 
                 if result.errors:
-                    logger.warning(
-                        f"Loader {loader.source} had errors: {result.errors}"
-                    )
+                    logger.warning(f"Loader {loader.source} had errors: {result.errors}")
 
                 # Merge data (higher priority overwrites lower priority)
                 merged_data = self._merge_config_data(merged_data, result.data)
@@ -392,25 +383,17 @@ class ConfigLoaderManager:
             except Exception as e:
                 logger.error(f"Failed to load from {loader.source}: {e}")
                 self._results.append(
-                    LoaderResult(
-                        data={}, source=loader.source, metadata={}, errors=[str(e)]
-                    )
+                    LoaderResult(data={}, source=loader.source, metadata={}, errors=[str(e)])
                 )
 
         return merged_data
 
-    def _merge_config_data(
-        self, base: dict[str, Any], updates: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _merge_config_data(self, base: dict[str, Any], updates: dict[str, Any]) -> dict[str, Any]:
         """Deep merge configuration data."""
         result = base.copy()
 
         for key, value in updates.items():
-            if (
-                key in result
-                and isinstance(result[key], dict)
-                and isinstance(value, dict)
-            ):
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
                 result[key] = self._merge_config_data(result[key], value)
             else:
                 result[key] = value

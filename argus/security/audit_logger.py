@@ -34,20 +34,14 @@ class AuditEvent(BaseModel):
     event_id: str = Field(..., description="Unique event identifier")
     event_type: AuditEventType = Field(..., description="Type of audit event")
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-    user_id: str | None = Field(
-        default=None, description="User who triggered the event"
-    )
+    user_id: str | None = Field(default=None, description="User who triggered the event")
     session_id: str | None = Field(default=None, description="Session identifier")
     provider: str | None = Field(default=None, description="Provider involved")
     model: str | None = Field(default=None, description="Model used")
     request_id: str | None = Field(default=None, description="Request identifier")
     success: bool = Field(default=True, description="Whether the operation succeeded")
-    error_message: str | None = Field(
-        default=None, description="Error message if failed"
-    )
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    error_message: str | None = Field(default=None, description="Error message if failed")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
     ip_address: str | None = Field(default=None, description="Client IP address")
     user_agent: str | None = Field(default=None, description="Client user agent")
 
@@ -102,9 +96,7 @@ class AuditLogger:
         if self.enable_console:
             console_handler = logging.StreamHandler()
             console_handler.setLevel(logging.INFO)
-            console_formatter = logging.Formatter(
-                "%(asctime)s - %(levelname)s - %(message)s"
-            )
+            console_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
             console_handler.setFormatter(console_formatter)
             self.logger.addHandler(console_handler)
 
@@ -290,9 +282,7 @@ class AuditLogger:
         user_agent: str | None = None,
     ) -> str:
         """Log an access attempt."""
-        event_type = (
-            AuditEventType.ACCESS_GRANTED if granted else AuditEventType.ACCESS_DENIED
-        )
+        event_type = AuditEventType.ACCESS_GRANTED if granted else AuditEventType.ACCESS_DENIED
 
         metadata = {
             "resource": resource,
@@ -378,17 +368,13 @@ class AuditLogger:
         # Count by event type
         event_type_counts = {}
         for event in self._event_buffer:
-            event_type_counts[event.event_type] = (
-                event_type_counts.get(event.event_type, 0) + 1
-            )
+            event_type_counts[event.event_type] = event_type_counts.get(event.event_type, 0) + 1
 
         # Count by provider
         provider_counts = {}
         for event in self._event_buffer:
             if event.provider:
-                provider_counts[event.provider] = (
-                    provider_counts.get(event.provider, 0) + 1
-                )
+                provider_counts[event.provider] = provider_counts.get(event.provider, 0) + 1
 
         return {
             "total_events": total_events,

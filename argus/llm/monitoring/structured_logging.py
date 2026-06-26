@@ -89,19 +89,19 @@ class StructuredLogger:
             log_message = f"{message} | Context: {context}"
             getattr(logger, level)(log_message)
 
-    def info(self, message: str, **kwargs: str) -> None:
+    def info(self, message: str, **kwargs: Any) -> None:
         """Log info message with context."""
         self._log_with_context("info", message, **kwargs)
 
-    def warning(self, message: str, **kwargs: str) -> None:
+    def warning(self, message: str, **kwargs: Any) -> None:
         """Log warning message with context."""
         self._log_with_context("warning", message, **kwargs)
 
-    def error(self, message: str, **kwargs: str) -> None:
+    def error(self, message: str, **kwargs: Any) -> None:
         """Log error message with context."""
         self._log_with_context("error", message, **kwargs)
 
-    def debug(self, message: str, **kwargs: str) -> None:
+    def debug(self, message: str, **kwargs: Any) -> None:
         """Log debug message with context."""
         self._log_with_context("debug", message, **kwargs)
 
@@ -113,9 +113,7 @@ class LLMRequestLogger:
         """Initialize the LLM request logger."""
         self.structured_logger = StructuredLogger("llm_requests")
 
-    def log_request_start(
-        self, request: LLMRequest, provider: str, model: str, **kwargs
-    ):
+    def log_request_start(self, request: LLMRequest, provider: str, model: str, **kwargs):
         """Log the start of an LLM request."""
         self.structured_logger.info(
             "LLM request started",
@@ -145,9 +143,7 @@ class LLMRequestLogger:
             model_type=str(request.model_type),
             duration_ms=duration_ms,
             input_tokens=response.usage.get("input_tokens", 0) if response.usage else 0,
-            output_tokens=(
-                response.usage.get("output_tokens", 0) if response.usage else 0
-            ),
+            output_tokens=(response.usage.get("output_tokens", 0) if response.usage else 0),
             total_tokens=response.usage.get("total_tokens", 0) if response.usage else 0,
             response_length=len(response.content) if response.content else 0,
             **kwargs,
@@ -225,9 +221,7 @@ class PerformanceLogger:
         """Initialize the performance logger."""
         self.structured_logger = StructuredLogger("llm_performance")
 
-    def log_latency(
-        self, operation: str, duration_ms: float, provider: str, model: str, **kwargs
-    ):
+    def log_latency(self, operation: str, duration_ms: float, provider: str, model: str, **kwargs):
         """Log operation latency."""
         self.structured_logger.info(
             "Operation latency",
@@ -238,9 +232,7 @@ class PerformanceLogger:
             **kwargs,
         )
 
-    def log_throughput(
-        self, operation: str, requests_per_second: float, provider: str, **kwargs
-    ):
+    def log_throughput(self, operation: str, requests_per_second: float, provider: str, **kwargs):
         """Log throughput metrics."""
         self.structured_logger.info(
             "Throughput metrics",
@@ -250,9 +242,7 @@ class PerformanceLogger:
             **kwargs,
         )
 
-    def log_resource_usage(
-        self, memory_usage_mb: float, cpu_usage_percent: float, **kwargs
-    ):
+    def log_resource_usage(self, memory_usage_mb: float, cpu_usage_percent: float, **kwargs):
         """Log resource usage metrics."""
         self.structured_logger.info(
             "Resource usage",

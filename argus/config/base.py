@@ -7,6 +7,7 @@ Base configuration classes with environment support and schema versioning.
 from enum import Enum
 import hashlib
 import json
+from typing import Any
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -33,12 +34,8 @@ class BaseConfig(BaseSettings):
     )
 
     # Schema versioning and metadata
-    schema_version: str = Field(
-        default="1.0.0", description="Configuration schema version"
-    )
-    last_validated: str | None = Field(
-        default=None, description="Last validation timestamp"
-    )
+    schema_version: str = Field(default="1.0.0", description="Configuration schema version")
+    last_validated: str | None = Field(default=None, description="Last validation timestamp")
     validation_checksum: str | None = Field(
         default=None, description="Configuration validation checksum"
     )
@@ -54,18 +51,16 @@ class BaseConfig(BaseSettings):
 
     @field_validator("schema_version")
     @classmethod
-    def validate_schema_version(cls: str, v: str) -> None:
+    def validate_schema_version(cls: Any, v: Any) -> Any:
         """Validate configuration schema version."""
         supported_versions = ["1.0.0"]
         if v not in supported_versions:
-            raise ValueError(
-                f"Unsupported schema version {v}. Supported: {supported_versions}"
-            )
+            raise ValueError(f"Unsupported schema version {v}. Supported: {supported_versions}")
         return v
 
     @field_validator("log_level")
     @classmethod
-    def validate_log_level(cls: str, v: str) -> None:
+    def validate_log_level(cls: Any, v: Any) -> Any:
         """Validate log level."""
         valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         if v.upper() not in valid_levels:

@@ -150,18 +150,12 @@ class PerformanceConfig:
             cache=cache_config,
             analysis=analysis_config,
             model=model_config,
-            enable_performance_monitoring=config_dict.get(
-                "enable_performance_monitoring", True
-            ),
+            enable_performance_monitoring=config_dict.get("enable_performance_monitoring", True),
             performance_log_level=config_dict.get("performance_log_level", "INFO"),
-            enable_metrics_collection=config_dict.get(
-                "enable_metrics_collection", True
-            ),
+            enable_metrics_collection=config_dict.get("enable_metrics_collection", True),
             max_memory_usage_mb=config_dict.get("max_memory_usage_mb", 512),
             max_cpu_usage_percent=config_dict.get("max_cpu_usage_percent", 80),
-            enable_resource_monitoring=config_dict.get(
-                "enable_resource_monitoring", True
-            ),
+            enable_resource_monitoring=config_dict.get("enable_resource_monitoring", True),
         )
 
     def get_analysis_config(self, depth: str) -> dict[str, Any]:

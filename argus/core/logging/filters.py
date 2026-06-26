@@ -19,7 +19,7 @@ class LevelFilter(logging.Filter):
 
     def __init__(self, min_level: int, max_level: int = logging.CRITICAL):
         """Initialize the level filter.
-        
+
         Args:
             min_level: Minimum log level to allow.
             max_level: Maximum log level to allow.
@@ -30,10 +30,10 @@ class LevelFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter log record based on level.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
@@ -43,7 +43,7 @@ class LevelFilter(logging.Filter):
             raise FilterError(
                 f"Failed to filter log record by level: {e!s}",
                 filter_name="LevelFilter",
-                filter_type="level"
+                filter_type="level",
             ) from e
 
 
@@ -52,7 +52,7 @@ class NameFilter(logging.Filter):
 
     def __init__(self, name_patterns: str | list[str], exclude: bool = False):
         """Initialize the name filter.
-        
+
         Args:
             name_patterns: Logger name patterns to match.
             exclude: Whether to exclude matching names.
@@ -66,10 +66,10 @@ class NameFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter log record based on logger name.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
@@ -80,7 +80,7 @@ class NameFilter(logging.Filter):
             raise FilterError(
                 f"Failed to filter log record by name: {e!s}",
                 filter_name="NameFilter",
-                filter_type="name"
+                filter_type="name",
             ) from e
 
 
@@ -89,7 +89,7 @@ class MessageFilter(logging.Filter):
 
     def __init__(self, message_patterns: str | list[str], exclude: bool = False):
         """Initialize the message filter.
-        
+
         Args:
             message_patterns: Message patterns to match.
             exclude: Whether to exclude matching messages.
@@ -103,10 +103,10 @@ class MessageFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter log record based on message content.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
@@ -118,7 +118,7 @@ class MessageFilter(logging.Filter):
             raise FilterError(
                 f"Failed to filter log record by message: {e!s}",
                 filter_name="MessageFilter",
-                filter_type="message"
+                filter_type="message",
             ) from e
 
 
@@ -130,10 +130,10 @@ class ContextFilter(logging.Filter):
         flow_id_pattern: str | None = None,
         operation_pattern: str | None = None,
         user_id_pattern: str | None = None,
-        exclude: bool = False
+        exclude: bool = False,
     ):
         """Initialize the context filter.
-        
+
         Args:
             flow_id_pattern: Flow ID pattern to match.
             operation_pattern: Operation pattern to match.
@@ -149,10 +149,10 @@ class ContextFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter log record based on context.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
@@ -182,7 +182,7 @@ class ContextFilter(logging.Filter):
             raise FilterError(
                 f"Failed to filter log record by context: {e!s}",
                 filter_name="ContextFilter",
-                filter_type="context"
+                filter_type="context",
             ) from e
 
 
@@ -191,7 +191,7 @@ class SamplingFilter(logging.Filter):
 
     def __init__(self, sample_rate: float = 1.0, seed: int | None = None):
         """Initialize the sampling filter.
-        
+
         Args:
             sample_rate: Fraction of logs to allow (0.0 to 1.0).
             seed: Random seed for reproducible sampling.
@@ -205,25 +205,27 @@ class SamplingFilter(logging.Filter):
 
         if seed is not None:
             import random
+
             random.seed(seed)
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter log record based on sampling rate.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
         try:
             import random
-            return random.random() < self.sample_rate
+
+            return random.random() < self.sample_rate  # nosec B311
         except Exception as e:
             raise FilterError(
                 f"Failed to filter log record by sampling: {e!s}",
                 filter_name="SamplingFilter",
-                filter_type="sampling"
+                filter_type="sampling",
             ) from e
 
 
@@ -232,7 +234,7 @@ class RateLimitFilter(logging.Filter):
 
     def __init__(self, max_logs_per_second: float = 10.0):
         """Initialize the rate limit filter.
-        
+
         Args:
             max_logs_per_second: Maximum logs per second to allow.
         """
@@ -244,10 +246,10 @@ class RateLimitFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter log record based on rate limiting.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
@@ -258,7 +260,8 @@ class RateLimitFilter(logging.Filter):
 
             # Remove old log times outside the window
             self.log_times = [
-                log_time for log_time in self.log_times
+                log_time
+                for log_time in self.log_times
                 if current_time - log_time < self.window_size
             ]
 
@@ -273,7 +276,7 @@ class RateLimitFilter(logging.Filter):
             raise FilterError(
                 f"Failed to filter log record by rate limiting: {e!s}",
                 filter_name="RateLimitFilter",
-                filter_type="rate_limit"
+                filter_type="rate_limit",
             ) from e
 
 
@@ -282,7 +285,7 @@ class DuplicateFilter(logging.Filter):
 
     def __init__(self, window_size: int = 100, max_duplicates: int = 5):
         """Initialize the duplicate filter.
-        
+
         Args:
             window_size: Number of recent messages to check for duplicates.
             max_duplicates: Maximum number of duplicate messages to allow.
@@ -296,10 +299,10 @@ class DuplicateFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter duplicate log messages.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
@@ -312,8 +315,7 @@ class DuplicateFilter(logging.Filter):
             # Clean up old messages
             cutoff_time = current_time - 60.0  # 1 minute window
             self.message_times = [
-                msg_time for msg_time in self.message_times
-                if msg_time > cutoff_time
+                msg_time for msg_time in self.message_times if msg_time > cutoff_time
             ]
 
             # Count occurrences of this message
@@ -324,16 +326,13 @@ class DuplicateFilter(logging.Filter):
             self.message_times.append((current_time, message))
 
             # Check if we've exceeded the duplicate limit
-            if self.message_counts[message] > self.max_duplicates:
-                return False
-
-            return True
+            return not self.message_counts[message] > self.max_duplicates
 
         except Exception as e:
             raise FilterError(
                 f"Failed to filter duplicate log messages: {e!s}",
                 filter_name="DuplicateFilter",
-                filter_type="duplicate"
+                filter_type="duplicate",
             ) from e
 
 
@@ -342,7 +341,7 @@ class SensitiveDataFilter(logging.Filter):
 
     def __init__(self, sensitive_patterns: str | list[str]):
         """Initialize the sensitive data filter.
-        
+
         Args:
             sensitive_patterns: Patterns to identify sensitive data.
         """
@@ -356,10 +355,10 @@ class SensitiveDataFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter sensitive data from log messages.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
@@ -379,7 +378,7 @@ class SensitiveDataFilter(logging.Filter):
             raise FilterError(
                 f"Failed to filter sensitive data: {e!s}",
                 filter_name="SensitiveDataFilter",
-                filter_type="sensitive_data"
+                filter_type="sensitive_data",
             ) from e
 
 
@@ -388,7 +387,7 @@ class CompositeFilter(logging.Filter):
 
     def __init__(self, filters: list[logging.Filter], mode: str = "and"):
         """Initialize the composite filter.
-        
+
         Args:
             filters: List of filters to combine.
             mode: Combination mode ('and', 'or', 'not').
@@ -403,10 +402,10 @@ class CompositeFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Filter log record using composite logic.
-        
+
         Args:
             record: Log record to filter.
-            
+
         Returns:
             True if record should be logged, False otherwise.
         """
@@ -429,20 +428,20 @@ class CompositeFilter(logging.Filter):
             raise FilterError(
                 f"Failed to filter log record with composite filter: {e!s}",
                 filter_name="CompositeFilter",
-                filter_type="composite"
+                filter_type="composite",
             ) from e
 
 
 def create_filter(filter_type: str, **kwargs: Any) -> logging.Filter:
     """Create a filter by type.
-    
+
     Args:
         filter_type: Type of filter to create.
         **kwargs: Additional arguments for the filter.
-        
+
     Returns:
         Configured filter instance.
-        
+
     Raises:
         FilterError: If filter type is not supported.
     """
@@ -455,20 +454,15 @@ def create_filter(filter_type: str, **kwargs: Any) -> logging.Filter:
         "rate_limit": RateLimitFilter,
         "duplicate": DuplicateFilter,
         "sensitive_data": SensitiveDataFilter,
-        "composite": CompositeFilter
+        "composite": CompositeFilter,
     }
 
     if filter_type not in filters:
-        raise FilterError(
-            f"Unsupported filter type: {filter_type}",
-            filter_type=filter_type
-        )
+        raise FilterError(f"Unsupported filter type: {filter_type}", filter_type=filter_type)
 
     try:
         return filters[filter_type](**kwargs)
     except Exception as e:
         raise FilterError(
-            f"Failed to create filter: {e!s}",
-            filter_name=filter_type,
-            filter_type=filter_type
+            f"Failed to create filter: {e!s}", filter_name=filter_type, filter_type=filter_type
         ) from e

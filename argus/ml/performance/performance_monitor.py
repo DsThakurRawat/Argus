@@ -145,9 +145,7 @@ class PerformanceMonitor:
                 },
             )
 
-    async def record_operation(
-        self, operation: str, metadata: dict[str, Any] | None = None
-    ):
+    async def record_operation(self, operation: str, metadata: dict[str, Any] | None = None):
         """
         Context manager for recording operation performance.
 
@@ -157,9 +155,7 @@ class PerformanceMonitor:
         """
         return OperationRecorder(self, operation, metadata)
 
-    async def get_performance_summary(
-        self, operation: str
-    ) -> PerformanceSummary | None:
+    async def get_performance_summary(self, operation: str) -> PerformanceSummary | None:
         """
         Get performance summary for a specific operation.
 
@@ -207,15 +203,13 @@ class PerformanceMonitor:
             ),
             success_rate=len(successful) / len(metrics) if metrics else 0,
             last_24h_operations=len(last_24h),
-            last_24h_success_rate=(
-                len(last_24h_successful) / len(last_24h) if last_24h else 0
-            ),
+            last_24h_success_rate=(len(last_24h_successful) / len(last_24h) if last_24h else 0),
         )
 
     async def get_all_performance_summaries(self) -> dict[str, PerformanceSummary]:
         """Get performance summaries for all operations."""
         summaries = {}
-        for operation in self.metrics.keys():
+        for operation in self.metrics:
             summary = await self.get_performance_summary(operation)
             if summary:
                 summaries[operation] = summary
@@ -238,9 +232,7 @@ class PerformanceMonitor:
             return {}
 
         cutoff_time = time.time() - (hours * 3600)
-        recent_metrics = [
-            m for m in self.metrics[operation] if m.timestamp > cutoff_time
-        ]
+        recent_metrics = [m for m in self.metrics[operation] if m.timestamp > cutoff_time]
 
         if not recent_metrics:
             return {}
@@ -253,20 +245,14 @@ class PerformanceMonitor:
 
         # Calculate hourly averages
         hours_list = sorted(hourly_data.keys())
-        avg_durations = [
-            sum(hourly_data[hour]) / len(hourly_data[hour]) for hour in hours_list
-        ]
+        avg_durations = [sum(hourly_data[hour]) / len(hourly_data[hour]) for hour in hours_list]
         success_rates = [
             sum(
                 1
                 for m in recent_metrics
                 if m.timestamp >= hour and m.timestamp < hour + 3600 and m.success
             )
-            / sum(
-                1
-                for m in recent_metrics
-                if m.timestamp >= hour and m.timestamp < hour + 3600
-            )
+            / sum(1 for m in recent_metrics if m.timestamp >= hour and m.timestamp < hour + 3600)
             for hour in hours_list
         ]
 
@@ -335,9 +321,7 @@ class PerformanceMonitor:
 
             # Check success rate
             recent_metrics = list(metrics)[-100:]  # Last 100 metrics
-            success_rate = sum(1 for m in recent_metrics if m.success) / len(
-                recent_metrics
-            )
+            success_rate = sum(1 for m in recent_metrics if m.success) / len(recent_metrics)
 
             if success_rate < self.alert_success_rate_threshold:
                 await self._trigger_alert(
@@ -432,9 +416,7 @@ async def record_performance(
 ):
     """Record performance metric using global monitor."""
     monitor = get_performance_monitor()
-    await monitor.record_metric(
-        operation, duration_ms, success, metadata, error_message
-    )
+    await monitor.record_metric(operation, duration_ms, success, metadata, error_message)
 
 
 async def get_performance_summary(operation: str) -> PerformanceSummary | None:

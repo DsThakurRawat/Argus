@@ -68,9 +68,7 @@ class GeminiRequest:
             return False
         if not 0 <= self.top_p <= 1:
             return False
-        if self.top_k < 0:
-            return False
-        return True
+        return not self.top_k < 0
 
 
 @dataclass
@@ -181,9 +179,7 @@ class GeminiAPIClient:
             can_make_request = await self.rate_limiter.can_make_request(urgency)
             if not can_make_request:
                 delay = await self.rate_limiter.get_delay_seconds(urgency)
-                raise RuntimeError(
-                    f"Rate limit exceeded. Retry after {delay:.2f} seconds"
-                )
+                raise RuntimeError(f"Rate limit exceeded. Retry after {delay:.2f} seconds")
 
         # Estimate cost
         estimated_cost = 0.0
@@ -240,9 +236,7 @@ class GeminiAPIClient:
 
             # Record error in rate limiter
             if self.rate_limiter:
-                await self.rate_limiter.record_request_error(
-                    "api_error", estimated_cost
-                )
+                await self.rate_limiter.record_request_error("api_error", estimated_cost)
 
             # Return error response
             return GeminiResponse(
@@ -271,9 +265,7 @@ class GeminiAPIClient:
         # In a real implementation, this would make an HTTP request to the Gemini API
 
         # Simulate API response
-        estimated_input_tokens = (
-            sum(len(msg.get("content", "")) for msg in request.messages) // 4
-        )
+        estimated_input_tokens = sum(len(msg.get("content", "")) for msg in request.messages) // 4
         response_data = {
             "content": "This is a simulated response from Gemini API",
             "model": request.model,
@@ -298,9 +290,7 @@ class GeminiAPIClient:
             "successful_requests": self.successful_requests,
             "failed_requests": self.failed_requests,
             "success_rate": (
-                self.successful_requests / self.total_requests
-                if self.total_requests > 0
-                else 0.0
+                self.successful_requests / self.total_requests if self.total_requests > 0 else 0.0
             ),
         }
 

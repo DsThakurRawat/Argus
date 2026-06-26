@@ -31,9 +31,7 @@ class TestGracefulDegradationManager:
         """Create a GracefulDegradationManager instance for testing."""
         return GracefulDegradationManager(mock_resilient_manager)
 
-    def test_graceful_degradation_manager_initialization(
-        self, mock_resilient_manager: str
-    ) -> None:
+    def test_graceful_degradation_manager_initialization(self, mock_resilient_manager: str) -> None:
         """Test GracefulDegradationManager initialization."""
         manager = GracefulDegradationManager(mock_resilient_manager)
 
@@ -45,13 +43,11 @@ class TestGracefulDegradationManager:
         assert ErrorType.RATE_LIMIT_ERROR in manager.degradation_strategies
 
     @pytest.mark.asyncio
-    async def test_execute_with_graceful_degradation_success(
-        self, graceful_degradation_manager
-    ):
+    async def test_execute_with_graceful_degradation_success(self, graceful_degradation_manager):
         """Test successful execution without degradation."""
         mock_func = AsyncMock(return_value="success")
-        graceful_degradation_manager.resilient_manager.execute_resilient_operation = (
-            AsyncMock(return_value="success")
+        graceful_degradation_manager.resilient_manager.execute_resilient_operation = AsyncMock(
+            return_value="success"
         )
 
         result = await graceful_degradation_manager.execute_with_graceful_degradation(
@@ -69,8 +65,8 @@ class TestGracefulDegradationManager:
     ):
         """Test graceful degradation for network errors."""
         mock_func = AsyncMock()
-        graceful_degradation_manager.resilient_manager.execute_resilient_operation = (
-            AsyncMock(side_effect=Exception("Network connection failed"))
+        graceful_degradation_manager.resilient_manager.execute_resilient_operation = AsyncMock(
+            side_effect=Exception("Network connection failed")
         )
 
         # Mock the fallback method that will be called
@@ -93,8 +89,8 @@ class TestGracefulDegradationManager:
     ):
         """Test handling of unknown error types."""
         mock_func = AsyncMock()
-        graceful_degradation_manager.resilient_manager.execute_resilient_operation = (
-            AsyncMock(side_effect=Exception("Unknown error"))
+        graceful_degradation_manager.resilient_manager.execute_resilient_operation = AsyncMock(
+            side_effect=Exception("Unknown error")
         )
 
         with pytest.raises(Exception, match="Unknown error"):
@@ -102,9 +98,7 @@ class TestGracefulDegradationManager:
                 "test_operation", mock_func, "arg1", "arg2"
             )
 
-    def test_classify_error_type_network_error(
-        self, graceful_degradation_manager: str
-    ) -> None:
+    def test_classify_error_type_network_error(self, graceful_degradation_manager: str) -> None:
         """Test error classification for network errors."""
         error = Exception("Network connection failed")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -118,21 +112,15 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.NETWORK_ERROR
 
-    def test_classify_error_type_timeout_error(
-        self, graceful_degradation_manager: str
-    ) -> None:
+    def test_classify_error_type_timeout_error(self, graceful_degradation_manager: str) -> None:
         """Test error classification for timeout errors."""
         # Note: The current implementation classifies any error with "timeout" as NETWORK_ERROR
         # This test verifies that behavior. In a real implementation, this logic should be fixed.
         error = Exception("timeout occurred")
         error_type = graceful_degradation_manager._classify_error_type(error)
-        assert (
-            error_type == ErrorType.NETWORK_ERROR
-        )  # Current behavior due to logic bug
+        assert error_type == ErrorType.NETWORK_ERROR  # Current behavior due to logic bug
 
-    def test_classify_error_type_rate_limit_error(
-        self, graceful_degradation_manager: str
-    ) -> None:
+    def test_classify_error_type_rate_limit_error(self, graceful_degradation_manager: str) -> None:
         """Test error classification for rate limit errors."""
         error = Exception("Rate limit exceeded")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -142,9 +130,7 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.RATE_LIMIT_ERROR
 
-    def test_classify_error_type_auth_error(
-        self, graceful_degradation_manager: str
-    ) -> None:
+    def test_classify_error_type_auth_error(self, graceful_degradation_manager: str) -> None:
         """Test error classification for authentication errors."""
         error = Exception("Authentication failed")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -158,9 +144,7 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.AUTHENTICATION_ERROR
 
-    def test_classify_error_type_permission_error(
-        self, graceful_degradation_manager: str
-    ) -> None:
+    def test_classify_error_type_permission_error(self, graceful_degradation_manager: str) -> None:
         """Test error classification for permission errors."""
         error = Exception("Permission denied")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -170,9 +154,7 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.PERMISSION_DENIED_ERROR
 
-    def test_classify_error_type_file_not_found_error(
-        self, graceful_degradation_manager
-    ):
+    def test_classify_error_type_file_not_found_error(self, graceful_degradation_manager):
         """Test error classification for file not found errors."""
         error = Exception("File not found")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -182,9 +164,7 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.FILE_NOT_FOUND_ERROR
 
-    def test_classify_error_type_disk_space_error(
-        self, graceful_degradation_manager: str
-    ) -> None:
+    def test_classify_error_type_disk_space_error(self, graceful_degradation_manager: str) -> None:
         """Test error classification for disk space errors."""
         error = Exception("No space left on device")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -194,9 +174,7 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.DISK_SPACE_ERROR
 
-    def test_classify_error_type_quota_exceeded_error(
-        self, graceful_degradation_manager
-    ):
+    def test_classify_error_type_quota_exceeded_error(self, graceful_degradation_manager):
         """Test error classification for quota exceeded errors."""
         error = Exception("Quota exceeded")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -206,9 +184,7 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.API_QUOTA_EXCEEDED_ERROR
 
-    def test_classify_error_type_service_unavailable_error(
-        self, graceful_degradation_manager
-    ):
+    def test_classify_error_type_service_unavailable_error(self, graceful_degradation_manager):
         """Test error classification for service unavailable errors."""
         error = Exception("Service unavailable")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -218,9 +194,7 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.API_SERVICE_UNAVAILABLE_ERROR
 
-    def test_classify_error_type_maintenance_error(
-        self, graceful_degradation_manager: str
-    ) -> None:
+    def test_classify_error_type_maintenance_error(self, graceful_degradation_manager: str) -> None:
         """Test error classification for maintenance errors."""
         error = Exception("Service under maintenance")
         error_type = graceful_degradation_manager._classify_error_type(error)
@@ -230,18 +204,14 @@ class TestGracefulDegradationManager:
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.API_MAINTENANCE_ERROR
 
-    def test_classify_error_type_unknown_error(
-        self, graceful_degradation_manager: str
-    ) -> None:
+    def test_classify_error_type_unknown_error(self, graceful_degradation_manager: str) -> None:
         """Test error classification for unknown errors."""
         error = Exception("Some random error")
         error_type = graceful_degradation_manager._classify_error_type(error)
         assert error_type == ErrorType.UNKNOWN_ERROR
 
     @pytest.mark.asyncio
-    async def test_handle_network_degradation_file_operation(
-        self, graceful_degradation_manager
-    ):
+    async def test_handle_network_degradation_file_operation(self, graceful_degradation_manager):
         """Test network degradation for file operations."""
         mock_func = AsyncMock()
         graceful_degradation_manager._fallback_to_local_file_operation = AsyncMock(
@@ -258,9 +228,7 @@ class TestGracefulDegradationManager:
         )
 
     @pytest.mark.asyncio
-    async def test_handle_network_degradation_pr_operation(
-        self, graceful_degradation_manager
-    ):
+    async def test_handle_network_degradation_pr_operation(self, graceful_degradation_manager):
         """Test network degradation for PR operations."""
         mock_func = AsyncMock()
         graceful_degradation_manager._fallback_to_offline_pr_operation = AsyncMock(
@@ -277,9 +245,7 @@ class TestGracefulDegradationManager:
         )
 
     @pytest.mark.asyncio
-    async def test_handle_network_degradation_other_operation(
-        self, graceful_degradation_manager
-    ):
+    async def test_handle_network_degradation_other_operation(self, graceful_degradation_manager):
         """Test network degradation for other operations."""
         mock_func = AsyncMock()
         graceful_degradation_manager._fallback_to_reduced_timeout_operation = AsyncMock(
@@ -296,9 +262,7 @@ class TestGracefulDegradationManager:
         )
 
     @pytest.mark.asyncio
-    async def test_handle_timeout_degradation_batch_operation(
-        self, graceful_degradation_manager
-    ):
+    async def test_handle_timeout_degradation_batch_operation(self, graceful_degradation_manager):
         """Test timeout degradation for batch operations."""
         mock_func = AsyncMock()
         graceful_degradation_manager._fallback_to_single_operation = AsyncMock(
@@ -315,9 +279,7 @@ class TestGracefulDegradationManager:
         )
 
     @pytest.mark.asyncio
-    async def test_handle_timeout_degradation_other_operation(
-        self, graceful_degradation_manager
-    ):
+    async def test_handle_timeout_degradation_other_operation(self, graceful_degradation_manager):
         """Test timeout degradation for other operations."""
         mock_func = AsyncMock()
         graceful_degradation_manager._fallback_to_reduced_timeout_operation = AsyncMock(
@@ -337,8 +299,8 @@ class TestGracefulDegradationManager:
     async def test_handle_rate_limit_degradation(self, graceful_degradation_manager):
         """Test rate limit degradation."""
         mock_func = AsyncMock()
-        graceful_degradation_manager._fallback_to_reduced_concurrency_operation = (
-            AsyncMock(return_value="reduced_concurrency_result")
+        graceful_degradation_manager._fallback_to_reduced_concurrency_operation = AsyncMock(
+            return_value="reduced_concurrency_result"
         )
 
         with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
@@ -386,13 +348,11 @@ class TestGracefulDegradationManager:
         )
 
     @pytest.mark.asyncio
-    async def test_handle_permission_degradation_read_operation(
-        self, graceful_degradation_manager
-    ):
+    async def test_handle_permission_degradation_read_operation(self, graceful_degradation_manager):
         """Test permission degradation for read operations."""
         mock_func = AsyncMock()
-        graceful_degradation_manager._fallback_to_alternative_permissions_operation = (
-            AsyncMock(return_value="alternative_permissions_result")
+        graceful_degradation_manager._fallback_to_alternative_permissions_operation = AsyncMock(
+            return_value="alternative_permissions_result"
         )
 
         result = await graceful_degradation_manager._handle_permission_degradation(
@@ -481,8 +441,8 @@ class TestGracefulDegradationManager:
     ):
         """Test quota exceeded degradation for other operations."""
         mock_func = AsyncMock()
-        graceful_degradation_manager._fallback_to_reduced_request_size_operation = (
-            AsyncMock(return_value="reduced_request_size_result")
+        graceful_degradation_manager._fallback_to_reduced_request_size_operation = AsyncMock(
+            return_value="reduced_request_size_result"
         )
 
         result = await graceful_degradation_manager._handle_quota_exceeded_degradation(
@@ -504,10 +464,8 @@ class TestGracefulDegradationManager:
             return_value="local_file_result"
         )
 
-        result = (
-            await graceful_degradation_manager._handle_service_unavailable_degradation(
-                "read_file", mock_func, "file.txt"
-            )
+        result = await graceful_degradation_manager._handle_service_unavailable_degradation(
+            "read_file", mock_func, "file.txt"
         )
 
         assert result == "local_file_result"
@@ -525,10 +483,8 @@ class TestGracefulDegradationManager:
             return_value="cached_data_result"
         )
 
-        result = (
-            await graceful_degradation_manager._handle_service_unavailable_degradation(
-                "other_operation", mock_func, "arg1"
-            )
+        result = await graceful_degradation_manager._handle_service_unavailable_degradation(
+            "other_operation", mock_func, "arg1"
         )
 
         assert result == "cached_data_result"
@@ -540,8 +496,8 @@ class TestGracefulDegradationManager:
     async def test_handle_maintenance_degradation(self, graceful_degradation_manager):
         """Test maintenance degradation."""
         mock_func = AsyncMock()
-        graceful_degradation_manager._fallback_to_retry_after_maintenance_operation = (
-            AsyncMock(return_value="retry_after_maintenance_result")
+        graceful_degradation_manager._fallback_to_retry_after_maintenance_operation = AsyncMock(
+            return_value="retry_after_maintenance_result"
         )
 
         with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
@@ -556,9 +512,7 @@ class TestGracefulDegradationManager:
         )
 
     @pytest.mark.asyncio
-    async def test_fallback_operations_not_implemented(
-        self, graceful_degradation_manager
-    ):
+    async def test_fallback_operations_not_implemented(self, graceful_degradation_manager):
         """Test that fallback operations raise NotImplementedError."""
         mock_func = AsyncMock()
 
@@ -591,9 +545,7 @@ class TestCreateGracefulDegradationManager:
         """Create a mock ResilientOperationManager."""
         return MagicMock(spec=ResilientOperationManager)
 
-    def test_create_graceful_degradation_manager(
-        self, mock_resilient_manager: str
-    ) -> None:
+    def test_create_graceful_degradation_manager(self, mock_resilient_manager: str) -> None:
         """Test creating a graceful degradation manager."""
         manager = create_graceful_degradation_manager(mock_resilient_manager)
 

@@ -10,8 +10,9 @@ Extracted from unified_workflow_orchestrator_original.py.
 import logging
 from typing import Any
 
+from argus.agents.enhanced_specialized import EnhancedAnalysisAgent
+
 from .caching import ContextCache
-from .enhanced_analysis_agent import EnhancedAnalysisAgent
 from .performance import PerformanceConfig
 from .prompt_context_models import IssueContext, IssueType, PromptContext
 
@@ -118,17 +119,13 @@ class WorkflowGenerationEngine:
 
             # Check if specialized generators are enabled
             if not self.enhanced_agent.code_generator_factory:
-                self.logger.warning(
-                    "Specialized generators not enabled, skipping enhancement"
-                )
+                self.logger.warning("Specialized generators not enabled, skipping enhancement")
                 return base_code
 
             # Convert string generator_type back to IssueType for the factory
             try:
                 issue_type = IssueType(generator_type)
-                generator = self.enhanced_agent.code_generator_factory.create_generator(
-                    issue_type
-                )
+                generator = self.enhanced_agent.code_generator_factory.create_generator(issue_type)
             except ValueError:
                 # If conversion fails, use UNKNOWN type
                 generator = self.enhanced_agent.code_generator_factory.create_generator(
@@ -139,9 +136,7 @@ class WorkflowGenerationEngine:
                 return base_code
 
             # Enhance the code
-            enhanced_code = await generator.enhance_code_patch(
-                base_code, prompt_context
-            )
+            enhanced_code = await generator.enhance_code_patch(base_code, prompt_context)
 
             return enhanced_code
 
@@ -149,9 +144,7 @@ class WorkflowGenerationEngine:
             self.logger.error(f"[ENHANCEMENT] Code enhancement failed: {e}")
             return base_code
 
-    def generate_basic_code_patch(
-        self, issue_context: IssueContext, proposed_fix: str
-    ) -> str:
+    def generate_basic_code_patch(self, issue_context: IssueContext, proposed_fix: str) -> str:
         """
         Generate basic code patch for fallback scenarios.
 
@@ -165,12 +158,12 @@ class WorkflowGenerationEngine:
         affected_files = issue_context.affected_files
 
         if not affected_files:
-            return "# Basic error handling implementation\n# TODO: Implement based on specific issue"
+            return (
+                "# Basic error handling implementation\n# TODO: Implement based on specific issue"
+            )
 
         # Generate basic code patch based on file type
-        file_ext = (
-            affected_files[0].split(".")[-1] if "." in affected_files[0] else "py"
-        )
+        file_ext = affected_files[0].split(".")[-1] if "." in affected_files[0] else "py"
 
         if file_ext == "py":
             return f"""# Basic Python error handling

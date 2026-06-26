@@ -22,27 +22,17 @@ class ModelConfig(BaseModel):
 
     name: str = Field(..., min_length=1, description="Model name/identifier")
     model_type: ModelType
-    cost_per_1k_tokens: float = Field(
-        0.0, ge=0.0, description="Cost per 1000 tokens in USD"
-    )
-    max_tokens: int = Field(
-        4000, gt=0, le=1000000, description="Maximum tokens for this model"
-    )
+    cost_per_1k_tokens: float = Field(0.0, ge=0.0, description="Cost per 1000 tokens in USD")
+    max_tokens: int = Field(4000, gt=0, le=1000000, description="Maximum tokens for this model")
     supports_streaming: bool = True
     supports_tools: bool = False
-    capabilities: list[str] = Field(
-        default_factory=list, description="List of model capabilities"
-    )
-    performance_score: float = Field(
-        0.5, ge=0.0, le=1.0, description="Performance score (0-1)"
-    )
-    reliability_score: float = Field(
-        0.5, ge=0.0, le=1.0, description="Reliability score (0-1)"
-    )
+    capabilities: list[str] = Field(default_factory=list, description="List of model capabilities")
+    performance_score: float = Field(0.5, ge=0.0, le=1.0, description="Performance score (0-1)")
+    reliability_score: float = Field(0.5, ge=0.0, le=1.0, description="Reliability score (0-1)")
 
     @field_validator("name")
     @classmethod
-    def validate_name(cls: str, v: str) -> None:
+    def validate_name(cls: Any, v: Any) -> Any:
         """
         Validate Name.
 
@@ -57,7 +47,7 @@ class ModelConfig(BaseModel):
 
     @field_validator("capabilities")
     @classmethod
-    def validate_capabilities(cls: str, v: str) -> None:
+    def validate_capabilities(cls: Any, v: Any) -> Any:
         """
         Validate Capabilities.
 
@@ -75,19 +65,27 @@ class LLMProviderConfig(BaseModel):
     """Configuration for an LLM provider."""
 
     provider: Literal[
-        "gemini", "ollama", "claude", "openai", "grok", "bedrock", "anthropic", "groq", "azure", "mistral", "xai", "perplexity", "openrouter"
+        "gemini",
+        "ollama",
+        "claude",
+        "openai",
+        "grok",
+        "bedrock",
+        "anthropic",
+        "groq",
+        "azure",
+        "mistral",
+        "xai",
+        "perplexity",
+        "openrouter",
     ]
     api_key: str | None = Field(None, description="API key for the provider")
-    base_url: HttpUrl | None = Field(
-        None, description="Base URL for the provider API"
-    )
+    base_url: HttpUrl | None = Field(None, description="Base URL for the provider API")
     region: str | None = Field(None, description="AWS region for Bedrock provider")
     timeout: int = Field(30, gt=0, le=300, description="Request timeout in seconds")
     max_retries: int = Field(3, ge=0, le=10, description="Maximum retry attempts")
     rate_limit: int | None = Field(None, gt=0, description="Rate limit per minute")
-    models: dict[str, ModelConfig] = Field(
-        default_factory=dict, description="Available models"
-    )
+    models: dict[str, ModelConfig] = Field(default_factory=dict, description="Available models")
     # ModelType to model name mappings - allows users to configure which models
     # are used for each semantic type
     model_type_mappings: dict[ModelType, str] = Field(
@@ -100,7 +98,7 @@ class LLMProviderConfig(BaseModel):
 
     @field_validator("api_key")
     @classmethod
-    def validate_api_key(cls: str, v: str, info: str) -> None:
+    def validate_api_key(cls: Any, v: Any, info: Any) -> Any:
         """
         Validate Api Key.
 
@@ -122,7 +120,7 @@ class LLMProviderConfig(BaseModel):
 
     @field_validator("region")
     @classmethod
-    def validate_region(cls: str, v: str, info: str) -> None:
+    def validate_region(cls: Any, v: Any, info: Any) -> Any:
         """
         Validate Region.
 
@@ -139,7 +137,7 @@ class LLMProviderConfig(BaseModel):
 
     @field_validator("models")
     @classmethod
-    def validate_models(cls: str, v: str) -> None:
+    def validate_models(cls: Any, v: Any) -> Any:
         """
         Validate Models.
 
@@ -151,14 +149,14 @@ class LLMProviderConfig(BaseModel):
         if v is None:
             return {}
         # Ensure model names are valid
-        for model_name in v.keys():
+        for model_name in v:
             if not model_name or not model_name.strip():
                 raise ValueError("Model names cannot be empty")
         return v
 
     @field_validator("model_type_mappings")
     @classmethod
-    def validate_model_type_mappings(cls: str, v: str) -> None:
+    def validate_model_type_mappings(cls: Any, v: Any) -> Any:
         """
         Validate Model Type Mappings.
 
@@ -177,13 +175,13 @@ class LLMProviderConfig(BaseModel):
             ModelType.CODE,
             ModelType.ANALYSIS,
         }
-        for model_type in v.keys():
+        for model_type in v:
             if model_type not in valid_model_types:
                 raise ValueError(f"Invalid ModelType: {model_type}")
         return v
 
     @model_validator(mode="after")
-    def validate_provider_config(self) -> None:
+    def validate_provider_config(self) -> Any:
         """Post-init validation for provider configuration."""
         # Validate that model_type_mappings reference existing models
         if self.model_type_mappings:
@@ -198,14 +196,22 @@ class LLMProviderConfig(BaseModel):
         # Validate that at least one model is configured
         if not self.models:
             from argus.llm.common.enums import ModelType
-            self.models = {"default": ModelConfig(name="default", model_type=ModelType.FAST)}
+
+            self.models = {
+                "default": ModelConfig(
+                    name="default",
+                    model_type=ModelType.FAST,
+                    cost_per_1k_tokens=0.0,
+                    max_tokens=4000,
+                    performance_score=0.5,
+                    reliability_score=0.5,
+                )
+            }
 
         # Validate that models have reasonable cost configurations
         for model_name, model_config in self.models.items():
             if model_config.cost_per_1k_tokens < 0:
-                raise ValueError(
-                    f"Model '{model_name}' has negative cost per 1k tokens"
-                )
+                raise ValueError(f"Model '{model_name}' has negative cost per 1k tokens")
             if model_config.max_tokens <= 0:
                 raise ValueError(f"Model '{model_name}' has invalid max_tokens value")
 
@@ -216,18 +222,12 @@ class AgentLLMConfig(BaseModel):
     """Configuration for agent-specific LLM usage."""
 
     # Primary model selection
-    primary_provider: str = Field(
-        ..., min_length=1, description="Primary provider name"
-    )
-    primary_model_type: ModelType = Field(
-        ModelType.SMART, description="Primary model type"
-    )
+    primary_provider: str = Field(..., min_length=1, description="Primary provider name")
+    primary_model_type: ModelType = Field(ModelType.SMART, description="Primary model type")
 
     # Fallback configuration
     fallback_provider: str | None = Field(None, description="Fallback provider name")
-    fallback_model_type: ModelType | None = Field(
-        None, description="Fallback model type"
-    )
+    fallback_model_type: ModelType | None = Field(None, description="Fallback model type")
 
     # Task-specific model overrides
     model_overrides: dict[str, dict[str, str]] = Field(
@@ -242,7 +242,7 @@ class AgentLLMConfig(BaseModel):
 
     @field_validator("primary_provider")
     @classmethod
-    def validate_primary_provider(cls: str, v: str) -> None:
+    def validate_primary_provider(cls: Any, v: Any) -> Any:
         """
         Validate Primary Provider.
 
@@ -257,7 +257,7 @@ class AgentLLMConfig(BaseModel):
 
     @field_validator("fallback_provider")
     @classmethod
-    def validate_fallback_provider(cls: str, v: str) -> None:
+    def validate_fallback_provider(cls: Any, v: Any) -> Any:
         """
         Validate Fallback Provider.
 
@@ -272,7 +272,7 @@ class AgentLLMConfig(BaseModel):
 
     @field_validator("model_overrides")
     @classmethod
-    def validate_model_overrides(cls: str, v: str) -> None:
+    def validate_model_overrides(cls: Any, v: Any) -> Any:
         """
         Validate Model Overrides.
 
@@ -288,9 +288,7 @@ class AgentLLMConfig(BaseModel):
             if not task_name or not task_name.strip():
                 raise ValueError("Task names in model_overrides cannot be empty")
             if not isinstance(override, dict):
-                raise ValueError(
-                    f"Model override for '{task_name}' must be a dictionary"
-                )
+                raise ValueError(f"Model override for '{task_name}' must be a dictionary")
             required_keys = {"provider", "model_type"}
             if not all(key in override for key in required_keys):
                 raise ValueError(
@@ -299,7 +297,7 @@ class AgentLLMConfig(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def validate_agent_config(self) -> None:
+    def validate_agent_config(self) -> Any:
         """Post-init validation for agent configuration."""
         # Validate that fallback provider is different from primary provider
         if self.fallback_provider and self.fallback_provider == self.primary_provider:
@@ -319,9 +317,7 @@ class AgentLLMConfig(BaseModel):
             }
             for task_name, override in self.model_overrides.items():
                 model_type_str = override.get("model_type")
-                if model_type_str and model_type_str not in [
-                    t.value for t in valid_model_types
-                ]:
+                if model_type_str and model_type_str not in [t.value for t in valid_model_types]:
                     raise ValueError(
                         f"Invalid model type '{model_type_str}' in override "
                         f"for task '{task_name}'. "
@@ -338,58 +334,36 @@ class CostConfig(BaseModel):
     budget_limits: dict[str, float] = Field(
         default_factory=dict, description="Budget limits per provider in USD"
     )
-    monthly_budget: float | None = Field(
-        None, gt=0, description="Monthly budget limit in USD"
-    )
+    monthly_budget: float | None = Field(None, gt=0, description="Monthly budget limit in USD")
     cost_alerts: list[float] = Field(
         default_factory=list, description="Cost alert thresholds as percentages (0-100)"
     )
 
     # Cost management system
-    enable_cost_tracking: bool = Field(
-        True, description="Enable comprehensive cost tracking"
-    )
-    budget_period: str = Field(
-        "monthly", description="Budget period: daily, weekly, or monthly"
-    )
+    enable_cost_tracking: bool = Field(True, description="Enable comprehensive cost tracking")
+    budget_period: str = Field("monthly", description="Budget period: daily, weekly, or monthly")
     enforcement_policy: str = Field(
         "warn", description="Budget enforcement: warn, soft_limit, or hard_limit"
     )
-    auto_reset: bool = Field(
-        True, description="Automatically reset budget at period end"
-    )
-    rollover_unused: bool = Field(
-        False, description="Roll over unused budget to next period"
-    )
-    max_rollover: float = Field(
-        50.0, gt=0, description="Maximum rollover amount in USD"
-    )
+    auto_reset: bool = Field(True, description="Automatically reset budget at period end")
+    rollover_unused: bool = Field(False, description="Roll over unused budget to next period")
+    max_rollover: float = Field(50.0, gt=0, description="Maximum rollover amount in USD")
 
     # Cost optimization
-    enable_optimization: bool = Field(
-        True, description="Enable cost optimization recommendations"
-    )
+    enable_optimization: bool = Field(True, description="Enable cost optimization recommendations")
     optimization_strategy: str = Field(
         "balanced",
         description="Optimization strategy: budget, performance, or balanced",
     )
-    cost_weight: float = Field(
-        0.3, ge=0, le=1, description="Weight for cost in optimization"
-    )
+    cost_weight: float = Field(0.3, ge=0, le=1, description="Weight for cost in optimization")
     performance_weight: float = Field(
         0.3, ge=0, le=1, description="Weight for performance in optimization"
     )
-    quality_weight: float = Field(
-        0.4, ge=0, le=1, description="Weight for quality in optimization"
-    )
+    quality_weight: float = Field(0.4, ge=0, le=1, description="Weight for quality in optimization")
 
     # Analytics and reporting
-    enable_analytics: bool = Field(
-        True, description="Enable cost analytics and reporting"
-    )
-    retention_days: int = Field(
-        90, gt=0, description="Days to retain usage data for analytics"
-    )
+    enable_analytics: bool = Field(True, description="Enable cost analytics and reporting")
+    retention_days: int = Field(90, gt=0, description="Days to retain usage data for analytics")
     cost_optimization_threshold: float = Field(
         0.1,
         gt=0,
@@ -397,14 +371,12 @@ class CostConfig(BaseModel):
     )
 
     # Pricing and refresh
-    refresh_interval: int = Field(
-        3600, gt=0, description="Pricing refresh interval in seconds"
-    )
+    refresh_interval: int = Field(3600, gt=0, description="Pricing refresh interval in seconds")
     max_records: int = Field(10000, gt=0, description="Maximum usage records to keep")
 
     @field_validator("budget_limits")
     @classmethod
-    def validate_budget_limits(cls: str, v: str) -> None:
+    def validate_budget_limits(cls: Any, v: Any) -> Any:
         """
         Validate Budget Limits.
 
@@ -424,7 +396,7 @@ class CostConfig(BaseModel):
 
     @field_validator("cost_alerts")
     @classmethod
-    def validate_cost_alerts(cls: str, v: str) -> None:
+    def validate_cost_alerts(cls: Any, v: Any) -> Any:
         """
         Validate Cost Alerts.
 
@@ -442,7 +414,7 @@ class CostConfig(BaseModel):
 
     @field_validator("budget_period")
     @classmethod
-    def validate_budget_period(cls: str, v: str) -> None:
+    def validate_budget_period(cls: Any, v: Any) -> Any:
         """
         Validate Budget Period.
 
@@ -457,7 +429,7 @@ class CostConfig(BaseModel):
 
     @field_validator("enforcement_policy")
     @classmethod
-    def validate_enforcement_policy(cls: str, v: str) -> None:
+    def validate_enforcement_policy(cls: Any, v: Any) -> Any:
         """
         Validate Enforcement Policy.
 
@@ -467,14 +439,12 @@ class CostConfig(BaseModel):
 
         """
         if v not in ["warn", "soft_limit", "hard_limit"]:
-            raise ValueError(
-                "Enforcement policy must be 'warn', 'soft_limit', or 'hard_limit'"
-            )
+            raise ValueError("Enforcement policy must be 'warn', 'soft_limit', or 'hard_limit'")
         return v
 
     @field_validator("optimization_strategy")
     @classmethod
-    def validate_optimization_strategy(cls: str, v: str) -> None:
+    def validate_optimization_strategy(cls: Any, v: Any) -> Any:
         """
         Validate Optimization Strategy.
 
@@ -484,14 +454,12 @@ class CostConfig(BaseModel):
 
         """
         if v not in ["budget", "performance", "balanced"]:
-            raise ValueError(
-                "Optimization strategy must be 'budget', 'performance', or 'balanced'"
-            )
+            raise ValueError("Optimization strategy must be 'budget', 'performance', or 'balanced'")
         return v
 
     @field_validator("cost_weight", "performance_weight", "quality_weight")
     @classmethod
-    def validate_weights(cls: str, v: str) -> None:
+    def validate_weights(cls: Any, v: Any) -> Any:
         """
         Validate Weights.
 
@@ -505,7 +473,7 @@ class CostConfig(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def validate_weights_sum(self) -> None:
+    def validate_weights_sum(self) -> Any:
         """Ensure optimization weights sum to approximately 1.0."""
         total_weight = self.cost_weight + self.performance_weight + self.quality_weight
         if not 0.95 <= total_weight <= 1.05:  # Allow small floating point errors
@@ -520,9 +488,7 @@ class CostConfig(BaseModel):
 class ResilienceConfig(BaseModel):
     """Resilience and reliability configuration."""
 
-    circuit_breaker_enabled: bool = Field(
-        True, description="Enable circuit breaker pattern"
-    )
+    circuit_breaker_enabled: bool = Field(True, description="Enable circuit breaker pattern")
     circuit_breaker_threshold: int = Field(
         5, gt=0, le=100, description="Failure threshold for circuit breaker"
     )
@@ -531,14 +497,12 @@ class ResilienceConfig(BaseModel):
     )
     retry_enabled: bool = Field(True, description="Enable retry mechanism")
     retry_attempts: int = Field(3, ge=0, le=10, description="Maximum retry attempts")
-    retry_delay: float = Field(
-        1.0, gt=0, le=60, description="Initial retry delay in seconds"
-    )
+    retry_delay: float = Field(1.0, gt=0, le=60, description="Initial retry delay in seconds")
     timeout: int = Field(30, gt=0, le=300, description="Request timeout in seconds")
 
     @field_validator("retry_delay")
     @classmethod
-    def validate_retry_delay(cls: str, v: str) -> None:
+    def validate_retry_delay(cls: Any, v: Any) -> Any:
         """
         Validate Retry Delay.
 
@@ -561,12 +525,8 @@ class LLMConfig(BaseModel):
     agents: dict[str, AgentLLMConfig] = Field(
         default_factory=dict, description="Agent-specific configurations"
     )
-    default_provider: str = Field(
-        "gemini", min_length=1, description="Default provider name"
-    )
-    default_model_type: ModelType = Field(
-        ModelType.SMART, description="Default model type"
-    )
+    default_provider: str = Field("gemini", min_length=1, description="Default provider name")
+    default_model_type: ModelType = Field(ModelType.SMART, description="Default model type")
     enable_fallback: bool = Field(True, description="Enable fallback mechanisms")
     enable_monitoring: bool = Field(True, description="Enable monitoring and metrics")
     cost_config: CostConfig | None = Field(
@@ -584,7 +544,7 @@ class LLMConfig(BaseModel):
 
     @field_validator("default_provider")
     @classmethod
-    def validate_default_provider(cls: str, v: str, info: str) -> None:
+    def validate_default_provider(cls: Any, v: Any, info: Any) -> Any:
         """
         Validate Default Provider.
 
@@ -601,14 +561,12 @@ class LLMConfig(BaseModel):
         # Check if default provider exists in providers
         providers = info.data.get("providers", {})
         if providers and v not in providers:
-            raise ValueError(
-                f"Default provider '{v}' not found in providers configuration"
-            )
+            raise ValueError(f"Default provider '{v}' not found in providers configuration")
         return v
 
     @field_validator("providers")
     @classmethod
-    def validate_providers(cls: str, v: str) -> None:
+    def validate_providers(cls: Any, v: Any) -> Any:
         """
         Validate Providers.
 
@@ -635,7 +593,7 @@ class LLMConfig(BaseModel):
 
     @field_validator("agents")
     @classmethod
-    def validate_agents(cls: str, v: str, info: str) -> None:
+    def validate_agents(cls: Any, v: Any, info: Any) -> Any:
         """
         Validate Agents.
 
@@ -660,17 +618,14 @@ class LLMConfig(BaseModel):
                 )
 
             # Validate fallback provider exists if specified
-            if (
-                agent_config.fallback_provider
-                and agent_config.fallback_provider not in providers
-            ):
+            if agent_config.fallback_provider and agent_config.fallback_provider not in providers:
                 raise ValueError(
                     f"Fallback provider '{agent_config.fallback_provider}' for agent '{agent_name}' not found in providers"
                 )
         return v
 
     @model_validator(mode="after")
-    def set_default_configs(self) -> None:
+    def set_default_configs(self) -> Any:
         """Set default configurations if not provided."""
         if self.cost_config is None:
             self.cost_config = CostConfig(

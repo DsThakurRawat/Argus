@@ -21,7 +21,7 @@ class LogQualityValidator:
     def __init__(self, thresholds: QualityThresholds | None = None) -> None:
         self.thresholds = thresholds or QualityThresholds()
 
-    def _extract_message_pattern(self, message: str) -> str:
+    def _extract_message_pattern(self, message: str | None) -> str:
         """Extracts and normalizes a log message into a general pattern."""
         if not message:
             return ""
@@ -35,10 +35,9 @@ class LogQualityValidator:
 
     def _is_noisy_log(self, log: LogEntry) -> bool:
         """Checks if log entry is considered noise."""
-        return (
-            ValidationRules.is_noisy_severity(log.severity)
-            or ValidationRules.is_message_too_short(log.error_message)
-        )
+        return ValidationRules.is_noisy_severity(
+            log.severity
+        ) or ValidationRules.is_message_too_short(log.error_message)
 
     def assess_log_quality(self, window: TimeWindow) -> dict[str, Any]:
         """Calculates completeness, noise ratio, consistency, and duplicates."""
@@ -69,12 +68,9 @@ class LogQualityValidator:
         # 4. Duplicate ratio
         messages = [log.error_message for log in window.logs if log.error_message is not None]
         unique_messages_count = len(set(messages))
-        if total > 0:
-            # duplicate ratio = (total - unique_messages) / total
-            # if we have no messages at all, treat duplicate ratio as 0 or 1? Let's check test assertions
-            duplicate_ratio = max(0.0, (total - unique_messages_count) / total)
-        else:
-            duplicate_ratio = 0.0
+        # duplicate ratio = (total - unique_messages) / total
+        # if we have no messages at all, treat duplicate ratio as 0
+        duplicate_ratio = max(0.0, (total - unique_messages_count) / total) if total > 0 else 0.0
 
         # Calculate quality factors
         low_noise = 1.0 - noise_ratio

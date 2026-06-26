@@ -1,6 +1,7 @@
 """Main dependency injection container implementation."""
 
 from collections.abc import Callable
+import contextlib
 import inspect
 import threading
 from typing import Any, TypeVar
@@ -150,9 +151,7 @@ class DIContainer(ServiceRegistry):
         except ServiceNotFoundError:
             raise
         except Exception as e:
-            raise ServiceResolutionError(
-                service_type, f"Failed to resolve service: {e!s}"
-            ) from e
+            raise ServiceResolutionError(service_type, f"Failed to resolve service: {e!s}") from e
 
     def create_scope(self) -> ServiceScope:
         """Create a new service scope.
@@ -177,7 +176,7 @@ class DIContainer(ServiceRegistry):
 
         return self._scopes[current_thread].get_service(service_type)
 
-    def dispose(self) -> None:
+    def dispose(self) -> Any:
         """Dispose of the container and all its services."""
         with self._lock:
             # Dispose of all scopes
@@ -224,10 +223,8 @@ class DIContainerScope(ServiceScope):
         # Dispose of scoped instances if they have a dispose method
         for instance in self._scoped_instances.values():
             if hasattr(instance, "dispose"):
-                try:
+                with contextlib.suppress(Exception):
                     instance.dispose()
-                except Exception:
-                    pass  # Ignore disposal errors
 
         self._scoped_instances.clear()
 
@@ -255,7 +252,7 @@ def resolve_dependencies(
         dependency_chain = []
 
     if service_type in dependency_chain:
-        raise CircularDependencyError(dependency_chain + [service_type])
+        raise CircularDependencyError([*dependency_chain, service_type])
 
     # Check if service is registered
     if not container.is_registered(service_type):
@@ -275,7 +272,7 @@ def resolve_dependencies(
 
     # Resolve constructor dependencies
     resolved_args = {}
-    new_chain = dependency_chain + [service_type]
+    new_chain = [*dependency_chain, service_type]
 
     for param_name, param in parameters.items():
         if param_name == "self":
@@ -287,9 +284,7 @@ def resolve_dependencies(
 
         # Resolve the dependency
         try:
-            resolved_args[param_name] = resolve_dependencies(
-                container, param_type, new_chain
-            )
+            resolved_args[param_name] = resolve_dependencies(container, param_type, new_chain)
         except ServiceNotFoundError:
             if param.default != inspect.Parameter.empty:
                 continue  # Use default value

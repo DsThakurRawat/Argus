@@ -12,6 +12,7 @@ Provides comprehensive alerting capabilities including:
 
 import asyncio
 from collections.abc import Callable
+import contextlib
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -114,9 +115,7 @@ class AlertManager:
             return
 
         self._running = True
-        self._evaluation_task = asyncio.create_task(
-            self._evaluate_alerts_periodically()
-        )
+        self._evaluation_task = asyncio.create_task(self._evaluate_alerts_periodically())
         self._cleanup_task = asyncio.create_task(self._cleanup_old_alerts())
         logger.info("AlertManager started")
 
@@ -126,17 +125,13 @@ class AlertManager:
 
         if self._evaluation_task:
             self._evaluation_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._evaluation_task
-            except asyncio.CancelledError:
-                pass
 
         if self._cleanup_task:
             self._cleanup_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._cleanup_task
-            except asyncio.CancelledError:
-                pass
 
         logger.info("AlertManager stopped")
 
@@ -244,9 +239,7 @@ class AlertManager:
         """Get alerts by source."""
         return [alert for alert in self._alerts.values() if alert.source == source]
 
-    def get_alert_history(
-        self, limit: int = 100, since: datetime | None = None
-    ) -> list[Alert]:
+    def get_alert_history(self, limit: int = 100, since: datetime | None = None) -> list[Alert]:
         """
         Get alert history.
 
@@ -332,8 +325,8 @@ class AlertManager:
                     )
 
                     # Set cooldown
-                    self._suppressed_alerts[f"rule_{rule_name}"] = (
-                        datetime.now() + timedelta(minutes=rule.cooldown_minutes)
+                    self._suppressed_alerts[f"rule_{rule_name}"] = datetime.now() + timedelta(
+                        minutes=rule.cooldown_minutes
                     )
 
             except Exception as e:
@@ -350,9 +343,7 @@ class AlertManager:
             except Exception as e:
                 logger.error(f"Failed to send notification via {channel_name}: {e}")
 
-    async def _send_notification(
-        self, channel: NotificationChannel, alert: Alert
-    ) -> None:
+    async def _send_notification(self, channel: NotificationChannel, alert: Alert) -> None:
         """Send notification via a specific channel."""
         if channel.channel_type == "console":
             await self._send_console_notification(alert)
@@ -382,9 +373,7 @@ class AlertManager:
             print(f"Metadata: {json.dumps(alert.metadata, indent=2)}")
         print("-" * 50)
 
-    async def _send_webhook_notification(
-        self, channel: NotificationChannel, alert: Alert
-    ) -> None:
+    async def _send_webhook_notification(self, channel: NotificationChannel, alert: Alert) -> None:
         """Send notification via webhook."""
         try:
             import aiohttp  # type: ignore
@@ -408,14 +397,14 @@ class AlertManager:
             "tags": alert.tags,
         }
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(webhook_url, json=payload) as response:
-                if response.status >= 400:
-                    logger.error(f"Webhook notification failed: {response.status}")
+        async with (
+            aiohttp.ClientSession() as session,
+            session.post(webhook_url, json=payload) as response,
+        ):
+            if response.status >= 400:
+                logger.error(f"Webhook notification failed: {response.status}")
 
-    async def _send_email_notification(
-        self, channel: NotificationChannel, alert: Alert
-    ) -> None:
+    async def _send_email_notification(self, channel: NotificationChannel, alert: Alert) -> None:
         """Send notification via email."""
         # TODO: Implement email notification
         logger.info(f"Email notification would be sent for alert: {alert.id}")
@@ -496,9 +485,7 @@ class AlertManager:
     def _setup_default_channels(self) -> None:
         """Setup default notification channels."""
         # Console channel (always available)
-        console_channel = NotificationChannel(
-            name="console", channel_type="console", config={}
-        )
+        console_channel = NotificationChannel(name="console", channel_type="console", config={})
         self.add_notification_channel(console_channel)
 
     def _setup_default_rules(self) -> None:
@@ -518,8 +505,7 @@ class AlertManager:
         # High memory usage rule
         high_memory_rule = AlertRule(
             name="high_memory_usage",
-            condition=lambda data: data.get("memory_usage", 0)
-            > 0.9,  # 90% memory usage
+            condition=lambda data: data.get("memory_usage", 0) > 0.9,  # 90% memory usage
             level=AlertLevel.WARNING,
             title="High Memory Usage",
             message_template="Memory usage is {memory_usage:.1%}, approaching critical levels",
@@ -535,8 +521,7 @@ class AlertManager:
             level=AlertLevel.WARNING,
             title="Too Many Active Alerts",
             message_template=(
-                "There are {active_alerts_count} active alerts, "
-                "indicating potential system issues"
+                "There are {active_alerts_count} active alerts, indicating potential system issues"
             ),
             source="alert_manager",
             cooldown_minutes=15,

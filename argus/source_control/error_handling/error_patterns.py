@@ -46,19 +46,15 @@ class PatternConfig:
 class PatternMatcher(Protocol):
     """Protocol for pattern matching implementations."""
 
-    def match(
-        self, text: str, context: dict[str, Any] | None = None
-    ) -> list[PatternMatch]:
+    def match(self, text: str, context: dict[str, Any] | None = None) -> list[PatternMatch]:
         """Match patterns against text."""
         ...
 
-    def compile_patterns(self) -> None:
+    def compile_patterns(self) -> Any:
         """Compile patterns for performance."""
         ...
 
-    def add_pattern(
-        self, pattern: Any, error_type: ErrorType, confidence: float = 1.0
-    ) -> None:
+    def add_pattern(self, pattern: Any, error_type: ErrorType, confidence: float = 1.0) -> None:
         """Add a new pattern to the matcher."""
         ...
 
@@ -74,9 +70,7 @@ class PatternMatcher(Protocol):
 class RegexPatternMatcher:
     """Regex-based pattern matcher for error detection."""
 
-    def __init__(
-        self, name: str = "regex_matcher", config: PatternConfig | None = None
-    ):
+    def __init__(self, name: str = "regex_matcher", config: PatternConfig | None = None):
         """Initialize the regex pattern matcher."""
         self.name = name
         self.config = config or PatternConfig()
@@ -84,9 +78,7 @@ class RegexPatternMatcher:
         self.patterns: list[tuple[str, ErrorType, float, re.Pattern]] = []
         self.is_compiled = False
 
-    def add_pattern(
-        self, pattern: str, error_type: ErrorType, confidence: float = 1.0
-    ) -> None:
+    def add_pattern(self, pattern: str, error_type: ErrorType, confidence: float = 1.0) -> None:
         """Add a new regex pattern to the matcher."""
         try:
             flags = 0
@@ -107,9 +99,7 @@ class RegexPatternMatcher:
 
     def remove_pattern(self, pattern: str) -> None:
         """Remove a pattern from the matcher."""
-        self.patterns = [
-            (p, et, conf, comp) for p, et, conf, comp in self.patterns if p != pattern
-        ]
+        self.patterns = [(p, et, conf, comp) for p, et, conf, comp in self.patterns if p != pattern]
         self.logger.debug(f"Removed pattern: {pattern}")
 
     def get_patterns(self) -> list[tuple[str, ErrorType, float]]:
@@ -124,9 +114,7 @@ class RegexPatternMatcher:
         self.is_compiled = True
         self.logger.info(f"Compiled {len(self.patterns)} patterns")
 
-    def match(
-        self, text: str, context: dict[str, Any] | None = None
-    ) -> list[PatternMatch]:
+    def match(self, text: str, context: dict[str, Any] | None = None) -> list[PatternMatch]:
         """Match patterns against text."""
         if not self.is_compiled:
             self.compile_patterns()
@@ -193,9 +181,10 @@ class RegexPatternMatcher:
             confidence *= 1.2
 
         # Boost confidence based on context
-        if context.get("error_context") == "network":
-            if "network" in pattern.lower() or "connection" in pattern.lower():
-                confidence *= 1.1
+        if context.get("error_context") == "network" and (
+            "network" in pattern.lower() or "connection" in pattern.lower()
+        ):
+            confidence *= 1.1
 
         return min(confidence, 1.0)
 
@@ -203,9 +192,7 @@ class RegexPatternMatcher:
 class KeywordPatternMatcher:
     """Keyword-based pattern matcher for error detection."""
 
-    def __init__(
-        self, name: str = "keyword_matcher", config: PatternConfig | None = None
-    ):
+    def __init__(self, name: str = "keyword_matcher", config: PatternConfig | None = None):
         """Initialize the keyword pattern matcher."""
         self.name = name
         self.config = config or PatternConfig()
@@ -213,23 +200,15 @@ class KeywordPatternMatcher:
         self.keyword_patterns: list[tuple[list[str], ErrorType, float]] = []
         self.is_compiled = False
 
-    def add_pattern(
-        self, pattern: Any, error_type: ErrorType, confidence: float = 1.0
-    ) -> None:
+    def add_pattern(self, pattern: Any, error_type: ErrorType, confidence: float = 1.0) -> None:
         """Add a new keyword pattern to the matcher."""
-        if isinstance(pattern, list):
-            keywords = pattern
-        else:
-            keywords = [pattern]
+        keywords = pattern if isinstance(pattern, list) else [pattern]
         self.keyword_patterns.append((keywords, error_type, confidence))
         self.logger.debug(f"Added keyword pattern: {keywords} -> {error_type}")
 
     def remove_pattern(self, pattern: Any) -> None:
         """Remove a keyword pattern from the matcher."""
-        if isinstance(pattern, list):
-            keywords = pattern
-        else:
-            keywords = [pattern]
+        keywords = pattern if isinstance(pattern, list) else [pattern]
         self.keyword_patterns = [
             (kw, et, conf) for kw, et, conf in self.keyword_patterns if kw != keywords
         ]
@@ -247,9 +226,7 @@ class KeywordPatternMatcher:
         self.is_compiled = True
         self.logger.info(f"Compiled {len(self.keyword_patterns)} keyword patterns")
 
-    def match(
-        self, text: str, context: dict[str, Any] | None = None
-    ) -> list[PatternMatch]:
+    def match(self, text: str, context: dict[str, Any] | None = None) -> list[PatternMatch]:
         """Match keyword patterns against text."""
         if not self.is_compiled:
             self.compile_patterns()
@@ -263,9 +240,7 @@ class KeywordPatternMatcher:
                 # Check if all keywords are present
                 keyword_matches = []
                 for keyword in keywords:
-                    keyword_lower = (
-                        keyword.lower() if not self.config.case_sensitive else keyword
-                    )
+                    keyword_lower = keyword.lower() if not self.config.case_sensitive else keyword
                     if keyword_lower in text_lower:
                         # Find the position of the keyword
                         start_pos = text_lower.find(keyword_lower)
@@ -332,11 +307,10 @@ class KeywordPatternMatcher:
                 confidence *= 1.2
 
         # Boost confidence based on context
-        if context.get("error_context") == "network":
-            if any(
-                "network" in kw.lower() or "connection" in kw.lower() for kw in keywords
-            ):
-                confidence *= 1.1
+        if context.get("error_context") == "network" and any(
+            "network" in kw.lower() or "connection" in kw.lower() for kw in keywords
+        ):
+            confidence *= 1.1
 
         return min(confidence, 1.0)
 
@@ -344,9 +318,7 @@ class KeywordPatternMatcher:
 class SemanticPatternMatcher:
     """Semantic pattern matcher using fuzzy matching and similarity."""
 
-    def __init__(
-        self, name: str = "semantic_matcher", config: PatternConfig | None = None
-    ):
+    def __init__(self, name: str = "semantic_matcher", config: PatternConfig | None = None):
         """Initialize the semantic pattern matcher."""
         self.name = name
         self.config = config or PatternConfig()
@@ -369,9 +341,7 @@ class SemanticPatternMatcher:
     def remove_pattern(self, pattern: str) -> None:
         """Remove a semantic pattern from the matcher."""
         self.semantic_patterns = [
-            (p, et, conf, syn)
-            for p, et, conf, syn in self.semantic_patterns
-            if p != pattern
+            (p, et, conf, syn) for p, et, conf, syn in self.semantic_patterns if p != pattern
         ]
         self.logger.debug(f"Removed semantic pattern: {pattern}")
 
@@ -387,9 +357,7 @@ class SemanticPatternMatcher:
         self.is_compiled = True
         self.logger.info(f"Compiled {len(self.semantic_patterns)} semantic patterns")
 
-    def match(
-        self, text: str, context: dict[str, Any] | None = None
-    ) -> list[PatternMatch]:
+    def match(self, text: str, context: dict[str, Any] | None = None) -> list[PatternMatch]:
         """Match semantic patterns against text."""
         if not self.is_compiled:
             self.compile_patterns()
@@ -400,18 +368,14 @@ class SemanticPatternMatcher:
         for pattern, error_type, confidence, synonyms in self.semantic_patterns:
             try:
                 # Calculate semantic similarity
-                similarity = self._calculate_semantic_similarity(
-                    pattern, text, synonyms
-                )
+                similarity = self._calculate_semantic_similarity(pattern, text, synonyms)
 
                 if similarity > 0.3:  # Minimum similarity threshold
                     if len(matches) >= self.config.max_matches:
                         break
 
                     # Find the best matching substring
-                    best_match = self._find_best_substring_match(
-                        pattern, text, synonyms
-                    )
+                    best_match = self._find_best_substring_match(pattern, text, synonyms)
 
                     if best_match:
                         match_confidence = confidence * similarity
@@ -442,9 +406,7 @@ class SemanticPatternMatcher:
         matches.sort(key=lambda x: x.confidence, reverse=True)
         return matches
 
-    def _calculate_semantic_similarity(
-        self, pattern: str, text: str, synonyms: list[str]
-    ) -> float:
+    def _calculate_semantic_similarity(self, pattern: str, text: str, synonyms: list[str]) -> float:
         """Calculate semantic similarity between pattern and text."""
         # Simple word-based similarity
         pattern_words = set(pattern.lower().split())
@@ -480,9 +442,7 @@ class SemanticPatternMatcher:
         for i in range(len(text_lower)):
             for j in range(i + len(pattern), len(text_lower) + 1):
                 substring = text_lower[i:j]
-                score = self._calculate_substring_score(
-                    pattern_words, substring, synonyms
-                )
+                score = self._calculate_substring_score(pattern_words, substring, synonyms)
 
                 if score > best_score:
                     best_score = score
@@ -560,9 +520,7 @@ class PatternRegistry:
             del self.matchers[name]
             self.logger.info(f"Removed matcher: {name}")
 
-    def match_all(
-        self, text: str, context: dict[str, Any] | None = None
-    ) -> list[PatternMatch]:
+    def match_all(self, text: str, context: dict[str, Any] | None = None) -> list[PatternMatch]:
         """Match text against all registered matchers."""
         all_matches = []
         context = context or {}
@@ -616,19 +574,13 @@ def initialize_default_patterns() -> None:
     regex_matcher = PatternMatcherFactory.create_matcher("regex", "default_regex")
 
     # Add common error patterns
-    regex_matcher.add_pattern(
-        r"timeout|timed out|deadline exceeded", ErrorType.TIMEOUT_ERROR, 0.9
-    )
+    regex_matcher.add_pattern(r"timeout|timed out|deadline exceeded", ErrorType.TIMEOUT_ERROR, 0.9)
     regex_matcher.add_pattern(
         r"connection.*reset|reset by peer", ErrorType.CONNECTION_RESET_ERROR, 0.9
     )
-    regex_matcher.add_pattern(
-        r"network.*error|connection.*failed", ErrorType.NETWORK_ERROR, 0.8
-    )
+    regex_matcher.add_pattern(r"network.*error|connection.*failed", ErrorType.NETWORK_ERROR, 0.8)
     regex_matcher.add_pattern(r"dns.*error|name resolution", ErrorType.DNS_ERROR, 0.9)
-    regex_matcher.add_pattern(
-        r"ssl.*error|tls.*error|certificate.*error", ErrorType.SSL_ERROR, 0.9
-    )
+    regex_matcher.add_pattern(r"ssl.*error|tls.*error|certificate.*error", ErrorType.SSL_ERROR, 0.9)
     regex_matcher.add_pattern(
         r"auth.*failed|invalid.*credentials|unauthorized",
         ErrorType.AUTHENTICATION_ERROR,
@@ -639,9 +591,7 @@ def initialize_default_patterns() -> None:
         ErrorType.AUTHORIZATION_ERROR,
         0.9,
     )
-    regex_matcher.add_pattern(
-        r"not.*found|404|missing.*resource", ErrorType.NOT_FOUND_ERROR, 0.8
-    )
+    regex_matcher.add_pattern(r"not.*found|404|missing.*resource", ErrorType.NOT_FOUND_ERROR, 0.8)
     regex_matcher.add_pattern(
         r"validation.*error|invalid.*input|bad.*request",
         ErrorType.VALIDATION_ERROR,
@@ -659,9 +609,7 @@ def initialize_default_patterns() -> None:
     regex_matcher.add_pattern(
         r"rate.*limit|quota.*exceeded|throttle", ErrorType.RATE_LIMIT_ERROR, 0.9
     )
-    regex_matcher.add_pattern(
-        r"server.*error|500|internal.*error", ErrorType.SERVER_ERROR, 0.8
-    )
+    regex_matcher.add_pattern(r"server.*error|500|internal.*error", ErrorType.SERVER_ERROR, 0.8)
     regex_matcher.add_pattern(
         r"merge.*conflict|conflict.*github|conflict.*gitlab",
         ErrorType.GITHUB_MERGE_CONFLICT,
@@ -674,12 +622,8 @@ def initialize_default_patterns() -> None:
     keyword_matcher = PatternMatcherFactory.create_matcher("keyword", "default_keyword")
 
     # Add keyword patterns
-    keyword_matcher.add_pattern(
-        ["timeout", "timed", "out"], ErrorType.TIMEOUT_ERROR, 0.8
-    )
-    keyword_matcher.add_pattern(
-        ["connection", "reset"], ErrorType.CONNECTION_RESET_ERROR, 0.8
-    )
+    keyword_matcher.add_pattern(["timeout", "timed", "out"], ErrorType.TIMEOUT_ERROR, 0.8)
+    keyword_matcher.add_pattern(["connection", "reset"], ErrorType.CONNECTION_RESET_ERROR, 0.8)
     keyword_matcher.add_pattern(["network", "error"], ErrorType.NETWORK_ERROR, 0.7)
     keyword_matcher.add_pattern(["dns", "resolution"], ErrorType.DNS_ERROR, 0.8)
     keyword_matcher.add_pattern(["ssl", "tls", "certificate"], ErrorType.SSL_ERROR, 0.8)
@@ -690,29 +634,15 @@ def initialize_default_patterns() -> None:
         ["forbidden", "access", "denied"], ErrorType.AUTHORIZATION_ERROR, 0.8
     )
     keyword_matcher.add_pattern(["not", "found", "404"], ErrorType.NOT_FOUND_ERROR, 0.7)
-    keyword_matcher.add_pattern(
-        ["validation", "invalid", "input"], ErrorType.VALIDATION_ERROR, 0.7
-    )
-    keyword_matcher.add_pattern(
-        ["config", "configuration"], ErrorType.CONFIGURATION_ERROR, 0.7
-    )
-    keyword_matcher.add_pattern(
-        ["file", "not", "found"], ErrorType.FILE_NOT_FOUND_ERROR, 0.7
-    )
-    keyword_matcher.add_pattern(
-        ["disk", "space", "full"], ErrorType.DISK_SPACE_ERROR, 0.8
-    )
-    keyword_matcher.add_pattern(
-        ["rate", "limit", "quota"], ErrorType.RATE_LIMIT_ERROR, 0.8
-    )
+    keyword_matcher.add_pattern(["validation", "invalid", "input"], ErrorType.VALIDATION_ERROR, 0.7)
+    keyword_matcher.add_pattern(["config", "configuration"], ErrorType.CONFIGURATION_ERROR, 0.7)
+    keyword_matcher.add_pattern(["file", "not", "found"], ErrorType.FILE_NOT_FOUND_ERROR, 0.7)
+    keyword_matcher.add_pattern(["disk", "space", "full"], ErrorType.DISK_SPACE_ERROR, 0.8)
+    keyword_matcher.add_pattern(["rate", "limit", "quota"], ErrorType.RATE_LIMIT_ERROR, 0.8)
     keyword_matcher.add_pattern(["server", "error", "500"], ErrorType.SERVER_ERROR, 0.7)
-    keyword_matcher.add_pattern(
-        ["merge", "conflict"], ErrorType.GITHUB_MERGE_CONFLICT, 0.8
-    )
+    keyword_matcher.add_pattern(["merge", "conflict"], ErrorType.GITHUB_MERGE_CONFLICT, 0.8)
     keyword_matcher.add_pattern(["git", "error"], ErrorType.LOCAL_GIT_ERROR, 0.7)
-    keyword_matcher.add_pattern(
-        ["ssh", "key", "error"], ErrorType.GITHUB_SSH_ERROR, 0.8
-    )
+    keyword_matcher.add_pattern(["ssh", "key", "error"], ErrorType.GITHUB_SSH_ERROR, 0.8)
 
     # Create semantic matcher
     semantic_matcher = SemanticPatternMatcher("default_semantic")
@@ -782,16 +712,12 @@ def initialize_default_patterns() -> None:
     logger.info("Initialized default error patterns")
 
 
-def match_error_patterns(
-    text: str, context: dict[str, Any] | None = None
-) -> list[PatternMatch]:
+def match_error_patterns(text: str, context: dict[str, Any] | None = None) -> list[PatternMatch]:
     """Match error patterns against text using the global registry."""
     return pattern_registry.match_all(text, context)
 
 
-def get_best_error_match(
-    text: str, context: dict[str, Any] | None = None
-) -> PatternMatch | None:
+def get_best_error_match(text: str, context: dict[str, Any] | None = None) -> PatternMatch | None:
     """Get the best error pattern match for text."""
     return pattern_registry.get_best_match(text, context)
 

@@ -59,7 +59,7 @@ class GCPPubSubAdapter(LogIngestionInterface):
         self._total_messages_processed = 0
         self._total_messages_failed = 0
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the Pub/Sub consumer."""
         if self._is_running:
             return
@@ -70,10 +70,8 @@ class GCPPubSubAdapter(LogIngestionInterface):
 
             # Initialize subscriber client
             if self.credentials_path:
-                self._subscriber_client = (
-                    pubsub_v1.SubscriberClient.from_service_account_file(
-                        self.credentials_path
-                    )
+                self._subscriber_client = pubsub_v1.SubscriberClient.from_service_account_file(
+                    self.credentials_path
                 )
             else:
                 self._subscriber_client = pubsub_v1.SubscriberClient()
@@ -139,9 +137,7 @@ class GCPPubSubAdapter(LogIngestionInterface):
                 except Exception as e:
                     self._total_messages_failed += 1
                     self._consecutive_failures += 1
-                    raise LogParsingError(
-                        f"Failed to parse Pub/Sub message: {e}"
-                    ) from e
+                    raise LogParsingError(f"Failed to parse Pub/Sub message: {e}") from e
 
             # Reset failure count on successful processing
             self._consecutive_failures = 0
@@ -162,12 +158,8 @@ class GCPPubSubAdapter(LogIngestionInterface):
 
             # Extract log fields
             message_text = data.get("message", "")
-            timestamp_str = (
-                data.get("timestamp") or data.get("time") or data.get("@timestamp")
-            )
-            severity_str = (
-                data.get("severity") or data.get("level") or data.get("log_level")
-            )
+            timestamp_str = data.get("timestamp") or data.get("time") or data.get("@timestamp")
+            severity_str = data.get("severity") or data.get("level") or data.get("log_level")
             source = data.get("source") or data.get("service") or "pubsub"
 
             # Parse timestamp
@@ -214,13 +206,9 @@ class GCPPubSubAdapter(LogIngestionInterface):
                     "subscription": self.subscription_id,
                     "message_id": message.message_id,
                     "publish_time": (
-                        message.publish_time.isoformat()
-                        if message.publish_time
-                        else None
+                        message.publish_time.isoformat() if message.publish_time else None
                     ),
-                    "attributes": (
-                        dict(message.attributes) if message.attributes else {}
-                    ),
+                    "attributes": (dict(message.attributes) if message.attributes else {}),
                     "raw_data": data,
                 },
             )
@@ -291,15 +279,9 @@ class GCPPubSubAdapter(LogIngestionInterface):
         self._consecutive_failures += 1
 
         # Consider GCP API errors as potentially recoverable
-        if hasattr(error, "code") and getattr(error, "code", None) in [
-            429,
-            500,
-            502,
-            503,
-            504,
-        ]:
-            return True
-        return False
+        return bool(
+            hasattr(error, "code") and getattr(error, "code", None) in [429, 500, 502, 503, 504]
+        )
 
     async def get_health_metrics(self) -> dict[str, Any]:
         """Get detailed health and performance metrics."""

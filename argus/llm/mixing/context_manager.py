@@ -38,7 +38,7 @@ class ContextData:
             return False
         return time.time() > self.expires_at
 
-    def touch(self) -> None:
+    def touch(self) -> Any:
         """Update access information."""
         self.access_count += 1
         self.last_accessed = time.time()
@@ -257,7 +257,6 @@ class ContextManager:
 
         for rule in self.sharing_rules:
             if rule.source_model == source_model and rule.target_model == target_model:
-
                 # Filter by context types if specified
                 rule_types = rule.context_types
                 if context_types:
@@ -291,9 +290,7 @@ class ContextManager:
         elif rule.sharing_mode == "filtered":
             if rule.filter_keys:
                 filtered_data = {
-                    key: context.data.get(key)
-                    for key in rule.filter_keys
-                    if key in context.data
+                    key: context.data.get(key) for key in rule.filter_keys if key in context.data
                 }
                 if filtered_data:
                     return ContextData(
@@ -371,9 +368,7 @@ class ContextManager:
         # Check data size
         data_str = str(context.data)
         if len(data_str) > MAX_PROMPT_LENGTH:
-            errors.append(
-                f"Context data too large (max {MAX_PROMPT_LENGTH} characters)"
-            )
+            errors.append(f"Context data too large (max {MAX_PROMPT_LENGTH} characters)")
 
         # Check for dangerous patterns
         if self._contains_dangerous_patterns(data_str):
@@ -406,16 +401,12 @@ class ContextManager:
             r"<meta\b[^>]*http-equiv",
         ]
 
-        return any(
-            re.search(pattern, data, re.IGNORECASE) for pattern in dangerous_patterns
-        )
+        return any(re.search(pattern, data, re.IGNORECASE) for pattern in dangerous_patterns)
 
     def _cleanup_expired_contexts(self) -> None:
         """Remove expired contexts."""
         expired_ids = [
-            context_id
-            for context_id, context in self.contexts.items()
-            if context.is_expired()
+            context_id for context_id, context in self.contexts.items() if context.is_expired()
         ]
 
         for context_id in expired_ids:
@@ -430,9 +421,7 @@ class ContextManager:
         if not self.contexts:
             return
 
-        oldest_context_id = min(
-            self.contexts.keys(), key=lambda k: self.contexts[k].last_accessed
-        )
+        oldest_context_id = min(self.contexts.keys(), key=lambda k: self.contexts[k].last_accessed)
 
         del self.contexts[oldest_context_id]
         self._update_usage_stats(oldest_context_id, "evicted")

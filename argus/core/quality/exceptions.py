@@ -6,13 +6,12 @@ This module defines custom exceptions for the quality gate system.
 """
 
 
-
 class QualityGateError(Exception):
     """Base exception for quality gate errors."""
 
     def __init__(self, message: str, details: dict | None = None):
         """Initialize the quality gate error.
-        
+
         Args:
             message: Error message.
             details: Additional error details.
@@ -27,7 +26,7 @@ class ValidationError(QualityGateError):
 
     def __init__(self, message: str, validation_type: str, details: dict | None = None):
         """Initialize the validation error.
-        
+
         Args:
             message: Error message.
             validation_type: Type of validation that failed.
@@ -42,7 +41,7 @@ class QualityGateFailureError(QualityGateError):
 
     def __init__(self, gate_name: str, message: str, details: dict | None = None):
         """Initialize the quality gate failure error.
-        
+
         Args:
             gate_name: Name of the failed gate.
             message: Error message.
@@ -57,7 +56,7 @@ class ConfigurationError(QualityGateError):
 
     def __init__(self, message: str, config_key: str | None = None, details: dict | None = None):
         """Initialize the configuration error.
-        
+
         Args:
             message: Error message.
             config_key: Configuration key that caused the error.
@@ -75,10 +74,10 @@ class ToolExecutionError(QualityGateError):
         tool_name: str,
         message: str,
         exit_code: int | None = None,
-        details: dict | None = None
+        details: dict | None = None,
     ):
         """Initialize the tool execution error.
-        
+
         Args:
             tool_name: Name of the tool that failed.
             message: Error message.
@@ -95,7 +94,7 @@ class ReportGenerationError(QualityGateError):
 
     def __init__(self, message: str, report_type: str | None = None, details: dict | None = None):
         """Initialize the report generation error.
-        
+
         Args:
             message: Error message.
             report_type: Type of report that failed to generate.

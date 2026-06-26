@@ -93,9 +93,7 @@ Please provide a comprehensive analysis and code fix following the repository's 
             "database_type": repo_ctx.technology_stack.get("database", "Unknown"),
             "connection_pool_config": self._extract_db_config(repo_ctx),
             "error_patterns": ", ".join(issue_ctx.error_patterns),
-            "performance_metrics": json.dumps(
-                issue_ctx.impact_analysis.get("performance", {})
-            ),
+            "performance_metrics": json.dumps(issue_ctx.impact_analysis.get("performance", {})),
             "technology_stack": json.dumps(repo_ctx.technology_stack),
             "coding_standards": json.dumps(repo_ctx.coding_standards),
             "error_handling_patterns": ", ".join(repo_ctx.error_handling_patterns),
@@ -199,9 +197,7 @@ Please provide a comprehensive analysis and code fix following the repository's 
             "auth_method": self._extract_auth_method(repo_ctx),
             "rate_limiting_config": self._extract_rate_limiting_config(repo_ctx),
             "error_patterns": ", ".join(issue_ctx.error_patterns),
-            "performance_metrics": json.dumps(
-                issue_ctx.impact_analysis.get("performance", {})
-            ),
+            "performance_metrics": json.dumps(issue_ctx.impact_analysis.get("performance", {})),
             "technology_stack": json.dumps(repo_ctx.technology_stack),
             "api_standards": json.dumps(repo_ctx.coding_standards),
             "error_handling_patterns": ", ".join(repo_ctx.error_handling_patterns),
@@ -304,9 +300,7 @@ Please provide a comprehensive security analysis and code fix following security
             "business_impact": issue_ctx.business_impact,
             "vulnerability_type": self._extract_vulnerability_type(issue_ctx),
             "attack_vector": self._extract_attack_vector(issue_ctx),
-            "security_standards": json.dumps(
-                repo_ctx.coding_standards.get("security", {})
-            ),
+            "security_standards": json.dumps(repo_ctx.coding_standards.get("security", {})),
             "current_security_measures": self._extract_security_measures(repo_ctx),
             "technology_stack": json.dumps(repo_ctx.technology_stack),
             "error_handling_patterns": ", ".join(repo_ctx.error_handling_patterns),

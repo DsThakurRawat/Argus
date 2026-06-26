@@ -6,9 +6,11 @@ In-memory queue system for log buffering and backpressure management.
 
 import asyncio
 from collections import deque
+import contextlib
 from dataclasses import dataclass
 from datetime import UTC, datetime
 import logging
+from typing import Any
 
 from ..interfaces.core import LogEntry
 
@@ -49,16 +51,14 @@ class MemoryQueue:
         self._queue: deque = deque(maxlen=config.max_size)
         self._lock = asyncio.Lock()
         self._stats = QueueStats()
-        self._processing_times: deque = deque(
-            maxlen=100
-        )  # Keep last 100 processing times
+        self._processing_times: deque = deque(maxlen=100)  # Keep last 100 processing times
         self._shutdown = False
 
         # Start background tasks
         self._flush_task: asyncio.Task | None = None
         self._metrics_task: asyncio.Task | None = None
 
-    async def start(self) -> None:
+    async def start(self) -> Any:
         """Start the queue and background tasks."""
         if self._flush_task is None:
             self._flush_task = asyncio.create_task(self._flush_loop())
@@ -74,17 +74,13 @@ class MemoryQueue:
 
         if self._flush_task:
             self._flush_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._flush_task
-            except asyncio.CancelledError:
-                pass
 
         if self._metrics_task:
             self._metrics_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._metrics_task
-            except asyncio.CancelledError:
-                pass
 
         logger.info("Stopped memory queue")
 
@@ -109,9 +105,7 @@ class MemoryQueue:
             self._queue.append(log_entry)
             self._stats.total_enqueued += 1
             self._stats.current_size = len(self._queue)
-            self._stats.max_size_reached = max(
-                self._stats.max_size_reached, len(self._queue)
-            )
+            self._stats.max_size_reached = max(self._stats.max_size_reached, len(self._queue))
             self._stats.last_enqueue_time = datetime.now(UTC)
 
             return True
@@ -143,16 +137,14 @@ class MemoryQueue:
                 self._stats.last_dequeue_time = datetime.now(UTC)
 
                 # Track processing time
-                processing_time = (
-                    datetime.now(UTC) - start_time
-                ).total_seconds() * 1000
+                processing_time = (datetime.now(UTC) - start_time).total_seconds() * 1000
                 self._processing_times.append(processing_time)
 
                 # Update average processing time
                 if self._processing_times:
-                    self._stats.average_processing_time_ms = sum(
+                    self._stats.average_processing_time_ms = sum(self._processing_times) / len(
                         self._processing_times
-                    ) / len(self._processing_times)
+                    )
 
         return items
 

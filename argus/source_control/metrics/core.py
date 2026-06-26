@@ -71,9 +71,7 @@ class MetricSeries:
 
     def get_range(self, start_time: datetime, end_time: datetime) -> list[MetricPoint]:
         """Get points within a time range."""
-        return [
-            point for point in self.points if start_time <= point.timestamp <= end_time
-        ]
+        return [point for point in self.points if start_time <= point.timestamp <= end_time]
 
     def get_statistics(self, window_minutes: int = 60) -> dict[str, float]:
         """Get statistics for the series over a time window."""

@@ -29,24 +29,18 @@ async def basic_cost_management_example():
     logger.info("=== Basic Cost Management Example ===")
 
     # Create a default cost manager
-    cost_manager = create_default_cost_manager(
-        budget_limit=50.0, budget_period="monthly"
-    )
+    cost_manager = create_default_cost_manager(budget_limit=50.0, budget_period="monthly")
 
     # Estimate request cost
     cost = await cost_manager.estimate_request_cost("openai", "gpt-4", 1000, 500)
     logger.info(f"Estimated cost for GPT-4 request: ${cost:.4f}")
 
     # Check if request is within budget
-    can_make, message = await cost_manager.can_make_request(
-        "openai", "gpt-4", 1000, 500
-    )
+    can_make, message = await cost_manager.can_make_request("openai", "gpt-4", 1000, 500)
     logger.info(f"Can make request: {can_make} - {message}")
 
     # Get optimal provider
-    provider, model, estimated_cost = await cost_manager.get_optimal_provider(
-        "text", 1000, 500
-    )
+    provider, model, estimated_cost = await cost_manager.get_optimal_provider("text", 1000, 500)
     logger.info(f"Optimal provider: {provider}/{model} (${estimated_cost:.4f})")
 
     # Record a completed request
@@ -153,9 +147,7 @@ async def advanced_cost_management_example():
         # Provider breakdown
         logger.info("\n--- Provider Breakdown ---")
         for provider, data in analytics["provider_breakdown"].items():
-            logger.info(
-                f"{provider}: ${data['cost']:.2f} ({data['requests']} requests)"
-            )
+            logger.info(f"{provider}: ${data['cost']:.2f} ({data['requests']} requests)")
 
     # Get optimization recommendations
     logger.info("\n--- Optimization Recommendations ---")

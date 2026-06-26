@@ -29,9 +29,7 @@ class TestLocalProviderSimple:
         """Test basic functionality of LocalProvider."""
         temp_dir = tempfile.mkdtemp()
         try:
-            config = LocalRepositoryConfig(
-                name="test-local", path=temp_dir, git_enabled=False
-            )
+            config = LocalRepositoryConfig(name="test-local", path=temp_dir, git_enabled=False)
 
             async with LocalProvider(config.model_dump()) as provider:
                 # Test connection
@@ -83,9 +81,7 @@ class TestLocalProviderSimple:
             repo.git.add(A=True)
             repo.git.commit(m="Initial commit")
 
-            config = LocalRepositoryConfig(
-                name="test-git", path=temp_dir, git_enabled=True
-            )
+            config = LocalRepositoryConfig(name="test-git", path=temp_dir, git_enabled=True)
 
             async with LocalProvider(config.model_dump()) as provider:
                 # Test Git operations
@@ -125,9 +121,7 @@ class TestLocalProviderSimple:
         """Test patch generation functionality."""
         temp_dir = tempfile.mkdtemp()
         try:
-            config = LocalRepositoryConfig(
-                name="test-patch", path=temp_dir, git_enabled=False
-            )
+            config = LocalRepositoryConfig(name="test-patch", path=temp_dir, git_enabled=False)
 
             async with LocalProvider(config.model_dump()) as provider:
                 # Create initial file
@@ -161,9 +155,7 @@ class TestLocalProviderSimple:
         """Test batch operations functionality."""
         temp_dir = tempfile.mkdtemp()
         try:
-            config = LocalRepositoryConfig(
-                name="test-batch", path=temp_dir, git_enabled=False
-            )
+            config = LocalRepositoryConfig(name="test-batch", path=temp_dir, git_enabled=False)
 
             async with LocalProvider(config.model_dump()) as provider:
                 # Test batch operations

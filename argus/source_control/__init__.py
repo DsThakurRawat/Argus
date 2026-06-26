@@ -39,14 +39,12 @@ from .utils import (
 )
 
 __all__ = [
-    # Base classes
-    "SourceControlProvider",
     "BaseSourceControlProvider",
-    "ConfiguredSourceControlProvider",
     # Models
     "BatchOperation",
     "BranchInfo",
     "CommitInfo",
+    "ConfiguredSourceControlProvider",
     "ConflictInfo",
     "FileInfo",
     "OperationResult",
@@ -55,6 +53,8 @@ __all__ = [
     "ProviderHealth",
     "RemediationResult",
     "RepositoryInfo",
+    # Base classes
+    "SourceControlProvider",
     # Utilities
     "create_operation_id",
     "execute_with_retry",

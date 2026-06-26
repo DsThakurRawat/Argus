@@ -12,7 +12,7 @@ from .exceptions import ResourceExhaustedError
 @dataclass
 class BulkheadConfig:
     """Configuration for bulkhead isolator.
-    
+
     Attributes:
         max_concurrency: Maximum number of concurrent operations
         queue_size: Maximum queue size for waiting operations
@@ -28,14 +28,14 @@ class BulkheadConfig:
 
 class BulkheadIsolator:
     """Bulkhead isolator implementation for fault tolerance.
-    
+
     Implements the bulkhead pattern to isolate resources and prevent
     cascading failures by limiting concurrency.
     """
 
     def __init__(self, config: BulkheadConfig | None = None):
         """Initialize the bulkhead isolator.
-        
+
         Args:
             config: Bulkhead configuration
         """
@@ -49,23 +49,19 @@ class BulkheadIsolator:
         self._operation_counter = 0
 
     def execute(
-        self,
-        func: Callable[..., Any],
-        operation_name: str | None = None,
-        *args,
-        **kwargs
+        self, func: Callable[..., Any], operation_name: str | None = None, *args, **kwargs
     ) -> Any:
         """Execute a function with bulkhead isolation.
-        
+
         Args:
             func: Function to execute
             operation_name: Name of the operation
             *args: Function arguments
             **kwargs: Function keyword arguments
-            
+
         Returns:
             Function result
-            
+
         Raises:
             ResourceExhaustedError: If resources are exhausted
             Exception: If the function raises an exception
@@ -75,9 +71,7 @@ class BulkheadIsolator:
         # Acquire semaphore with timeout
         if not self._semaphore.acquire(timeout=self._config.timeout):
             raise ResourceExhaustedError(
-                self._config.name,
-                self._config.max_concurrency,
-                self._config.max_concurrency
+                self._config.name, self._config.max_concurrency, self._config.max_concurrency
             )
 
         operation_id = f"{operation_name}_{self._operation_counter}"
@@ -87,7 +81,7 @@ class BulkheadIsolator:
             self._active_operations[operation_id] = {
                 "operation_name": operation_name,
                 "start_time": time.time(),
-                "thread_id": threading.get_ident()
+                "thread_id": threading.get_ident(),
             }
 
         try:
@@ -111,14 +105,24 @@ class BulkheadIsolator:
             with self._lock:
                 self._active_operations.pop(operation_id, None)
 
-    def _record_operation(
-        self,
-        operation_id: str,
-        success: bool,
-        error: str | None
-    ) -> None:
+    def acquire(self) -> None:
+        """Acquire a bulkhead slot.
+
+        Raises:
+            ResourceExhaustedError: If resources are exhausted
+        """
+        if not self._semaphore.acquire(timeout=self._config.timeout):
+            raise ResourceExhaustedError(
+                self._config.name, self._config.max_concurrency, self._config.max_concurrency
+            )
+
+    def release(self) -> None:
+        """Release a bulkhead slot."""
+        self._semaphore.release()
+
+    def _record_operation(self, operation_id: str, success: bool, error: str | None) -> None:
         """Record an operation.
-        
+
         Args:
             operation_id: Unique operation identifier
             success: Whether the operation succeeded
@@ -135,18 +139,18 @@ class BulkheadIsolator:
                 "duration": time.time() - operation_info.get("start_time", time.time()),
                 "success": success,
                 "error": error,
-                "thread_id": operation_info.get("thread_id", threading.get_ident())
+                "thread_id": operation_info.get("thread_id", threading.get_ident()),
             }
 
             self._operation_history.append(operation_record)
 
             # Trim history if needed
             if len(self._operation_history) > self._max_history:
-                self._operation_history = self._operation_history[-self._max_history:]
+                self._operation_history = self._operation_history[-self._max_history :]
 
     def get_stats(self) -> dict[str, Any]:
         """Get bulkhead isolator statistics.
-        
+
         Returns:
             Dictionary containing bulkhead isolator statistics
         """
@@ -156,8 +160,7 @@ class BulkheadIsolator:
             failed_operations = total_operations - successful_operations
 
             success_rate = (
-                (successful_operations / total_operations * 100)
-                if total_operations > 0 else 0.0
+                (successful_operations / total_operations * 100) if total_operations > 0 else 0.0
             )
 
             # Calculate average duration
@@ -168,7 +171,8 @@ class BulkheadIsolator:
             current_usage = len(self._active_operations)
             utilization_rate = (
                 (current_usage / self._config.max_concurrency * 100)
-                if self._config.max_concurrency > 0 else 0.0
+                if self._config.max_concurrency > 0
+                else 0.0
             )
 
             return {
@@ -185,16 +189,16 @@ class BulkheadIsolator:
                 "config": {
                     "max_concurrency": self._config.max_concurrency,
                     "queue_size": self._config.queue_size,
-                    "timeout": self._config.timeout
-                }
+                    "timeout": self._config.timeout,
+                },
             }
 
     def get_operation_history(self, limit: int | None = None) -> list[dict[str, Any]]:
         """Get operation history.
-        
+
         Args:
             limit: Optional limit on number of records to return
-            
+
         Returns:
             List of operation records
         """
@@ -205,7 +209,7 @@ class BulkheadIsolator:
 
     def get_active_operations(self) -> dict[str, dict[str, Any]]:
         """Get currently active operations.
-        
+
         Returns:
             Dictionary of active operation information
         """
@@ -214,7 +218,7 @@ class BulkheadIsolator:
 
     def get_available_capacity(self) -> int:
         """Get available capacity.
-        
+
         Returns:
             Number of available slots
         """
@@ -222,15 +226,15 @@ class BulkheadIsolator:
 
     def is_available(self) -> bool:
         """Check if bulkhead has available capacity.
-        
+
         Returns:
             True if capacity is available, False otherwise
         """
         return self.get_available_capacity() > 0
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset the bulkhead isolator.
-        
+
         Clears all history and active operations.
         """
         with self._lock:
@@ -240,22 +244,25 @@ class BulkheadIsolator:
 
     def __call__(self, operation_name: str | None = None):
         """Make bulkhead isolator callable as a decorator.
-        
+
         Args:
             operation_name: Name of the operation
-            
+
         Returns:
             Decorator function
         """
+
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             def wrapper(*args, **kwargs):
                 return self.execute(func, operation_name, *args, **kwargs)
+
             return wrapper
+
         return decorator
 
     def __enter__(self):
         """Context manager entry.
-        
+
         Returns:
             Self
         """
@@ -263,7 +270,7 @@ class BulkheadIsolator:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit.
-        
+
         Args:
             exc_type: Exception type
             exc_val: Exception value

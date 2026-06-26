@@ -110,12 +110,8 @@ class PerformanceBenchmark:
 
         # Calculate statistics
         return {
-            "avg_response_time_ms": (
-                statistics.mean(response_times) if response_times else 0
-            ),
-            "median_response_time_ms": (
-                statistics.median(response_times) if response_times else 0
-            ),
+            "avg_response_time_ms": (statistics.mean(response_times) if response_times else 0),
+            "median_response_time_ms": (statistics.median(response_times) if response_times else 0),
             "avg_cost": statistics.mean(costs) if costs else 0,
             "total_cost": sum(costs),
             "avg_quality": statistics.mean(quality_scores) if quality_scores else 0,
@@ -155,13 +151,9 @@ class PerformanceBenchmark:
 
         return results
 
-    async def benchmark_load_testing(
-        self, concurrent_requests: int = 5
-    ) -> dict[str, float]:
+    async def benchmark_load_testing(self, concurrent_requests: int = 5) -> dict[str, float]:
         """Perform load testing with concurrent requests."""
-        logger.info(
-            f"Starting load test with {concurrent_requests} concurrent requests..."
-        )
+        logger.info(f"Starting load test with {concurrent_requests} concurrent requests...")
 
         agent = EnhancedTriageAgent(
             llm_config=self.llm_config,
@@ -203,9 +195,7 @@ class PerformanceBenchmark:
 
         return {
             "total_time_ms": total_time,
-            "avg_response_time_ms": (
-                statistics.mean(response_times) if response_times else 0
-            ),
+            "avg_response_time_ms": (statistics.mean(response_times) if response_times else 0),
             "max_response_time_ms": max(response_times) if response_times else 0,
             "min_response_time_ms": min(response_times) if response_times else 0,
             "success_rate": success_count / concurrent_requests,
@@ -219,9 +209,7 @@ class PerformanceBenchmark:
         """Generate a comprehensive benchmark report."""
         report = []
         report.append("=" * 80)
-        report.append(
-            "ENHANCED MULTI-PROVIDER LLM SYSTEM - PERFORMANCE BENCHMARK REPORT"
-        )
+        report.append("ENHANCED MULTI-PROVIDER LLM SYSTEM - PERFORMANCE BENCHMARK REPORT")
         report.append("=" * 80)
         report.append("")
 
@@ -272,12 +260,8 @@ class PerformanceBenchmark:
                         f"  Average Response Time: {metrics.get('avg_response_time_ms', 0):.2f} ms"
                     )
                     report.append(f"  Average Cost: ${metrics.get('avg_cost', 0):.6f}")
-                    report.append(
-                        f"  Average Quality: {metrics.get('avg_quality', 0):.3f}"
-                    )
-                    report.append(
-                        f"  Success Rate: {metrics.get('success_rate', 0):.2%}"
-                    )
+                    report.append(f"  Average Quality: {metrics.get('avg_quality', 0):.3f}")
+                    report.append(f"  Success Rate: {metrics.get('success_rate', 0):.2%}")
                     report.append("")
 
         # Load testing results
@@ -286,9 +270,7 @@ class PerformanceBenchmark:
             report.append("-" * 40)
 
             load_metrics = results["load_testing"]
-            report.append(
-                f"Concurrent Requests: {load_metrics.get('concurrent_requests', 0)}"
-            )
+            report.append(f"Concurrent Requests: {load_metrics.get('concurrent_requests', 0)}")
             report.append(f"Total Time: {load_metrics.get('total_time_ms', 0):.2f} ms")
             report.append(
                 f"Average Response Time: {load_metrics.get('avg_response_time_ms', 0):.2f} ms"
@@ -300,9 +282,7 @@ class PerformanceBenchmark:
                 f"Max Response Time: {load_metrics.get('max_response_time_ms', 0):.2f} ms"
             )
             report.append(f"Success Rate: {load_metrics.get('success_rate', 0):.2%}")
-            report.append(
-                f"Requests per Second: {load_metrics.get('requests_per_second', 0):.2f}"
-            )
+            report.append(f"Requests per Second: {load_metrics.get('requests_per_second', 0):.2f}")
             report.append("")
 
         # Recommendations
@@ -317,12 +297,8 @@ class PerformanceBenchmark:
                 strategies.items(),
                 key=lambda x: x[1].get("avg_response_time_ms", float("inf")),
             )
-            best_cost = min(
-                strategies.items(), key=lambda x: x[1].get("avg_cost", float("inf"))
-            )
-            best_quality = max(
-                strategies.items(), key=lambda x: x[1].get("avg_quality", 0)
-            )
+            best_cost = min(strategies.items(), key=lambda x: x[1].get("avg_cost", float("inf")))
+            best_quality = max(strategies.items(), key=lambda x: x[1].get("avg_quality", 0))
 
             report.append(f"• For fastest response: Use '{best_speed[0]}' strategy")
             report.append(f"• For lowest cost: Use '{best_cost[0]}' strategy")
@@ -377,9 +353,7 @@ async def main():
         with open("benchmark_report.txt", "w") as f:
             f.write(report)
 
-        logger.info(
-            "Benchmark completed successfully! Report saved to benchmark_report.txt"
-        )
+        logger.info("Benchmark completed successfully! Report saved to benchmark_report.txt")
 
     except Exception as e:
         logger.error(f"Benchmark failed: {e}")

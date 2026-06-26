@@ -22,9 +22,7 @@ class HealthCheckRegistry:
     """Registry for health check implementations."""
 
     def __init__(self) -> None:
-        self.checks: dict[
-            str, Callable[[SourceControlProvider], Awaitable[HealthCheck]]
-        ] = {}
+        self.checks: dict[str, Callable[[SourceControlProvider], Awaitable[HealthCheck]]] = {}
         self.logger = logging.getLogger("HealthCheckRegistry")
 
     def register(
@@ -51,10 +49,12 @@ class HealthCheckRegistry:
 health_check_registry = HealthCheckRegistry()
 
 
-def register_health_check(name: str) -> None:
+def register_health_check(name: str) -> Callable:
     """Decorator to register a health check function."""
 
-    def decorator(func: Callable[[SourceControlProvider], Awaitable[HealthCheck]]) -> None:
+    def decorator(
+        func: Callable[[SourceControlProvider], Awaitable[HealthCheck]],
+    ) -> Callable[[SourceControlProvider], Awaitable[HealthCheck]]:
         """
         Decorator.
 
@@ -107,9 +107,7 @@ async def check_credential_validation(provider: SourceControlProvider) -> Health
         return HealthCheck(
             name="credential_validation",
             status=HealthStatus.HEALTHY if are_valid else HealthStatus.UNHEALTHY,
-            message=(
-                "Credentials valid" if are_valid else "Credentials invalid or expired"
-            ),
+            message=("Credentials valid" if are_valid else "Credentials invalid or expired"),
             timestamp=datetime.now(),
             duration_ms=duration_ms,
             details={"valid": are_valid, "response_time_ms": duration_ms},
@@ -144,11 +142,7 @@ async def check_repository_access(provider: SourceControlProvider) -> HealthChec
         return HealthCheck(
             name="repository_access",
             status=HealthStatus.HEALTHY if is_healthy else HealthStatus.DEGRADED,
-            message=(
-                "Repository access successful"
-                if is_healthy
-                else "Repository access limited"
-            ),
+            message=("Repository access successful" if is_healthy else "Repository access limited"),
             timestamp=datetime.now(),
             duration_ms=duration_ms,
             details={
@@ -269,9 +263,7 @@ async def check_performance_benchmark(provider: SourceControlProvider) -> Health
         duration_ms = (time.time() - start_time) * 1000
 
         # Count successful operations
-        successful_ops = sum(
-            1 for result in results if not isinstance(result, Exception)
-        )
+        successful_ops = sum(1 for result in results if not isinstance(result, Exception))
         total_ops = len(operations)
         success_rate = successful_ops / total_ops
 
@@ -355,9 +347,7 @@ async def check_rate_limit_status(provider: SourceControlProvider) -> HealthChec
                 "limit": limit,
                 "reset_time": reset_time,
                 "utilization": (
-                    (limit - remaining) / limit
-                    if limit and remaining is not None
-                    else None
+                    (limit - remaining) / limit if limit and remaining is not None else None
                 ),
                 "response_time_ms": duration_ms,
             },
@@ -381,9 +371,7 @@ class ComprehensiveHealthChecker:
         self.registry = health_check_registry
         self.logger = logging.getLogger("ComprehensiveHealthChecker")
 
-    async def run_all_checks(
-        self, provider: SourceControlProvider
-    ) -> list[HealthCheck]:
+    async def run_all_checks(self, provider: SourceControlProvider) -> list[HealthCheck]:
         """Run all registered health checks on a provider."""
         checks = []
         check_names = self.registry.list_checks()
@@ -398,9 +386,7 @@ class ComprehensiveHealthChecker:
                 try:
                     check_result = await check_func(provider)
                     checks.append(check_result)
-                    self.logger.debug(
-                        f"Health check {check_name}: {check_result.status.value}"
-                    )
+                    self.logger.debug(f"Health check {check_name}: {check_result.status.value}")
                 except Exception as e:
                     self.logger.error(f"Health check {check_name} failed: {e}")
                     checks.append(
@@ -493,9 +479,7 @@ class ComprehensiveHealthChecker:
 
             summary["health_score"] = float(score)
             summary["overall_status"] = (
-                "healthy"
-                if score >= 0.8
-                else "degraded" if score >= 0.5 else "unhealthy"
+                "healthy" if score >= 0.8 else "degraded" if score >= 0.5 else "unhealthy"
             )
 
         return summary

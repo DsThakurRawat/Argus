@@ -58,9 +58,7 @@ class BackgroundProcessor:
         """Queue metric for background processing."""
         if self._metric_queue is None:
             # Fallback to synchronous processing
-            await self.collector.record_metric(
-                name, value, metric_type, tags, unit, metadata
-            )
+            await self.collector.record_metric(name, value, metric_type, tags, unit, metadata)
             return
 
         metric_data = {
@@ -113,9 +111,7 @@ class BackgroundProcessor:
                 failed_metrics.append(metric_data)
 
         if failed_metrics:
-            self.logger.warning(
-                f"Metric queue full, dropped {len(failed_metrics)} metrics"
-            )
+            self.logger.warning(f"Metric queue full, dropped {len(failed_metrics)} metrics")
             # Try to make space and add some of the failed metrics
             try:
                 # Remove some old metrics to make space
@@ -179,7 +175,7 @@ class BackgroundProcessor:
                     try:
                         while not self._metric_queue.empty():
                             self._metric_queue.task_done()
-                    except Exception:
+                    except Exception:  # nosec B110
                         pass
 
     async def _process_metric_batch(self, batch: list[dict[str, Any]]):
@@ -197,9 +193,7 @@ class BackgroundProcessor:
             try:
                 # Use the first metric as template for series info
                 template = metric_list[0]
-                series_key = self.collector._create_series_key(
-                    name, template.get("tags") or {}
-                )
+                series_key = self.collector._create_series_key(name, template.get("tags") or {})
 
                 async with self.collector._lock:
                     if series_key not in self.collector.series:

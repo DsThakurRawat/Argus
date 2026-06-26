@@ -31,7 +31,7 @@ class LoggingMetrics:
 
     # Error metrics
     formatting_errors: int = 0
-    handler_errors: int = 0
+    total_handler_errors: int = 0
     configuration_errors: int = 0
 
     # Memory metrics
@@ -42,7 +42,7 @@ class LoggingMetrics:
     handler_calls: dict[str, int] = field(default_factory=dict)
     handler_errors: dict[str, int] = field(default_factory=dict)
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset all metrics to zero."""
         self.total_logs = 0
         self.debug_logs = 0
@@ -57,7 +57,7 @@ class LoggingMetrics:
         self.min_processing_time = float("inf")
 
         self.formatting_errors = 0
-        self.handler_errors = 0
+        self.total_handler_errors = 0
         self.configuration_errors = 0
 
         self.memory_usage = 0
@@ -68,7 +68,7 @@ class LoggingMetrics:
 
     def update_processing_time(self, processing_time: float) -> None:
         """Update processing time metrics.
-        
+
         Args:
             processing_time: Time taken to process a log entry.
         """
@@ -81,7 +81,7 @@ class LoggingMetrics:
 
     def increment_log_count(self, level: str) -> None:
         """Increment log count for a specific level.
-        
+
         Args:
             level: Log level.
         """
@@ -101,7 +101,7 @@ class LoggingMetrics:
 
     def increment_handler_calls(self, handler_name: str) -> None:
         """Increment handler call count.
-        
+
         Args:
             handler_name: Name of the handler.
         """
@@ -109,16 +109,18 @@ class LoggingMetrics:
 
     def increment_handler_errors(self, handler_name: str) -> None:
         """Increment handler error count.
-        
+
         Args:
             handler_name: Name of the handler.
         """
+        if not hasattr(self, "handler_errors") or not isinstance(self.handler_errors, dict):
+            self.handler_errors = {}
         self.handler_errors[handler_name] = self.handler_errors.get(handler_name, 0) + 1
-        self.handler_errors += 1
+        self.total_handler_errors += 1
 
     def update_memory_usage(self, memory_usage: int) -> None:
         """Update memory usage metrics.
-        
+
         Args:
             memory_usage: Current memory usage in bytes.
         """
@@ -127,7 +129,7 @@ class LoggingMetrics:
 
     def to_dict(self) -> dict[str, Any]:
         """Convert metrics to dictionary.
-        
+
         Returns:
             Dictionary representation of metrics.
         """
@@ -142,17 +144,14 @@ class LoggingMetrics:
             "average_processing_time": self.average_processing_time,
             "max_processing_time": self.max_processing_time,
             "min_processing_time": (
-                self.min_processing_time
-                if self.min_processing_time != float("inf")
-                else 0.0
+                self.min_processing_time if self.min_processing_time != float("inf") else 0.0
             ),
             "formatting_errors": self.formatting_errors,
-            "handler_errors": self.handler_errors,
+            "total_handler_errors": self.total_handler_errors,
             "configuration_errors": self.configuration_errors,
             "memory_usage": self.memory_usage,
             "peak_memory_usage": self.peak_memory_usage,
             "handler_calls": dict(self.handler_calls),
-            "handler_errors": dict(self.handler_errors)
         }
 
 
@@ -161,7 +160,7 @@ class MetricsCollector:
 
     def __init__(self, max_history: int = 1000):
         """Initialize the metrics collector.
-        
+
         Args:
             max_history: Maximum number of historical metrics to keep.
         """
@@ -173,7 +172,7 @@ class MetricsCollector:
 
     def record_log(self, level: str, processing_time: float) -> None:
         """Record a log entry.
-        
+
         Args:
             level: Log level.
             processing_time: Time taken to process the log entry.
@@ -183,7 +182,7 @@ class MetricsCollector:
 
     def record_handler_call(self, handler_name: str) -> None:
         """Record a handler call.
-        
+
         Args:
             handler_name: Name of the handler.
         """
@@ -191,7 +190,7 @@ class MetricsCollector:
 
     def record_handler_error(self, handler_name: str) -> None:
         """Record a handler error.
-        
+
         Args:
             handler_name: Name of the handler.
         """
@@ -207,7 +206,7 @@ class MetricsCollector:
 
     def update_memory_usage(self, memory_usage: int) -> None:
         """Update memory usage.
-        
+
         Args:
             memory_usage: Current memory usage in bytes.
         """
@@ -215,7 +214,7 @@ class MetricsCollector:
 
     def get_current_metrics(self) -> LoggingMetrics:
         """Get current metrics.
-        
+
         Returns:
             Current metrics instance.
         """
@@ -223,7 +222,7 @@ class MetricsCollector:
 
     def get_historical_metrics(self) -> list[LoggingMetrics]:
         """Get historical metrics.
-        
+
         Returns:
             List of historical metrics.
         """
@@ -231,7 +230,7 @@ class MetricsCollector:
 
     def snapshot_metrics(self) -> LoggingMetrics:
         """Take a snapshot of current metrics.
-        
+
         Returns:
             Snapshot of current metrics.
         """
@@ -269,7 +268,7 @@ class MetricsCollector:
 
     def get_uptime(self) -> float:
         """Get system uptime in seconds.
-        
+
         Returns:
             Uptime in seconds.
         """
@@ -277,7 +276,7 @@ class MetricsCollector:
 
     def get_time_since_reset(self) -> float:
         """Get time since last reset in seconds.
-        
+
         Returns:
             Time since last reset in seconds.
         """
@@ -285,7 +284,7 @@ class MetricsCollector:
 
     def get_metrics_summary(self) -> dict[str, Any]:
         """Get a summary of all metrics.
-        
+
         Returns:
             Dictionary containing metrics summary.
         """
@@ -297,12 +296,12 @@ class MetricsCollector:
             "historical": historical,
             "uptime": self.get_uptime(),
             "time_since_reset": self.get_time_since_reset(),
-            "total_archived_metrics": len(self.historical_metrics)
+            "total_archived_metrics": len(self.historical_metrics),
         }
 
     def get_performance_stats(self) -> dict[str, Any]:
         """Get performance statistics.
-        
+
         Returns:
             Dictionary containing performance statistics.
         """
@@ -311,7 +310,7 @@ class MetricsCollector:
                 "average_logs_per_second": 0.0,
                 "average_processing_time": self.current_metrics.average_processing_time,
                 "peak_processing_time": self.current_metrics.max_processing_time,
-                "total_uptime": self.get_uptime()
+                "total_uptime": self.get_uptime(),
             }
 
         # Calculate averages from historical data
@@ -323,21 +322,23 @@ class MetricsCollector:
         avg_processing_time = total_time / total_entries if total_entries > 0 else 0.0
 
         # Find peak processing time
-        peak_processing_time = max(
-            m.max_processing_time for m in self.historical_metrics
-        ) if self.historical_metrics else 0.0
+        peak_processing_time = (
+            max(m.max_processing_time for m in self.historical_metrics)
+            if self.historical_metrics
+            else 0.0
+        )
 
         return {
             "average_logs_per_second": avg_logs_per_second,
             "average_processing_time": avg_processing_time,
             "peak_processing_time": peak_processing_time,
             "total_uptime": self.get_uptime(),
-            "total_logs_processed": total_logs
+            "total_logs_processed": total_logs,
         }
 
     def get_error_rates(self) -> dict[str, float]:
         """Get error rates.
-        
+
         Returns:
             Dictionary containing error rates.
         """
@@ -346,13 +347,13 @@ class MetricsCollector:
                 "formatting_error_rate": 0.0,
                 "handler_error_rate": 0.0,
                 "configuration_error_rate": 0.0,
-                "overall_error_rate": 0.0
+                "overall_error_rate": 0.0,
             }
 
         total_errors = (
-            self.current_metrics.formatting_errors +
-            self.current_metrics.handler_errors +
-            self.current_metrics.configuration_errors
+            self.current_metrics.formatting_errors
+            + sum(self.current_metrics.handler_errors.values())
+            + self.current_metrics.configuration_errors
         )
 
         return {
@@ -360,12 +361,12 @@ class MetricsCollector:
                 self.current_metrics.formatting_errors / self.current_metrics.total_logs
             ),
             "handler_error_rate": (
-                self.current_metrics.handler_errors / self.current_metrics.total_logs
+                sum(self.current_metrics.handler_errors.values()) / self.current_metrics.total_logs
             ),
             "configuration_error_rate": (
                 self.current_metrics.configuration_errors / self.current_metrics.total_logs
             ),
-            "overall_error_rate": total_errors / self.current_metrics.total_logs
+            "overall_error_rate": total_errors / self.current_metrics.total_logs,
         }
 
 
@@ -375,7 +376,7 @@ _metrics_collector: MetricsCollector | None = None
 
 def get_metrics_collector() -> MetricsCollector:
     """Get the global metrics collector.
-    
+
     Returns:
         Global metrics collector instance.
     """
@@ -387,7 +388,7 @@ def get_metrics_collector() -> MetricsCollector:
 
 def record_log_metrics(level: str, processing_time: float) -> None:
     """Record log metrics.
-    
+
     Args:
         level: Log level.
         processing_time: Processing time in seconds.
@@ -398,7 +399,7 @@ def record_log_metrics(level: str, processing_time: float) -> None:
 
 def record_handler_metrics(handler_name: str, success: bool = True) -> None:
     """Record handler metrics.
-    
+
     Args:
         handler_name: Name of the handler.
         success: Whether the handler call was successful.
@@ -411,7 +412,7 @@ def record_handler_metrics(handler_name: str, success: bool = True) -> None:
 
 def record_error_metrics(error_type: str) -> None:
     """Record error metrics.
-    
+
     Args:
         error_type: Type of error ('formatting', 'handler', 'configuration').
     """
@@ -427,7 +428,7 @@ def record_error_metrics(error_type: str) -> None:
 
 def get_current_metrics() -> LoggingMetrics:
     """Get current metrics.
-    
+
     Returns:
         Current metrics instance.
     """
@@ -437,7 +438,7 @@ def get_current_metrics() -> LoggingMetrics:
 
 def get_metrics_summary() -> dict[str, Any]:
     """Get metrics summary.
-    
+
     Returns:
         Dictionary containing metrics summary.
     """

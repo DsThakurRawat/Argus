@@ -31,28 +31,22 @@ class MonitoringDashboard:
         self.dashboard_data: dict[str, Any] = {}
         self.last_update: datetime | None = None
 
-    def register_circuit_breaker(
-        self, name: str, circuit_breaker: AdvancedCircuitBreaker
-    ) -> None:
+    def register_circuit_breaker(self, name: str, circuit_breaker: AdvancedCircuitBreaker) -> None:
         """Register a circuit breaker for monitoring."""
         self.circuit_breakers[name] = circuit_breaker
         self.logger.info(f"Registered circuit breaker: {name}")
 
-    def register_fallback_manager(
-        self, fallback_manager: CustomFallbackManager
-    ) -> None:
+    def register_fallback_manager(self, fallback_manager: CustomFallbackManager) -> None:
         """Register fallback manager for monitoring."""
         self.fallback_manager = fallback_manager
         self.logger.info("Registered fallback manager")
 
-    def register_self_healing_manager(
-        self, self_healing_manager: SelfHealingManager
-    ) -> None:
+    def register_self_healing_manager(self, self_healing_manager: SelfHealingManager) -> None:
         """Register self-healing manager for monitoring."""
         self.self_healing_manager = self_healing_manager
         self.logger.info("Registered self-healing manager")
 
-    async def refresh_dashboard_data(self) -> None:
+    async def refresh_dashboard_data(self) -> Any:
         """Refresh all dashboard data."""
         self.logger.info("Refreshing dashboard data")
 
@@ -124,10 +118,7 @@ class MonitoringDashboard:
             issues.extend(health.get("issues", []))
 
         # Calculate overall health score
-        if health_scores:
-            overall_score = sum(health_scores) / len(health_scores)
-        else:
-            overall_score = 100
+        overall_score = sum(health_scores) / len(health_scores) if health_scores else 100
 
         # Determine status
         if overall_score > 80:
@@ -301,9 +292,7 @@ class MonitoringDashboard:
 
     async def start_monitoring(self, refresh_interval: int = 30) -> None:
         """Start continuous monitoring with specified refresh interval."""
-        self.logger.info(
-            f"Starting monitoring with {refresh_interval}s refresh interval"
-        )
+        self.logger.info(f"Starting monitoring with {refresh_interval}s refresh interval")
 
         while True:
             try:
@@ -347,11 +336,11 @@ class MonitoringDashboard:
         <body>
             <div class="header">
                 <h1>Error Handling Dashboard</h1>
-                <div class="status {system_health.get('status', 'unknown')}">
-                    Status: {system_health.get('status', 'unknown').upper()}
-                    (Score: {system_health.get('overall_score', 0):.1f})
+                <div class="status {system_health.get("status", "unknown")}">
+                    Status: {system_health.get("status", "unknown").upper()}
+                    (Score: {system_health.get("overall_score", 0):.1f})
                 </div>
-                <p>Last Updated: {self.dashboard_data.get('timestamp', 'Never')}</p>
+                <p>Last Updated: {self.dashboard_data.get("timestamp", "Never")}</p>
             </div>
 
             <div class="section">
@@ -366,9 +355,9 @@ class MonitoringDashboard:
 
             <div class="section">
                 <h2>System Health</h2>
-                <p>Overall Score: {system_health.get('overall_score', 0):.1f}/100</p>
-                <p>Issues: {len(system_health.get('issues', []))}</p>
-                <p>Recommendations: {len(system_health.get('recommendations', []))}</p>
+                <p>Overall Score: {system_health.get("overall_score", 0):.1f}/100</p>
+                <p>Issues: {len(system_health.get("issues", []))}</p>
+                <p>Recommendations: {len(system_health.get("recommendations", []))}</p>
             </div>
         </body>
         </html>
@@ -385,8 +374,8 @@ class MonitoringDashboard:
             alert_type = alert.get("type", "info")
             html += f"""
             <div class="alert {alert_type}">
-                <strong>{alert.get('type', 'info').upper()}</strong>: {alert.get('message', '')}
-                <br><small>Component: {alert.get('component', 'unknown')} | {alert.get('timestamp', '')}</small>
+                <strong>{alert.get("type", "info").upper()}</strong>: {alert.get("message", "")}
+                <br><small>Component: {alert.get("component", "unknown")} | {alert.get("timestamp", "")}</small>
             </div>
             """
         return html
@@ -406,10 +395,10 @@ class MonitoringDashboard:
             html += f"""
             <tr>
                 <td>{name}</td>
-                <td>{stats.get('state', 'unknown')}</td>
-                <td>{health.get('health_score', 0):.1f}</td>
-                <td>{stats.get('failure_rate', 0):.2%}</td>
-                <td>{stats.get('total_requests', 0)}</td>
+                <td>{stats.get("state", "unknown")}</td>
+                <td>{health.get("health_score", 0):.1f}</td>
+                <td>{stats.get("failure_rate", 0):.2%}</td>
+                <td>{stats.get("total_requests", 0)}</td>
             </tr>
             """
 

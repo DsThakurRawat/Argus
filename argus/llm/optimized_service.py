@@ -63,9 +63,7 @@ class OptimizedLLMService(Generic[T]):
         self.logger = logging.getLogger(__name__)
 
         # Initialize performance optimizer
-        self.performance_optimizer = (
-            PerformanceOptimizer(config) if enable_optimizations else None
-        )
+        self.performance_optimizer = PerformanceOptimizer(config) if enable_optimizations else None
 
         # Initialize batch processor for concurrent operations
         self.batch_processor = (
@@ -85,9 +83,7 @@ class OptimizedLLMService(Generic[T]):
         self._operation_times: dict[str, list[float]] = {}
         self._total_operations = 0
 
-        self.logger.info(
-            "OptimizedLLMService initialized with performance optimizations"
-        )
+        self.logger.info("OptimizedLLMService initialized with performance optimizations")
 
     async def _create_enhanced_service(self) -> EnhancedLLMService:
         """Lazy create enhanced LLM service."""
@@ -109,9 +105,7 @@ class OptimizedLLMService(Generic[T]):
         # Initialize performance optimizer with lazy-loaded components
         enhanced_service = await self._enhanced_service_loader.get()
 
-        if self.performance_optimizer and not hasattr(
-            self.performance_optimizer, "_initialized"
-        ):
+        if self.performance_optimizer and not hasattr(self.performance_optimizer, "_initialized"):
             await self.performance_optimizer.initialize(
                 enhanced_service.model_registry,
                 enhanced_service.model_scorer,
@@ -143,16 +137,17 @@ class OptimizedLLMService(Generic[T]):
 
             if self.enable_optimizations and self.performance_optimizer:
                 # Use optimized model selection
-                selected_model, selection_result = (
-                    await self.performance_optimizer.get_optimized_model_selection(
-                        model_type=model_type,
-                        provider=provider,
-                        selection_strategy=selection_strategy,
-                        max_cost=max_cost,
-                        min_performance=min_performance,
-                        min_reliability=min_reliability,
-                        model_selector=enhanced_service.model_selector,
-                    )
+                (
+                    selected_model,
+                    _selection_result,
+                ) = await self.performance_optimizer.get_optimized_model_selection(
+                    model_type=model_type,
+                    provider=provider,
+                    selection_strategy=selection_strategy,
+                    max_cost=max_cost,
+                    min_performance=min_performance,
+                    min_reliability=min_reliability,
+                    model_selector=enhanced_service.model_selector,
                 )
 
                 # Use the selected model for generation
@@ -209,16 +204,17 @@ class OptimizedLLMService(Generic[T]):
 
             if self.enable_optimizations and self.performance_optimizer:
                 # Use optimized model selection
-                selected_model, selection_result = (
-                    await self.performance_optimizer.get_optimized_model_selection(
-                        model_type=model_type,
-                        provider=provider,
-                        selection_strategy=selection_strategy,
-                        max_cost=None,
-                        min_performance=None,
-                        min_reliability=None,
-                        model_selector=enhanced_service.model_selector,
-                    )
+                (
+                    selected_model,
+                    _selection_result,
+                ) = await self.performance_optimizer.get_optimized_model_selection(
+                    model_type=model_type,
+                    provider=provider,
+                    selection_strategy=selection_strategy,
+                    max_cost=None,
+                    min_performance=None,
+                    min_reliability=None,
+                    model_selector=enhanced_service.model_selector,
                 )
 
                 # Use the selected model for generation
@@ -268,9 +264,7 @@ class OptimizedLLMService(Generic[T]):
                     provider
                 )
             else:
-                models = (
-                    await self.performance_optimizer.optimized_registry.get_all_models()
-                )
+                models = await self.performance_optimizer.optimized_registry.get_all_models()
 
             return [model.name for model in models]
         else:
@@ -347,9 +341,7 @@ class OptimizedLLMService(Generic[T]):
 
         # Add optimizer stats if available
         if self.performance_optimizer:
-            stats["optimizer_stats"] = (
-                self.performance_optimizer.get_performance_stats()
-            )
+            stats["optimizer_stats"] = self.performance_optimizer.get_performance_stats()
 
         return stats
 
@@ -411,9 +403,7 @@ class OptimizedLLMService(Generic[T]):
                     model_info = enhanced_service.model_registry.get_model(model_name)
                     if model_info:
                         # Pre-compute some scores
-                        context = (
-                            enhanced_service.model_scorer._create_default_context()
-                        )
+                        context = enhanced_service.model_scorer._create_default_context()
                         enhanced_service.model_scorer.score_model(model_info, context)
                 except Exception as e:
                     self.logger.debug(f"Failed to warmup model {model_name}: {e}")

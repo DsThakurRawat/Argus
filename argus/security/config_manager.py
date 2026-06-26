@@ -72,9 +72,7 @@ class SecureConfigManager:
         self._secrets_client = None
         if self.secrets_manager_secret_name:
             try:
-                self._secrets_client = boto3.client(
-                    "secretsmanager", region_name=aws_region
-                )
+                self._secrets_client = boto3.client("secretsmanager", region_name=aws_region)
             except Exception as e:
                 logger.warning(f"Failed to initialize AWS Secrets Manager: {e}")
 
@@ -82,14 +80,14 @@ class SecureConfigManager:
         self._key_cache: dict[str, APIKeyInfo] = {}
         self._rotation_policies: dict[str, RotationPolicy] = {}
 
-        # Load existing keys
-        asyncio.create_task(self._load_keys())
+        # Load existing keys (store reference to prevent task being garbage collected)
+        self._load_task = asyncio.create_task(self._load_keys())
 
     def _hash_key(self, key: str) -> str:
         """Create a secure hash of the API key."""
         return hashlib.sha256(key.encode()).hexdigest()
 
-    async def _load_keys(self) -> None:
+    async def _load_keys(self) -> Any:
         """Load API keys from storage."""
         try:
             if self._secrets_client and self.secrets_manager_secret_name:
@@ -215,10 +213,7 @@ class SecureConfigManager:
 
         # Check age policy
         age_days = (datetime.utcnow() - key_info.created_at).days
-        if age_days >= policy.max_age_days:
-            return True
-
-        return False
+        return age_days >= policy.max_age_days
 
     async def _schedule_rotation(self, key_info: APIKeyInfo) -> None:
         """Schedule a key for rotation."""
@@ -236,9 +231,7 @@ class SecureConfigManager:
     async def _persist_keys(self) -> None:
         """Persist keys to storage."""
         try:
-            keys_data = {
-                "api_keys": [key_info.dict() for key_info in self._key_cache.values()]
-            }
+            keys_data = {"api_keys": [key_info.dict() for key_info in self._key_cache.values()]}
 
             if self._secrets_client and self.secrets_manager_secret_name:
                 await self._persist_to_aws_secrets(keys_data)

@@ -9,6 +9,7 @@ and optimized algorithms.
 """
 
 import asyncio
+import contextlib
 import functools
 import logging
 import time
@@ -63,7 +64,7 @@ class PerformanceCache:
             self._cache[key] = (value, time.time())
             self._access_times[key] = time.time()
 
-    async def _evict_oldest(self) -> None:
+    async def _evict_oldest(self) -> Any:
         """Evict the least recently accessed entry."""
         if not self._access_times:
             return
@@ -127,14 +128,10 @@ class ModelSelectionCache:
 
         result = await self._cache.get(cache_key)
         if result:
-            self._selection_stats["cache_hits"] = (
-                self._selection_stats.get("cache_hits", 0) + 1
-            )
+            self._selection_stats["cache_hits"] = self._selection_stats.get("cache_hits", 0) + 1
             logger.debug(f"Model selection cache hit for key: {cache_key}")
         else:
-            self._selection_stats["cache_misses"] = (
-                self._selection_stats.get("cache_misses", 0) + 1
-            )
+            self._selection_stats["cache_misses"] = self._selection_stats.get("cache_misses", 0) + 1
 
         return result
 
@@ -163,9 +160,9 @@ class ModelSelectionCache:
 
     def get_cache_stats(self) -> dict[str, Any]:
         """Get cache performance statistics."""
-        total_requests = self._selection_stats.get(
-            "cache_hits", 0
-        ) + self._selection_stats.get("cache_misses", 0)
+        total_requests = self._selection_stats.get("cache_hits", 0) + self._selection_stats.get(
+            "cache_misses", 0
+        )
         hit_rate = (
             (self._selection_stats.get("cache_hits", 0) / total_requests * 100)
             if total_requests > 0
@@ -218,9 +215,7 @@ class OptimizedModelRegistry:
                 self._provider_index[model.provider].append(model)
 
             self._initialized = True
-            logger.info(
-                f"OptimizedModelRegistry initialized with {len(all_models)} models"
-            )
+            logger.info(f"OptimizedModelRegistry initialized with {len(all_models)} models")
 
     async def get_model(self, name: str) -> ModelInfo | None:
         """Get model by name with caching."""
@@ -320,11 +315,9 @@ class ConnectionPool:
         async with self._lock:
             if provider_name in self._pools:
                 pool = self._pools[provider_name]
-                try:
+                # Pool is full, discard connection
+                with contextlib.suppress(asyncio.QueueFull):
                     pool.put_nowait(connection)
-                except asyncio.QueueFull:
-                    # Pool is full, discard connection
-                    pass
 
     async def _create_connection(self, provider_name: str) -> Any:
         """Create new connection for provider."""
@@ -393,9 +386,7 @@ class PerformanceOptimizer:
             candidates = await self.optimized_registry.get_models_by_type(model_type)
         elif provider:
             provider_type = ProviderType(provider)
-            candidates = await self.optimized_registry.get_models_by_provider(
-                provider_type
-            )
+            candidates = await self.optimized_registry.get_models_by_provider(provider_type)
         else:
             candidates = await self.optimized_registry.get_all_models()
 
@@ -437,10 +428,10 @@ class PerformanceOptimizer:
 
 
 # Performance decorators and utilities
-def cached_model_selection(ttl_seconds: float = 60.0) -> None:
+def cached_model_selection(ttl_seconds: float = 60.0) -> Any:
     """Decorator for caching model selection results."""
 
-    def decorator(func: str) -> None:
+    def decorator(func: Any) -> Any:
         """
         Decorator.
 
@@ -453,9 +444,7 @@ def cached_model_selection(ttl_seconds: float = 60.0) -> None:
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
             # Generate cache key from arguments
-            cache_key = (
-                f"{func.__name__}:{hash(str(args) + str(sorted(kwargs.items())))}"
-            )
+            cache_key = f"{func.__name__}:{hash(str(args) + str(sorted(kwargs.items())))}"
 
             # Try cache
             cached_result = await cache.get(cache_key)
@@ -490,7 +479,7 @@ def get_provider_type_enum(provider_str: str) -> ProviderType:
 class LazyLoader:
     """Lazy loading utility for expensive operations."""
 
-    def __init__(self, loader_func: str, *args: str, **kwargs: str) -> None:
+    def __init__(self, loader_func: Any, *args: Any, **kwargs: Any) -> None:
         self.loader_func = loader_func
         self.args = args
         self.kwargs = kwargs
@@ -521,6 +510,7 @@ class BatchProcessor:
         self._pending_operations: list[tuple[Any, asyncio.Future, tuple, dict]] = []
         self._lock = asyncio.Lock()
         self._processing = False
+        self._background_tasks: set[asyncio.Task] = set()
 
     async def add_operation(self, operation_func, *args, **kwargs) -> Any:
         """Add operation to batch."""
@@ -531,7 +521,9 @@ class BatchProcessor:
 
             # Trigger processing if batch is full
             if len(self._pending_operations) >= self.batch_size:
-                asyncio.create_task(self._process_batch())
+                task = asyncio.create_task(self._process_batch())
+                self._background_tasks.add(task)
+                task.add_done_callback(self._background_tasks.discard)
 
         return await future
 
@@ -562,7 +554,9 @@ class BatchProcessor:
 
                 # Process any new operations that arrived during processing
                 if self._pending_operations:
-                    asyncio.create_task(self._process_batch())
+                    task = asyncio.create_task(self._process_batch())
+                    self._background_tasks.add(task)
+                    task.add_done_callback(self._background_tasks.discard)
 
     async def _execute_operation(self, operation_func, future, args, kwargs) -> None:
         """Execute individual operation."""

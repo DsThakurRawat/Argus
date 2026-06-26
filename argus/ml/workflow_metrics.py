@@ -105,12 +105,10 @@ class WorkflowMetricsCollector:
             if total_workflows > 0:
                 success_rate = successful_workflows / total_workflows
                 avg_duration = (
-                    sum(w.metrics.total_duration for w in self.workflow_history)
-                    / total_workflows
+                    sum(w.metrics.total_duration for w in self.workflow_history) / total_workflows
                 )
                 avg_cache_hit_rate = (
-                    sum(w.metrics.cache_hit_rate for w in self.workflow_history)
-                    / total_workflows
+                    sum(w.metrics.cache_hit_rate for w in self.workflow_history) / total_workflows
                 )
             else:
                 success_rate = 0.0
@@ -128,9 +126,7 @@ class WorkflowMetricsCollector:
                 },
                 "cache_metrics": cache_stats,
                 "performance_config": (
-                    self.performance_config.to_dict()
-                    if self.performance_config
-                    else None
+                    self.performance_config.to_dict() if self.performance_config else None
                 ),
             }
 
@@ -151,7 +147,7 @@ class WorkflowMetricsCollector:
             self.logger.error(f"Failed to get workflow history: {e}")
             return []
 
-    async def clear_workflow_history(self) -> None:
+    async def clear_workflow_history(self) -> Any:
         """Clear workflow execution history."""
         try:
             self.workflow_history.clear()
@@ -175,9 +171,7 @@ class WorkflowMetricsCollector:
             self.logger.error(f"Failed to get recent workflows: {e}")
             return []
 
-    async def get_success_rate(
-        self, time_window_minutes: int | None = None
-    ) -> float:
+    async def get_success_rate(self, time_window_minutes: int | None = None) -> float:
         """
         Get success rate for workflows.
 
@@ -218,9 +212,7 @@ class WorkflowMetricsCollector:
             if not self.workflow_history:
                 return 0.0
 
-            total_duration = sum(
-                w.metrics.total_duration for w in self.workflow_history
-            )
+            total_duration = sum(w.metrics.total_duration for w in self.workflow_history)
             return total_duration / len(self.workflow_history)
 
         except Exception as e:
@@ -239,11 +231,7 @@ class WorkflowMetricsCollector:
                 return {"total_errors": 0, "error_rate": 0.0, "common_errors": []}
 
             total_errors = sum(w.metrics.error_count for w in self.workflow_history)
-            error_rate = (
-                total_errors / len(self.workflow_history)
-                if self.workflow_history
-                else 0.0
-            )
+            error_rate = total_errors / len(self.workflow_history) if self.workflow_history else 0.0
 
             # Count common error types
             error_types = {}
@@ -252,9 +240,7 @@ class WorkflowMetricsCollector:
                     error_type = workflow.error_message.split(":")[0]
                     error_types[error_type] = error_types.get(error_type, 0) + 1
 
-            common_errors = sorted(
-                error_types.items(), key=lambda x: x[1], reverse=True
-            )[:5]
+            common_errors = sorted(error_types.items(), key=lambda x: x[1], reverse=True)[:5]
 
             return {
                 "total_errors": total_errors,

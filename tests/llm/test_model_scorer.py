@@ -157,19 +157,14 @@ class TestModelScorer:
         assert len(ranked) == 2
         assert all(isinstance(pair, tuple) and len(pair) == 2 for pair in ranked)
         assert all(
-            isinstance(pair[0], ModelInfo) and isinstance(pair[1], ModelScore)
-            for pair in ranked
+            isinstance(pair[0], ModelInfo) and isinstance(pair[1], ModelScore) for pair in ranked
         )
 
     def test_compare_models(self) -> None:
         """Test model comparison functionality."""
         scorer = ModelScorer()
-        model1 = self.create_test_model(
-            "model1", cost_per_1k_tokens=0.001, performance_score=0.8
-        )
-        model2 = self.create_test_model(
-            "model2", cost_per_1k_tokens=0.005, performance_score=0.9
-        )
+        model1 = self.create_test_model("model1", cost_per_1k_tokens=0.001, performance_score=0.8)
+        model2 = self.create_test_model("model2", cost_per_1k_tokens=0.005, performance_score=0.9)
         context = ScoringContext()
 
         comparison = scorer.compare_models(model1, model2, context)
@@ -224,9 +219,7 @@ class TestModelScorer:
         assert free_score == 1.0
 
         # Expensive model should get lower score
-        expensive_model = self.create_test_model(
-            "expensive-model", cost_per_1k_tokens=0.1
-        )
+        expensive_model = self.create_test_model("expensive-model", cost_per_1k_tokens=0.1)
         expensive_score = scorer._score_cost(expensive_model, context)
         assert expensive_score < free_score
 
@@ -267,9 +260,7 @@ class TestModelScorer:
         scorer = ModelScorer()
         context = ScoringContext()
 
-        model = self.create_test_model(
-            "test-model", performance_score=0.8, reliability_score=0.9
-        )
+        model = self.create_test_model("test-model", performance_score=0.8, reliability_score=0.9)
         score = scorer._score_quality(model, context)
         expected = (0.8 + 0.9) / 2
         assert abs(score - expected) < 0.001
@@ -280,16 +271,12 @@ class TestModelScorer:
 
         # Preferred provider should get higher score
         context_preferred = ScoringContext(provider_preference=ProviderType.OPENAI)
-        preferred_model = self.create_test_model(
-            "preferred-model", provider=ProviderType.OPENAI
-        )
+        preferred_model = self.create_test_model("preferred-model", provider=ProviderType.OPENAI)
         preferred_score = scorer._score_availability(preferred_model, context_preferred)
 
         # Non-preferred provider should get lower score
         context_non_preferred = ScoringContext(provider_preference=ProviderType.CLAUDE)
-        non_preferred_score = scorer._score_availability(
-            preferred_model, context_non_preferred
-        )
+        non_preferred_score = scorer._score_availability(preferred_model, context_non_preferred)
 
         assert preferred_score > non_preferred_score
         assert preferred_score == 1.0
@@ -307,9 +294,7 @@ class TestModelScorer:
 
         # Second call should use cache
         score2 = scorer.score_model(model, context)
-        assert (
-            score1.timestamp == score2.timestamp
-        )  # Same timestamp indicates cache hit
+        assert score1.timestamp == score2.timestamp  # Same timestamp indicates cache hit
 
     def test_cache_management(self) -> None:
         """Test cache management and cleanup."""
@@ -389,9 +374,7 @@ class TestModelScorer:
 
         # Should handle error gracefully
         score = scorer.score_model(model, context, weights)
-        assert (
-            score.dimension_scores[ScoringDimension.COST] == 0.0
-        )  # Default to 0 on error
+        assert score.dimension_scores[ScoringDimension.COST] == 0.0  # Default to 0 on error
 
     def test_score_clamping(self) -> None:
         """Test that scores are clamped to [0, 1] range."""
@@ -419,6 +402,4 @@ class TestModelScorer:
         weights = ScoringWeights(cost=1.0, performance=0.0, reliability=0.0)
 
         score = scorer.score_model(model, context, weights)
-        assert (
-            score.dimension_scores[ScoringDimension.COST] == 1.0
-        )  # Should be clamped to 1.0
+        assert score.dimension_scores[ScoringDimension.COST] == 1.0  # Should be clamped to 1.0

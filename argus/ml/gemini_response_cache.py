@@ -30,6 +30,7 @@ class GeminiResponseCache:
 
     def _compute_context_hash(self, context: PatternContext) -> str:
         """Compute 16-character SHA256 hash of context fields."""
+
         def _serialize_val(val: Any) -> Any:
             if isinstance(val, datetime):
                 return val.isoformat()
@@ -68,9 +69,7 @@ class GeminiResponseCache:
                 matching += 1
         return matching / len(all_keys)
 
-    def _compute_similarity(
-        self, context1: PatternContext, context2: PatternContext
-    ) -> float:
+    def _compute_similarity(self, context1: PatternContext, context2: PatternContext) -> float:
         """Compute similarity score between two contexts from 0.0 to 1.0."""
         # 1. Primary service similarity
         p1 = context1.primary_service
@@ -88,9 +87,7 @@ class GeminiResponseCache:
             sim_affected = len(a1 & a2) / len(a1 | a2)
 
         # 3. Error patterns similarity
-        sim_err = self._compare_dict_fields(
-            context1.error_patterns, context2.error_patterns
-        )
+        sim_err = self._compare_dict_fields(context1.error_patterns, context2.error_patterns)
 
         return (sim_primary + sim_affected + sim_err) / 3.0
 

@@ -108,9 +108,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         """Create operation-specific circuit breaker configuration."""
         return OperationCircuitBreakerConfig()
 
-    def _create_retry_config(
-        self, error_handling_config: dict[str, Any]
-    ) -> RetryConfig:
+    def _create_retry_config(self, error_handling_config: dict[str, Any]) -> RetryConfig:
         """Create retry configuration from config."""
         retry_config = error_handling_config.get("retry", {})
         return RetryConfig(
@@ -126,22 +124,18 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         enable_monitoring = self.get_config_value("monitoring", {}).get("enabled", True)
         if enable_monitoring:
             self.monitoring_manager = MonitoringManager(
-                enable_metrics=self.get_config_value("monitoring", {}).get(
-                    "enable_metrics", True
-                ),
+                enable_metrics=self.get_config_value("monitoring", {}).get("enable_metrics", True),
                 enable_health_checks=self.get_config_value("monitoring", {}).get(
                     "enable_health_checks", True
                 ),
-                enable_alerts=self.get_config_value("monitoring", {}).get(
-                    "enable_alerts", True
-                ),
+                enable_alerts=self.get_config_value("monitoring", {}).get("enable_alerts", True),
             )
             self.operation_metrics = OperationMetrics(self.metrics_collector)
         else:
             self.monitoring_manager = None
             self.operation_metrics = None
 
-    async def _setup_client(self) -> None:
+    async def _setup_client(self) -> Any:
         """Set up the client for the source control system."""
         # To be implemented by subclasses
         pass
@@ -184,8 +178,10 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
             # Use graceful degradation if available
             if self.graceful_degradation_manager:
                 try:
-                    return await self.graceful_degradation_manager.execute_with_graceful_degradation(
-                        operation_name, func, *args, **kwargs
+                    return (
+                        await self.graceful_degradation_manager.execute_with_graceful_degradation(
+                            operation_name, func, *args, **kwargs
+                        )
                     )
                 except Exception as degradation_error:
                     self.logger.error(
@@ -200,15 +196,15 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
     ) -> Any:
         """Execute an operation with full error handling including graceful degradation."""
         try:
-            return await self._execute_resilient_operation(
-                operation_name, func, *args, **kwargs
-            )
+            return await self._execute_resilient_operation(operation_name, func, *args, **kwargs)
         except Exception as e:
             # If graceful degradation is available, try it
             if self.graceful_degradation_manager:
                 try:
-                    return await self.graceful_degradation_manager.execute_with_graceful_degradation(
-                        operation_name, func, *args, **kwargs
+                    return (
+                        await self.graceful_degradation_manager.execute_with_graceful_degradation(
+                            operation_name, func, *args, **kwargs
+                        )
                     )
                 except Exception as degradation_error:
                     self.logger.error(
@@ -228,10 +224,7 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
 
             # Combine health information
             overall_status = "healthy"
-            if (
-                basic_health.status != "healthy"
-                or error_handling_health.get("status") != "healthy"
-            ):
+            if basic_health.status != "healthy" or error_handling_health.get("status") != "healthy":
                 overall_status = "unhealthy"
 
             return ProviderHealth(
@@ -274,17 +267,13 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
 
         # Check if this is a retryable error
         if error_classification.is_retryable:
-            self.logger.info(
-                f"Error is retryable, attempting retry for operation: {operation}"
-            )
+            self.logger.info(f"Error is retryable, attempting retry for operation: {operation}")
             return True
 
         self.logger.warning(f"Error is not retryable for operation: {operation}")
         return False
 
-    async def batch_operations(
-        self, operations: list[BatchOperation]
-    ) -> list[OperationResult]:
+    async def batch_operations(self, operations: list[BatchOperation]) -> list[OperationResult]:
         """Enhanced batch operations with comprehensive error handling."""
         results = []
 
@@ -346,20 +335,12 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
 
         if operation_type == "update_file":
             if operation.file_path is None or operation.content is None:
-                raise ValueError(
-                    "file_path and content are required for update_file operation"
-                )
-            return await self.commit_changes(
-                operation.file_path, operation.content, "Batch update"
-            )
+                raise ValueError("file_path and content are required for update_file operation")
+            return await self.commit_changes(operation.file_path, operation.content, "Batch update")
         elif operation_type == "create_file":
             if operation.file_path is None or operation.content is None:
-                raise ValueError(
-                    "file_path and content are required for create_file operation"
-                )
-            return await self.commit_changes(
-                operation.file_path, operation.content, "Batch create"
-            )
+                raise ValueError("file_path and content are required for create_file operation")
+            return await self.commit_changes(operation.file_path, operation.content, "Batch create")
         elif operation_type == "delete_file":
             if operation.file_path is None:
                 raise ValueError("file_path is required for delete_file operation")
@@ -450,15 +431,11 @@ class EnhancedBaseSourceControlProvider(SourceControlProvider):
         """Get repository info. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement get_repository_info")
 
-    async def check_conflicts(
-        self, path: str, content: str, branch: str | None = None
-    ) -> bool:
+    async def check_conflicts(self, path: str, content: str, branch: str | None = None) -> bool:
         """Check conflicts. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement check_conflicts")
 
-    async def resolve_conflicts(
-        self, path: str, content: str, strategy: str = "manual"
-    ) -> bool:
+    async def resolve_conflicts(self, path: str, content: str, strategy: str = "manual") -> bool:
         """Resolve conflicts. Must be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement resolve_conflicts")
 

@@ -20,7 +20,7 @@ class LocalPatchManager:
     Manages local patch files when GitHub integration is not available.
     """
 
-    def __init__(self, patch_dir: str = "/tmp/real_patches") -> None:
+    def __init__(self, patch_dir: str = "/tmp/real_patches") -> None:  # nosec B108
         """
         Initialize the LocalPatchManager.
 
@@ -29,9 +29,7 @@ class LocalPatchManager:
         """
         self.patch_dir = Path(patch_dir)
         self.patch_dir.mkdir(parents=True, exist_ok=True)
-        logger.info(
-            f"[LOCAL_PATCH] Initialized LocalPatchManager with directory: {self.patch_dir}"
-        )
+        logger.info(f"[LOCAL_PATCH] Initialized LocalPatchManager with directory: {self.patch_dir}")
 
     def create_patch(
         self,
@@ -56,12 +54,8 @@ class LocalPatchManager:
         """
         timestamp = datetime.now(UTC)
         # Sanitize issue_id to remove invalid filename characters
-        sanitized_issue_id = (
-            issue_id.replace("/", "_").replace(":", "_").replace("\\", "_")
-        )
-        patch_filename = (
-            f"{sanitized_issue_id}_{timestamp.strftime('%Y%m%d_%H%M%S')}.patch"
-        )
+        sanitized_issue_id = issue_id.replace("/", "_").replace(":", "_").replace("\\", "_")
+        patch_filename = f"{sanitized_issue_id}_{timestamp.strftime('%Y%m%d_%H%M%S')}.patch"
         patch_file_path = self.patch_dir / patch_filename
 
         # Generate proper Git patch format
@@ -110,9 +104,7 @@ class LocalPatchManager:
         git_timestamp = timestamp.strftime("%a %b %d %H:%M:%S %Y %z")
 
         # Create commit message
-        commit_subject = (
-            f"Fix: {description[:50]}{'...' if len(description) > 50 else ''}"
-        )
+        commit_subject = f"Fix: {description[:50]}{'...' if len(description) > 50 else ''}"
         commit_body = f"""Root Cause Analysis:
 {description}
 
@@ -196,9 +188,7 @@ index 0000000..0000000 100644
                     metadata["patch_file"] = str(patch_file)
                     patches.append(metadata)
             except Exception as e:
-                logger.warning(
-                    f"[LOCAL_PATCH] Failed to read patch file {patch_file}: {e}"
-                )
+                logger.warning(f"[LOCAL_PATCH] Failed to read patch file {patch_file}: {e}")
 
         return sorted(patches, key=lambda x: x.get("created_at", ""), reverse=True)
 
@@ -239,13 +229,9 @@ index 0000000..0000000 100644
                 if patch_file.stat().st_mtime < cutoff_time:
                     patch_file.unlink()
                     cleaned_count += 1
-                    logger.info(
-                        f"[LOCAL_PATCH] Cleaned up old patch file: {patch_file}"
-                    )
+                    logger.info(f"[LOCAL_PATCH] Cleaned up old patch file: {patch_file}")
             except Exception as e:
-                logger.warning(
-                    f"[LOCAL_PATCH] Failed to clean up patch file {patch_file}: {e}"
-                )
+                logger.warning(f"[LOCAL_PATCH] Failed to clean up patch file {patch_file}: {e}")
 
         return cleaned_count
 

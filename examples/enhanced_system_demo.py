@@ -43,21 +43,21 @@ async def demo_legacy_adapters():
         project_id="demo-project",
         location="us-central1",
         triage_model="gemini-1.5-flash",
-        llm_config=llm_config
+        llm_config=llm_config,
     )
 
     analysis_agent = create_enhanced_analysis_agent(
         project_id="demo-project",
         location="us-central1",
         analysis_model="gemini-1.5-flash",
-        llm_config=llm_config
+        llm_config=llm_config,
     )
 
     remediation_agent = create_enhanced_remediation_agent(
         github_token="dummy_token",  # Use local patches
         repo_name="demo/repo",
         llm_config=llm_config,
-        use_local_patches=True
+        use_local_patches=True,
     )
 
     # Sample log data
@@ -73,9 +73,7 @@ async def demo_legacy_adapters():
     triage_packet = await triage_agent.analyze_logs(sample_logs, "demo_flow_1")
     logger.info(f"Triage completed: {triage_packet}")
 
-    remediation_plan = analysis_agent.analyze_issue(
-        triage_packet, sample_logs, {}, "demo_flow_1"
-    )
+    remediation_plan = analysis_agent.analyze_issue(triage_packet, sample_logs, {}, "demo_flow_1")
     logger.info(f"Analysis completed: {remediation_plan}")
 
     pr_url = await remediation_agent.create_pull_request(
@@ -137,8 +135,7 @@ async def demo_enhanced_agents():
     # Step 1: Enhanced Triage
     triage_response = await triage_agent.analyze_logs(sample_logs, "demo_flow_2")
     logger.info(
-        f"Enhanced triage: severity={triage_response.severity}, "
-        f"category={triage_response.category}"
+        f"Enhanced triage: severity={triage_response.severity}, category={triage_response.category}"
     )
     logger.info(f"Suggested actions: {triage_response.suggested_actions}")
 
@@ -266,9 +263,11 @@ async def demo_monitoring():
     # Get provider metrics
     provider_metrics = metrics_collector.get_all_provider_metrics()
     for provider, metrics in provider_metrics.items():
-        logger.info(f"Provider {provider}: {metrics.total_requests} requests, "
-                   f"${metrics.total_cost:.4f} total cost, "
-                   f"{metrics.success_rate:.2%} success rate")
+        logger.info(
+            f"Provider {provider}: {metrics.total_requests} requests, "
+            f"${metrics.total_cost:.4f} total cost, "
+            f"{metrics.success_rate:.2%} success rate"
+        )
 
 
 async def main():

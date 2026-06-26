@@ -28,7 +28,7 @@ class WidgetType(Enum):
 @dataclass
 class DashboardConfig:
     """Configuration for performance dashboards.
-    
+
     Attributes:
         refresh_interval: Dashboard refresh interval in seconds
         max_data_points: Maximum number of data points per widget
@@ -49,7 +49,7 @@ class DashboardConfig:
 @dataclass
 class DashboardWidget:
     """Dashboard widget definition.
-    
+
     Attributes:
         id: Unique widget identifier
         title: Widget title
@@ -76,7 +76,7 @@ class DashboardWidget:
 @dataclass
 class PerformanceVisualization:
     """Performance visualization data.
-    
+
     Attributes:
         widget_id: Widget identifier
         data: Visualization data
@@ -92,14 +92,14 @@ class PerformanceVisualization:
 
 class PerformanceDashboard:
     """Performance dashboard and visualization system.
-    
+
     Provides real-time performance visualizations and
     historical trend analysis for system monitoring.
     """
 
     def __init__(self, config: DashboardConfig | None = None):
         """Initialize the performance dashboard.
-        
+
         Args:
             config: Dashboard configuration
         """
@@ -110,9 +110,17 @@ class PerformanceDashboard:
         self._data_sources: dict[str, Callable[[], Any]] = {}
         self._refresh_tasks: dict[str, asyncio.Task] = {}
         self._cleanup_task: asyncio.Task | None = None
+        self._background_tasks: set[asyncio.Task] = set()
         self._start_cleanup_task()
 
-    def _start_cleanup_task(self) -> None:
+    def _track_background_task(self, coro: Any) -> asyncio.Task:
+        """Create a background task and retain a strong reference to it."""
+        task = asyncio.create_task(coro)
+        self._background_tasks.add(task)
+        task.add_done_callback(self._background_tasks.discard)
+        return task
+
+    def _start_cleanup_task(self) -> Any:
         """Start the background cleanup task."""
         if self._cleanup_task is None or self._cleanup_task.done():
             self._cleanup_task = asyncio.create_task(self._cleanup_old_data())
@@ -125,7 +133,7 @@ class PerformanceDashboard:
                 cutoff_time = current_time - self._config.data_retention
 
                 async with self._lock:
-                    for widget_id, data_deque in self._widget_data.items():
+                    for _widget_id, data_deque in self._widget_data.items():
                         # Remove old data points
                         while data_deque and data_deque[0].timestamp < cutoff_time:
                             data_deque.popleft()
@@ -138,15 +146,15 @@ class PerformanceDashboard:
 
     def add_widget(self, widget: DashboardWidget) -> None:
         """Add a dashboard widget.
-        
+
         Args:
             widget: Widget to add
         """
-        asyncio.create_task(self._add_widget_async(widget))
+        self._track_background_task(self._add_widget_async(widget))
 
     async def _add_widget_async(self, widget: DashboardWidget) -> None:
         """Add a dashboard widget asynchronously.
-        
+
         Args:
             widget: Widget to add
         """
@@ -162,15 +170,15 @@ class PerformanceDashboard:
 
     def remove_widget(self, widget_id: str) -> None:
         """Remove a dashboard widget.
-        
+
         Args:
             widget_id: ID of the widget to remove
         """
-        asyncio.create_task(self._remove_widget_async(widget_id))
+        self._track_background_task(self._remove_widget_async(widget_id))
 
     async def _remove_widget_async(self, widget_id: str) -> None:
         """Remove a dashboard widget asynchronously.
-        
+
         Args:
             widget_id: ID of the widget to remove
         """
@@ -186,7 +194,7 @@ class PerformanceDashboard:
 
     def register_data_source(self, name: str, data_source: Callable[[], Any]) -> None:
         """Register a data source.
-        
+
         Args:
             name: Name of the data source
             data_source: Function that returns data for the widget
@@ -195,7 +203,7 @@ class PerformanceDashboard:
 
     async def _refresh_widget_data(self, widget_id: str) -> None:
         """Refresh widget data periodically.
-        
+
         Args:
             widget_id: ID of the widget to refresh
         """
@@ -214,7 +222,7 @@ class PerformanceDashboard:
                     visualization = PerformanceVisualization(
                         widget_id=widget_id,
                         data=data,
-                        metadata={"widget_type": widget.widget_type.value}
+                        metadata={"widget_type": widget.widget_type.value},
                     )
 
                     # Store data
@@ -229,19 +237,18 @@ class PerformanceDashboard:
                 await asyncio.sleep(5)  # Wait before retrying
 
     def get_widget_data(
-        self,
-        widget_id: str,
-        limit: int | None = None
+        self, widget_id: str, limit: int | None = None
     ) -> list[PerformanceVisualization]:
         """Get data for a specific widget.
-        
+
         Args:
             widget_id: ID of the widget
             limit: Maximum number of data points to return
-            
+
         Returns:
             List of visualization data
         """
+
         async def _get_data():
             async with self._lock:
                 data = list(self._widget_data.get(widget_id, []))
@@ -253,10 +260,11 @@ class PerformanceDashboard:
 
     def get_dashboard_data(self) -> dict[str, Any]:
         """Get data for all widgets in the dashboard.
-        
+
         Returns:
             Dashboard data
         """
+
         async def _get_dashboard_data():
             async with self._lock:
                 dashboard_data = {}
@@ -269,16 +277,16 @@ class PerformanceDashboard:
                                 "title": widget.title,
                                 "type": widget.widget_type.value,
                                 "position": widget.position,
-                                "config": widget.config
+                                "config": widget.config,
                             },
                             "data": [
                                 {
                                     "timestamp": viz.timestamp,
                                     "data": viz.data,
-                                    "metadata": viz.metadata
+                                    "metadata": viz.metadata,
                                 }
                                 for viz in data
-                            ]
+                            ],
                         }
                 return dashboard_data
 
@@ -290,17 +298,17 @@ class PerformanceDashboard:
         title: str,
         metric_name: str,
         data_source: str,
-        position: dict[str, int] | None = None
+        position: dict[str, int] | None = None,
     ) -> DashboardWidget:
         """Create a metric card widget.
-        
+
         Args:
             widget_id: Unique widget identifier
             title: Widget title
             metric_name: Name of the metric to display
             data_source: Data source name
             position: Widget position
-            
+
         Returns:
             Dashboard widget
         """
@@ -310,7 +318,7 @@ class PerformanceDashboard:
             widget_type=WidgetType.METRIC_CARD,
             data_source=data_source,
             config={"metric_name": metric_name},
-            position=position or {"x": 0, "y": 0, "width": 2, "height": 2}
+            position=position or {"x": 0, "y": 0, "width": 2, "height": 2},
         )
 
     def create_line_chart_widget(
@@ -319,17 +327,17 @@ class PerformanceDashboard:
         title: str,
         metric_name: str,
         data_source: str,
-        position: dict[str, int] | None = None
+        position: dict[str, int] | None = None,
     ) -> DashboardWidget:
         """Create a line chart widget.
-        
+
         Args:
             widget_id: Unique widget identifier
             title: Widget title
             metric_name: Name of the metric to display
             data_source: Data source name
             position: Widget position
-            
+
         Returns:
             Dashboard widget
         """
@@ -339,7 +347,7 @@ class PerformanceDashboard:
             widget_type=WidgetType.LINE_CHART,
             data_source=data_source,
             config={"metric_name": metric_name, "x_axis": "timestamp", "y_axis": "value"},
-            position=position or {"x": 0, "y": 0, "width": 6, "height": 4}
+            position=position or {"x": 0, "y": 0, "width": 6, "height": 4},
         )
 
     def create_gauge_widget(
@@ -350,10 +358,10 @@ class PerformanceDashboard:
         data_source: str,
         min_value: float = 0.0,
         max_value: float = 100.0,
-        position: dict[str, int] | None = None
+        position: dict[str, int] | None = None,
     ) -> DashboardWidget:
         """Create a gauge widget.
-        
+
         Args:
             widget_id: Unique widget identifier
             title: Widget title
@@ -362,7 +370,7 @@ class PerformanceDashboard:
             min_value: Minimum value for the gauge
             max_value: Maximum value for the gauge
             position: Widget position
-            
+
         Returns:
             Dashboard widget
         """
@@ -371,12 +379,8 @@ class PerformanceDashboard:
             title=title,
             widget_type=WidgetType.GAUGE,
             data_source=data_source,
-            config={
-                "metric_name": metric_name,
-                "min_value": min_value,
-                "max_value": max_value
-            },
-            position=position or {"x": 0, "y": 0, "width": 3, "height": 3}
+            config={"metric_name": metric_name, "min_value": min_value, "max_value": max_value},
+            position=position or {"x": 0, "y": 0, "width": 3, "height": 3},
         )
 
     def create_table_widget(
@@ -385,17 +389,17 @@ class PerformanceDashboard:
         title: str,
         data_source: str,
         columns: list[str],
-        position: dict[str, int] | None = None
+        position: dict[str, int] | None = None,
     ) -> DashboardWidget:
         """Create a table widget.
-        
+
         Args:
             widget_id: Unique widget identifier
             title: Widget title
             data_source: Data source name
             columns: List of column names
             position: Widget position
-            
+
         Returns:
             Dashboard widget
         """
@@ -405,15 +409,16 @@ class PerformanceDashboard:
             widget_type=WidgetType.TABLE,
             data_source=data_source,
             config={"columns": columns},
-            position=position or {"x": 0, "y": 0, "width": 8, "height": 6}
+            position=position or {"x": 0, "y": 0, "width": 8, "height": 6},
         )
 
     def export_dashboard_config(self) -> dict[str, Any]:
         """Export dashboard configuration.
-        
+
         Returns:
             Dashboard configuration
         """
+
         async def _export_config():
             async with self._lock:
                 return {
@@ -422,7 +427,7 @@ class PerformanceDashboard:
                         "max_data_points": self._config.max_data_points,
                         "enable_real_time": self._config.enable_real_time,
                         "enable_historical_data": self._config.enable_historical_data,
-                        "data_retention": self._config.data_retention
+                        "data_retention": self._config.data_retention,
                     },
                     "widgets": [
                         {
@@ -433,25 +438,25 @@ class PerformanceDashboard:
                             "config": widget.config,
                             "position": widget.position,
                             "refresh_interval": widget.refresh_interval,
-                            "enabled": widget.enabled
+                            "enabled": widget.enabled,
                         }
                         for widget in self._widgets.values()
-                    ]
+                    ],
                 }
 
         return asyncio.run(_export_config())
 
     def import_dashboard_config(self, config: dict[str, Any]) -> None:
         """Import dashboard configuration.
-        
+
         Args:
             config: Dashboard configuration to import
         """
-        asyncio.create_task(self._import_dashboard_config_async(config))
+        self._track_background_task(self._import_dashboard_config_async(config))
 
     async def _import_dashboard_config_async(self, config: dict[str, Any]) -> None:
         """Import dashboard configuration asynchronously.
-        
+
         Args:
             config: Dashboard configuration to import
         """
@@ -472,16 +477,17 @@ class PerformanceDashboard:
                         "position", {"x": 0, "y": 0, "width": 4, "height": 3}
                     ),
                     refresh_interval=widget_config.get("refresh_interval", 5.0),
-                    enabled=widget_config.get("enabled", True)
+                    enabled=widget_config.get("enabled", True),
                 )
                 await self._add_widget_async(widget)
 
     def get_dashboard_summary(self) -> dict[str, Any]:
         """Get dashboard summary.
-        
+
         Returns:
             Dashboard summary
         """
+
         async def _get_summary():
             async with self._lock:
                 total_widgets = len(self._widgets)
@@ -499,15 +505,15 @@ class PerformanceDashboard:
                         "max_data_points": self._config.max_data_points,
                         "enable_real_time": self._config.enable_real_time,
                         "enable_historical_data": self._config.enable_historical_data,
-                        "data_retention": self._config.data_retention
-                    }
+                        "data_retention": self._config.data_retention,
+                    },
                 }
 
         return asyncio.run(_get_summary())
 
     def __enter__(self):
         """Context manager entry.
-        
+
         Returns:
             Self
         """
@@ -515,7 +521,7 @@ class PerformanceDashboard:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit.
-        
+
         Args:
             exc_type: Exception type
             exc_val: Exception value

@@ -40,9 +40,7 @@ def validate_config_file(config_path: Path) -> list[str]:
             print(f"   - Sources: {len(config.sources)}")
             print(f"   - Enabled sources: {len(config.get_enabled_sources())}")
             print(f"   - Buffer strategy: {config.global_config.buffer_strategy}")
-            print(
-                f"   - Max throughput: {config.global_config.max_throughput} logs/sec"
-            )
+            print(f"   - Max throughput: {config.global_config.max_throughput} logs/sec")
         else:
             print(f"❌ {config_path.name}: Configuration errors found")
             for error in errors:

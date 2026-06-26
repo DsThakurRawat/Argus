@@ -51,9 +51,7 @@ class RequestDeduplicator:
 
         request_hash = self._generate_request_hash(request)
         async with self._lock:
-            self.cache[request_hash] = CachedResponse(
-                response=response, timestamp=time.time()
-            )
+            self.cache[request_hash] = CachedResponse(response=response, timestamp=time.time())
 
     def _generate_request_hash(self, request: dict[str, Any]) -> str:
         """Generate deterministic hash for request."""

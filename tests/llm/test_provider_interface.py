@@ -44,9 +44,7 @@ class MockLLMProvider(LLMProvider):
     async def generate_structured(self, prompt, response_model, model=None, **kwargs):
         return response_model(message="Test", confidence=0.95)
 
-    def generate_stream(
-        self, prompt: str, model: str | None = None, **kwargs: str
-    ) -> None:
+    def generate_stream(self, prompt: str, model: str | None = None, **kwargs: str) -> None:
         """
         Generate Stream.
 
@@ -107,9 +105,7 @@ class TestProviderInterface:
         """Test provider initialization with configuration."""
         config = LLMProviderConfig(
             provider="openai",
-            models={
-                "test-model": ModelConfig(name="test-model", model_type=ModelType.FAST)
-            },
+            models={"test-model": ModelConfig(name="test-model", model_type=ModelType.FAST)},
         )
         provider = MockLLMProvider(config)
 
@@ -121,9 +117,7 @@ class TestProviderInterface:
         """Test formatting string prompts."""
         config = LLMProviderConfig(
             provider="openai",
-            models={
-                "test-model": ModelConfig(name="test-model", model_type=ModelType.FAST)
-            },
+            models={"test-model": ModelConfig(name="test-model", model_type=ModelType.FAST)},
         )
         provider = MockLLMProvider(config)
 
@@ -134,9 +128,7 @@ class TestProviderInterface:
         """Test formatting Mirascope Prompt objects."""
         config = LLMProviderConfig(
             provider="openai",
-            models={
-                "test-model": ModelConfig(name="test-model", model_type=ModelType.FAST)
-            },
+            models={"test-model": ModelConfig(name="test-model", model_type=ModelType.FAST)},
         )
         provider = MockLLMProvider(config)
 

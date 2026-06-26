@@ -4,6 +4,7 @@
 Main application configuration consolidating all configuration sections.
 """
 
+from typing import Any
 
 from pydantic import Field, field_validator
 
@@ -25,7 +26,7 @@ class ServiceConfig(BaseConfig):
 
     @field_validator("project_id")
     @classmethod
-    def validate_project_id(cls: str, v: str) -> None:
+    def validate_project_id(cls: Any, v: Any) -> Any:
         """
         Validate Project Id.
 
@@ -40,7 +41,7 @@ class ServiceConfig(BaseConfig):
 
     @field_validator("subscription_id")
     @classmethod
-    def validate_subscription_id(cls: str, v: str) -> None:
+    def validate_subscription_id(cls: Any, v: Any) -> Any:
         """
         Validate Subscription Id.
 
@@ -59,9 +60,7 @@ class GitHubConfig(BaseConfig):
 
     repository: str = Field(..., description="GitHub repository (owner/repo)")
     base_branch: str = Field(default="main", description="Base branch name")
-    token: str | None = Field(
-        default=None, description="GitHub token (set via env var)"
-    )
+    token: str | None = Field(default=None, description="GitHub token (set via env var)")
 
 
 class LoggingConfig(BaseConfig):
@@ -70,20 +69,14 @@ class LoggingConfig(BaseConfig):
     level: str = Field(default="INFO", description="Log level")
     format: str = Field(default="json", description="Log format (json/text)")
     file: str | None = Field(default=None, description="Log file path")
-    max_size_mb: int = Field(
-        default=100, ge=1, description="Maximum log file size in MB"
-    )
-    backup_count: int = Field(
-        default=5, ge=0, description="Number of backup files to keep"
-    )
+    max_size_mb: int = Field(default=100, ge=1, description="Maximum log file size in MB")
+    backup_count: int = Field(default=5, ge=0, description="Number of backup files to keep")
 
 
 class SecurityConfig(BaseConfig):
     """Security configuration."""
 
-    enable_secrets_validation: bool = Field(
-        default=True, description="Enable secrets validation"
-    )
+    enable_secrets_validation: bool = Field(default=True, description="Enable secrets validation")
     secrets_rotation_interval_days: int = Field(
         default=90, ge=1, description="Secrets rotation interval"
     )
@@ -91,52 +84,38 @@ class SecurityConfig(BaseConfig):
     max_failed_attempts: int = Field(
         default=5, ge=1, description="Maximum failed authentication attempts"
     )
-    lockout_duration_minutes: int = Field(
-        default=30, ge=1, description="Account lockout duration"
-    )
+    lockout_duration_minutes: int = Field(default=30, ge=1, description="Account lockout duration")
 
 
 class MonitoringConfig(BaseConfig):
     """Monitoring configuration."""
 
     enable_metrics: bool = Field(default=True, description="Enable metrics collection")
-    metrics_endpoint: str | None = Field(
-        default=None, description="Metrics endpoint URL"
-    )
+    metrics_endpoint: str | None = Field(default=None, description="Metrics endpoint URL")
     enable_health_checks: bool = Field(default=True, description="Enable health checks")
     health_check_interval_seconds: int = Field(
         default=60, ge=1, description="Health check interval"
     )
     enable_alerting: bool = Field(default=True, description="Enable alerting")
-    alert_webhook_url: str | None = Field(
-        default=None, description="Alert webhook URL"
-    )
+    alert_webhook_url: str | None = Field(default=None, description="Alert webhook URL")
 
 
 class PerformanceConfig(BaseConfig):
     """Performance configuration."""
 
-    cache_max_size_mb: int = Field(
-        default=100, ge=1, description="Maximum cache size in MB"
-    )
-    cache_ttl_seconds: int = Field(
-        default=3600, ge=60, description="Cache TTL in seconds"
-    )
+    cache_max_size_mb: int = Field(default=100, ge=1, description="Maximum cache size in MB")
+    cache_ttl_seconds: int = Field(default=3600, ge=60, description="Cache TTL in seconds")
     max_concurrent_requests: int = Field(
         default=10, ge=1, description="Maximum concurrent requests"
     )
-    request_timeout_seconds: int = Field(
-        default=30, ge=1, description="Request timeout in seconds"
-    )
+    request_timeout_seconds: int = Field(default=30, ge=1, description="Request timeout in seconds")
 
 
 class AppConfig(BaseConfig):
     """Main application configuration."""
 
     # Core service configuration
-    services: list[ServiceConfig] = Field(
-        default_factory=list, description="Services to monitor"
-    )
+    services: list[ServiceConfig] = Field(default_factory=list, description="Services to monitor")
 
     # Sub-configurations
     ml: MLConfig = Field(default_factory=MLConfig, description="ML configuration")
@@ -167,7 +146,7 @@ class AppConfig(BaseConfig):
 
     @field_validator("services")
     @classmethod
-    def validate_services(cls: str, v: str) -> None:
+    def validate_services(cls: Any, v: Any) -> Any:
         """Validate service configurations."""
         if not v:
             raise ValueError("At least one service must be configured")
@@ -180,7 +159,7 @@ class AppConfig(BaseConfig):
 
     @field_validator("services")
     @classmethod
-    def validate_services_with_source_control(cls: str, v: str) -> None:
+    def validate_services_with_source_control(cls: Any, v: Any) -> Any:
         """Validate service configurations and source control settings."""
         for service in v:
             if service.source_control and service.source_control.repositories:

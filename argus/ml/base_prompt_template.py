@@ -71,9 +71,7 @@ class BasePromptTemplate(ABC):
 
             # Add validation feedback if this is a refinement
             if context.validation_feedback:
-                user_prompt += self._add_validation_feedback(
-                    context.validation_feedback
-                )
+                user_prompt += self._add_validation_feedback(context.validation_feedback)
 
             complete_prompt = f"{system_prompt}\n\n{user_prompt}"
 
@@ -113,10 +111,10 @@ class BasePromptTemplate(ABC):
         return f"""
 
 VALIDATION FEEDBACK FROM PREVIOUS ITERATION:
-- Syntax Issues: {feedback.get('syntax_issues', 'None')}
-- Pattern Compliance: {feedback.get('pattern_compliance', 'Passed')}
-- Test Results: {feedback.get('test_results', 'Not run')}
-- Performance Impact: {feedback.get('performance_impact', 'Unknown')}
+- Syntax Issues: {feedback.get("syntax_issues", "None")}
+- Pattern Compliance: {feedback.get("pattern_compliance", "Passed")}
+- Test Results: {feedback.get("test_results", "Not run")}
+- Performance Impact: {feedback.get("performance_impact", "Unknown")}
 
 Please address the above feedback and provide an improved solution."""
 

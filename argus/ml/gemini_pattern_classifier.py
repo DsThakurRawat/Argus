@@ -7,7 +7,7 @@ Gemini pattern classifier for SRE logs.
 import json
 from typing import Any
 
-from argus.ml.gemini_api_client import GeminiAPIClient
+from argus.ml.gemini_api_client import GeminiAPIClient, GeminiRequest
 from argus.pattern_detector.models import PatternMatch, PatternType, TimeWindow
 
 
@@ -155,20 +155,23 @@ class GeminiPatternClassifier:
         )
         schema = self._build_classification_schema()
 
-        resp = await self.gemini_client.generate_response(
-            model=model, prompt=prompt, response_schema=schema
+        req = GeminiRequest(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            generation_config={"response_mime_type": "application/json", "response_schema": schema},
         )
+        resp = await self.gemini_client.generate_content(req)
         if not resp.success:
             return []
 
-        parsed = resp.parsed_json
-        if not parsed or not isinstance(parsed, dict):
-            try:
-                parsed = json.loads(resp.content)
-            except Exception:
-                return []
+        try:
+            parsed = json.loads(resp.content)
+        except Exception:
+            return []
 
         pattern_str = parsed.get("pattern_type")
+        if not isinstance(pattern_str, str):
+            return []
         pattern_type_enum = self._map_pattern_type(pattern_str)
         if not pattern_type_enum:
             return []
@@ -179,16 +182,20 @@ class GeminiPatternClassifier:
         if confidence < self.confidence_assessment_threshold:
             conf_prompt = self._build_confidence_prompt(parsed, window)
             conf_schema = self._build_confidence_schema()
-            conf_resp = await self.gemini_client.generate_response(
-                model=model, prompt=conf_prompt, response_schema=conf_schema
+            conf_req = GeminiRequest(
+                model=model,
+                messages=[{"role": "user", "content": conf_prompt}],
+                generation_config={
+                    "response_mime_type": "application/json",
+                    "response_schema": conf_schema,
+                },
             )
+            conf_resp = await self.gemini_client.generate_content(conf_req)
             if conf_resp.success:
-                conf_parsed = conf_resp.parsed_json
-                if not conf_parsed or not isinstance(conf_parsed, dict):
-                    try:
-                        conf_parsed = json.loads(conf_resp.content)
-                    except Exception:
-                        conf_parsed = {}
+                try:
+                    conf_parsed = json.loads(conf_resp.content)
+                except Exception:
+                    conf_parsed = {}
 
                 if conf_parsed:
                     confidence = conf_parsed.get("overall_confidence", confidence)

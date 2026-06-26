@@ -10,6 +10,7 @@ Comprehensive example demonstrating the enhanced log ingestion system with:
 """
 
 import asyncio
+import contextlib
 from datetime import UTC, datetime
 import logging
 import os
@@ -159,10 +160,7 @@ async def demo_queued_file_system():
             processed_count += 1
 
             # Stop after processing 10 entries or 5 seconds
-            if (
-                processed_count >= 10
-                or (datetime.now(UTC) - start_time).seconds >= 5
-            ):
+            if processed_count >= 10 or (datetime.now(UTC) - start_time).seconds >= 5:
                 break
 
         # Show health metrics
@@ -176,10 +174,8 @@ async def demo_queued_file_system():
 
     finally:
         # Cleanup
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(log_file)
-        except OSError:
-            pass
 
 
 async def demo_aws_cloudwatch():
@@ -291,10 +287,8 @@ async def demo_log_manager():
 
     finally:
         # Cleanup
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(log_file)
-        except OSError:
-            pass
 
 
 async def demo_resilience_config():

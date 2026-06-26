@@ -22,16 +22,12 @@ class AgentStats:
     error_count: int = 0
 
     # Detailed metrics
-    latencies_ms: dict[str, list[int]] = field(
-        default_factory=lambda: defaultdict(list)
-    )
+    latencies_ms: dict[str, list[int]] = field(default_factory=lambda: defaultdict(list))
     errors: dict[str, list[str]] = field(default_factory=lambda: defaultdict(list))
     prompt_usage: dict[str, int] = field(default_factory=lambda: defaultdict(int))
     model_usage: dict[str, int] = field(default_factory=lambda: defaultdict(int))
 
-    def record_success(
-        self, model: str, latency_ms: int, prompt_name: str | None = None
-    ):
+    def record_success(self, model: str, latency_ms: int, prompt_name: str | None = None):
         """Record a successful agent execution."""
         self.request_count += 1
         self.success_count += 1
@@ -40,9 +36,7 @@ class AgentStats:
         if prompt_name:
             self.prompt_usage[prompt_name] += 1
 
-    def record_error(
-        self, model: str, error: str, prompt_name: str | None = None
-    ) -> None:
+    def record_error(self, model: str, error: str, prompt_name: str | None = None) -> None:
         """Record a failed agent execution."""
         self.request_count += 1
         self.error_count += 1
@@ -63,9 +57,7 @@ class AgentStats:
             },
             "model_usage": dict(self.model_usage),
             "prompt_usage": dict(self.prompt_usage),
-            "error_count_by_model": {
-                model: len(errors) for model, errors in self.errors.items()
-            },
+            "error_count_by_model": {model: len(errors) for model, errors in self.errors.items()},
         }
 
     def reset(self) -> None:

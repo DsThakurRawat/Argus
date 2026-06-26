@@ -35,12 +35,8 @@ def populated_capability_database() -> None:
     model_caps2 = ModelCapabilities(
         model_id="provider2/model_B", capabilities=[cap_text_gen, cap_image_rec]
     )
-    model_caps3 = ModelCapabilities(
-        model_id="provider3/model_C", capabilities=[cap_code_gen]
-    )
-    model_caps4 = ModelCapabilities(
-        model_id="provider4/model_D", capabilities=[cap_text_gen]
-    )
+    model_caps3 = ModelCapabilities(model_id="provider3/model_C", capabilities=[cap_code_gen])
+    model_caps4 = ModelCapabilities(model_id="provider4/model_D", capabilities=[cap_text_gen])
 
     db.add_capabilities(model_caps1)
     db.add_capabilities(model_caps2)
@@ -126,9 +122,7 @@ def test_find_best_model_for_capabilities(populated_capability_database: str) ->
     assert best_model is None
 
     # Test with multiple required capabilities
-    best_model = comparer.find_best_model_for_capabilities(
-        ["text_generation", "code_generation"]
-    )
+    best_model = comparer.find_best_model_for_capabilities(["text_generation", "code_generation"])
     assert best_model is not None
     assert best_model[0] == "provider1/model_A"
     assert best_model[1] == pytest.approx(

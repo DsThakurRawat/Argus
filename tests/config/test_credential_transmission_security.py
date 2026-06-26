@@ -79,9 +79,7 @@ class TestCredentialTransmissionSecurity:
 
     def test_ssh_key_transmission_security(self) -> None:
         """Test secure SSH key transmission."""
-        ssh_key_content = (
-            "-----BEGIN PRIVATE KEY-----\nMOCK_SSH_KEY\n-----END PRIVATE KEY-----"
-        )
+        ssh_key_content = "-----BEGIN PRIVATE KEY-----\nMOCK_SSH_KEY\n-----END PRIVATE KEY-----"
 
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
             temp_file.write(ssh_key_content)
@@ -252,9 +250,7 @@ class TestCredentialTransmissionSecurity:
 
     def test_credential_transmission_compression_security(self) -> None:
         """Test that credential compression doesn't expose sensitive data."""
-        with patch.dict(
-            os.environ, {"GITHUB_TOKEN": "compression_security_test_token"}
-        ):
+        with patch.dict(os.environ, {"GITHUB_TOKEN": "compression_security_test_token"}):
             config = CredentialConfig(token_env="GITHUB_TOKEN")
 
             # Test that credential is retrieved correctly

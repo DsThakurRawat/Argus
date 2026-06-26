@@ -42,7 +42,7 @@ class EnhancedAnalysisConfig:
     timeout_seconds: int = 30
 
 
-class EnhancedAnalysisAgent:
+class MLAnalysisAgent:
     """
     Enhanced analysis agent with dynamic prompt generation and specialized code generation.
 
@@ -122,9 +122,7 @@ class EnhancedAnalysisAgent:
             analysis_result = await self._execute_analysis(prompt, context)
 
             # 4. If specialized generators are enabled, enhance the code generation
-            if self.config.enable_specialized_generators and analysis_result.get(
-                "success", False
-            ):
+            if self.config.enable_specialized_generators and analysis_result.get("success", False):
                 enhanced_result = await self._enhance_with_specialized_generator(
                     analysis_result, context
                 )
@@ -139,9 +137,7 @@ class EnhancedAnalysisAgent:
 
         except Exception as e:
             self.logger.error(f"Enhanced analysis failed for flow {flow_id}: {e}")
-            return await self._fallback_analysis(
-                triage_packet, historical_logs, configs
-            )
+            return await self._fallback_analysis(triage_packet, historical_logs, configs)
 
     async def _enhance_with_specialized_generator(
         self, analysis_result: dict[str, Any], context: PromptContext
@@ -169,15 +165,11 @@ class EnhancedAnalysisAgent:
                 generator.set_context(context)
             except ValueError:
                 # If conversion fails, use UNKNOWN type
-                generator = self.code_generator_factory.create_generator(
-                    IssueType.UNKNOWN
-                )
+                generator = self.code_generator_factory.create_generator(IssueType.UNKNOWN)
                 generator.set_context(context)
 
             if not generator:
-                self.logger.warning(
-                    f"No specialized generator found for {context.generator_type}"
-                )
+                self.logger.warning(f"No specialized generator found for {context.generator_type}")
                 return analysis_result
 
             # Extract the current code patch
@@ -202,9 +194,7 @@ class EnhancedAnalysisAgent:
                         analysis_result["analysis"]["proposed_fix"], context
                     )
                     if enhanced_description:
-                        analysis_result["analysis"][
-                            "proposed_fix"
-                        ] = enhanced_description
+                        analysis_result["analysis"]["proposed_fix"] = enhanced_description
 
             return analysis_result
 
@@ -264,9 +254,7 @@ class EnhancedAnalysisAgent:
 
         # Extract user and business impact
         user_impact = triage_packet.get("user_impact", "Unknown impact")
-        business_impact = triage_packet.get(
-            "business_impact", "Unknown business impact"
-        )
+        business_impact = triage_packet.get("business_impact", "Unknown business impact")
 
         return IssueContext(
             issue_type=issue_type,
@@ -390,9 +378,7 @@ class EnhancedAnalysisAgent:
                         configs={},  # Empty for now, would be populated from configs
                         flow_id="unknown",  # Would be populated from flow
                     )
-                    return await self.meta_prompt_generator.generate_optimized_prompt(
-                        meta_context
-                    )
+                    return await self.meta_prompt_generator.generate_optimized_prompt(meta_context)
             except Exception as e:
                 self.logger.warning(f"Meta-prompt generation failed: {e}")
 
@@ -416,9 +402,7 @@ class EnhancedAnalysisAgent:
             context.repository_context.to_dict(),
         )
 
-    async def _execute_analysis(
-        self, prompt: str, context: PromptContext
-    ) -> dict[str, Any]:
+    async def _execute_analysis(self, prompt: str, context: PromptContext) -> dict[str, Any]:
         """Execute the analysis with the generated prompt."""
 
         try:
@@ -487,11 +471,11 @@ class EnhancedAnalysisAgent:
         # Simple fallback prompt
         prompt = f"""
         Analyze the following issue and provide a fix:
-        
+
         Triage Packet: {json.dumps(triage_packet, indent=2)}
         Historical Logs: {historical_logs[:5]}  # Limit to first 5 logs
         Configs: {json.dumps(configs, indent=2)}
-        
+
         Provide a JSON response with:
         - root_cause_analysis: Analysis of the root cause
         - proposed_fix: Description of the proposed fix

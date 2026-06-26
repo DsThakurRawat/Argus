@@ -51,9 +51,7 @@ class Role(BaseModel):
 
     name: str = Field(..., description="Role name")
     description: str = Field(..., description="Role description")
-    permissions: set[Permission] = Field(
-        default_factory=set, description="Role permissions"
-    )
+    permissions: set[Permission] = Field(default_factory=set, description="Role permissions")
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -68,9 +66,7 @@ class User(BaseModel):
     is_active: bool = Field(default=True, description="Whether user is active")
     created_at: datetime = Field(default_factory=datetime.utcnow)
     last_login: datetime | None = Field(default=None)
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional user metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional user metadata")
 
 
 class AccessRequest(BaseModel):
@@ -356,9 +352,7 @@ class AccessController:
         # Check if role is in use
         users_with_role = [user for user in self._users.values() if name in user.roles]
         if users_with_role:
-            raise ValueError(
-                f"Cannot delete role {name}: in use by {len(users_with_role)} users"
-            )
+            raise ValueError(f"Cannot delete role {name}: in use by {len(users_with_role)} users")
 
         del self._roles[name]
         logger.info(f"Deleted role: {name}")
@@ -511,9 +505,7 @@ class AccessController:
             return {}
 
         total_attempts = len(self._access_log)
-        granted_attempts = sum(
-            1 for e in self._access_log if e.metadata.get("granted", False)
-        )
+        granted_attempts = sum(1 for e in self._access_log if e.metadata.get("granted", False))
         denied_attempts = total_attempts - granted_attempts
 
         # Count by user
@@ -535,9 +527,7 @@ class AccessController:
             "total_attempts": total_attempts,
             "granted_attempts": granted_attempts,
             "denied_attempts": denied_attempts,
-            "grant_rate": (
-                granted_attempts / total_attempts if total_attempts > 0 else 0
-            ),
+            "grant_rate": (granted_attempts / total_attempts if total_attempts > 0 else 0),
             "user_counts": user_counts,
             "resource_counts": resource_counts,
             "action_counts": action_counts,

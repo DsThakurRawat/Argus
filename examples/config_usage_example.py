@@ -188,9 +188,7 @@ def main() -> None:
         "   This feature allows the configuration to be reloaded without "
         "restarting the application."
     )
-    print(
-        "   The ConfigManager monitors file changes and can automatically reload when needed."
-    )
+    print("   The ConfigManager monitors file changes and can automatically reload when needed.")
 
     print("\n✅ Configuration system demo completed!")
     print("\nNext steps:")

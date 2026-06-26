@@ -60,7 +60,7 @@ class ConfigManager:
         # Load initial configuration
         self._load_configuration()
 
-    def _load_configuration(self) -> None:
+    def _load_configuration(self) -> Any:
         """Load configuration from all available sources."""
         try:
             # Start with default configuration
@@ -71,9 +71,7 @@ class ConfigManager:
                 file_data = self._load_from_file(self.config_path)
                 config_data.update(file_data)
                 self._sources.append(
-                    ConfigSource(
-                        source_type="file", path=str(self.config_path), priority=1
-                    )
+                    ConfigSource(source_type="file", path=str(self.config_path), priority=1)
                 )
 
             # Load from environment variables
@@ -90,9 +88,7 @@ class ConfigManager:
             # Validate and create configuration
             self._config = LLMConfig(**config_data)
 
-            logger.info(
-                f"Configuration loaded successfully from {len(self._sources)} sources"
-            )
+            logger.info(f"Configuration loaded successfully from {len(self._sources)} sources")
 
         except Exception as e:
             logger.error(f"Failed to load configuration: {e}")
@@ -167,7 +163,7 @@ class ConfigManager:
         """Get the current configuration."""
         if self._config is None:
             self._load_configuration()
-        assert self._config is not None
+        assert self._config is not None  # nosec B101
         return self._config
 
     def get_provider_config(self, provider_name: str) -> LLMProviderConfig | None:
@@ -287,13 +283,9 @@ class ConfigManager:
             "default_model_type": config.default_model_type,
             "providers": list(config.providers.keys()),
             "agents": list(config.agents.keys()),
-            "cost_budget": (
-                config.cost_config.monthly_budget if config.cost_config else None
-            ),
+            "cost_budget": (config.cost_config.monthly_budget if config.cost_config else None),
             "resilience_max_retries": (
-                config.resilience_config.retry_attempts
-                if config.resilience_config
-                else None
+                config.resilience_config.retry_attempts if config.resilience_config else None
             ),
             "sources": [
                 {

@@ -170,14 +170,12 @@ class ConfigurationManager:
 
     def __init__(self, config_path: str | None = None) -> None:
         """Initialize configuration manager."""
-        self.config_path = (
-            Path(config_path) if config_path else Path("./mirascope_config.json")
-        )
+        self.config_path = Path(config_path) if config_path else Path("./mirascope_config.json")
         self.config: MirascopeIntegrationConfig | None = None
         self.logger = logging.getLogger(__name__)
         self._load_config()
 
-    def _load_config(self) -> None:
+    def _load_config(self) -> Any:
         """Load configuration from file or create default."""
         if self.config_path.exists():
             try:
@@ -231,9 +229,7 @@ class ConfigurationManager:
             del self.config.providers[name]
             if self.config.default_provider == name:
                 self.config.default_provider = (
-                    list(self.config.providers.keys())[0]
-                    if self.config.providers
-                    else None
+                    next(iter(self.config.providers.keys())) if self.config.providers else None
                 )
             self.save_config()
             return True
@@ -282,9 +278,7 @@ class ConfigurationManager:
         try:
             Path(self.config.storage_path).mkdir(parents=True, exist_ok=True)
         except Exception as e:
-            errors.append(
-                f"Cannot create storage path '{self.config.storage_path}': {e}"
-            )
+            errors.append(f"Cannot create storage path '{self.config.storage_path}': {e}")
 
         # Validate thresholds
         if self.config.performance_threshold_ms <= 0:

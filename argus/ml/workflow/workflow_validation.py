@@ -122,9 +122,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
         validation_id = f"code_val_{workflow_id}_{int(time.time())}"
 
         try:
-            logger.info(
-                f"Starting {validation_type} code validation for workflow {workflow_id}"
-            )
+            logger.info(f"Starting {validation_type} code validation for workflow {workflow_id}")
 
             # Perform code validation
             errors = []
@@ -142,15 +140,11 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
 
             # Best practices validation
             if validation_type in ["best_practices", "comprehensive"]:
-                best_practice_warnings = self._validate_best_practices(
-                    code_content, file_path
-                )
+                best_practice_warnings = self._validate_best_practices(code_content, file_path)
                 warnings.extend(best_practice_warnings)
 
             # Generate recommendations
-            recommendations = self._generate_recommendations(
-                code_content, errors, warnings
-            )
+            recommendations = self._generate_recommendations(code_content, errors, warnings)
 
             # Calculate confidence score
             confidence_score = self._calculate_confidence(errors, warnings)
@@ -180,9 +174,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
             self.total_validation_time += validation_duration
             self.successful_validations += 1
 
-            logger.info(
-                f"Completed code validation {validation_id} in {validation_duration:.3f}s"
-            )
+            logger.info(f"Completed code validation {validation_id} in {validation_duration:.3f}s")
             return result
 
         except Exception as e:
@@ -235,9 +227,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
         validation_id = f"prompt_val_{workflow_id}_{int(time.time())}"
 
         try:
-            logger.info(
-                f"Starting {validation_type} prompt validation for workflow {workflow_id}"
-            )
+            logger.info(f"Starting {validation_type} prompt validation for workflow {workflow_id}")
 
             # Perform prompt validation
             errors = []
@@ -261,9 +251,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
                     warnings.extend(clarity_warnings)
 
             # Generate recommendations
-            recommendations = self._generate_prompt_recommendations(
-                prompts, errors, warnings
-            )
+            recommendations = self._generate_prompt_recommendations(prompts, errors, warnings)
 
             # Calculate confidence score
             confidence_score = self._calculate_confidence(errors, warnings)
@@ -341,7 +329,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
         # In practice, this would be called from an async context
         raise NotImplementedError("Use async methods for validation operations")
 
-    def initialize(self) -> None:
+    def initialize(self) -> Any:
         """Initialize the component."""
         self._status = "initialized"
         logger.info(f"Initialized {self.name}")
@@ -457,9 +445,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
             },
         }
 
-    def _validate_syntax(
-        self, code_content: str, file_path: str
-    ) -> list[dict[str, Any]]:
+    def _validate_syntax(self, code_content: str, file_path: str) -> list[dict[str, Any]]:
         """
         Validate code syntax.
 
@@ -523,9 +509,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
 
         return errors
 
-    def _validate_style(
-        self, code_content: str, file_path: str
-    ) -> list[dict[str, Any]]:
+    def _validate_style(self, code_content: str, file_path: str) -> list[dict[str, Any]]:
         """
         Validate code style.
 
@@ -554,9 +538,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
 
         return warnings
 
-    def _validate_best_practices(
-        self, code_content: str, file_path: str
-    ) -> list[dict[str, Any]]:
+    def _validate_best_practices(self, code_content: str, file_path: str) -> list[dict[str, Any]]:
         """
         Validate code best practices.
 
@@ -580,9 +562,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
                 for j in range(i + 1, len(lines)):
                     next_line = lines[j].strip()
                     if next_line:
-                        if not next_line.startswith('"""') and not next_line.startswith(
-                            "'''"
-                        ):
+                        if not next_line.startswith('"""') and not next_line.startswith("'''"):
                             warnings.append(
                                 {
                                     "type": "best_practice_warning",
@@ -599,9 +579,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
                 for j in range(i + 1, len(lines)):
                     next_line = lines[j].strip()
                     if next_line:
-                        if not next_line.startswith('"""') and not next_line.startswith(
-                            "'''"
-                        ):
+                        if not next_line.startswith('"""') and not next_line.startswith("'''"):
                             warnings.append(
                                 {
                                     "type": "best_practice_warning",
@@ -615,9 +593,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
 
         return warnings
 
-    def _validate_prompt_completeness(
-        self, prompt: str, index: int
-    ) -> list[dict[str, Any]]:
+    def _validate_prompt_completeness(self, prompt: str, index: int) -> list[dict[str, Any]]:
         """
         Validate prompt completeness.
 
@@ -722,9 +698,7 @@ class WorkflowValidationEngine(ProcessableComponent[dict[str, Any], ValidationRe
             recommendations.append("Fix syntax errors before proceeding")
 
         if warnings:
-            recommendations.append(
-                "Consider addressing style and best practice warnings"
-            )
+            recommendations.append("Consider addressing style and best practice warnings")
 
         if not code_content.strip():
             recommendations.append("Add meaningful code content")

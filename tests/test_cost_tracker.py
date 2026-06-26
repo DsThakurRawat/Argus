@@ -168,9 +168,7 @@ class TestCostTracker:
 
             # Simulate size limit enforcement
             if len(cost_tracker.usage_records) > cost_tracker.max_records:
-                cost_tracker.usage_records = cost_tracker.usage_records[
-                    -cost_tracker.max_records :
-                ]
+                cost_tracker.usage_records = cost_tracker.usage_records[-cost_tracker.max_records :]
 
         # Should only keep the last 3 records
         assert len(cost_tracker.usage_records) == 3
@@ -196,9 +194,7 @@ class TestCostTracker:
 
     @patch("argus.ml.cost_tracker.date")
     @pytest.mark.asyncio
-    async def test_daily_usage_reset_new_day(
-        self, mock_date, cost_tracker: CostTracker
-    ):
+    async def test_daily_usage_reset_new_day(self, mock_date, cost_tracker: CostTracker):
         """Test automatic daily usage reset on new day."""
         from datetime import date
 
@@ -221,9 +217,7 @@ class TestCostTracker:
 
     @patch("argus.ml.cost_tracker.date")
     @pytest.mark.asyncio
-    async def test_monthly_usage_reset_new_month(
-        self, mock_date, cost_tracker: CostTracker
-    ):
+    async def test_monthly_usage_reset_new_month(self, mock_date, cost_tracker: CostTracker):
         """Test automatic monthly usage reset on new month."""
         from datetime import date
 

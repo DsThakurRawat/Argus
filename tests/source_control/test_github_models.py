@@ -40,9 +40,7 @@ class TestGitHubCredentials:
 
     def test_token_credentials_valid(self) -> None:
         """Test valid token credentials."""
-        creds = GitHubCredentials(
-            auth_type=GitHubAuthType.TOKEN, token="test_token_123"
-        )
+        creds = GitHubCredentials(auth_type=GitHubAuthType.TOKEN, token="test_token_123")
         assert creds.auth_type == GitHubAuthType.TOKEN
         assert creds.token == "test_token_123"
         assert creds.app_id is None
@@ -57,17 +55,12 @@ class TestGitHubCredentials:
         )
         assert creds.auth_type == GitHubAuthType.APP
         assert creds.app_id == "12345"
-        assert (
-            creds.private_key
-            == "-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----"
-        )
+        assert creds.private_key == "-----BEGIN PRIVATE KEY-----\ntest\n-----END PRIVATE KEY-----"
         assert creds.token is None
 
     def test_token_credentials_missing_token_raises_error(self) -> None:
         """Test token credentials without token raises error."""
-        with pytest.raises(
-            ValueError, match="Token is required when auth_type is 'token'"
-        ):
+        with pytest.raises(ValueError, match="Token is required when auth_type is 'token'"):
             GitHubCredentials(auth_type=GitHubAuthType.TOKEN)
 
     def test_app_credentials_missing_app_id_raises_error(self) -> None:
@@ -271,17 +264,9 @@ class TestGitHubFileInfo:
         )
 
         assert file_info.path == "src/main.py"
-        assert (
-            file_info.download_url
-            == "https://github.com/owner/repo/raw/main/src/main.py"
-        )
-        assert (
-            file_info.html_url == "https://github.com/owner/repo/blob/main/src/main.py"
-        )
-        assert (
-            file_info.git_url
-            == "https://api.github.com/repos/owner/repo/git/blobs/file-sha-123"
-        )
+        assert file_info.download_url == "https://github.com/owner/repo/raw/main/src/main.py"
+        assert file_info.html_url == "https://github.com/owner/repo/blob/main/src/main.py"
+        assert file_info.git_url == "https://api.github.com/repos/owner/repo/git/blobs/file-sha-123"
         assert file_info.last_modified == last_modified
         assert file_info.additional_info == {"language": "Python"}
 

@@ -9,7 +9,10 @@ from collections.abc import AsyncGenerator
 import logging
 from typing import Any
 
-import litellm
+try:
+    import litellm
+except ImportError:
+    litellm = None
 
 from ..base import LLMProvider, LLMRequest, LLMResponse, ModelType
 from ..capabilities.models import ModelCapability
@@ -21,7 +24,7 @@ logger = logging.getLogger(__name__)
 class LiteLLMProvider(LLMProvider):
     """
     Universal adapter for LiteLLM supported providers.
-    
+
     This class allows the SRE agent to switch between providers like Azure,
     OpenRouter, and Mistral with a single consistent interface.
     """
@@ -58,7 +61,7 @@ class LiteLLMProvider(LLMProvider):
         if request.prompt:
             messages.append({"role": "user", "content": request.prompt})
 
-        response = await litellm.acompletion(
+        response = await litellm.acompletion(  # type: ignore
             model=model_full_name,
             messages=messages,
             api_key=self.api_key,
@@ -69,19 +72,17 @@ class LiteLLMProvider(LLMProvider):
         )
 
         return LLMResponse(
-            content=response.choices[0].message.content or "",
+            content=response.choices[0].message.content or "",  # type: ignore
             model=self.model,
             provider=self.config.provider,
             usage={
-                "input_tokens": getattr(response.usage, "prompt_tokens", 0),
-                "output_tokens": getattr(response.usage, "completion_tokens", 0),
+                "input_tokens": getattr(response.usage, "prompt_tokens", 0),  # type: ignore
+                "output_tokens": getattr(response.usage, "completion_tokens", 0),  # type: ignore
             },
-            tool_calls=getattr(response.choices[0].message, "tool_calls", None),
+            tool_calls=getattr(response.choices[0].message, "tool_calls", None),  # type: ignore
         )
 
-    async def generate_stream(
-        self, request: LLMRequest
-    ) -> AsyncGenerator[LLMResponse, None]:
+    async def generate_stream(self, request: LLMRequest) -> AsyncGenerator[LLMResponse, None]:
         """
         Generate a streaming response using LiteLLM.
 
@@ -113,7 +114,7 @@ class LiteLLMProvider(LLMProvider):
 
     async def embeddings(self, text: str) -> list[float]:
         """Generate vector embeddings using LiteLLM's embedding API."""
-        response = await litellm.aembedding(
+        response = await litellm.aembedding(  # type: ignore
             model=f"{self.config.provider}/{self.model}",
             input=[text],
             api_key=self.api_key,
@@ -122,15 +123,15 @@ class LiteLLMProvider(LLMProvider):
 
     def token_count(self, text: str) -> int:
         """Calculate token count using provider-specific tokenizers."""
-        return litellm.token_counter(model=self.model, text=text)
+        return litellm.token_counter(model=self.model, text=text)  # type: ignore
 
     def cost_estimate(self, input_tokens: int, output_tokens: int) -> float:
         """Estimate the USD cost of the completion request."""
         try:
-            return litellm.completion_cost(
+            return litellm.completion_cost(  # type: ignore
                 model=self.model,
-                prompt_tokens=input_tokens,
-                completion_tokens=output_tokens,
+                prompt_tokens=input_tokens,  # type: ignore
+                completion_tokens=output_tokens,  # type: ignore
             )
         except Exception:
             return 0.0

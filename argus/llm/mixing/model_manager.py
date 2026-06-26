@@ -87,7 +87,7 @@ class ModelManager:
         provider_factory: LLMProviderFactory,
         model_registry: ModelRegistry,
         max_concurrent_requests: int = 10,
-    ):
+    ) -> None:
         """
         Initialize the model manager.
 
@@ -113,7 +113,7 @@ class ModelManager:
 
         logger.info("ModelManager initialized with specialized configurations")
 
-    def _initialize_specialized_configs(self) -> None:
+    def _initialize_specialized_configs(self) -> Any:
         """Initialize specialized model configurations for different task types."""
         self.specialized_configs = {
             TaskType.CODE_GENERATION: self._create_code_generation_configs(),
@@ -349,9 +349,7 @@ class ModelManager:
         """
         return self.specialized_configs.get(task_type, []).copy()
 
-    def get_available_models(
-        self, task_type: TaskType | None = None
-    ) -> list[ModelConfig]:
+    def get_available_models(self, task_type: TaskType | None = None) -> list[ModelConfig]:
         """
         Get available model configurations.
 
@@ -480,9 +478,7 @@ class ModelManager:
             if health.response_time_avg == 0:
                 health.response_time_avg = response_time
             else:
-                health.response_time_avg = (
-                    health.response_time_avg + response_time
-                ) / 2
+                health.response_time_avg = (health.response_time_avg + response_time) / 2
         else:
             health.consecutive_failures += 1
             health.last_error = error
@@ -554,9 +550,7 @@ class ModelManager:
             breaker.failure_count = 0
             breaker.is_open = False
 
-    def get_healthy_models(
-        self, task_type: TaskType | None = None
-    ) -> list[ModelConfig]:
+    def get_healthy_models(self, task_type: TaskType | None = None) -> list[ModelConfig]:
         """
         Get healthy model configurations.
 
@@ -638,9 +632,7 @@ class ModelManager:
         metrics["average_execution_time"] = (
             metrics["total_execution_time"] / metrics["total_requests"]
         )
-        metrics["success_rate"] = (
-            metrics["successful_requests"] / metrics["total_requests"] * 100
-        )
+        metrics["success_rate"] = metrics["successful_requests"] / metrics["total_requests"] * 100
 
     def get_semaphore(self) -> asyncio.Semaphore:
         """

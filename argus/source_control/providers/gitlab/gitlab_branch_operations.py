@@ -36,9 +36,7 @@ class GitLabBranchOperations:
         self.logger = logger
         self.error_handling_components = error_handling_components
 
-    async def _execute_with_error_handling(
-        self, operation_name: str, func, *args, **kwargs
-    ):
+    async def _execute_with_error_handling(self, operation_name: str, func, *args, **kwargs):
         """Execute an operation with error handling if available."""
         if self.error_handling_components:
             resilient_manager = self.error_handling_components.get("resilient_manager")
@@ -179,12 +177,8 @@ class GitLabBranchOperations:
         async def _check():
             try:
                 # Get file content from both branches
-                base_content = self.project.files.get(
-                    file_path=file_path, ref=base_branch
-                )
-                feature_content = self.project.files.get(
-                    file_path=file_path, ref=feature_branch
-                )
+                base_content = self.project.files.get(file_path=file_path, ref=base_branch)
+                feature_content = self.project.files.get(file_path=file_path, ref=feature_branch)
 
                 base_text = base64.b64decode(base_content.content).decode("utf-8")
                 feature_text = base64.b64decode(feature_content.content).decode("utf-8")
@@ -197,9 +191,7 @@ class GitLabBranchOperations:
                     has_conflicts=has_conflicts,
                     conflict_files=[file_path] if has_conflicts else [],
                     conflict_details=(
-                        {
-                            "message": f"Content differs between {base_branch} and {feature_branch}"
-                        }
+                        {"message": f"Content differs between {base_branch} and {feature_branch}"}
                         if has_conflicts
                         else {}
                     ),
@@ -238,9 +230,7 @@ class GitLabBranchOperations:
                 file_data = self.project.files.get(file_path=file_path, ref="main")
 
                 # Update file with resolution
-                file_data.content = base64.b64encode(resolution.encode("utf-8")).decode(
-                    "utf-8"
-                )
+                file_data.content = base64.b64encode(resolution.encode("utf-8")).decode("utf-8")
                 file_data.save(branch="main", commit_message=commit_message)
 
                 return True

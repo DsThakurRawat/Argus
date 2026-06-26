@@ -68,9 +68,7 @@ class ConfigMetricsCollector:
         alerts = []
 
         if metrics.config_load_time_ms > self.alert_thresholds["max_load_time_ms"]:
-            alerts.append(
-                f"Config load time exceeded threshold: {metrics.config_load_time_ms}ms"
-            )
+            alerts.append(f"Config load time exceeded threshold: {metrics.config_load_time_ms}ms")
 
         if metrics.validation_time_ms > self.alert_thresholds["max_validation_time_ms"]:
             alerts.append(
@@ -78,14 +76,9 @@ class ConfigMetricsCollector:
             )
 
         if metrics.cache_hit_rate < self.alert_thresholds["min_cache_hit_rate"]:
-            alerts.append(
-                f"Cache hit rate below threshold: {metrics.cache_hit_rate:.2%}"
-            )
+            alerts.append(f"Cache hit rate below threshold: {metrics.cache_hit_rate:.2%}")
 
-        if (
-            metrics.last_reload_duration_ms
-            > self.alert_thresholds["max_reload_duration_ms"]
-        ):
+        if metrics.last_reload_duration_ms > self.alert_thresholds["max_reload_duration_ms"]:
             alerts.append(
                 f"Config reload duration exceeded threshold: {metrics.last_reload_duration_ms}ms"
             )
@@ -126,9 +119,7 @@ class ConfigMetricsCollector:
             / len(recent_metrics),
             "avg_cache_hit_rate": sum(m.cache_hit_rate for m in recent_metrics)
             / len(recent_metrics),
-            "avg_reload_duration_ms": sum(
-                m.last_reload_duration_ms for m in recent_metrics
-            )
+            "avg_reload_duration_ms": sum(m.last_reload_duration_ms for m in recent_metrics)
             / len(recent_metrics),
             "total_config_loads": len(recent_metrics),
             "max_load_time_ms": max(m.config_load_time_ms for m in recent_metrics),

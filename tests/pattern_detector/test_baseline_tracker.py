@@ -19,9 +19,7 @@ class TestBaselineTracker:
         base_time = datetime(2025, 1, 27, 10, 0, 0)
         windows = []
         for i in range(5):
-            window = TimeWindow(
-                start_time=base_time + timedelta(minutes=i * 5), duration_minutes=5
-            )
+            window = TimeWindow(start_time=base_time + timedelta(minutes=i * 5), duration_minutes=5)
             for j in range(10):
                 severity = "ERROR" if j < i + 1 else "INFO"
                 log = LogEntry(

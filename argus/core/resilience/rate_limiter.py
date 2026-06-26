@@ -12,7 +12,7 @@ from .exceptions import RateLimitExceededError
 @dataclass
 class RateLimitConfig:
     """Configuration for rate limiter.
-    
+
     Attributes:
         limit: Maximum number of requests allowed
         window_seconds: Time window in seconds
@@ -26,14 +26,14 @@ class RateLimitConfig:
 
 class RateLimiter:
     """Rate limiter implementation for fault tolerance.
-    
+
     Implements rate limiting to prevent overwhelming services
     and maintain system stability.
     """
 
     def __init__(self, config: RateLimitConfig | None = None):
         """Initialize the rate limiter.
-        
+
         Args:
             config: Rate limit configuration
         """
@@ -44,23 +44,19 @@ class RateLimiter:
         self._max_history = 1000
 
     def execute(
-        self,
-        func: Callable[..., Any],
-        operation_name: str | None = None,
-        *args,
-        **kwargs
+        self, func: Callable[..., Any], operation_name: str | None = None, *args, **kwargs
     ) -> Any:
         """Execute a function with rate limiting.
-        
+
         Args:
             func: Function to execute
             operation_name: Name of the operation
             *args: Function arguments
             **kwargs: Function keyword arguments
-            
+
         Returns:
             Function result
-            
+
         Raises:
             RateLimitExceededError: If rate limit is exceeded
             Exception: If the function raises an exception
@@ -73,7 +69,7 @@ class RateLimiter:
                 self._config.name,
                 self._config.limit,
                 self._config.window_seconds,
-                len(self._requests)
+                len(self._requests),
             )
 
         # Record request
@@ -93,9 +89,23 @@ class RateLimiter:
             self._record_completion(request_time, False, str(e))
             raise
 
+    def acquire(self) -> None:
+        """Acquire a rate limit slot.
+
+        Raises:
+            RateLimitExceededError: If rate limit is exceeded
+        """
+        if not self._check_rate_limit():
+            raise RateLimitExceededError(
+                self._config.name,
+                self._config.limit,
+                self._config.window_seconds,
+                len(self._requests),
+            )
+
     def _check_rate_limit(self) -> bool:
         """Check if request is within rate limit.
-        
+
         Returns:
             True if request is allowed, False otherwise
         """
@@ -116,7 +126,7 @@ class RateLimiter:
 
     def _record_request(self, request_time: float, operation_name: str) -> None:
         """Record a request.
-        
+
         Args:
             request_time: Time when request was made
             operation_name: Name of the operation
@@ -127,23 +137,18 @@ class RateLimiter:
                 "operation_name": operation_name,
                 "success": None,  # Will be updated when operation completes
                 "error": None,
-                "thread_id": threading.get_ident()
+                "thread_id": threading.get_ident(),
             }
 
             self._request_history.append(request_record)
 
             # Trim history if needed
             if len(self._request_history) > self._max_history:
-                self._request_history = self._request_history[-self._max_history:]
+                self._request_history = self._request_history[-self._max_history :]
 
-    def _record_completion(
-        self,
-        request_time: float,
-        success: bool,
-        error: str | None
-    ) -> None:
+    def _record_completion(self, request_time: float, success: bool, error: str | None) -> None:
         """Record operation completion.
-        
+
         Args:
             request_time: Time when request was made
             success: Whether the operation succeeded
@@ -159,7 +164,7 @@ class RateLimiter:
 
     def get_stats(self) -> dict[str, Any]:
         """Get rate limiter statistics.
-        
+
         Returns:
             Dictionary containing rate limiter statistics
         """
@@ -176,14 +181,14 @@ class RateLimiter:
             failed_requests = sum(1 for req in self._request_history if req["success"] is False)
 
             success_rate = (
-                (successful_requests / total_requests * 100)
-                if total_requests > 0 else 0.0
+                (successful_requests / total_requests * 100) if total_requests > 0 else 0.0
             )
 
             # Calculate requests per second
             requests_per_second = (
                 current_requests / self._config.window_seconds
-                if self._config.window_seconds > 0 else 0.0
+                if self._config.window_seconds > 0
+                else 0.0
             )
 
             return {
@@ -197,21 +202,20 @@ class RateLimiter:
                 "failed_requests": failed_requests,
                 "success_rate": success_rate,
                 "utilization_rate": (
-                    (current_requests / self._config.limit * 100)
-                    if self._config.limit > 0 else 0.0
+                    (current_requests / self._config.limit * 100) if self._config.limit > 0 else 0.0
                 ),
                 "config": {
                     "limit": self._config.limit,
-                    "window_seconds": self._config.window_seconds
-                }
+                    "window_seconds": self._config.window_seconds,
+                },
             }
 
     def get_request_history(self, limit: int | None = None) -> list[dict[str, Any]]:
         """Get request history.
-        
+
         Args:
             limit: Optional limit on number of records to return
-            
+
         Returns:
             List of request records
         """
@@ -222,7 +226,7 @@ class RateLimiter:
 
     def get_current_requests(self) -> int:
         """Get current number of requests in the window.
-        
+
         Returns:
             Number of requests in current window
         """
@@ -234,15 +238,15 @@ class RateLimiter:
 
     def is_available(self) -> bool:
         """Check if rate limit allows new requests.
-        
+
         Returns:
             True if requests are allowed, False otherwise
         """
         return self.get_current_requests() < self._config.limit
 
-    def reset(self) -> None:
+    def reset(self) -> Any:
         """Reset the rate limiter.
-        
+
         Clears all history and requests.
         """
         with self._lock:
@@ -251,22 +255,25 @@ class RateLimiter:
 
     def __call__(self, operation_name: str | None = None):
         """Make rate limiter callable as a decorator.
-        
+
         Args:
             operation_name: Name of the operation
-            
+
         Returns:
             Decorator function
         """
+
         def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             def wrapper(*args, **kwargs):
                 return self.execute(func, operation_name, *args, **kwargs)
+
             return wrapper
+
         return decorator
 
     def __enter__(self):
         """Context manager entry.
-        
+
         Returns:
             Self
         """
@@ -274,7 +281,7 @@ class RateLimiter:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit.
-        
+
         Args:
             exc_type: Exception type
             exc_val: Exception value
