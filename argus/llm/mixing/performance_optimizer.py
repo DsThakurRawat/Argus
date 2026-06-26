@@ -474,7 +474,7 @@ class PerformanceOptimizer:
         }
 
         key_string = str(sorted(key_data.items()))
-        return hashlib.md5(key_string.encode()).hexdigest()
+        return hashlib.md5(key_string.encode(), usedforsecurity=False).hexdigest()
 
     async def get_cached_response(
         self,

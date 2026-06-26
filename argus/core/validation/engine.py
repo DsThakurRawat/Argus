@@ -344,7 +344,7 @@ class ValidationEngine:
 
         # Generate hash
         cache_str = json.dumps(cache_data, sort_keys=True, default=str)
-        return hashlib.md5(cache_str.encode()).hexdigest()
+        return hashlib.md5(cache_str.encode(), usedforsecurity=False).hexdigest()
 
     def _get_cached_result(self, cache_key: str) -> ValidationResult | None:
         """Get cached validation result.
